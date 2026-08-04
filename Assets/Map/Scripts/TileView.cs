@@ -2,9 +2,21 @@ using UnityEngine;
 
 public class TileView : MonoBehaviour
 {
-    private TileNode node;
+    [Header("타일 타입별 Materaial")]
+    [SerializeField] private Material emptyMaterial;
+    [SerializeField] private Material pathMaterial;
+    [SerializeField] private Material spawnMaterial;
+    [SerializeField] private Material goalMaterial;
 
-    public TileNode Node => node;
+    private TileNode node;
+    private MeshRenderer meshRenderer;
+
+   public TileNode Node => node;
+
+    private void Awake()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
 
     public void Initialize(TileNode tilenode)
     {
@@ -17,7 +29,9 @@ public class TileView : MonoBehaviour
         node = tilenode;
 
         //하이라키에서 좌표 확인을 쉽게 이름설정하기
-        gameObject.name = $"Tile_{node.GridPosition.x}_{node.GridPosition.y}"; 
+        gameObject.name = $"Tile_{node.GridPosition.x}_{node.GridPosition.y}";
+
+        ApplyMaterial();
     }
 
     private void OnMouseDown()
@@ -32,4 +46,27 @@ public class TileView : MonoBehaviour
        );
     }
 
+    private void ApplyMaterial()
+    {
+        if(meshRenderer == null) return;
+
+        switch (node.TileType)
+        {
+            case TileType.Path:
+                meshRenderer.material = pathMaterial;
+                break;
+
+            case TileType.Spawn:
+                meshRenderer.material = spawnMaterial;
+                break;
+
+            case TileType.Goal:
+                meshRenderer.material = goalMaterial;
+                break;
+
+            default:
+                meshRenderer.material = emptyMaterial;
+                break;
+        }
+    }
 }

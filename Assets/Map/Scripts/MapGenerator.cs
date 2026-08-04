@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -10,12 +11,12 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GridMapRenderer mapRenderer;
 
     private TileNode[,] grid;
+    private List<Vector2Int> pathPosition = new List<Vector2Int>();
 
     public TileNode[,] Grid => grid;
+    public IReadOnlyList<Vector2Int> PathPOsition => pathPosition;
     public int Width => width;
     public int Height => height;
-
-
 
     void Start()
     {
@@ -26,6 +27,7 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         InitializedGrid();
+        GenerateFixedPath();
 
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
@@ -44,6 +46,91 @@ public class MapGenerator : MonoBehaviour
                 grid[x, y] = new TileNode(gridPosition);
             }
         }
+    }
+
+
+    private void GenerateFixedPath()
+    {
+        pathPosition.Clear();
+
+        AddHorizontalPath(0, 4, 3);
+        AddVerticalPath(3, 5, 4);
+        AddHorizontalPath(4, 8, 5);
+        AddVerticalPath(5, 2, 8);
+        AddHorizontalPath(8, 11, 2);
+
+        SetPathTileTypes();
+    }
+
+    private void AddHorizontalPath(int startX,int endX, int y)
+    {
+        //이동 방향이 왼쪽 오른쪽 모두 가능하기 때문에 방향이 필요함
+        //시작 X가 끝X 보다 작거나 같으면? -> 1씩 증가
+        //시작X가 끝 X보다 크면? -> -1씩 감소
+        int direction = startX <= endX ? 1 : -1;
+
+        for(int x=  startX; x < endX + direction; x++)
+        {
+            AddPathPosition(new Vector2Int(x, y));
+        }
+    }
+
+    private void AddVerticalPath (int startY, int endY, int x)
+    {
+        int direction = startY <= endY ? 1 : -1;
+
+        for(int y= startY; y != endY + direction; y += direction)
+        {
+            AddPathPosition(new Vector2Int(x, y));
+        }
+    }
+
+    private void AddPathPosition(Vector2Int position)
+    {
+        //만약 리스트에 마지막 좌표와 새로 넣으려는 좌표가 같으면 추가 ㄴㄴ
+        if (pathPosition.Count > 0 && pathPosition[pathPosition.Count - 1] == position) return;
+
+        pathPosition.Add(position);
+    }
+  
+
+   private void SetPathTileTypes()
+    {
+        if (pathPosition.Count < 2) return;
+
+        for(int i = 0; i < pathPosition.Count; i++)
+        {
+            Vector2Int position = pathPosition[i];
+
+            if (!IsInsideGrid(position)) continue;
+
+            if (i == 0)
+            {
+                //첫 번째 좌표는 Start
+                grid[position.x, position.y].SetTileType(TileType.Spawn);
+            }
+            else if (i == pathPosition.Count - 1)
+            {
+                //마지막 좌표는 Goal
+                grid[position.x, position.y].SetTileType(TileType.Goal);
+            }
+            else
+            {
+                //나머지 좌표는 path
+                grid[position.x,position.y].SetTileType(TileType.Path);
+            }
+        }
+    }
+
+    //Grid 범위 확인 메서드
+    //우리가 만들 12x8 맵이면 
+    //x -> 0~11 / y -> 0~7 구간을 확인
+    private bool IsInsideGrid(Vector2Int position)
+    {
+        return position.x >= 0&&
+            position.x < width &&
+            position.y >= 0 &&
+            position.y < height;
     }
 
 }

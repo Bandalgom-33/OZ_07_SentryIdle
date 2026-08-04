@@ -125,3 +125,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24c37a2a74afe704eb5a99e334849f9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileView
+  emptyMaterial: {fileID: 2100000, guid: 70a0cbfc40e747b45a79ddde9af23689, type: 2}
+  pathMaterial: {fileID: 2100000, guid: 8f33e53618c07b8409baf88e2da3d392, type: 2}
+  spawnMaterial: {fileID: 2100000, guid: 6208008bbabf3cc4bb6a9a3eb2e03f11, type: 2}
+  goalMaterial: {fileID: 2100000, guid: d4a5e7fc4303d6443a3db555f2685f01, type: 2}
