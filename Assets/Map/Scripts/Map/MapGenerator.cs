@@ -74,7 +74,7 @@ public class MapGenerator : MonoBehaviour
         //시작X가 끝 X보다 크면? -> -1씩 감소
         int direction = startX <= endX ? 1 : -1;
 
-        for(int x=  startX; x < endX + direction;)
+        for(int x=  startX; x < endX + direction;x += direction)
         {
             AddPathPosition(new Vector2Int(x, y));
         }
