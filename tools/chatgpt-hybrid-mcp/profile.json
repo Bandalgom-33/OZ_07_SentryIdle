@@ -1,0 +1,23 @@
+{
+    "id":  "oz-07-sentryidle",
+    "displayName":  "OZ_07_SentryIdle",
+    "appName":  "OZ_07_SentryIdle Workstation",
+    "serverName":  "oz-07-sentryidle-chatgpt-workstation",
+    "defaultWorkingDirectoryRelative":  ".",
+    "httpPort":  2099,
+    "bootstrapFiles":  [
+                           "README.md"
+                       ],
+    "identityMarkers":  [
+                            {
+                                "relativePath":  "tools/chatgpt-hybrid-mcp/project.marker",
+                                "expectedLiteral":  "identity=oz-07-sentryidle"
+                            }
+                        ],
+    "projectType":  "unity",
+    "policyPacks":  [
+                        "safe-default",
+                        "unity"
+                    ],
+    "shellAccess":  "full"
+}
