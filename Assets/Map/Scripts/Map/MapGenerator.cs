@@ -10,11 +10,14 @@ public class MapGenerator : MonoBehaviour
     [Header("맵 크기")]
     [SerializeField] private GridMapRenderer mapRenderer;
 
+    [Header("적 생성 설정")]
+    [SerializeField] private EnemyMover enemyPrefab;
+
     private TileNode[,] grid;
     private List<Vector2Int> pathPosition = new List<Vector2Int>();
 
     public TileNode[,] Grid => grid;
-    public IReadOnlyList<Vector2Int> PathPOsition => pathPosition;
+    public IReadOnlyList<Vector2Int> PathPosition => pathPosition;
     public int Width => width;
     public int Height => height;
 
@@ -31,6 +34,8 @@ public class MapGenerator : MonoBehaviour
 
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
+
+        SpawnEnemy();
     }
 
 
@@ -69,7 +74,7 @@ public class MapGenerator : MonoBehaviour
         //시작X가 끝 X보다 크면? -> -1씩 감소
         int direction = startX <= endX ? 1 : -1;
 
-        for(int x=  startX; x < endX + direction; x++)
+        for(int x=  startX; x < endX + direction;)
         {
             AddPathPosition(new Vector2Int(x, y));
         }
@@ -132,5 +137,24 @@ public class MapGenerator : MonoBehaviour
             position.y >= 0 &&
             position.y < height;
     }
+
+    
+    private void SpawnEnemy()
+    {
+        if (enemyPrefab == null) return;
+        if(pathPosition == null || pathPosition.Count == 0) return;
+
+        //스폰 포지션 좌표 받기
+        Vector2Int spawnGridPosition = pathPosition[0];
+        //World 위치로 변환
+        Vector3 spawnWorldPosition =   mapRenderer.GridToWorld(spawnGridPosition);
+        spawnWorldPosition.y = 1.0f;
+        //생성 시키기
+        EnemyMover spawnEnemy = Instantiate(enemyPrefab,spawnWorldPosition,Quaternion.identity);
+        spawnEnemy.Initialize(pathPosition, mapRenderer);
+    }
+
+
+
 
 }
