@@ -30,12 +30,14 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         InitializedGrid();
-        GenerateFixedPath();
+        //°íÁ¤ °æ·Î »ý¼ºÀº ÁÖ¼®Ã³¸®
+        // GenerateFixedPath();
+        GenerateRandomPath();
 
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
 
-        SpawnEnemy();
+       SpawnEnemy();
     }
 
 
@@ -51,6 +53,39 @@ public class MapGenerator : MonoBehaviour
                 grid[x, y] = new TileNode(gridPosition);
             }
         }
+    }
+
+
+    private void GenerateRandomPath()
+    {
+        //ÁÂÇ¥ ÃÊ±âÈ­
+        pathPosition.Clear();
+
+        int spawnY = Random.Range(0, height);
+        int goalY = Random.Range(0, height);
+        int wayPointX = Random.Range(2, width - 2);
+        int wayPointY = Random.Range(0, height);
+
+        //·£´ý ÀÔ±¸ ÁÂÇ¥
+        Vector2Int spawnPosition = new Vector2Int(0, spawnY);
+        //·£´ý Ãâ±¸ ÁÂÇ¥
+        Vector2Int goalPosition = new Vector2Int(width - 1, goalY);
+        //°æÀ¯Á¡ ÁÂÇ¥
+        Vector2Int wayPoint = new Vector2Int(wayPointX, wayPointY);
+
+        Debug.Log(
+       $"Spawn: {spawnPosition} / " +
+       $"Waypoint: {wayPoint} / " +
+       $"Goal: {goalPosition}"
+   );
+
+        AddHorizontalPath(spawnPosition.x, wayPoint.x, spawnPosition.y);
+        AddVerticalPath(spawnPosition.y, wayPoint.y, wayPoint.x);
+
+        AddHorizontalPath(wayPoint.x,goalPosition.x,wayPoint.y);
+        AddVerticalPath(wayPoint.y, goalPosition.y, goalPosition.x);
+        SetPathTileTypes();
+
     }
 
 
