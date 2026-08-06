@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ad39a485b68ccc438547bf2f2c5c2bd, type: 3}
+  m_Name: UnitCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitCatalog
+  lastIssuedNumber: 1
+  units:
+  - {fileID: 11400000, guid: 4374e11ae7640d94eab78cb0a600682a, type: 2}

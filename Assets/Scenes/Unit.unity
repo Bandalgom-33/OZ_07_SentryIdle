@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 147769473}
   - component: {fileID: 147769472}
   - component: {fileID: 147769471}
+  - component: {fileID: 147769474}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -211,6 +212,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &147769474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147769470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &896330006
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +266,7 @@ GameObject:
   m_Component:
   - component: {fileID: 896330008}
   - component: {fileID: 896330007}
+  - component: {fileID: 896330009}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -308,9 +354,178 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &896330009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896330006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
+--- !u!1 &1802815547
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1802815549}
+  - component: {fileID: 1802815548}
+  - component: {fileID: 1802815550}
+  - component: {fileID: 1802815551}
+  - component: {fileID: 1802815552}
+  m_Layer: 0
+  m_Name: CombatStatePrototype
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1802815548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802815547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05922a1270e61b945b2763572a3849de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Prototype.CombatStatePrototypeController
+  unitPrefab: {fileID: 6371960850893609525, guid: 679e1e002bbd8f34290915e2b074d52b, type: 3}
+  enemyPrefab: {fileID: 2601565435819809601, guid: 580e7178534f43f4587ac3e628fb2a3e, type: 3}
+  gridWorldOrigin: {x: 0, y: 0, z: 0}
+  tileWorldSize: 1
+  unitTileCoordinate: {x: 0, y: 0}
+  enemyTileCoordinate: {x: 1, y: 0}
+  unitSpawnHeight: 0
+  enemySpawnHeight: 0
+  unitFacingDirection: 1
+  enemyFacingDirection: 3
+  autoSpawnOnStart: 1
+  unitDamageAmount: 1000
+  unitHealAmount: 500
+  enemyDamageAmount: 1000
+  enemyHealAmount: 500
+  skillGaugeAmount: 10
+  attackProgressStepSeconds: 0.3
+  maxAttackConsumeCount: 10
+  spawnedUnitObject: {fileID: 0}
+  spawnedEnemyObject: {fileID: 0}
+  spawnedUnit: {fileID: 0}
+  spawnedEnemy: {fileID: 0}
+  unitHealthChangedCount: 0
+  enemyHealthChangedCount: 0
+  unitSkillGaugeChangedCount: 0
+  unitDeathEventCount: 0
+  enemyDeathEventCount: 0
+  unitConsumedAttackCount: 0
+  enemyConsumedAttackCount: 0
+  lastEventMessage: 
+--- !u!4 &1802815549
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802815547}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1802815550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802815547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c89567ffc979f045ac03efe736fae10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Prototype.BasicAttackPrototypeController
+  stateController: {fileID: 1802815548}
+  hasResult: 0
+  unitAttackSuccessCount: 0
+  enemyAttackSuccessCount: 0
+  lastMessage: 
+--- !u!114 &1802815551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802815547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11687388ebe1f5e458d7f4f4b97dfdb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Prototype.BlockTest
+  state: {fileID: 1802815548}
+  secondEnemyOffset: {x: 1.5, y: 0, z: 0}
+  thirdEnemyOffset: {x: 3, y: 0, z: 0}
+  unitBlock: {fileID: 0}
+  firstBlock: {fileID: 0}
+  secondBlock: {fileID: 0}
+  thirdBlock: {fileID: 0}
+  secondEnemyObject: {fileID: 0}
+  thirdEnemyObject: {fileID: 0}
+  lastResult: 0
+  lastMessage: 
+--- !u!114 &1802815552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802815547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca052600e0b485449c97374b102ef9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Prototype.MoveTest
+  state: {fileID: 1802815548}
+  worldOrigin: {x: 0, y: 0, z: 0}
+  tileWorldSize: 1
+  startTile: {x: 4, y: 0}
+  goalTile: {x: -4, y: 0}
+  spawnHeight: 0
+  enemyMove: {fileID: 0}
+  isRunning: 0
+  reachedGoal: 0
+  lastMessage: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 147769473}
   - {fileID: 896330008}
+  - {fileID: 1802815549}
