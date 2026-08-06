@@ -114,10 +114,11 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
-# ------------------------------------------------------------------------------
-# External Licensed Assets (Non-redistributable, Team Share Only)
-# 라이선스 문제로 Git에 포함되지 않는 외부 에셋 목록
-# 에셋은 팀 공유 드라이브에서 다운로드 후 로컬에 임포트하여 사용합니다.
-# ------------------------------------------------------------------------------
-/Assets/SPUM/
-/Assets/SPUM.meta
+# Ignore Vendor directory and all of its contents (including .meta files)
+/[Vv]endor/
+/[Vv]endor.meta
+/[Aa]ssets/[Vv]endor/
+/[Aa]ssets/[Vv]endor.meta
+
+
+
