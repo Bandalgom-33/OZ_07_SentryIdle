@@ -15,6 +15,7 @@ public class MapGenerator : MonoBehaviour
 
     private TileNode[,] grid;
     private List<Vector2Int> pathPosition = new List<Vector2Int>();
+   
 
     public TileNode[,] Grid => grid;
     public IReadOnlyList<Vector2Int> PathPosition => pathPosition;
@@ -63,29 +64,44 @@ public class MapGenerator : MonoBehaviour
 
         int spawnY = Random.Range(0, height);
         int goalY = Random.Range(0, height);
-        int wayPointX = Random.Range(2, width - 2);
-        int wayPointY = Random.Range(0, height);
+        //첫 번째 경우지
+        int wayPoint1X = Random.Range(2, width /2);
+        int wayPoint1Y = Random.Range(0, height);
+
+        //두 번째 경유지
+        // 두번재 경우지는 Goal.x인 11을 피하고 바로 앞인 10도 피해야 하기 때문에
+        //7,8,9 중에 하나
+        int waypoint2X = Random.Range(width / 2 + 1, width - 2);
+        int wayPoint2Y = Random.Range(0, height); 
+
 
         //랜덤 입구 좌표
         Vector2Int spawnPosition = new Vector2Int(0, spawnY);
         //랜덤 출구 좌표
         Vector2Int goalPosition = new Vector2Int(width - 1, goalY);
-        //경유점 좌표
-        Vector2Int wayPoint = new Vector2Int(wayPointX, wayPointY);
+        //첫 번째 경유지 좌표
+        Vector2Int wayPoint1 = new Vector2Int(wayPoint1X, wayPoint1Y);
+        //두 번째 경우지 자표
+        Vector2Int wayPoint2 = new Vector2Int(waypoint2X, wayPoint2Y);
 
-        Debug.Log(
-       $"Spawn: {spawnPosition} / " +
-       $"Waypoint: {wayPoint} / " +
-       $"Goal: {goalPosition}"
-   );
 
-        AddHorizontalPath(spawnPosition.x, wayPoint.x, spawnPosition.y);
-        AddVerticalPath(spawnPosition.y, wayPoint.y, wayPoint.x);
+        // Spawn → Waypoint1 경로 이어주기 
+        AddHorizontalPath(spawnPosition.x,wayPoint1.x,spawnPosition.y );
+        AddVerticalPath( spawnPosition.y, wayPoint1.y, wayPoint1.x);
 
-        AddHorizontalPath(wayPoint.x,goalPosition.x,wayPoint.y);
-        AddVerticalPath(wayPoint.y, goalPosition.y, goalPosition.x);
+        // Waypoint1 → Waypoint2
+        AddHorizontalPath(wayPoint1.x, wayPoint2.x,wayPoint1.y);
+        AddVerticalPath( wayPoint1.y, wayPoint2.y,wayPoint2.x);
+
+        // Waypoint2 → Goal
+        AddHorizontalPath(wayPoint2.x, goalPosition.x, wayPoint2.y );
+        AddVerticalPath( wayPoint2.y, goalPosition.y, goalPosition.x);
+
+        bool isValid =ValidatePath(spawnPosition,goalPosition);
+        if (!isValid)return;
+        
+
         SetPathTileTypes();
-
     }
 
 
@@ -189,7 +205,16 @@ public class MapGenerator : MonoBehaviour
         spawnEnemy.Initialize(pathPosition, mapRenderer);
     }
 
+    //pathPosition의 유효성을 검사하는 메서드
+    private bool ValidatePath(Vector2Int spawnPosition, Vector2Int goalPosition)
+    {
+        if (pathPosition.Count < 2) return false;
+        if (pathPosition[0] != spawnPosition) return false;
+        if (pathPosition[pathPosition.Count - 1] != goalPosition) return false;
 
+        return true;
+
+    }
 
 
 }
