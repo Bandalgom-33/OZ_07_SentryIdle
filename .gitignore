@@ -113,3 +113,12 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Ignore Vendor directory and all of its contents (including .meta files)
+/[Vv]endor/
+/[Vv]endor.meta
+/[Aa]ssets/[Vv]endor/
+/[Aa]ssets/[Vv]endor.meta
+
+
+
