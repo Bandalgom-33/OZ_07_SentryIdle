@@ -13,6 +13,13 @@ public abstract class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
             if (_instance == null)
             {
                 _instance = FindAnyObjectByType<T>();
+
+                // 씬에 인스턴스가 없을 경우 자동 게임오브젝트 생성하여 동적 할당
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject(typeof(T).Name);
+                    _instance = singletonObject.AddComponent<T>();
+                }
             }
             return _instance;
         }

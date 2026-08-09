@@ -1,8 +1,14 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Manager;
 using UnityEngine;
+
+public enum CurrencyType
+{
+    Gold,
+    Diamond,
+    DpCost
+}
 
 public class CurrencyManager : SingletonBase<CurrencyManager>
 {
@@ -56,28 +62,27 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
 #region 라이프 사이클
 
-    protected override void Awake()
-    {
-        base.Awake();
-        LoadCurrency();
-    }
 
     private void OnEnable()
     {
-        GameManager.OnGameSpeedChange += GameSpeedChange;
+        EventBus.Subscribe<GameSpeedChangedEvent>(GameSpeedChange);
+        EventBus.Subscribe<DataSaveEvent>(OnSave);
+        EventBus.Subscribe<DataLoadEvent>(OnLoad);
+        EventBus.Subscribe<DataResetEvent>(OnReset);
     }
 
     private void Start()
     {
         _currentRegenTime = dpCostRegenTime;
-        //StartCoroutine(RegenDpCostCo());
         RegenDpCost(this.GetCancellationTokenOnDestroy()).Forget();
     }
 
     private void OnDisable()
     {
-        SaveCurrency();
-        GameManager.OnGameSpeedChange -= GameSpeedChange;
+        EventBus.Unsubscribe<GameSpeedChangedEvent>(GameSpeedChange);
+        EventBus.Unsubscribe<DataSaveEvent>(OnSave);
+        EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
+        EventBus.Unsubscribe<DataResetEvent>(OnReset);
     }
 
 #endregion
@@ -198,42 +203,19 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     }
 
     // 게임 속도 변경시 Dp코스트 리젠 속도 변경
-    private void GameSpeedChange()
+    private void GameSpeedChange(GameSpeedChangedEvent evt)
     {
-        if (Time.timeScale == 0)
+        if (evt.timeScale == 0)
         {
             _isPaused = true;
         }
         else
         {
             _isPaused = false;
-            _currentRegenTime = dpCostRegenTime/ Time.timeScale;
+            _currentRegenTime = dpCostRegenTime/ evt.timeScale;
         }
     }
-    // Dp코스트 리젠 코루틴
-    /*IEnumerator RegenDpCostCo()
-    {
-        float timer = 0;
-        while (true)
-        {
-            if (!_isPaused)
-            {
-                timer += Time.deltaTime;
-                float sliderValue = Mathf.Lerp(0, 1, timer / _currentRegenTime);
-                if (sliderValue >= 1)
-                {
-                    int dpCost = (int)((baseDpCost + dpCostBonus) * dpCostMagnification);
-                    GetDpCost(dpCost);
-                    long gold = (long)((baseGold + goldBonus) * goldMagnification);
-                    GetGold(gold);
-                    int diamond = (int)((baseDiamond + diamondBonus) * diamondMagnification);
-                    GetDiamond(diamond);
-                    timer = 0;
-                }
-            }
-            yield return null;
-        }
-    }*/
+    
     // DpCost 비동기 리젠
     private async UniTaskVoid RegenDpCost(CancellationToken token)
     {
@@ -265,18 +247,33 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
 #region 재화 저장 관리
 
-    private void SaveCurrency()
+    // 재화 저장
+    private void OnSave(DataSaveEvent evt)
     {
-        
+        evt.saveData.currency.gold    = Gold;
+        evt.saveData.currency.diamond = Diamond;
     }
 
-    private void LoadCurrency()
+    //재화 저장소 로드
+    private void OnLoad(DataLoadEvent evt)
     {
-        Gold = 0;
+        Gold   = evt.saveData.currency.gold;
+        Diamond = evt.saveData.currency.diamond;
+        DpCost  = 5; 
+        OnGoldChange?.Invoke(Gold);
+        OnDiamondChange?.Invoke(Diamond);
+        OnDpCostChange?.Invoke(DpCost);
+    }
+    //재화 리셋
+    private void OnReset(DataResetEvent evt)
+    {
+        Gold    = 0;
         Diamond = 0;
-        DpCost = 5;
+        DpCost  = 5;
+        OnGoldChange?.Invoke(Gold);
+        OnDiamondChange?.Invoke(Diamond);
+        OnDpCostChange?.Invoke(DpCost);
     }
-
 
 #endregion
 

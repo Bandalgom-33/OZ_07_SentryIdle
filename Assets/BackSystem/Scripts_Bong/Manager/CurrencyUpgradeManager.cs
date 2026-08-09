@@ -39,11 +39,18 @@ public class CurrencyUpgradeManager : MonoBehaviour
     private void OnEnable()
     {
         UpgradeUi.OnCurrencyUpgrade += SelectUpgrade;
+        EventBus.Subscribe<DataSaveEvent>(OnSave);
+        EventBus.Subscribe<DataLoadEvent>(OnLoad);
+        EventBus.Subscribe<DataResetEvent>(OnReset);
     }
 
     private void OnDisable()
     {
         UpgradeUi.OnCurrencyUpgrade -= SelectUpgrade;
+        EventBus.Unsubscribe<DataSaveEvent>(OnSave);
+        EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
+        EventBus.Unsubscribe<DataResetEvent>(OnReset);
+        
     }
 
     #endregion
@@ -265,6 +272,49 @@ public class CurrencyUpgradeManager : MonoBehaviour
         {
             return false;
         }
+    }
+
+    #endregion
+
+    #region 저장 관리
+
+    // 재화 업그레이드 레벨 저장
+    private void OnSave(DataSaveEvent evt)
+    {
+        evt.saveData.statUpgrade.goldBonusLevel          = GoldBonusLevel;
+        evt.saveData.statUpgrade.goldMagnificationLevel  = GoldMagnificationLevel;
+        evt.saveData.statUpgrade.diamondBonusLevel       = DiamondBonusLevel;
+        evt.saveData.statUpgrade.diamondMagnificationLevel = DiamondMagnificationLevel;
+        evt.saveData.statUpgrade.dpCostBonusLevel        = DpCostBonusLevel;
+        evt.saveData.statUpgrade.dpCostMagnificationLevel = DpCostMagnificationLevel;
+    }
+
+    // 재화 업그레이드 레벨 로드
+    private void OnLoad(DataLoadEvent evt)
+    {
+        GoldBonusLevel          = evt.saveData.statUpgrade.goldBonusLevel;
+        GoldMagnificationLevel  = evt.saveData.statUpgrade.goldMagnificationLevel;
+        DiamondBonusLevel       = evt.saveData.statUpgrade.diamondBonusLevel;
+        DiamondMagnificationLevel = evt.saveData.statUpgrade.diamondMagnificationLevel;
+        DpCostBonusLevel        = evt.saveData.statUpgrade.dpCostBonusLevel;
+        DpCostMagnificationLevel = evt.saveData.statUpgrade.dpCostMagnificationLevel;
+        CurrencyManager.Instance.GoldBonusUpgrade(GoldBonusLevel);
+        CurrencyManager.Instance.GoldMagnificationUpgrade(GoldMagnificationLevel);
+        CurrencyManager.Instance.DiamondBonusUpgrade(DiamondBonusLevel);
+        CurrencyManager.Instance.DiamondMagnificationUpgrade(DiamondMagnificationLevel);
+        CurrencyManager.Instance.DpCostBonusUpgrade(DpCostBonusLevel);
+        CurrencyManager.Instance.DpCostMagnificationUpgrade(DpCostMagnificationLevel);
+    }
+
+    // 저장소 초기화 
+    private void OnReset(DataResetEvent evt)
+    {
+        GoldBonusLevel          = 0;
+        GoldMagnificationLevel  = 0;
+        DiamondBonusLevel       = 0;
+        DiamondMagnificationLevel = 0;
+        DpCostBonusLevel        = 0;
+        DpCostMagnificationLevel = 0;
     }
 
     #endregion

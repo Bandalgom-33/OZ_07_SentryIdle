@@ -47,6 +47,19 @@ public class InGameUI : MonoBehaviour
 
     #region 재화 텍스트 업데이트
 
+    private void UpdateCurrency(CurrencyChangedEvent evt)
+    {
+        switch (evt.currencyType)
+        {
+            case CurrencyType.Gold:
+                UpdateGold(evt.currentAmount);
+                break;
+            case CurrencyType.Diamond:
+                UpdateDiamond((int)evt.currentAmount);
+                break;
+        }
+    }
+    
     private void UpdateGold(long gold)
     {
         if (gold < 1000)
