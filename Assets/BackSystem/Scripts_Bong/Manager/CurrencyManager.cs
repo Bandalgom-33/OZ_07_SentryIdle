@@ -3,6 +3,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
+// 게임 내 3대 핵심 재화(Gold, Diamond, DpCost) 통합 관리 및 트랜잭션 전담 싱글톤
 public enum CurrencyType
 {
     Gold,
@@ -40,9 +41,12 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public long Gold { get; private set; }
     public int Diamond { get; private set; }
     public int DpCost { get; private set; }
+
+    // 재화 잔액 보유 여부 검증 프로퍼티
     public bool HasGold(long inputGold) => Gold >= inputGold;
     public bool HasDiamond(int inputDiamond) => Diamond >= inputDiamond;
     public bool HasDpCost(int inputDpCost) => DpCost >= inputDpCost;
+
 #endregion
 
 #region 비공개 변수 모음
@@ -62,7 +66,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
 #region 라이프 사이클
 
-
+    // 중앙 EventBus 이벤트 및 재화 연동 레지스터 구독 등록
     private void OnEnable()
     {
         EventBus.Subscribe<GameSpeedChangedEvent>(GameSpeedChange);
@@ -71,12 +75,14 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<DataResetEvent>(OnReset);
     }
 
+    // 비동기 DP 회복 루프 시작 및 기본 리젠 시간 초기화 연산
     private void Start()
     {
         _currentRegenTime = dpCostRegenTime;
         RegenDpCost(this.GetCancellationTokenOnDestroy()).Forget();
     }
 
+    // 중앙 EventBus 이벤트 구독 해제 (메모리 누수 방지)
     private void OnDisable()
     {
         EventBus.Unsubscribe<GameSpeedChangedEvent>(GameSpeedChange);
@@ -89,19 +95,19 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
 #region 재화 획득/차감 매서드 모음
 
-    //몬스터 랭크에 맞춰서 재화 일괄 획득
+    // 몬스터 랭크별 재화 일괄 수급 연산
     private void AddCurrency()
     {
     }
-    //골드 획득
+
+    // 골드 수급 및 변경 이벤트 발행 처리
     public void GetGold(long gold)
     {
-        
         Gold += gold;
         OnGoldChange?.Invoke(Gold);
-        
     }
-    //골드 소모
+
+    // 골드 소모 검증 및 안전 차감 처리
     public bool TrySpendGold(long gold)
     {
         if (Gold < gold) return false;
@@ -109,13 +115,15 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         OnGoldChange?.Invoke(Gold);
         return true;
     }
-    //다이아 획득
+
+    // 다이아 수급 및 변경 이벤트 발행 처리
     public void GetDiamond(int diamond)
     {
         Diamond += diamond;
         OnDiamondChange?.Invoke(Diamond);
     }
-    //다이아 소모
+
+    // 다이아 소모 검증 및 안전 차감 처리
     public bool TrySpendDiamond(int diamond)
     {
         if (Diamond < diamond) return false;
@@ -123,13 +131,15 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         OnDiamondChange?.Invoke(Diamond);
         return true;
     }
-    //소환 코스트 획득
+
+    // 소환 코스트(DP) 수급 및 변경 이벤트 발행 처리
     public void GetDpCost(int dpCost)
     {
         DpCost += dpCost;
         OnDpCostChange?.Invoke(DpCost);
     }
-    //소환 코스트 소모
+
+    // 소환 코스트(DP) 소모 검증 및 안전 차감 처리
     public bool TrySpendDpCost(int dpCost)
     {
         if (DpCost < dpCost) return false;
@@ -142,9 +152,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
 #region 재화 관련 업그레이드 메서드 모음
 
-
-
-    // 골드 보너스 업그레이드
+    // 골드 보너스 수량 업그레이드 연산
     public void GoldBonusUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
@@ -152,7 +160,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             goldBonus += goldBonusIncrease;
         }
     }
-    // 골드 배율 업그레이드 
+
+    // 골드 수급 배율 업그레이드 연산
     public void GoldMagnificationUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
@@ -160,7 +169,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             goldMagnification += goldMagnificationIncrease;
         }
     }
-    // 다이아 보너스 업그레이드
+
+    // 다이아 보너스 수량 업그레이드 연산
     public void DiamondBonusUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
@@ -168,7 +178,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             diamondBonus += diamondBonusIncrease;
         }
     }
-    // 다이아 배율 업그레이드 
+
+    // 다이아 수급 배율 업그레이드 연산
     public void DiamondMagnificationUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
@@ -176,15 +187,17 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             diamondMagnification += diamondMagnificationIncrease;
         }
     }
-    //소환 코스트 보너스 업그레이드
+
+    // 소환 코스트(DP) 보너스 업그레이드 연산
     public void DpCostBonusUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
         {
-            dpCostBonus +=  dpCostBonusIncrease;
+            dpCostBonus += dpCostBonusIncrease;
         }
     }
-    // 소환 코스트 배율 업그레이드
+
+    // 소환 코스트(DP) 수급 배율 업그레이드 연산
     public void DpCostMagnificationUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
@@ -197,12 +210,13 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
 #region 계산 메서드
 
+    // 오프라인 방치 24시간 재화 수급 보상 연산
     private void CalculateOfflineReward()
     {
-        // 저장 시스템에서 시간 저장 후 계산 
+        // 저장 시스템 시각 기록 기반 오프라인 보상 계산 연산
     }
 
-    // 게임 속도 변경시 Dp코스트 리젠 속도 변경
+    // 게임 속도 변경 이벤트 수신 시 DP 회복 속도 변환 연산
     private void GameSpeedChange(GameSpeedChangedEvent evt)
     {
         if (evt.timeScale == 0)
@@ -212,11 +226,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         else
         {
             _isPaused = false;
-            _currentRegenTime = dpCostRegenTime/ evt.timeScale;
+            _currentRegenTime = dpCostRegenTime / evt.timeScale;
         }
     }
     
-    // DpCost 비동기 리젠
+    // 비동기(UniTask) 기반 DP 코스트 및 초당 기본 재화 자동 지속 회복 연산
     private async UniTaskVoid RegenDpCost(CancellationToken token)
     {
         float timer = 0;
@@ -242,29 +256,29 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         }
     }
      
-    
 #endregion
 
 #region 재화 저장 관리
 
-    // 재화 저장
+    // 보유 재화 데이터 세이브 객체 저장 연산
     private void OnSave(DataSaveEvent evt)
     {
         evt.saveData.currency.gold    = Gold;
         evt.saveData.currency.diamond = Diamond;
     }
 
-    //재화 저장소 로드
+    // 세이브 데이터 기반 보유 재화 복원 및 UI 갱신 이벤트 발행 처리
     private void OnLoad(DataLoadEvent evt)
     {
-        Gold   = evt.saveData.currency.gold;
+        Gold    = evt.saveData.currency.gold;
         Diamond = evt.saveData.currency.diamond;
         DpCost  = 5; 
         OnGoldChange?.Invoke(Gold);
         OnDiamondChange?.Invoke(Diamond);
         OnDpCostChange?.Invoke(DpCost);
     }
-    //재화 리셋
+
+    // 재화 데이터 초기화 및 UI 갱신 이벤트 발행 처리
     private void OnReset(DataResetEvent evt)
     {
         Gold    = 0;
@@ -276,5 +290,4 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     }
 
 #endregion
-
 }
