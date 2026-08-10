@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Collections;
+using UnityEngine.InputSystem.iOS;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -43,7 +45,14 @@ public class MapGenerator : MonoBehaviour
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
 
-       SpawnEnemy();
+
+        //기존 적 생성방식 주석 처리
+        //SpawnEnemy(pathPosition);
+        //SpawnEnemy(pathPositionB);
+
+        //코루틴으로 Wave 마다 적 생성 구현
+        StartCoroutine(spawnWave(PathPosition, 3, 1.0f));
+        StartCoroutine(spawnWave(pathPositionB, 3, 1.0f));
     }
 
 
@@ -161,6 +170,7 @@ public class MapGenerator : MonoBehaviour
 
 
         SetPathTileTypes();
+        GenerateTerrain();
     }
 
     //고정 경로 주석처리
@@ -237,12 +247,13 @@ public class MapGenerator : MonoBehaviour
         SetSinglePathTileTypes(pathPosition);
         SetSinglePathTileTypes(pathPositionB);
     }
+
     //타일을 색으로 구분하기
-   private void SetSinglePathTileTypes(IReadOnlyList<Vector2Int> path)
+    private void SetSinglePathTileTypes(IReadOnlyList<Vector2Int> path)
     {
         if (path.Count < 2) return;
 
-        for(int i = 0; i < path.Count; i++)
+        for (int i = 0; i < path.Count; i++)
         {
             Vector2Int position = path[i];
 
@@ -261,7 +272,7 @@ public class MapGenerator : MonoBehaviour
             else
             {
                 //나머지 좌표는 path
-                grid[position.x,position.y].SetTileType(TileType.Path);
+                grid[position.x, position.y].SetTileType(TileType.Path);
             }
         }
     }
@@ -278,19 +289,19 @@ public class MapGenerator : MonoBehaviour
     }
 
     
-    private void SpawnEnemy()
+    private void SpawnEnemy(IReadOnlyList<Vector2Int> path)
     {
         if (enemyPrefab == null) return;
-        if(pathPosition == null || pathPosition.Count == 0) return;
+        if(path == null || path.Count == 0) return;
 
         //스폰 포지션 좌표 받기
-        Vector2Int spawnGridPosition = pathPosition[0];
+        Vector2Int spawnGridPosition = path[0];
         //World 위치로 변환
         Vector3 spawnWorldPosition =   mapRenderer.GridToWorld(spawnGridPosition);
         spawnWorldPosition.y = 1.0f;
         //생성 시키기
         EnemyMover spawnEnemy = Instantiate(enemyPrefab,spawnWorldPosition,Quaternion.identity);
-        spawnEnemy.Initialize(pathPosition, mapRenderer);
+        spawnEnemy.Initialize(path, mapRenderer);
     }
 
     //pathPosition의 유효성을 검사하는 메서드
@@ -304,5 +315,69 @@ public class MapGenerator : MonoBehaviour
 
     }
 
+    //어느 경로에 몇 마리가 몇 초간격으로 나올지에 대한 Wave 메서드 만들기
+    private IEnumerator spawnWave(IReadOnlyList<Vector2Int> path, int enemyCount,float spawnInterval)
+    {
+        for(int i = 0; i < enemyCount; i++)
+        {
+            SpawnEnemy(path);
+
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    private void GenerateTerrain()
+    {
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                TileNode node = grid[x, y];
+                //Empty 타일 찾기
+                if (node.TileType != TileType.Empty) continue;
+
+                //25 : 75 비율 생성
+                float terrainRoll = Random.value;
+                if (terrainRoll < 0.25)
+                {
+                    node.SetTileType(TileType.HighGround);
+                }
+                else
+                {
+                    node.SetTileType(TileType.Ground);
+                }
+
+                    //50:50 고정 생성
+                    int terrainType = Random.Range(0, 2);
+
+                if(terrainType == 0)
+                {
+                    node.SetTileType(TileType.Ground);
+                }
+                else
+                {
+                    node.SetTileType(TileType.HighGround);
+                }
+            }
+        }
+    }
+
+    //배치 가능한 타일 찾기
+    private TileNode FindFirstDeployableTile(TileType targetTileType)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                TileNode node = grid[x, y];
+
+                if (node.IsDeployable && node.TileType == targetTileType) 
+                {
+                    return node;
+                }
+            }
+        }
+        return null;
+    }
 
 }

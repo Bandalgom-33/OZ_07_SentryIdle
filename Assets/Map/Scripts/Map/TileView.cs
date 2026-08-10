@@ -7,6 +7,12 @@ public class TileView : MonoBehaviour
     [SerializeField] private Material pathMaterial;
     [SerializeField] private Material spawnMaterial;
     [SerializeField] private Material goalMaterial;
+    [SerializeField] private Material groundMaterial;
+    [SerializeField] private Material highGroundMaterial;
+
+
+    [Header("타일 높이 설정")]
+    [SerializeField] private float highGroundHeight = 0.25f;
 
     private TileNode node;
     private MeshRenderer meshRenderer;
@@ -20,11 +26,8 @@ public class TileView : MonoBehaviour
 
     public void Initialize(TileNode tilenode)
     {
-        if (tilenode == null)
-        {
-            Debug.Log("TileView에 절달된 NODE가 비어있음 확인하셈");
-            return;
-        }
+        if (tilenode == null) return;
+        
 
         node = tilenode;
 
@@ -32,6 +35,7 @@ public class TileView : MonoBehaviour
         gameObject.name = $"Tile_{node.GridPosition.x}_{node.GridPosition.y}";
 
         ApplyMaterial();
+        ApplyHeight();
     }
 
     private void OnMouseDown()
@@ -64,9 +68,34 @@ public class TileView : MonoBehaviour
                 meshRenderer.material = goalMaterial;
                 break;
 
+            case TileType.Ground:
+                meshRenderer.material = groundMaterial;
+                break;
+
+            case TileType.HighGround:
+                meshRenderer.material = highGroundMaterial;
+                break;
+
             default:
                 meshRenderer.material = emptyMaterial;
                 break;
         }
     }
+
+    //배치 가능 타일 높이 조절하기
+    private void ApplyHeight()
+    {
+        Vector3 position = transform.position;
+
+        if(node.TileType == TileType.HighGround)
+        {
+            position.y = highGroundHeight;
+        }
+        else
+        {
+            position.y = 0f;
+        }
+        transform.position = position;  
+    }
+
 }

@@ -129,3 +129,6 @@ MonoBehaviour:
   pathMaterial: {fileID: 2100000, guid: 8f33e53618c07b8409baf88e2da3d392, type: 2}
   spawnMaterial: {fileID: 2100000, guid: 6208008bbabf3cc4bb6a9a3eb2e03f11, type: 2}
   goalMaterial: {fileID: 2100000, guid: d4a5e7fc4303d6443a3db555f2685f01, type: 2}
+  groundMaterial: {fileID: 2100000, guid: 71274d1ef3ca97c4584dd454f57747be, type: 2}
+  highGroundMaterial: {fileID: 2100000, guid: 65c8b59c69fc4b54b93439026c5ab662, type: 2}
+  highGroundHeight: 0.25
