@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 가챠 뽑기 풀 데이터 관리자 
+// 가챠 뽑기 풀 데이터 관리 및 희귀도별 무작위 추첨 제공자
 public class GachaDataProvider : MonoBehaviour
 {
     private Dictionary<TestRarityGrade, List<IGachaRewardItem>> _rewardPool 
@@ -12,7 +12,7 @@ public class GachaDataProvider : MonoBehaviour
         InitializeDummyPool();
     }
 
-    // 테스트용 더미 캐릭터 데이터 생성
+    // 테스트용 더미 캐릭터 데이터 풀 초기화
     public void InitializeDummyPool()
     {
         _rewardPool.Clear();
@@ -21,25 +21,24 @@ public class GachaDataProvider : MonoBehaviour
             _rewardPool[grade] = new List<IGachaRewardItem>();
         }
 
-        // Grade_N (Normal) Dummy Data
+        // Grade_N (일반) 더미 데이터
         _rewardPool[TestRarityGrade.GradeN].Add(new DummyGachaItem("UNIT_001", TestRarityGrade.GradeN, "Trainee Asad"));
         _rewardPool[TestRarityGrade.GradeN].Add(new DummyGachaItem("UNIT_002", TestRarityGrade.GradeN, "Guard Ryan"));
 
-        // Grade_R (Rare) Dummy Data
+        // Grade_R (희귀) 더미 데이터
         _rewardPool[TestRarityGrade.GradeR].Add(new DummyGachaItem("UNIT_101", TestRarityGrade.GradeR, "Wind Archer Aiden"));
         _rewardPool[TestRarityGrade.GradeR].Add(new DummyGachaItem("UNIT_102", TestRarityGrade.GradeR, "Iron Knight Rohan"));
 
-        // Grade_SR (Super Rare) Dummy Data
+        // Grade_SR (슈퍼 희귀) 더미 데이터
         _rewardPool[TestRarityGrade.GradeSR].Add(new DummyGachaItem("UNIT_201", TestRarityGrade.GradeSR, "Fire Mage Valentina"));
         _rewardPool[TestRarityGrade.GradeSR].Add(new DummyGachaItem("UNIT_202", TestRarityGrade.GradeSR, "Healer Elena"));
 
-        // Grade_SSR (Ultimate / 6-Star) Dummy Data
+        // Grade_SSR (최상위 등급) 더미 데이터
         _rewardPool[TestRarityGrade.GradeSSR].Add(new DummyGachaItem("UNIT_301", TestRarityGrade.GradeSSR, "Holy Knight Arthur"));
         _rewardPool[TestRarityGrade.GradeSSR].Add(new DummyGachaItem("UNIT_302", TestRarityGrade.GradeSSR, "Dragon Slayer Lucifer"));
     }
 
-
-    // 가챠에서 등급을 계산
+    // SSR 당첨 여부 및 가중치 확률 기반 희귀도 등급 결정 연산
     public TestRarityGrade RollGrade(bool isSSR)
     {
         if (isSSR)
@@ -47,7 +46,7 @@ public class GachaDataProvider : MonoBehaviour
             return TestRarityGrade.GradeSSR;
         }
 
-        // 등급 별 확률 (N: 70%, R: 24.9%, SR: 5.0%)
+        // SSR 미당첨 시 등급별 확률 가중치 연산 (N: 70%, R: 24.9%, SR: 5.0%)
         float randomVal = Random.Range(0f, 1f);
         if (randomVal < 0.70f)
         {
@@ -63,13 +62,13 @@ public class GachaDataProvider : MonoBehaviour
         }
     }
 
-    // 결정된 등급에서 아이템 선택 
+    // 해당 희귀도 풀 내 무작위 캐릭터 1종 추출 연산
     public IGachaRewardItem GetRandomItemByGrade(TestRarityGrade grade)
     {
         if (!_rewardPool.ContainsKey(grade) || _rewardPool[grade].Count == 0)
         {
-            // 예외 처리용 기본 반환
-            return new DummyGachaItem("UNIT_DEFAULT", grade, "기본 캐릭터");
+            // 예외 처리용 기본 캐릭터 반환
+            return new DummyGachaItem("UNIT_DEFAULT", grade, "Default Unit");
         }
 
         List<IGachaRewardItem> list = _rewardPool[grade];
