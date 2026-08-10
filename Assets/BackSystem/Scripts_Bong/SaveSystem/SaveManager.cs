@@ -1,91 +1,74 @@
-using System;
 using System.IO;
-using Newtonsoft.Json;
 using UnityEngine;
 
-
-
+// 로컬 JSON 세이브/로드 파일 암복호화 및 저장 관리 총괄 싱글톤
 public class SaveManager : SingletonBase<SaveManager>
 {
+    private string _savePath;
 
-    #region 비공개 변수
-    
-    private string _saveFilePath;
-    private SaveData _currentSaveData;
-    private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings
-    {
-        MissingMemberHandling = MissingMemberHandling.Ignore,
-        Formatting = Formatting.Indented
-    };
-
-    #endregion
-
-    #region 라이프 사이클
-
+    // 세이브 파일 저장 경로 지정 초기화 연산
     protected override void Awake()
     {
         base.Awake();
-        _saveFilePath = Path.Combine(Application.persistentDataPath, "save.json");
-        Load();
+        _savePath = Path.Combine(Application.persistentDataPath, "SaveData.json");
     }
 
-    #endregion
-
-    #region 외부 노출 메서드
-    
-    public SaveData GetSaveData() => _currentSaveData;
-
-    // 데이터 저장
-    public void Save()
+    // 메모리 세이브 객체 생성, 시스템 데이터 수집 및 로컬 JSON 파일 기록 연산
+    public void SaveGameData()
     {
-        EventBus.Publish(new DataSaveEvent(_currentSaveData));
-        // 오프라인 계산을 위한 UTC 시간 저장
-        _currentSaveData.lastSaveTimestamp = DateTime.UtcNow.ToString("o");
-        string json = JsonConvert.SerializeObject(_currentSaveData, _jsonSettings);
-        File.WriteAllText(_saveFilePath, json);
-        Debug.Log($"[SaveManager] 저장 완료 → {_saveFilePath}");
+        SaveData data = new SaveData();
+
+        // 1. 등록된 시스템들에 세이브 데이터 수집 이벤트 발행
+        EventBus.Publish(new DataSaveEvent(data));
+
+        // 타임스탬프 기록 연산
+        data.lastSaveTimestamp = System.DateTime.Now.ToString("o");
+
+        // 2. JSON 직렬화 연산
+        string json = JsonUtility.ToJson(data, true);
+
+        // 3. 로컬 파일 쓰기 연산
+        File.WriteAllText(_savePath, json);
+        Debug.Log($"[SaveManager] 데이터 저장 완료: {_savePath}");
     }
 
-    // 저장 데이터 로드
-    public void Load()
+    // 로컬 JSON 세이브 파일 읽기, 역직렬화 및 시스템 데이터 복원 연산
+    public void LoadGameData()
     {
-        if (File.Exists(_saveFilePath))
+        if (!File.Exists(_savePath))
         {
-            string json = File.ReadAllText(_saveFilePath);
-            _currentSaveData = JsonConvert.DeserializeObject<SaveData>(json, _jsonSettings);
-            Debug.Log($"[SaveManager] 로드 완료 → {_saveFilePath}");
+            Debug.LogWarning("[SaveManager] 세이브 파일이 존재하지 않아 신규 데이터로 초기화합니다.");
+            ResetGameData();
+            return;
         }
-        else
+
+        try
         {
-            _currentSaveData = CreateDefaultSaveData();
-            Debug.Log("[SaveManager] 세이브 파일 없음 - 기본값 데이터 생성");
+            // 1. 로컬 파일 읽기 연산
+            string json = File.ReadAllText(_savePath);
+
+            // 2. JSON 역직렬화 연산
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            // 3. 수신 시스템들에 데이터 복원 이벤트 발행
+            EventBus.Publish(new DataLoadEvent(data));
+            Debug.Log($"[SaveManager] 데이터 로드 완료: {_savePath}");
         }
-        EventBus.Publish(new DataLoadEvent(_currentSaveData));
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[SaveManager] 데이터 로드 중 오류 발생: {e.Message}");
+        }
     }
 
-    // 세이브 파일 삭제 및 전체 데이터 초기화
-    public void ResetSaveData()
+    // 게임 데이터 전체 초기화 이벤트 발행 연산
+    public void ResetGameData()
     {
-        if (File.Exists(_saveFilePath))
+        if (File.Exists(_savePath))
         {
-            File.Delete(_saveFilePath);
-            Debug.Log("[SaveManager] 세이브 파일 삭제 완료");
+            File.Delete(_savePath);
         }
-        _currentSaveData = CreateDefaultSaveData();
+
         EventBus.Publish(new DataResetEvent());
         Debug.Log("[SaveManager] 데이터 초기화 완료");
     }
-
-    #endregion
-
-    #region 내부 메서드
-
-    // 새 데이터 생성
-    private SaveData CreateDefaultSaveData()
-    {
-        return new SaveData();
-    }
-
-    #endregion
 }
-

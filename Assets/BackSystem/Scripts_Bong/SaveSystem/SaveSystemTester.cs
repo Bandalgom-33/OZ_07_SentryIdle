@@ -36,7 +36,7 @@ public class SaveSystemTester : MonoBehaviour
         CurrencyManager.Instance.GetGold(1000);
         CurrencyManager.Instance.GetDiamond(10);
         
-        SaveManager.Instance.Save();
+        SaveManager.Instance.SaveGameData();
 
         Debug.Log(
             $"[SaveTest] 저장 완료 - Gold: {CurrencyManager.Instance.Gold}, Diamond: {CurrencyManager.Instance.Diamond}");
@@ -46,7 +46,7 @@ public class SaveSystemTester : MonoBehaviour
     private void TestLoad()
     {
         // 파일 읽기 실행
-        SaveManager.Instance.Load();
+        SaveManager.Instance.LoadGameData();
 
         Debug.Log(
             $"[SaveTest] 로드 완료 - Gold: {CurrencyManager.Instance.Gold}, Diamond: {CurrencyManager.Instance.Diamond}");
@@ -56,7 +56,7 @@ public class SaveSystemTester : MonoBehaviour
     private void TestReset()
     {
         // 데이터 완전 리셋 실행
-        SaveManager.Instance.ResetSaveData();
+        SaveManager.Instance.ResetGameData();
 
         Debug.Log(
             $"[SaveTest] 초기화 완료 - Gold: {CurrencyManager.Instance.Gold}, Diamond: {CurrencyManager.Instance.Diamond}");
