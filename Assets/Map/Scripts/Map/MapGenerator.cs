@@ -16,6 +16,11 @@ public class MapGenerator : MonoBehaviour
     [Header("적 생성 설정")]
     [SerializeField] private EnemyMover enemyPrefab;
 
+    [Header("자동 배치 테스트")]
+    [SerializeField] private GameObject meleeUnitPrefab;
+    [SerializeField] private GameObject rangedUnitPrefab;
+
+
     private TileNode[,] grid;
     //첫 번째 spawn 경로
     private List<Vector2Int> pathPosition = new List<Vector2Int>();
@@ -45,6 +50,12 @@ public class MapGenerator : MonoBehaviour
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
 
+        //SpawnTestUnits();
+        SpawnMeleeUnit();
+        SpawnMeleeUnit();
+
+        SpawnRangedUnit();
+        SpawnRangedUnit();
 
         //기존 적 생성방식 주석 처리
         //SpawnEnemy(pathPosition);
@@ -362,22 +373,147 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    //배치 가능한 타일 찾기
-    private TileNode FindFirstDeployableTile(TileType targetTileType)
+    //배치 가능한 첫 번째 타일 찾기
+    //private TileNode FindFirstDeployableTile(TileType targetTileType)
+    //{
+    //    for (int x = 0; x < width; x++)
+    //    {
+    //        for (int y = 0; y < height; y++)
+    //        {
+    //            TileNode node = grid[x, y];
+
+    //            if (node.IsDeployable && !node.IsOccupied  &&node.TileType == targetTileType) 
+    //            {
+    //                return node;
+    //            }
+    //        }
+    //    }
+    //    return null;
+    //}
+
+    //배치 가능한 타일에 랜덤 배치 하기
+    private TileNode FindRandomDeployableTile(TileType targetTileType)
     {
-        for (int x = 0; x < width; x++)
+        List<TileNode> candidates = new List<TileNode>();
+
+        for(int x = 0; x < width;x++)
         {
-            for (int y = 0; y < height; y++)
+            for(int y = 0; y < height;y++)
             {
                 TileNode node = grid[x, y];
 
-                if (node.IsDeployable && node.TileType == targetTileType) 
+                if(node.IsDeployable && !node.IsOccupied &&node.TileType == targetTileType)
                 {
-                    return node;
+                    //path에서 2칸 이내인지를 확인하기 아니면 제외
+                    if (targetTileType == TileType.HighGround && !IsNearPath(node.GridPosition, 2)) continue;
+
+                    candidates.Add(node);
                 }
             }
         }
-        return null;
+        if(candidates.Count == 0) return null;
+
+        int randomIndex = Random.Range(0, candidates.Count);
+
+        return candidates[randomIndex];  
     }
+
+    //유닛 배치 테스트
+    //private void SpawnTestUnits()
+    //{
+    //    if (meleeUnitPrefab != null)
+    //    {
+    //        //해당 타일 좌표 받기
+    //        TileNode meleeTile = FindFirstDeployableTile(TileType.Path);
+
+    //        if(meleeTile != null)
+    //        {
+    //            //월드 위치로 전환 시키기
+    //            Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
+
+    //            meleePosition.y = 0.5f;
+
+    //            //생성
+    //            Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
+    //            //타일 사용중 true 로 전환
+    //            meleeTile.SetOCcupied(true);
+    //        }
+    //    }
+
+    //    if(RangeUnitPrefab != null)
+    //    {
+    //        TileNode rangeTile = FindFirstDeployableTile(TileType.HighGround);
+
+    //        if(rangeTile != null)
+    //        {
+    //            Vector3 rangedPosition = mapRenderer.GridToWorld(rangeTile.GridPosition);
+
+    //            rangedPosition.y = 1.0f;
+
+    //            Instantiate(RangeUnitPrefab, rangedPosition, Quaternion.identity);
+
+    //            rangeTile.SetOCcupied(true);
+    //        }
+    //    }
+    //}
+
+
+    //근거리 유닛 배치
+    private void SpawnMeleeUnit()
+    {
+        if (meleeUnitPrefab == null) return;
+
+        //랜덤 좌표 받기
+        TileNode meleeTile = FindRandomDeployableTile(TileType.Path);
+
+        if (meleeTile == null) return;
+        //월드 좌표로 변환 해주기
+        Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
+        
+        meleePosition.y = 0.5f;
+        //생성
+        Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
+        //현재 타일 사용중으로 바꾸기
+        meleeTile.SetOccupied(true);
+    }
+
+    //원거리 유닛 배치
+    private void SpawnRangedUnit()
+    {
+        if (rangedUnitPrefab == null) return;
+
+        TileNode rangedTile = FindRandomDeployableTile(TileType.HighGround);
+
+        if (rangedTile == null) return;
+
+        Vector3 rangedPosition = mapRenderer.GridToWorld(rangedTile.GridPosition);
+
+        rangedPosition.y = 0.8f;
+
+        Instantiate(rangedUnitPrefab, rangedPosition, Quaternion.identity);
+
+        rangedTile.SetOccupied(true);
+    }
+
+    //적 경로와의 거리 계산
+    private bool IsNearPath(Vector2Int position, int maxDistance)
+    {
+        for(int x= 0;x < width; x++)
+        {
+            for(int y= 0;y < height; y++)
+            {
+                TileNode node = grid[x, y];
+
+                if(node.TileType != TileType.Path) continue;
+                //x와 y 거리 계산하기
+                int distance = Mathf.Abs(position.x - x) + Mathf.Abs(position.y - y);
+
+                if(distance <= maxDistance) return true;
+            }
+        }
+
+        return false;
+    }
+
 
 }

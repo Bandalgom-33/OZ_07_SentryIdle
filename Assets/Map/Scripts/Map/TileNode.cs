@@ -14,13 +14,25 @@ public class TileNode
     //캐릭터를 배치할 수 있는 타일인지 확인
     public bool IsDeployable {  get; private set; }
 
+    //현재 타일이 사용 중인지 확인
+    public bool IsOccupied { get; private set; }
+
     public TileNode(Vector2Int gridPosition)
     {
         GridPosition = gridPosition;
 
+        IsOccupied = false;
+
         //처음 생성될 때는 Empty 상태로 고정
         SetTileType(TileType.Empty);
     }
+
+
+    public void SetOccupied(bool isOccupied)
+    {
+        IsOccupied = isOccupied;
+    }
+
 
     public void SetTileType(TileType tileType)
     {
@@ -32,7 +44,7 @@ public class TileNode
             tileType == TileType.Goal;
 
         IsDeployable =
-            tileType == TileType.Ground ||
+            tileType == TileType.Path ||
             tileType == TileType.HighGround;
     }
 }
