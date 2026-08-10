@@ -1,79 +1,62 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-
+// 시스템 간 직접 참조(의존성) 방지를 위한 제네릭 기반 중앙 이벤트 발행/구독 버스
 public static class EventBus
 {
-    
-    private static readonly Dictionary<Type, Delegate> EventTable = new Dictionary<Type, Delegate>();
+    // 이벤트 타입별 구독자 대리자(Delegate) 사전 매핑 레지스터
+    private static readonly Dictionary<Type, Delegate> EventListeners = new Dictionary<Type, Delegate>();
 
-    // 이벤트 구독
-    public static void Subscribe<T>(Action<T> listener)
+    // 특정 이벤트 메시지 중앙 발행 연산 (구독 중인 수신자들에게 일괄 메시지 전달)
+    public static void Publish<T>(T eventMessage) where T : struct
     {
-        if (listener == null) return;
-        
-        // 타입은 EventTypes에 저장한 타입을 사용
         Type eventType = typeof(T);
-        
-        // 해당 타입의 델리게이트가 이미 있는지 확인하고 연결 또는 초기 생성
-        if (EventTable.TryGetValue(eventType, out Delegate existingDelegate))
+
+        if (EventListeners.TryGetValue(eventType, out Delegate listenerDelegate))
         {
-            EventTable[eventType] = Delegate.Combine(existingDelegate, listener);
+            Action<T> callback = listenerDelegate as Action<T>;
+            callback?.Invoke(eventMessage);
+        }
+    }
+
+    // 특정 이벤트 타입의 메시지 수신 구독 등록 처리
+    public static void Subscribe<T>(Action<T> listener) where T : struct
+    {
+        Type eventType = typeof(T);
+
+        if (EventListeners.TryGetValue(eventType, out Delegate existingDelegate))
+        {
+            EventListeners[eventType] = Delegate.Combine(existingDelegate, listener);
         }
         else
         {
-            EventTable[eventType] = listener;
+            EventListeners[eventType] = listener;
         }
     }
-    
-    // 이벤트 구독취소 
-    public static void Unsubscribe<T>(Action<T> listener)
+
+    // 등록된 이벤트 수신 레지스터 구독 해제 처리 (메모리 누수 방지)
+    public static void Unsubscribe<T>(Action<T> listener) where T : struct
     {
-        if (listener == null) return;
-    
-        // 타입은 EventTypes에 저장한 타입을 사용
         Type eventType = typeof(T);
 
-        // 델리게이트에서 열결 해제 이후 남아있는 연결 확인후 없다면 이벤트 테이블에서 삭제
-        if (EventTable.TryGetValue(eventType, out Delegate existingDelegate))
+        if (EventListeners.TryGetValue(eventType, out Delegate existingDelegate))
         {
-            
             Delegate currentDelegate = Delegate.Remove(existingDelegate, listener);
-            
+
             if (currentDelegate == null)
             {
-                EventTable.Remove(eventType);
+                EventListeners.Remove(eventType);
             }
             else
             {
-                EventTable[eventType] = currentDelegate;
+                EventListeners[eventType] = currentDelegate;
             }
         }
     }
-    
-    // 이벤트 발생 
-    public static void Publish<T>(T eventData)
-    {
-        Type eventType = typeof(T);
 
-        // 이벤트 발행하기전 이벤트가 이벤트 테이블에 있는지 확인 후 다운캐스팅을 시도 하여 이벤트 발생 및 실패
-        if (EventTable.TryGetValue(eventType, out Delegate existingDelegate))
-        {
-            if (existingDelegate is Action<T> action)
-            {
-                action.Invoke(eventData);
-            }
-            else
-            {
-                Debug.LogError($"[EventBus] 이벤트 타입 {eventType}의 델리게이트 형변환에 실패했습니다.");
-            }
-        }
-    }
-    
-    public static void ClearAll()
+    // 전체 등록 이벤트 리스너 레지스터 클리어 처리
+    public static void ClearAllListeners()
     {
-        EventTable.Clear();
+        EventListeners.Clear();
     }
 }
-
