@@ -20,6 +20,8 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GameObject meleeUnitPrefab;
     [SerializeField] private GameObject rangedUnitPrefab;
 
+    [Header("Wave 참조")]
+    [SerializeField] private WaveManager waveManager;
 
     private TileNode[,] grid;
     //첫 번째 spawn 경로
@@ -57,13 +59,18 @@ public class MapGenerator : MonoBehaviour
         SpawnRangedUnit();
         SpawnRangedUnit();
 
+        if (waveManager != null)
+        {
+            waveManager.StartWave();
+        }
+        
         //기존 적 생성방식 주석 처리
         //SpawnEnemy(pathPosition);
         //SpawnEnemy(pathPositionB);
 
         //코루틴으로 Wave 마다 적 생성 구현
-        StartCoroutine(spawnWave(PathPosition, 3, 1.0f));
-        StartCoroutine(spawnWave(pathPositionB, 3, 1.0f));
+        //StartCoroutine(spawnWave(PathPosition, 3, 1.0f));
+        //StartCoroutine(spawnWave(pathPositionB, 3, 1.0f));
     }
 
 
