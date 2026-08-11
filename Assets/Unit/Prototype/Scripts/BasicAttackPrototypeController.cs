@@ -56,7 +56,14 @@ namespace EndlessGuard.Unit.Prototype
 
         public bool TryCreateEnemyAttackContext(out BasicAttackContext context)
         {
-            return BasicAttackContextFactory.TryCreate(Enemy, Unit, out context);
+            context = default;
+
+            if (!EnemyTargetFinder.TryFind(Enemy, out UnitRuntimeState target))
+            {
+                return false;
+            }
+
+            return BasicAttackContextFactory.TryCreate(Enemy, target, out context);
         }
 
         public void PrepareUnitAttack()
@@ -135,28 +142,48 @@ namespace EndlessGuard.Unit.Prototype
 
         public void ExecuteEnemyAttack()
         {
-            if (!TryCreateEnemyAttackContext(out BasicAttackContext context))
+            EnemyRuntimeState enemy = Enemy;
+
+            if (enemy == null)
             {
-                lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.GridContextUnavailable);
+                lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.MissingAttacker);
                 hasResult = true;
-                lastMessage = "몬스터 기본 공격 실패: 격자 공격 상황을 자동 생성하지 못했습니다.";
+                lastMessage = "몬스터 기본 공격 실패: 공격할 몬스터가 없습니다.";
                 Debug.Log(lastMessage, this);
                 return;
             }
 
-            bool succeeded = BasicAttackExecutor.TryExecute(Enemy, Unit, context, out lastResult);
+            if (!EnemyTargetFinder.TryFind(enemy, out UnitRuntimeState target))
+            {
+                lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.MissingTarget);
+                hasResult = true;
+                lastMessage = "몬스터 기본 공격 실패: 자신을 저지한 공격 대상을 찾지 못했습니다.";
+                Debug.Log(lastMessage, enemy);
+                return;
+            }
+
+            if (!BasicAttackContextFactory.TryCreate(enemy, target, out BasicAttackContext context))
+            {
+                lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.GridContextUnavailable);
+                hasResult = true;
+                lastMessage = "몬스터 기본 공격 실패: 격자 공격 상황을 자동 생성하지 못했습니다.";
+                Debug.Log(lastMessage, enemy);
+                return;
+            }
+
+            bool succeeded = BasicAttackExecutor.TryExecute(enemy, target, context, out lastResult);
             hasResult = true;
 
             if (succeeded)
             {
                 enemyAttackSuccessCount++;
-                lastMessage = $"몬스터 기본 공격 성공: 자동 타일 {context.RelativeTargetTile}, 자동 거리 {context.HorizontalWorldDistance:0.###}, 피해 {lastResult.AppliedDamage:0.##}, 캐릭터 HP {Unit.Health.CurrentHp:0.##}";
-                Debug.Log(lastMessage, Enemy);
+                lastMessage = $"몬스터 기본 공격 성공: 대상 {target.UnitId}, 자동 타일 {context.RelativeTargetTile}, 자동 거리 {context.HorizontalWorldDistance:0.###}, 피해 {lastResult.AppliedDamage:0.##}, 캐릭터 HP {target.Health.CurrentHp:0.##}";
+                Debug.Log(lastMessage, enemy);
                 return;
             }
 
-            lastMessage = $"몬스터 기본 공격 실패: {lastResult.FailureReason}, 자동 타일 {context.RelativeTargetTile}, 자동 거리 {context.HorizontalWorldDistance:0.###}, 방향 {context.FacingDirection}, 대상 {context.TargetLayer}";
-            Debug.Log(lastMessage, this);
+            lastMessage = $"몬스터 기본 공격 실패: {lastResult.FailureReason}, 대상 {target.UnitId}, 자동 타일 {context.RelativeTargetTile}, 자동 거리 {context.HorizontalWorldDistance:0.###}, 방향 {context.FacingDirection}, 대상 유형 {context.TargetLayer}";
+            Debug.Log(lastMessage, enemy);
         }
 
         public void ResetResults()

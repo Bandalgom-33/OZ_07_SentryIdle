@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2c753d8c0be754db225c08615d38a6, type: 3}
+  m_Name: "\uBC14\uC2E4\uB9AC\uC2A4\uD06C"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.EnemyDataSO
+  enemyId: ENEMY_0003
+  displayName: "\uBC14\uC2E4\uB9AC\uC2A4\uD06C"
+  description: "\uB2E8\uB2E8\uD55C \uBE44\uB298\uB85C \uC804\uC120\uC744 \uC555\uBC15\uD558\uBA70,
+    \uC790\uC2E0\uC774 \uC2E4\uC81C\uB85C \uBC1B\uC740 \uD53C\uD574\uC758 \uC77C\uBD80\uB97C
+    \uACF5\uACA9\uC790\uC5D0\uAC8C \uB418\uB3CC\uB824\uC8FC\uB294 \uC911\uD615 \uC5D8\uB9AC\uD2B8
+    \uBAAC\uC2A4\uD130"
+  category: 2
+  movementType: 1
+  size: 2
+  role: 1
+  attackRule: 1
+  inRangeFireDuration: 0
+  inRangeAdvanceDuration: 0
+  baseStats:
+    maxHp: 4200
+    physicalAttack: 340
+    magicalAttack: 0
+    baseAttacksPerSecond: 0.8
+    physicalDefense: 200
+    magicalDefense: 150
+    accuracy: 100
+    evasion: 5
+    moveSpeed: 1.2
+  attackSettings:
+    attackMode: 1
+    damageType: 1
+    attackTarget: 1
+    attackRange: 1
+    targetCount: 1
+    rangeRotationMode: 0
+    basicAttackRange:
+      horizontalRadius: 3
+      forwardDistance: 3
+      backwardDistance: 1
+      attackTiles:
+      - {x: 0, y: 1}
+  rewardExp: 150
+  rewardGold: 75
+  passives:
+  - {fileID: 11400000, guid: 24069910675df114bbf1659cf303eadd, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: 24069910675df114bbf1659cf303eadd, type: 2}
+    values:
+    - key: 30
+      value: 30
+    refs: []
+  enemyPrefab: {fileID: 2325232949728275576, guid: fbfd5b238295d4c45ba931d5f1f83c90, type: 3}

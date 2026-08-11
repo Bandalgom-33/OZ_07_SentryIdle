@@ -8,14 +8,11 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(CombatHealth))]
     public sealed class UnitBlock : MonoBehaviour
     {
-        [SerializeField, Range(0f, 1f)]
-        private float stopOffset = 0.5f;
-
         private readonly List<EnemyBlock> enemies = new List<EnemyBlock>();
         private UnitRuntimeState state;
         private CombatHealth health;
 
-        public float StopOffset => Mathf.Clamp01(stopOffset);
+        public UnitRuntimeState State => state;
         public int MaxCount => state != null && state.DataLink != null && state.DataLink.HasData ? Mathf.Max(0, state.DataLink.UnitData.BlockCount) : 0;
         public int Count => enemies.Count;
         public bool IsFull => MaxCount <= 0 || Count >= MaxCount;
@@ -39,11 +36,6 @@ namespace EndlessGuard.Unit.Runtime
             {
                 health.OnDied -= HandleDied;
             }
-        }
-
-        private void OnValidate()
-        {
-            stopOffset = Mathf.Clamp01(stopOffset);
         }
 
         public bool CanBlock(EnemyBlock enemy)

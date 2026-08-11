@@ -1,3 +1,4 @@
+using EndlessGuard.Unit.Data;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace EndlessGuard.Unit.Prototype
     [RequireComponent(typeof(CombatStatePrototypeController))]
     public sealed class BlockTest : MonoBehaviour
     {
+        private const int AutoEnemyCount = 3;
+
         [Header("검증 대상 연결")]
         [Tooltip("캐릭터와 첫 번째 몬스터를 생성하는 기존 검증 컴포넌트입니다.")]
         [SerializeField] private CombatStatePrototypeController state;
@@ -17,6 +20,27 @@ namespace EndlessGuard.Unit.Prototype
 
         [Tooltip("세 번째 몬스터가 첫 번째 몬스터로부터 떨어질 월드 위치입니다.")]
         [SerializeField] private Vector3 thirdEnemyOffset = new Vector3(3f, 0f, 0f);
+
+        [Header("자동 이동 경로")]
+        [Tooltip("격자 좌표 (0, 0)의 월드 기준 위치입니다.")]
+        [SerializeField] private Vector3 worldOrigin;
+
+        [Tooltip("격자 한 칸의 월드 크기입니다.")]
+        [Min(0.01f)]
+        [SerializeField] private float tileWorldSize = 1f;
+
+        [Tooltip("첫 번째 몬스터의 시작 타일입니다.")]
+        [SerializeField] private Vector2Int firstStartTile = new Vector2Int(4, 0);
+
+        [Tooltip("몬스터가 이동할 출구 타일입니다.")]
+        [SerializeField] private Vector2Int goalTile = new Vector2Int(-4, 0);
+
+        [Tooltip("뒤에 생성되는 몬스터 사이의 타일 간격입니다.")]
+        [Min(1)]
+        [SerializeField] private int enemySpacingTiles = 1;
+
+        [Tooltip("몬스터가 생성될 월드 Y 위치입니다.")]
+        [SerializeField] private float spawnHeight;
 
         [HideInInspector]
         [SerializeField] private UnitBlock unitBlock;
@@ -43,12 +67,36 @@ namespace EndlessGuard.Unit.Prototype
         [TextArea(2, 4)]
         [SerializeField] private string lastMessage;
 
+        [HideInInspector]
+        [SerializeField] private EnemyMove[] autoMoves = new EnemyMove[AutoEnemyCount];
+
+        [HideInInspector]
+        [SerializeField] private bool[] autoReachedGoals = new bool[AutoEnemyCount];
+
+        [HideInInspector]
+        [SerializeField] private bool isAutoMoveRunning;
+
+        [HideInInspector]
+        [SerializeField] private int autoGoalReachedCount;
+
+        [HideInInspector]
+        [TextArea(2, 4)]
+        [SerializeField] private string autoMoveMessage;
+
         public UnitBlock UnitBlock => unitBlock;
         public EnemyBlock FirstBlock => firstBlock;
         public EnemyBlock SecondBlock => secondBlock;
         public EnemyBlock ThirdBlock => thirdBlock;
         public bool LastResult => lastResult;
         public string LastMessage => lastMessage;
+
+        public bool IsAutoMoveRunning => isAutoMoveRunning;
+        public int AutoGoalReachedCount => autoGoalReachedCount;
+        public string AutoMoveMessage => autoMoveMessage;
+        public int AutoBlockedCount => unitBlock == null ? 0 : unitBlock.Count;
+        public int ExpectedAutoBlockedCount => unitBlock == null ? 0 : Mathf.Min(AutoEnemyCount, unitBlock.MaxCount);
+        public int ExpectedAutoGoalCount => Mathf.Max(0, AutoEnemyCount - ExpectedAutoBlockedCount);
+        public bool AutoMovePassed => IsAutoMovePassed();
 
         private void Reset()
         {
@@ -61,6 +109,27 @@ namespace EndlessGuard.Unit.Prototype
             {
                 state = GetComponent<CombatStatePrototypeController>();
             }
+
+            tileWorldSize = Mathf.Max(0.01f, tileWorldSize);
+            enemySpacingTiles = Mathf.Max(1, enemySpacingTiles);
+        }
+
+        private void Update()
+        {
+            if (!isAutoMoveRunning)
+            {
+                return;
+            }
+
+            for (int i = 0; i < autoMoves.Length; i++)
+            {
+                if (autoMoves[i] != null)
+                {
+                    autoMoves[i].Step(Time.deltaTime);
+                }
+            }
+
+            CompleteAutoMoveIfSettled();
         }
 
         private void OnDisable()
@@ -127,6 +196,119 @@ namespace EndlessGuard.Unit.Prototype
             lastResult = true;
             lastMessage = $"저지 검증 준비 완료: 최대 {unitBlock.MaxCount}마리, 현재 {unitBlock.Count}마리";
             Debug.Log(lastMessage, this);
+        }
+
+        public void SetupAutoMove()
+        {
+            Setup();
+
+            if (unitBlock == null || firstBlock == null || secondBlock == null || thirdBlock == null)
+            {
+                autoMoveMessage = "자동 이동 검증 대상을 준비하지 못했습니다.";
+                Debug.LogError(autoMoveMessage, this);
+                return;
+            }
+
+            Vector2Int movementDirection = GetInitialStepDirection();
+
+            if (movementDirection == Vector2Int.zero)
+            {
+                autoMoveMessage = "시작 타일과 출구 타일이 같아 경로를 만들 수 없습니다.";
+                Debug.LogError(autoMoveMessage, this);
+                return;
+            }
+
+            autoMoves = new[]
+            {
+                firstBlock.GetComponent<EnemyMove>(),
+                secondBlock.GetComponent<EnemyMove>(),
+                thirdBlock.GetComponent<EnemyMove>()
+            };
+
+            autoReachedGoals = new bool[AutoEnemyCount];
+            autoGoalReachedCount = 0;
+            isAutoMoveRunning = false;
+            CombatEvents.OnEnemyReachedGoal += HandleAutoGoalReached;
+
+            for (int i = 0; i < autoMoves.Length; i++)
+            {
+                EnemyMove move = autoMoves[i];
+
+                if (move == null)
+                {
+                    autoMoveMessage = $"{i + 1}번째 몬스터에서 EnemyMove를 찾지 못했습니다.";
+                    Debug.LogError(autoMoveMessage, this);
+                    ClearAutoMoveState();
+                    return;
+                }
+
+                Vector2Int startTile = firstStartTile - movementDirection * (i * enemySpacingTiles);
+                PathNode[] path = BuildPath(startTile);
+                if (!move.SetPath(path))
+                {
+                    autoMoveMessage = $"{i + 1}번째 몬스터의 경로를 설정하지 못했습니다.";
+                    Debug.LogError(autoMoveMessage, move);
+                    ClearAutoMoveState();
+                    return;
+                }
+
+                move.SetPaused(true);
+            }
+
+            autoMoveMessage =
+                $"자동 이동 준비 완료: 예상 저지 {ExpectedAutoBlockedCount}마리, " +
+                $"예상 출구 도달 {ExpectedAutoGoalCount}마리";
+
+            Debug.Log(autoMoveMessage, this);
+        }
+
+        public void StartAutoMove()
+        {
+            if (autoMoves == null || autoMoves.Length != AutoEnemyCount || autoMoves[0] == null)
+            {
+                autoMoveMessage = "먼저 자동 이동 검증 준비를 실행하세요.";
+                return;
+            }
+
+            for (int i = 0; i < autoMoves.Length; i++)
+            {
+                autoMoves[i].SetPaused(false);
+            }
+
+            isAutoMoveRunning = true;
+            autoMoveMessage = "몬스터 3마리 자동 이동 시작";
+            Debug.Log(autoMoveMessage, this);
+        }
+
+        public void StopAutoMove()
+        {
+            isAutoMoveRunning = false;
+
+            for (int i = 0; i < autoMoves.Length; i++)
+            {
+                if (autoMoves[i] != null)
+                {
+                    autoMoves[i].SetPaused(true);
+                }
+            }
+
+            autoMoveMessage = "몬스터 3마리 자동 이동 정지";
+            Debug.Log(autoMoveMessage, this);
+        }
+
+        public EnemyMove GetAutoMove(int index)
+        {
+            return autoMoves != null && index >= 0 && index < autoMoves.Length
+                ? autoMoves[index]
+                : null;
+        }
+
+        public bool HasAutoReachedGoal(int index)
+        {
+            return autoReachedGoals != null &&
+                   index >= 0 &&
+                   index < autoReachedGoals.Length &&
+                   autoReachedGoals[index];
         }
 
         public void BindFirst()
@@ -199,6 +381,8 @@ namespace EndlessGuard.Unit.Prototype
 
         public void CleanupExtras()
         {
+            ClearAutoMoveState();
+
             if (unitBlock != null)
             {
                 unitBlock.ReleaseAll();
@@ -220,6 +404,164 @@ namespace EndlessGuard.Unit.Prototype
             thirdBlock = null;
             secondEnemyObject = null;
             thirdEnemyObject = null;
+        }
+
+        private PathNode[] BuildPath(Vector2Int startTile)
+        {
+            int xCount = Mathf.Abs(goalTile.x - startTile.x);
+            int yCount = Mathf.Abs(goalTile.y - startTile.y);
+            PathNode[] path = new PathNode[xCount + yCount + 1];
+            Vector2Int current = startTile;
+            int index = 0;
+
+            path[index++] = CreateNode(current, GetFirstFacing(startTile));
+
+            while (current.x != goalTile.x)
+            {
+                int step = goalTile.x > current.x ? 1 : -1;
+                current = new Vector2Int(current.x + step, current.y);
+                path[index++] = CreateNode(current, step > 0 ? GridFacingDirection.East : GridFacingDirection.West);
+            }
+
+            while (current.y != goalTile.y)
+            {
+                int step = goalTile.y > current.y ? 1 : -1;
+                current = new Vector2Int(current.x, current.y + step);
+                path[index++] = CreateNode(current, step > 0 ? GridFacingDirection.North : GridFacingDirection.South);
+            }
+
+            return path;
+        }
+
+        private PathNode CreateNode(Vector2Int tile, GridFacingDirection facing)
+        {
+            Vector3 position = new Vector3(
+                worldOrigin.x + tile.x * tileWorldSize,
+                worldOrigin.y + spawnHeight,
+                worldOrigin.z + tile.y * tileWorldSize);
+
+            return new PathNode(position, tile, facing);
+        }
+
+        private GridFacingDirection GetFirstFacing(Vector2Int startTile)
+        {
+            if (goalTile.x > startTile.x)
+            {
+                return GridFacingDirection.East;
+            }
+
+            if (goalTile.x < startTile.x)
+            {
+                return GridFacingDirection.West;
+            }
+
+            return goalTile.y >= startTile.y
+                ? GridFacingDirection.North
+                : GridFacingDirection.South;
+        }
+
+        private Vector2Int GetInitialStepDirection()
+        {
+            if (goalTile.x != firstStartTile.x)
+            {
+                return new Vector2Int(goalTile.x > firstStartTile.x ? 1 : -1, 0);
+            }
+
+            if (goalTile.y != firstStartTile.y)
+            {
+                return new Vector2Int(0, goalTile.y > firstStartTile.y ? 1 : -1);
+            }
+
+            return Vector2Int.zero;
+        }
+
+        private void HandleAutoGoalReached(EnemyReachedGoalInfo info)
+        {
+            int index = -1;
+
+            for (int i = 0; i < autoMoves.Length; i++)
+            {
+                EnemyMove move = autoMoves[i];
+                EnemyRuntimeState enemy = move != null ? move.GetComponent<EnemyRuntimeState>() : null;
+
+                if (enemy != null && enemy.RuntimeId == info.RuntimeId)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index < 0 || autoReachedGoals[index])
+            {
+                return;
+            }
+
+            autoReachedGoals[index] = true;
+            autoGoalReachedCount++;
+            Debug.Log($"{index + 1}번째 몬스터 출구 도달: {info.EnemyId}", this);
+        }
+
+        private void CompleteAutoMoveIfSettled()
+        {
+            if (!AreAutoMovesSettled())
+            {
+                return;
+            }
+
+            isAutoMoveRunning = false;
+            bool passed = IsAutoMovePassed();
+
+            autoMoveMessage = passed
+                ? $"자동 이동 검증 성공: {AutoBlockedCount}마리 저지, {autoGoalReachedCount}마리 출구 도달"
+                : $"자동 이동 검증 실패: 실제 저지 {AutoBlockedCount}, 실제 출구 {autoGoalReachedCount}, " +
+                  $"예상 저지 {ExpectedAutoBlockedCount}, 예상 출구 {ExpectedAutoGoalCount}";
+
+            if (passed)
+            {
+                Debug.Log(autoMoveMessage, this);
+            }
+            else
+            {
+                Debug.LogWarning(autoMoveMessage, this);
+            }
+        }
+
+        private bool AreAutoMovesSettled()
+        {
+            if (autoMoves == null || autoMoves.Length != AutoEnemyCount)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < autoMoves.Length; i++)
+            {
+                EnemyMove move = autoMoves[i];
+
+                if (move == null || (!move.IsBlocked && !HasAutoReachedGoal(i)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsAutoMovePassed()
+        {
+            return AreAutoMovesSettled() &&
+                   AutoBlockedCount == ExpectedAutoBlockedCount &&
+                   autoGoalReachedCount == ExpectedAutoGoalCount;
+        }
+
+        private void ClearAutoMoveState()
+        {
+            isAutoMoveRunning = false;
+
+            CombatEvents.OnEnemyReachedGoal -= HandleAutoGoalReached;
+
+            autoMoves = new EnemyMove[AutoEnemyCount];
+            autoReachedGoals = new bool[AutoEnemyCount];
+            autoGoalReachedCount = 0;
         }
 
         private void Bind(EnemyBlock enemy, string targetName)

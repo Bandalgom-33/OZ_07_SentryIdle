@@ -93,7 +93,7 @@ namespace EndlessGuard.Unit.Prototype
             }
 
             PathNode[] path = BuildPath();
-            enemyMove.OnGoalReached += HandleGoalReached;
+            CombatEvents.OnEnemyReachedGoal += HandleGoalReached;
             reachedGoal = false;
             isRunning = false;
 
@@ -186,20 +186,24 @@ namespace EndlessGuard.Unit.Prototype
             return goalTile.y >= startTile.y ? GridFacingDirection.North : GridFacingDirection.South;
         }
 
-        private void HandleGoalReached(EnemyMove move)
+        private void HandleGoalReached(EnemyReachedGoalInfo info)
         {
+            EnemyRuntimeState enemy = state != null ? state.SpawnedEnemy : null;
+
+            if (enemy == null || info.RuntimeId != enemy.RuntimeId)
+            {
+                return;
+            }
+
             isRunning = false;
             reachedGoal = true;
-            lastMessage = $"몬스터 출구 도달: 타일 {move.GetComponent<CombatGridPosition>().TileCoordinate}";
-            Debug.Log(lastMessage, move);
+            lastMessage = $"몬스터 출구 도달: {info.EnemyId} / 위치 {info.Position}";
+            Debug.Log(lastMessage, this);
         }
 
         private void Unsubscribe()
         {
-            if (enemyMove != null)
-            {
-                enemyMove.OnGoalReached -= HandleGoalReached;
-            }
+            CombatEvents.OnEnemyReachedGoal -= HandleGoalReached;
 
             isRunning = false;
             enemyMove = null;

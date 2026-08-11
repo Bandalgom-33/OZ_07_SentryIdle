@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8cdcc263676f1d4eb6b060503aa9b74, type: 3}
+  m_Name: "\uC11C\uD3EC\uD130_\uC57D\uD654\uC790"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.WeakSO
+  displayName: "\uC57D\uD654\uC790"
+  description: "\uAE30\uBCF8 \uACF5\uACA9 \uC801\uC911 \uC2DC \uB300\uC0C1\uC758
+    \uBB3C\uB9AC\xB7\uB9C8\uBC95 \uBC29\uC5B4\uB825\uC744 \uC77C\uC815 \uC2DC\uAC04
+    \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4."
+  usableBy: 1
+  compatibility:
+    allowedUnitClasses: 04000000
+    allowedEnemySizes: 
+  physicalDefenseReductionPercent: 30
+  magicalDefenseReductionPercent: 30
+  durationSeconds: 3

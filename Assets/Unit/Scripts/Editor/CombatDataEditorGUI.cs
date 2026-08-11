@@ -132,7 +132,7 @@ namespace EndlessGuard.Unit.Editor
                 return;
             }
 
-            EditorGUILayout.PropertyField(rotationMode, new GUIContent("공격 범위 회전 방식", "기본 공격 타일 범위를 기준 방향에 고정할지, 현재 바라보는 방향에 맞춰 회전할지 설정합니다."));
+            EditorGUILayout.PropertyField(rotationMode, new GUIContent("공격 범위 회전 방식", "기본 공격 타일 범위는 현재 Facing 방향에 맞춰 사용하며, 전투 중 Facing을 고정할지 유효한 대상 방향에 따라 자동 변경할지 설정합니다."));
 
             if (rotationMode.hasMultipleDifferentValues)
             {
@@ -143,11 +143,11 @@ namespace EndlessGuard.Unit.Editor
 
             if (selectedMode == AttackRangeRotationMode.Fixed)
             {
-                EditorGUILayout.HelpBox("방향 고정: 캐릭터나 몬스터가 바라보는 방향을 바꿔도 저장된 +Y 기준 공격 범위를 그대로 사용합니다.", MessageType.Info);
+                EditorGUILayout.HelpBox("방향 고정: 초기 Facing을 유지하고, 저장된 +Y 기준 공격 범위를 그 Facing 방향에 맞춰 회전해서 계속 사용합니다.", MessageType.Info);
                 return;
             }
 
-            EditorGUILayout.HelpBox("바라보는 방향 따라 회전: 저장된 +Y 기준 공격 범위를 런타임에서 현재 바라보는 방향에 맞춰 회전합니다.", MessageType.Info);
+            EditorGUILayout.HelpBox("바라보는 방향 따라 회전: 초기 Facing으로 시작하고, 전투 중 유효한 대상 방향에 따라 Facing과 공격 범위가 자동으로 회전합니다.", MessageType.Info);
         }
 
         public static void DrawPassiveList(SerializedProperty property)

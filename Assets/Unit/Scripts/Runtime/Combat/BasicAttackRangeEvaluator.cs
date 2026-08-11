@@ -9,6 +9,11 @@ namespace EndlessGuard.Unit.Runtime
 
         public static bool TryEvaluate(AttackSettings attackSettings, BasicAttackContext context, out Vector2Int evaluatedPatternTile, out BasicAttackFailureReason failureReason)
         {
+            return TryEvaluate(attackSettings, context, false, out evaluatedPatternTile, out failureReason);
+        }
+
+        internal static bool TryEvaluate(AttackSettings attackSettings, BasicAttackContext context, bool ignoreTargetLayer, out Vector2Int evaluatedPatternTile, out BasicAttackFailureReason failureReason)
+        {
             evaluatedPatternTile = context.RelativeTargetTile;
             failureReason = BasicAttackFailureReason.None;
 
@@ -24,7 +29,7 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
-            if (!CanAttackTargetLayer(attackSettings.AttackTarget, context.TargetLayer))
+            if (!ignoreTargetLayer && !CanAttackTargetLayer(attackSettings.AttackTarget, context.TargetLayer))
             {
                 failureReason = BasicAttackFailureReason.TargetLayerNotAllowed;
                 return false;
@@ -49,10 +54,7 @@ namespace EndlessGuard.Unit.Runtime
 
         public static Vector2Int ConvertWorldTileToPatternTile(Vector2Int worldRelativeTile, AttackRangeRotationMode rotationMode, GridFacingDirection facingDirection)
         {
-            if (rotationMode == AttackRangeRotationMode.Fixed)
-            {
-                return worldRelativeTile;
-            }
+            _ = rotationMode;
 
             switch (facingDirection)
             {
@@ -70,7 +72,7 @@ namespace EndlessGuard.Unit.Runtime
             }
         }
 
-        private static bool CanAttackTargetLayer(AttackTarget allowedTargets, CombatTargetLayer targetLayer)
+        internal static bool CanAttackTargetLayer(AttackTarget allowedTargets, CombatTargetLayer targetLayer)
         {
             switch (allowedTargets)
             {

@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1e75904d81d004fa9c6b7ba817b006, type: 3}
   m_Name: EnemyCatalog
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.EnemyCatalog
-  lastIssuedNumber: 1
+  lastIssuedNumber: 6
   enemies:
+  - {fileID: 11400000, guid: 2b7e23d199b4acd4e818bb566798e3b0, type: 2}
+  - {fileID: 11400000, guid: 0fdcf246590647f40bfb1793cf944480, type: 2}
+  - {fileID: 11400000, guid: 68f637b5f83af874fa918e43e6066fb4, type: 2}
+  - {fileID: 11400000, guid: f401d789bdf56954a94d764a4fc2f228, type: 2}
   - {fileID: 11400000, guid: ba3d9a1cff8cf014ca0033eb01455fb3, type: 2}
+  - {fileID: 11400000, guid: ce1504f193515304a9ca0ec5ec7a28c6, type: 2}

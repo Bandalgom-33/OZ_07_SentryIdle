@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b7b8a36cc98984aa7b7b56c13d195c, type: 3}
+  m_Name: "\uC911\uD615_\uAD11\uC804\uC0AC"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.BerserkSO
+  displayName: "\uAD11\uC804\uC0AC"
+  description: "\uC783\uC740 HP\uC5D0 \uBE44\uB840\uD574 \uBB3C\uB9AC\xB7\uB9C8\uBC95
+    \uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  usableBy: 2
+  compatibility:
+    allowedUnitClasses: 
+    allowedEnemySizes: 02000000
+  physicalAttackPerLostHpPercent: 1
+  maxPhysicalAttackBonusPercent: 100
+  magicalAttackPerLostHpPercent: 1
+  maxMagicalAttackBonusPercent: 100

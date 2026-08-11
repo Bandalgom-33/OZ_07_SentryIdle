@@ -5,6 +5,7 @@ using UnityEngine;
 namespace EndlessGuard.Unit.Prototype
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(CombatLoop))]
     public sealed class CombatStatePrototypeController : MonoBehaviour
     {
         [Header("검증 대상 프리팹")]
@@ -110,6 +111,8 @@ namespace EndlessGuard.Unit.Prototype
         [TextArea(2, 4)]
         [SerializeField] private string lastEventMessage;
 
+        private CombatLoop combatLoop;
+
         public UnitRuntimeState SpawnedUnit => spawnedUnit;
         public EnemyRuntimeState SpawnedEnemy => spawnedEnemy;
         public int UnitHealthChangedCount => unitHealthChangedCount;
@@ -121,6 +124,11 @@ namespace EndlessGuard.Unit.Prototype
         public int EnemyConsumedAttackCount => enemyConsumedAttackCount;
         public string LastEventMessage => lastEventMessage;
 
+        private void Awake()
+        {
+            combatLoop = GetComponent<CombatLoop>();
+        }
+
         private void OnEnable()
         {
             CombatEvents.OnUnitDied += HandleUnitDied;
@@ -129,6 +137,8 @@ namespace EndlessGuard.Unit.Prototype
 
         private void Start()
         {
+            combatLoop.StartLoop();
+
             if (autoSpawnOnStart)
             {
                 SpawnActors();
@@ -177,6 +187,7 @@ namespace EndlessGuard.Unit.Prototype
             }
 
             SubscribeInstanceEvents();
+
             float worldDistance = Vector3.Distance(unitSpawnPosition, enemySpawnPosition);
             lastEventMessage = $"검증 대상 생성 완료: {spawnedUnit.UnitId} 타일 {unitTileCoordinate}, {spawnedEnemy.EnemyId} 타일 {enemyTileCoordinate}, 월드 거리 {worldDistance:0.###}";
             Debug.Log(lastEventMessage, this);
@@ -265,8 +276,9 @@ namespace EndlessGuard.Unit.Prototype
                 return;
             }
 
-            float attacksPerSecond = spawnedUnit.DataLink.UnitData.BaseStats.BaseAttacksPerSecond;
+            float attacksPerSecond = spawnedUnit.Stats.AttacksPerSecond;
             spawnedUnit.AdvanceAttackProgress(attacksPerSecond, attackProgressStepSeconds);
+
             lastEventMessage = $"캐릭터 공격 진행: {attackProgressStepSeconds:0.###}초, 빈도 {attacksPerSecond:0.###}회/초, 진행도 {spawnedUnit.AttackProgress:0.###}, 준비 공격 {spawnedUnit.ReadyAttackCount}회";
             Debug.Log(lastEventMessage, spawnedUnit);
         }
@@ -280,6 +292,7 @@ namespace EndlessGuard.Unit.Prototype
 
             int consumedCount = spawnedUnit.ConsumeReadyAttacks(maxAttackConsumeCount);
             unitConsumedAttackCount += consumedCount;
+
             lastEventMessage = $"캐릭터 준비 공격 {consumedCount}회 소비, 남은 진행도 {spawnedUnit.AttackProgress:0.###}, 누적 소비 {unitConsumedAttackCount}회";
             Debug.Log(lastEventMessage, spawnedUnit);
         }
@@ -321,8 +334,9 @@ namespace EndlessGuard.Unit.Prototype
                 return;
             }
 
-            float attacksPerSecond = spawnedEnemy.DataLink.EnemyData.BaseStats.BaseAttacksPerSecond;
+            float attacksPerSecond = spawnedEnemy.Stats.AttacksPerSecond;
             spawnedEnemy.AdvanceAttackProgress(attacksPerSecond, attackProgressStepSeconds);
+
             lastEventMessage = $"몬스터 공격 진행: {attackProgressStepSeconds:0.###}초, 빈도 {attacksPerSecond:0.###}회/초, 진행도 {spawnedEnemy.AttackProgress:0.###}, 준비 공격 {spawnedEnemy.ReadyAttackCount}회";
             Debug.Log(lastEventMessage, spawnedEnemy);
         }
@@ -336,6 +350,7 @@ namespace EndlessGuard.Unit.Prototype
 
             int consumedCount = spawnedEnemy.ConsumeReadyAttacks(maxAttackConsumeCount);
             enemyConsumedAttackCount += consumedCount;
+
             lastEventMessage = $"몬스터 준비 공격 {consumedCount}회 소비, 남은 진행도 {spawnedEnemy.AttackProgress:0.###}, 누적 소비 {enemyConsumedAttackCount}회";
             Debug.Log(lastEventMessage, spawnedEnemy);
         }
@@ -350,8 +365,10 @@ namespace EndlessGuard.Unit.Prototype
             }
 
             CombatTargetLayer enemyTargetLayer = spawnedEnemy.DataLink.EnemyData.MovementType == EnemyMovementType.Air ? CombatTargetLayer.Air : CombatTargetLayer.Ground;
+
             spawnedUnit.GridPosition.Initialize(unitTileCoordinate, unitFacingDirection, CombatTargetLayer.Ground);
             spawnedEnemy.GridPosition.Initialize(enemyTileCoordinate, enemyFacingDirection, enemyTargetLayer);
+
             return true;
         }
 
@@ -360,6 +377,7 @@ namespace EndlessGuard.Unit.Prototype
             float worldX = gridWorldOrigin.x + tileCoordinate.x * tileWorldSize;
             float worldY = gridWorldOrigin.y + worldHeight;
             float worldZ = gridWorldOrigin.z + tileCoordinate.y * tileWorldSize;
+
             return new Vector3(worldX, worldY, worldZ);
         }
 
@@ -427,28 +445,28 @@ namespace EndlessGuard.Unit.Prototype
             Debug.Log(lastEventMessage, unit);
         }
 
-        private void HandleUnitDied(UnitRuntimeState unit)
+        private void HandleUnitDied(UnitDiedInfo info)
         {
-            if (unit != spawnedUnit)
+            if (spawnedUnit == null || info.RuntimeId != spawnedUnit.RuntimeId)
             {
                 return;
             }
 
             unitDeathEventCount++;
-            lastEventMessage = $"{unit.UnitId} OnUnitDied 발생";
-            Debug.Log(lastEventMessage, unit);
+            lastEventMessage = $"{info.UnitId} OnUnitDied 발생 / Runtime {info.RuntimeId}";
+            Debug.Log(lastEventMessage, spawnedUnit);
         }
 
-        private void HandleEnemyDied(EnemyRuntimeState enemy)
+        private void HandleEnemyDied(EnemyDiedInfo info)
         {
-            if (enemy != spawnedEnemy)
+            if (spawnedEnemy == null || info.RuntimeId != spawnedEnemy.RuntimeId)
             {
                 return;
             }
 
             enemyDeathEventCount++;
-            lastEventMessage = $"{enemy.EnemyId} OnEnemyDied 발생";
-            Debug.Log(lastEventMessage, enemy);
+            lastEventMessage = $"{info.EnemyId} OnEnemyDied 발생 / Runtime {info.RuntimeId}";
+            Debug.Log(lastEventMessage, spawnedEnemy);
         }
     }
 }

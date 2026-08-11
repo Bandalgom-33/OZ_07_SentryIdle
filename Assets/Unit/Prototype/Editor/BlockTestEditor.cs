@@ -15,8 +15,12 @@ namespace EndlessGuard.Unit.Editor
             BlockTest test = (BlockTest)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("저지 검증 상태", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("수동 저지 검증 상태", EditorStyles.boldLabel);
             DrawState(test);
+
+            EditorGUILayout.Space(10f);
+            EditorGUILayout.LabelField("자동 이동 저지 검증 상태", EditorStyles.boldLabel);
+            DrawAutoMoveState(test);
 
             if (!EditorApplication.isPlaying)
             {
@@ -101,6 +105,28 @@ namespace EndlessGuard.Unit.Editor
             }
 
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(8f);
+            EditorGUILayout.LabelField("자동 이동 저지 검증", EditorStyles.boldLabel);
+
+            if (GUILayout.Button("자동 이동 검증 준비"))
+            {
+                Execute(test.SetupAutoMove);
+            }
+
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("자동 이동 시작"))
+            {
+                Execute(test.StartAutoMove);
+            }
+
+            if (GUILayout.Button("자동 이동 정지"))
+            {
+                Execute(test.StopAutoMove);
+            }
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private static void DrawState(BlockTest test)
@@ -119,11 +145,50 @@ namespace EndlessGuard.Unit.Editor
             }
         }
 
+        private static void DrawAutoMoveState(BlockTest test)
+        {
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUILayout.Toggle(new GUIContent("자동 이동 실행 중"), test.IsAutoMoveRunning);
+                EditorGUILayout.IntField(new GUIContent("현재 저지 수"), test.AutoBlockedCount);
+                EditorGUILayout.IntField(new GUIContent("예상 저지 수"), test.ExpectedAutoBlockedCount);
+                EditorGUILayout.IntField(new GUIContent("출구 도달 수"), test.AutoGoalReachedCount);
+                EditorGUILayout.IntField(new GUIContent("예상 출구 도달 수"), test.ExpectedAutoGoalCount);
+                EditorGUILayout.Toggle(new GUIContent("최종 검증 성공"), test.AutoMovePassed);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    DrawAutoEnemy(test, i);
+                }
+
+                EditorGUILayout.TextArea(
+                    string.IsNullOrWhiteSpace(test.AutoMoveMessage)
+                        ? "자동 이동 검증 결과가 없습니다."
+                        : test.AutoMoveMessage);
+            }
+        }
+
         private static void DrawEnemy(string label, EnemyBlock enemy)
         {
             EditorGUILayout.ObjectField(new GUIContent(label), enemy == null ? null : enemy.gameObject, typeof(GameObject), true);
             EditorGUILayout.Toggle(new GUIContent($"{label} 저지됨"), enemy != null && enemy.IsBlocked);
             EditorGUILayout.ObjectField(new GUIContent($"{label} 저지 캐릭터"), enemy == null || enemy.Blocker == null ? null : enemy.Blocker.gameObject, typeof(GameObject), true);
+        }
+
+        private static void DrawAutoEnemy(BlockTest test, int index)
+        {
+            EnemyMove move = test.GetAutoMove(index);
+            string label = index == 0 ? "첫 번째" : index == 1 ? "두 번째" : "세 번째";
+
+            EditorGUILayout.Space(4f);
+            EditorGUILayout.LabelField($"{label} 몬스터", EditorStyles.miniBoldLabel);
+            EditorGUILayout.ObjectField(new GUIContent("대상"), move == null ? null : move.gameObject, typeof(GameObject), true);
+            EditorGUILayout.Toggle(new GUIContent("저지됨"), move != null && move.IsBlocked);
+            EditorGUILayout.Toggle(new GUIContent("출구 도달"), test.HasAutoReachedGoal(index));
+            EditorGUILayout.Vector3Field(new GUIContent("월드 위치"), move == null ? Vector3.zero : move.transform.position);
+
+            CombatGridPosition grid = move == null ? null : move.GetComponent<CombatGridPosition>();
+            EditorGUILayout.Vector2IntField(new GUIContent("논리 타일"), grid == null ? Vector2Int.zero : grid.TileCoordinate);
         }
 
         private void Execute(System.Action action)

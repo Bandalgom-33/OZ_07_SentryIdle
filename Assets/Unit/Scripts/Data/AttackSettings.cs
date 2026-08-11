@@ -24,7 +24,7 @@ namespace EndlessGuard.Unit.Data
         [Min(0)]
         [SerializeField] private int targetCount;
 
-        [Tooltip("기본 공격 타일 범위를 기준 방향에 고정할지, 현재 바라보는 방향에 맞춰 회전할지 설정합니다.")]
+        [Tooltip("기본 공격 타일 범위는 현재 Facing 방향에 맞춰 사용하며, 전투 중 Facing을 고정할지 유효한 대상 방향에 따라 자동 변경할지 설정합니다.")]
         [SerializeField] private AttackRangeRotationMode rangeRotationMode = AttackRangeRotationMode.Fixed;
 
         [Tooltip("공격 주체의 위치를 기준으로 기본 공격이 가능한 상대 타일 좌표를 설정합니다.")]

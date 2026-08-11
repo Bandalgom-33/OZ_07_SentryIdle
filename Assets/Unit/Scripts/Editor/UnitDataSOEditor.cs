@@ -17,7 +17,6 @@ namespace EndlessGuard.Unit.Editor
 
         private GUIContent[] passiveOptions = { new GUIContent("미설정") };
         private UnitClass cachedPassiveClass = UnitClass.None;
-        private UnitSubclass cachedPassiveSubclass = UnitSubclass.None;
         private string passiveMessage;
         private MessageType passiveMessageType = MessageType.None;
 
@@ -27,6 +26,7 @@ namespace EndlessGuard.Unit.Editor
         private SerializedProperty description;
         private SerializedProperty grade;
         private SerializedProperty initialLevel;
+        private SerializedProperty growthTable;
         private SerializedProperty unitClass;
         private SerializedProperty subclass;
         private SerializedProperty placement;
@@ -42,6 +42,7 @@ namespace EndlessGuard.Unit.Editor
         private SerializedProperty skillGaugeRegenPerSecond;
         private SerializedProperty skillGaugePerAttack;
         private SerializedProperty passives;
+        private SerializedProperty passiveTunings;
         private SerializedProperty unitPrefab;
 
         private void OnEnable()
@@ -52,6 +53,7 @@ namespace EndlessGuard.Unit.Editor
             description = serializedObject.FindProperty("description");
             grade = serializedObject.FindProperty("grade");
             initialLevel = serializedObject.FindProperty("initialLevel");
+            growthTable = serializedObject.FindProperty("growthTable");
             unitClass = serializedObject.FindProperty("unitClass");
             subclass = serializedObject.FindProperty("subclass");
             placement = serializedObject.FindProperty("placement");
@@ -67,6 +69,7 @@ namespace EndlessGuard.Unit.Editor
             skillGaugeRegenPerSecond = serializedObject.FindProperty("skillGaugeRegenPerSecond");
             skillGaugePerAttack = serializedObject.FindProperty("skillGaugePerAttack");
             passives = serializedObject.FindProperty("passives");
+            passiveTunings = serializedObject.FindProperty("passiveTunings");
             unitPrefab = serializedObject.FindProperty("unitPrefab");
 
             ReloadPassiveAssets();
@@ -88,9 +91,10 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.PropertyField(description, new GUIContent("설명", "캐릭터의 역할과 특징을 설명합니다."));
             EditorGUILayout.PropertyField(grade, new GUIContent("성급", "캐릭터의 1성부터 6성까지의 성급입니다."));
             EditorGUILayout.PropertyField(initialLevel, new GUIContent("초기 레벨", "새로운 진행 데이터를 만들 때 이 캐릭터가 시작하는 레벨입니다. 실제 현재 레벨과 경험치는 별도의 진행도 데이터에서 관리합니다."));
+            EditorGUILayout.PropertyField(growthTable, new GUIContent("상위 분류 성장 테이블", "캐릭터별 수치를 따로 두지 않고 Vanguard/Guard/Defender 등 상위 분류별 성장 설정을 공유합니다."));
 
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(unitClass, new GUIContent("상위 분류", "캐릭터의 상위 역할 분류입니다."));
+            EditorGUILayout.PropertyField(unitClass, new GUIContent("상위 분류", "캐릭터의 상위 직군입니다. 패시브 선택 가능 풀은 이 상위 분류를 기준으로 결정합니다."));
             bool classChanged = EditorGUI.EndChangeCheck();
 
             if (classChanged && !unitClass.hasMultipleDifferentValues)
@@ -124,6 +128,7 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.PropertyField(skillGaugePerAttack, new GUIContent("공격당 스킬게이지 획득량", "기본 공격을 한 번 완료할 때 획득하는 스킬게이지입니다."));
 
             DrawFilteredPassiveList();
+            PassiveTuningEditorGUI.Draw(passives, passiveTunings, targets.Length > 1, "캐릭터");
 
             EditorGUILayout.PropertyField(unitPrefab, new GUIContent("연결 프리팹", "이 데이터를 기준으로 생성되거나 연결된 캐릭터 프리팹입니다."));
 
@@ -132,7 +137,7 @@ namespace EndlessGuard.Unit.Editor
 
         private void DrawSubclassField()
         {
-            GUIContent label = new GUIContent("세부 분류", "선택한 상위 분류에 포함되는 세부 분류만 표시합니다. 세부 분류는 패시브를 자동으로 결정하지 않습니다.");
+            GUIContent label = new GUIContent("세부 분류", "상위 분류 안에서 캐릭터의 세부 정체성을 설정합니다. 세부 분류는 패시브 선택 가능 여부를 제한하지 않습니다.");
 
             if (unitClass.hasMultipleDifferentValues)
             {
@@ -170,7 +175,7 @@ namespace EndlessGuard.Unit.Editor
 
             if (selectedClass == UnitClass.None)
             {
-                EditorGUILayout.HelpBox("상위 분류를 먼저 선택하면 해당 분류의 세부 분류만 표시됩니다.", MessageType.Info);
+                EditorGUILayout.HelpBox("상위 분류를 먼저 선택하면 해당 분류의 세부 분류 목록이 표시됩니다.", MessageType.Info);
             }
             else if (hadInvalidSubclass)
             {
@@ -197,9 +202,9 @@ namespace EndlessGuard.Unit.Editor
                 passiveMessageType = MessageType.Info;
             }
 
-            if (unitClass.hasMultipleDifferentValues || subclass.hasMultipleDifferentValues)
+            if (unitClass.hasMultipleDifferentValues)
             {
-                EditorGUILayout.HelpBox("선택한 캐릭터 데이터들의 상위·세부 분류가 서로 달라 패시브를 함께 편집할 수 없습니다.", MessageType.Info);
+                EditorGUILayout.HelpBox("선택한 캐릭터 데이터들의 상위 직군이 서로 달라 패시브를 함께 편집할 수 없습니다.", MessageType.Info);
 
                 using (new EditorGUI.DisabledScope(true))
                 {
@@ -211,27 +216,26 @@ namespace EndlessGuard.Unit.Editor
             }
 
             UnitClass selectedClass = (UnitClass)unitClass.intValue;
-            UnitSubclass selectedSubclass = (UnitSubclass)subclass.intValue;
 
-            if (selectedClass == UnitClass.None || selectedSubclass == UnitSubclass.None)
+            if (selectedClass == UnitClass.None)
             {
-                EditorGUILayout.HelpBox("상위 분류와 세부 분류를 먼저 선택하면 호환되는 패시브 후보가 표시됩니다.", MessageType.Info);
+                EditorGUILayout.HelpBox("상위 분류를 먼저 선택하면 해당 직군에서 사용할 수 있는 패시브 후보가 표시됩니다.", MessageType.Info);
 
                 using (new EditorGUI.DisabledScope(true))
                 {
                     EditorGUILayout.PropertyField(passives, new GUIContent("현재 패시브 목록"), true);
                 }
 
-                if (passives.arraySize > 0 && GUILayout.Button("현재 패시브 목록 비우기"))
-                {
-                    passives.ClearArray();
-                }
-
                 EditorGUI.indentLevel--;
                 return;
             }
 
-            EditorGUILayout.LabelField($"현재 분류와 호환되는 패시브 후보: {compatiblePassiveAssets.Count}개", EditorStyles.miniLabel);
+            if (selectedClass == UnitClass.Specialist)
+            {
+                EditorGUILayout.HelpBox("스페셜리스트는 모든 캐릭터용 패시브를 선택할 수 있습니다.", MessageType.Info);
+            }
+
+            EditorGUILayout.LabelField($"현재 상위 직군과 호환되는 패시브 후보: {compatiblePassiveAssets.Count}개", EditorStyles.miniLabel);
 
             int previousSize = passives.arraySize;
             int newSize = Mathf.Max(0, EditorGUILayout.IntField(new GUIContent("패시브 개수", "이 캐릭터가 사용하는 패시브의 개수입니다."), previousSize));
@@ -253,7 +257,7 @@ namespace EndlessGuard.Unit.Editor
             {
                 SerializedProperty element = passives.GetArrayElementAtIndex(i);
                 PassiveDataSO current = element.objectReferenceValue as PassiveDataSO;
-                bool isCompatible = current == null || current.CanBeUsedByUnit(selectedClass, selectedSubclass);
+                bool isCompatible = current == null || current.CanBeUsedByUnit(selectedClass);
                 bool isDuplicate = current != null && PassiveCandidateEditorUtility.IsAlreadyAssigned(passives, current, i);
 
                 if (!isCompatible || isDuplicate)
@@ -263,7 +267,9 @@ namespace EndlessGuard.Unit.Editor
                         EditorGUILayout.ObjectField(new GUIContent($"패시브 {i + 1}"), current, typeof(PassiveDataSO), false);
                     }
 
-                    string reason = !isCompatible ? "현재 캐릭터의 상위·세부 분류와 호환되지 않는 패시브입니다." : "같은 패시브 에셋이 목록에 중복 등록되어 있습니다.";
+                    string reason = !isCompatible
+                        ? "현재 캐릭터의 상위 직군 패시브 풀과 호환되지 않는 패시브입니다."
+                        : "같은 패시브 에셋이 목록에 중복 등록되어 있습니다.";
 
                     EditorGUILayout.HelpBox(reason, MessageType.Warning);
 
@@ -312,15 +318,14 @@ namespace EndlessGuard.Unit.Editor
 
         private void RefreshPassiveCandidatesIfNeeded()
         {
-            if (unitClass.hasMultipleDifferentValues || subclass.hasMultipleDifferentValues)
+            if (unitClass.hasMultipleDifferentValues)
             {
                 return;
             }
 
             UnitClass selectedClass = (UnitClass)unitClass.intValue;
-            UnitSubclass selectedSubclass = (UnitSubclass)subclass.intValue;
 
-            if (selectedClass != cachedPassiveClass || selectedSubclass != cachedPassiveSubclass)
+            if (selectedClass != cachedPassiveClass)
             {
                 RebuildPassiveCandidates();
             }
@@ -328,13 +333,14 @@ namespace EndlessGuard.Unit.Editor
 
         private void RebuildPassiveCandidates()
         {
-            UnitClass selectedClass = unitClass != null && !unitClass.hasMultipleDifferentValues ? (UnitClass)unitClass.intValue : UnitClass.None;
-            UnitSubclass selectedSubclass = subclass != null && !subclass.hasMultipleDifferentValues ? (UnitSubclass)subclass.intValue : UnitSubclass.None;
+            UnitClass selectedClass = unitClass != null && !unitClass.hasMultipleDifferentValues
+                ? (UnitClass)unitClass.intValue
+                : UnitClass.None;
 
-            PassiveCandidateEditorUtility.BuildUnitCandidates(allPassiveAssets, selectedClass, selectedSubclass, compatiblePassiveAssets);
+            PassiveCandidateEditorUtility.BuildUnitCandidates(allPassiveAssets, selectedClass, compatiblePassiveAssets);
+
             passiveOptions = PassiveCandidateEditorUtility.CreateOptionContents(compatiblePassiveAssets);
             cachedPassiveClass = selectedClass;
-            cachedPassiveSubclass = selectedSubclass;
         }
 
         private static int FindSubclassIndex(IReadOnlyList<UnitSubclass> subclasses, UnitSubclass target)
@@ -366,6 +372,7 @@ namespace EndlessGuard.Unit.Editor
             }
 
             SubclassContentCache.Add(unitClass, contents);
+
             return contents;
         }
 
@@ -374,12 +381,9 @@ namespace EndlessGuard.Unit.Editor
             FieldInfo field = typeof(UnitSubclass).GetField(subclassValue.ToString());
             InspectorNameAttribute inspectorName = field?.GetCustomAttribute<InspectorNameAttribute>();
 
-            if (inspectorName != null)
-            {
-                return inspectorName.displayName;
-            }
-
-            return ObjectNames.NicifyVariableName(subclassValue.ToString());
+            return inspectorName != null
+                ? inspectorName.displayName
+                : ObjectNames.NicifyVariableName(subclassValue.ToString());
         }
     }
 }

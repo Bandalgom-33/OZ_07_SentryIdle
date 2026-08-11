@@ -11,33 +11,24 @@ namespace EndlessGuard.Unit.Editor
     {
         private const string UnitPrefabFolder = "Assets/Unit/Prefabs/Units";
         private const string EnemyPrefabFolder = "Assets/Unit/Prefabs/Enemies";
+        private const string UnitBarsPrefabPath = "Assets/Unit/Prefabs/UI/UnitBars.prefab";
+        private const string HitRuleAssetPath = "Assets/Unit/Data/Combat/HitRule.asset";
+        private const string DamageRuleAssetPath = "Assets/Unit/Data/Combat/DamageRule.asset";
+        private const string PrototypeNamespace = "EndlessGuard.Unit.Prototype";
 
         public static bool TryCreateUnitPrefab(UnitDataSO unitData, out GameObject prefabAsset, out string message)
         {
             prefabAsset = null;
+            message = string.Empty;
 
-            if (unitData == null)
+            if (unitData == null || string.IsNullOrWhiteSpace(unitData.UnitId) || string.IsNullOrWhiteSpace(unitData.DisplayName))
             {
-                message = "캐릭터 데이터가 선택되지 않았습니다.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(unitData.UnitId))
-            {
-                message = "캐릭터 데이터 ID가 비어 있어 프리팹을 생성할 수 없습니다.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(unitData.DisplayName))
-            {
-                message = "캐릭터 표시 이름이 비어 있어 프리팹을 생성할 수 없습니다.";
                 return false;
             }
 
             if (unitData.UnitPrefab != null)
             {
                 prefabAsset = unitData.UnitPrefab;
-                message = $"이미 연결된 캐릭터 프리팹이 있습니다.\n{AssetDatabase.GetAssetPath(prefabAsset)}";
                 return false;
             }
 
@@ -45,12 +36,9 @@ namespace EndlessGuard.Unit.Editor
 
             string prefabName = BuildPrefabName(unitData.UnitId, unitData.DisplayName);
             string prefabPath = $"{UnitPrefabFolder}/{prefabName}.prefab";
-            GameObject existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
-            if (existingPrefab != null)
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null)
             {
-                prefabAsset = existingPrefab;
-                message = $"같은 경로에 프리팹이 이미 존재합니다. 기존 프리팹 보호를 위해 자동으로 덮어쓰지 않습니다.\n{prefabPath}";
                 return false;
             }
 
@@ -58,35 +46,44 @@ namespace EndlessGuard.Unit.Editor
 
             try
             {
-                root = CreateBaseRoot(prefabName, 1f, out CombatEntityAnchors anchors);
+                HitRuleSO hitRule = LoadAsset<HitRuleSO>(HitRuleAssetPath);
+                DamageRuleSO damageRule = LoadAsset<DamageRuleSO>(DamageRuleAssetPath);
+                root = CreateBaseRoot(prefabName, 1f, out CombatEntityAnchors anchors, out Transform uiAnchor);
 
-                UnitDataLink dataLink = root.AddComponent<UnitDataLink>();
-                AssignUnitData(dataLink, unitData);
+                UnitDataLink dataLink = EnsureComponent<UnitDataLink>(root);
+                AssignReference(dataLink, "unitData", unitData);
 
-                UnitRuntimeState runtimeState = root.AddComponent<UnitRuntimeState>();
-                UnitBlock unitBlock = root.AddComponent<UnitBlock>();
+                EnsureComponent<CombatHealth>(root);
+                EnsureComponent<CombatGridPosition>(root);
+                EnsureComponent<UnitRuntimeState>(root);
+                EnsureComponent<UnitBlock>(root);
 
-                ValidateUnitRoot(root, anchors, dataLink, runtimeState, unitBlock);
+                UnitAttack attack = EnsureComponent<UnitAttack>(root);
+                AssignReference(attack, "hitRule", hitRule);
+                AssignReference(attack, "damageRule", damageRule);
+
+                EnsureComponent<DamageNumberEmitter>(root);
+                EnsureComponent<HitFlash>(root);
+                EnsureComponent<HitShake>(root);
+
+                CreateUnitBars(uiAnchor);
+                ValidateUnitRoot(root, anchors, dataLink, uiAnchor, hitRule, damageRule);
 
                 prefabAsset = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
 
                 if (prefabAsset == null)
                 {
-                    message = "캐릭터 프리팹 저장에 실패했습니다.";
                     return false;
                 }
 
-                AssignUnitPrefab(unitData, prefabAsset);
-                AssetDatabase.SaveAssets();
-                Selection.activeObject = prefabAsset;
-                EditorGUIUtility.PingObject(prefabAsset);
-
-                message = $"캐릭터 프리팹을 생성하고 데이터에 연결했습니다.\n{prefabPath}\nCapsuleVisual에는 검증용 캐릭터 머티리얼을 수동으로 지정하세요.";
+                AssignReference(unitData, "unitPrefab", prefabAsset);
+                EditorUtility.SetDirty(unitData);
+                FinishCreation(prefabAsset);
                 return true;
             }
             catch (Exception exception)
             {
-                message = $"캐릭터 프리팹 생성 중 오류가 발생했습니다.\n{exception.Message}";
+                Debug.LogException(exception);
                 return false;
             }
             finally
@@ -101,29 +98,16 @@ namespace EndlessGuard.Unit.Editor
         public static bool TryCreateEnemyPrefab(EnemyDataSO enemyData, out GameObject prefabAsset, out string message)
         {
             prefabAsset = null;
+            message = string.Empty;
 
-            if (enemyData == null)
+            if (enemyData == null || string.IsNullOrWhiteSpace(enemyData.EnemyId) || string.IsNullOrWhiteSpace(enemyData.DisplayName))
             {
-                message = "몬스터 데이터가 선택되지 않았습니다.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(enemyData.EnemyId))
-            {
-                message = "몬스터 데이터 ID가 비어 있어 프리팹을 생성할 수 없습니다.";
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(enemyData.DisplayName))
-            {
-                message = "몬스터 표시 이름이 비어 있어 프리팹을 생성할 수 없습니다.";
                 return false;
             }
 
             if (enemyData.EnemyPrefab != null)
             {
                 prefabAsset = enemyData.EnemyPrefab;
-                message = $"이미 연결된 몬스터 프리팹이 있습니다.\n{AssetDatabase.GetAssetPath(prefabAsset)}";
                 return false;
             }
 
@@ -131,12 +115,9 @@ namespace EndlessGuard.Unit.Editor
 
             string prefabName = BuildPrefabName(enemyData.EnemyId, enemyData.DisplayName);
             string prefabPath = $"{EnemyPrefabFolder}/{prefabName}.prefab";
-            GameObject existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
-            if (existingPrefab != null)
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath) != null)
             {
-                prefabAsset = existingPrefab;
-                message = $"같은 경로에 프리팹이 이미 존재합니다. 기존 프리팹 보호를 위해 자동으로 덮어쓰지 않습니다.\n{prefabPath}";
                 return false;
             }
 
@@ -144,36 +125,45 @@ namespace EndlessGuard.Unit.Editor
 
             try
             {
+                HitRuleSO hitRule = LoadAsset<HitRuleSO>(HitRuleAssetPath);
+                DamageRuleSO damageRule = LoadAsset<DamageRuleSO>(DamageRuleAssetPath);
                 float visualScale = GetEnemyVisualScale(enemyData.Size);
-                root = CreateBaseRoot(prefabName, visualScale, out CombatEntityAnchors anchors);
+                root = CreateBaseRoot(prefabName, visualScale, out CombatEntityAnchors anchors, out _);
 
-                EnemyDataLink dataLink = root.AddComponent<EnemyDataLink>();
-                AssignEnemyData(dataLink, enemyData);
+                EnemyDataLink dataLink = EnsureComponent<EnemyDataLink>(root);
+                AssignReference(dataLink, "enemyData", enemyData);
 
-                EnemyRuntimeState runtimeState = root.AddComponent<EnemyRuntimeState>();
-                EnemyBlock enemyBlock = root.AddComponent<EnemyBlock>();
+                EnsureComponent<CombatHealth>(root);
+                EnsureComponent<CombatGridPosition>(root);
+                EnsureComponent<EnemyRuntimeState>(root);
+                EnsureComponent<EnemyBlock>(root);
+                EnsureComponent<EnemyMove>(root);
 
-                ValidateEnemyRoot(root, anchors, dataLink, runtimeState, enemyBlock);
+                EnemyAttack attack = EnsureComponent<EnemyAttack>(root);
+                AssignReference(attack, "hitRule", hitRule);
+                AssignReference(attack, "damageRule", damageRule);
+
+                EnsureComponent<DamageNumberEmitter>(root);
+                EnsureComponent<HitFlash>(root);
+                EnsureComponent<HitShake>(root);
+
+                ValidateEnemyRoot(root, anchors, dataLink, hitRule, damageRule);
 
                 prefabAsset = PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
 
                 if (prefabAsset == null)
                 {
-                    message = "몬스터 프리팹 저장에 실패했습니다.";
                     return false;
                 }
 
-                AssignEnemyPrefab(enemyData, prefabAsset);
-                AssetDatabase.SaveAssets();
-                Selection.activeObject = prefabAsset;
-                EditorGUIUtility.PingObject(prefabAsset);
-
-                message = $"몬스터 프리팹을 생성하고 데이터에 연결했습니다.\n{prefabPath}\nCapsuleVisual에는 검증용 몬스터 머티리얼을 수동으로 지정하세요.";
+                AssignReference(enemyData, "enemyPrefab", prefabAsset);
+                EditorUtility.SetDirty(enemyData);
+                FinishCreation(prefabAsset);
                 return true;
             }
             catch (Exception exception)
             {
-                message = $"몬스터 프리팹 생성 중 오류가 발생했습니다.\n{exception.Message}";
+                Debug.LogException(exception);
                 return false;
             }
             finally
@@ -185,7 +175,7 @@ namespace EndlessGuard.Unit.Editor
             }
         }
 
-        private static GameObject CreateBaseRoot(string rootName, float visualScale, out CombatEntityAnchors anchors)
+        private static GameObject CreateBaseRoot(string rootName, float visualScale, out CombatEntityAnchors anchors, out Transform uiAnchor)
         {
             GameObject root = new GameObject(rootName);
             anchors = root.AddComponent<CombatEntityAnchors>();
@@ -193,11 +183,10 @@ namespace EndlessGuard.Unit.Editor
             Transform visualRoot = CreateChild(root.transform, "VisualRoot", Vector3.zero);
             Transform attackPoint = CreateChild(root.transform, "AttackPoint", new Vector3(0f, visualScale * 1.2f, visualScale * 0.6f));
             Transform effectPoint = CreateChild(root.transform, "EffectPoint", new Vector3(0f, visualScale, 0f));
-            Transform uiAnchor = CreateChild(root.transform, "UIAnchor", new Vector3(0f, visualScale * 2.3f, 0f));
+            uiAnchor = CreateChild(root.transform, "UIAnchor", new Vector3(0f, visualScale * 2.3f, 0f));
 
             CreateCapsuleVisual(visualRoot, visualScale);
             AssignAnchors(anchors, visualRoot, attackPoint, effectPoint, uiAnchor);
-
             return root;
         }
 
@@ -205,12 +194,10 @@ namespace EndlessGuard.Unit.Editor
         {
             GameObject child = new GameObject(childName);
             Transform childTransform = child.transform;
-
             childTransform.SetParent(parent, false);
             childTransform.localPosition = localPosition;
             childTransform.localRotation = Quaternion.identity;
             childTransform.localScale = Vector3.one;
-
             return childTransform;
         }
 
@@ -220,7 +207,6 @@ namespace EndlessGuard.Unit.Editor
             capsule.name = "CapsuleVisual";
             capsule.transform.SetParent(visualRoot, false);
             capsule.transform.localPosition = new Vector3(0f, visualScale, 0f);
-            capsule.transform.localRotation = Quaternion.identity;
             capsule.transform.localScale = Vector3.one * visualScale;
 
             Collider collider = capsule.GetComponent<Collider>();
@@ -229,6 +215,48 @@ namespace EndlessGuard.Unit.Editor
             {
                 UnityEngine.Object.DestroyImmediate(collider);
             }
+        }
+
+        private static void CreateUnitBars(Transform uiAnchor)
+        {
+            GameObject barsPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(UnitBarsPrefabPath);
+
+            if (uiAnchor == null || barsPrefab == null || PrefabUtility.InstantiatePrefab(barsPrefab, uiAnchor) == null)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
+        private static T LoadAsset<T>(string assetPath) where T : UnityEngine.Object
+        {
+            T asset = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+
+            if (asset == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return asset;
+        }
+
+        private static T EnsureComponent<T>(GameObject root) where T : Component
+        {
+            T component = root.GetComponent<T>();
+            return component != null ? component : root.AddComponent<T>();
+        }
+
+        private static void AssignReference(UnityEngine.Object target, string propertyName, UnityEngine.Object value)
+        {
+            SerializedObject serializedObject = new SerializedObject(target);
+            SerializedProperty property = serializedObject.FindProperty(propertyName);
+
+            if (property == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            property.objectReferenceValue = value;
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void AssignAnchors(CombatEntityAnchors anchors, Transform visualRoot, Transform attackPoint, Transform effectPoint, Transform uiAnchor)
@@ -241,100 +269,101 @@ namespace EndlessGuard.Unit.Editor
             serializedAnchors.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static void AssignUnitData(UnitDataLink dataLink, UnitDataSO unitData)
+        private static void ValidateUnitRoot(GameObject root, CombatEntityAnchors anchors, UnitDataLink dataLink, Transform uiAnchor, HitRuleSO hitRule, DamageRuleSO damageRule)
         {
-            SerializedObject serializedLink = new SerializedObject(dataLink);
-            serializedLink.FindProperty("unitData").objectReferenceValue = unitData;
-            serializedLink.ApplyModifiedPropertiesWithoutUndo();
+            ValidateNoPrototypeComponents(root);
+
+            if (!anchors.IsComplete || !dataLink.HasData)
+            {
+                throw new InvalidOperationException();
+            }
+
+            RequireComponents(root, typeof(CombatHealth), typeof(CombatGridPosition), typeof(UnitRuntimeState), typeof(UnitBlock), typeof(UnitAttack), typeof(DamageNumberEmitter), typeof(HitFlash), typeof(HitShake));
+
+            UnitAttack attack = root.GetComponent<UnitAttack>();
+
+            if (attack.HitRule != hitRule || attack.DamageRule != damageRule)
+            {
+                throw new InvalidOperationException();
+            }
+
+            ValidateUnitBars(uiAnchor);
         }
 
-        private static void AssignEnemyData(EnemyDataLink dataLink, EnemyDataSO enemyData)
+        private static void ValidateEnemyRoot(GameObject root, CombatEntityAnchors anchors, EnemyDataLink dataLink, HitRuleSO hitRule, DamageRuleSO damageRule)
         {
-            SerializedObject serializedLink = new SerializedObject(dataLink);
-            serializedLink.FindProperty("enemyData").objectReferenceValue = enemyData;
-            serializedLink.ApplyModifiedPropertiesWithoutUndo();
-        }
+            ValidateNoPrototypeComponents(root);
 
-        private static void AssignUnitPrefab(UnitDataSO unitData, GameObject prefabAsset)
-        {
-            SerializedObject serializedData = new SerializedObject(unitData);
-            serializedData.FindProperty("unitPrefab").objectReferenceValue = prefabAsset;
-            serializedData.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(unitData);
-        }
-
-        private static void AssignEnemyPrefab(EnemyDataSO enemyData, GameObject prefabAsset)
-        {
-            SerializedObject serializedData = new SerializedObject(enemyData);
-            serializedData.FindProperty("enemyPrefab").objectReferenceValue = prefabAsset;
-            serializedData.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(enemyData);
-        }
-
-        private static void ValidateUnitRoot(GameObject root, CombatEntityAnchors anchors, UnitDataLink dataLink, UnitRuntimeState runtimeState, UnitBlock unitBlock)
-        {
-            if (!anchors.IsComplete)
+            if (!anchors.IsComplete || !dataLink.HasData)
             {
-                throw new InvalidOperationException("캐릭터 프리팹 기준점 연결이 완성되지 않았습니다.");
+                throw new InvalidOperationException();
             }
 
-            if (!dataLink.HasData)
-            {
-                throw new InvalidOperationException("캐릭터 프리팹에 UnitDataSO가 연결되지 않았습니다.");
-            }
+            RequireComponents(root, typeof(CombatHealth), typeof(CombatGridPosition), typeof(EnemyRuntimeState), typeof(EnemyBlock), typeof(EnemyMove), typeof(EnemyAttack), typeof(DamageNumberEmitter), typeof(HitFlash), typeof(HitShake));
 
-            if (root.GetComponent<CombatHealth>() == null)
-            {
-                throw new InvalidOperationException("캐릭터 프리팹에 CombatHealth가 생성되지 않았습니다.");
-            }
+            EnemyAttack attack = root.GetComponent<EnemyAttack>();
 
-            if (root.GetComponent<CombatGridPosition>() == null)
+            if (attack.HitRule != hitRule || attack.DamageRule != damageRule)
             {
-                throw new InvalidOperationException("캐릭터 프리팹에 CombatGridPosition이 생성되지 않았습니다.");
-            }
-
-            if (runtimeState == null)
-            {
-                throw new InvalidOperationException("캐릭터 프리팹에 UnitRuntimeState가 생성되지 않았습니다.");
-            }
-
-            if (unitBlock == null)
-            {
-                throw new InvalidOperationException("캐릭터 프리팹에 UnitBlock이 생성되지 않았습니다.");
+                throw new InvalidOperationException();
             }
         }
 
-        private static void ValidateEnemyRoot(GameObject root, CombatEntityAnchors anchors, EnemyDataLink dataLink, EnemyRuntimeState runtimeState, EnemyBlock enemyBlock)
+        private static void ValidateUnitBars(Transform uiAnchor)
         {
-            if (!anchors.IsComplete)
+            UnitBars bars = uiAnchor != null ? uiAnchor.GetComponentInChildren<UnitBars>(true) : null;
+
+            if (bars == null)
             {
-                throw new InvalidOperationException("몬스터 프리팹 기준점 연결이 완성되지 않았습니다.");
+                throw new InvalidOperationException();
             }
 
-            if (!dataLink.HasData)
-            {
-                throw new InvalidOperationException("몬스터 프리팹에 EnemyDataSO가 연결되지 않았습니다.");
-            }
+            SerializedObject serializedBars = new SerializedObject(bars);
 
-            if (root.GetComponent<CombatHealth>() == null)
+            if (serializedBars.FindProperty("hpFill")?.objectReferenceValue == null || serializedBars.FindProperty("skillFill")?.objectReferenceValue == null)
             {
-                throw new InvalidOperationException("몬스터 프리팹에 CombatHealth가 생성되지 않았습니다.");
+                throw new InvalidOperationException();
             }
+        }
 
-            if (root.GetComponent<CombatGridPosition>() == null)
+        private static void RequireComponents(GameObject root, params Type[] componentTypes)
+        {
+            for (int i = 0; i < componentTypes.Length; i++)
             {
-                throw new InvalidOperationException("몬스터 프리팹에 CombatGridPosition이 생성되지 않았습니다.");
+                if (root.GetComponent(componentTypes[i]) == null)
+                {
+                    throw new InvalidOperationException();
+                }
             }
+        }
 
-            if (runtimeState == null)
-            {
-                throw new InvalidOperationException("몬스터 프리팹에 EnemyRuntimeState가 생성되지 않았습니다.");
-            }
+        private static void ValidateNoPrototypeComponents(GameObject root)
+        {
+            MonoBehaviour[] components = root.GetComponentsInChildren<MonoBehaviour>(true);
 
-            if (enemyBlock == null)
+            for (int i = 0; i < components.Length; i++)
             {
-                throw new InvalidOperationException("몬스터 프리팹에 EnemyBlock이 생성되지 않았습니다.");
+                MonoBehaviour component = components[i];
+
+                if (component == null)
+                {
+                    continue;
+                }
+
+                string componentNamespace = component.GetType().Namespace ?? string.Empty;
+
+                if (componentNamespace == PrototypeNamespace || componentNamespace.StartsWith($"{PrototypeNamespace}.", StringComparison.Ordinal))
+                {
+                    throw new InvalidOperationException();
+                }
             }
+        }
+
+        private static void FinishCreation(GameObject prefabAsset)
+        {
+            AssetDatabase.SaveAssets();
+            Selection.activeObject = prefabAsset;
+            EditorGUIUtility.PingObject(prefabAsset);
         }
 
         private static float GetEnemyVisualScale(EnemySize enemySize)
@@ -359,31 +388,28 @@ namespace EndlessGuard.Unit.Editor
 
         private static string SanitizeFileName(string value)
         {
-            string sanitizedValue = value.Trim();
+            string result = value.Trim();
 
             foreach (char invalidCharacter in Path.GetInvalidFileNameChars())
             {
-                sanitizedValue = sanitizedValue.Replace(invalidCharacter, '_');
+                result = result.Replace(invalidCharacter, '_');
             }
 
-            sanitizedValue = sanitizedValue.Replace('/', '_');
-            sanitizedValue = sanitizedValue.Replace('\\', '_');
-
-            return string.IsNullOrWhiteSpace(sanitizedValue) ? "Unnamed" : sanitizedValue;
+            return result.Replace('/', '_').Replace('\\', '_');
         }
 
         private static void EnsureFolder(string folderPath)
         {
-            string[] pathParts = folderPath.Split('/');
-            string currentPath = pathParts[0];
+            string[] parts = folderPath.Split('/');
+            string currentPath = parts[0];
 
-            for (int i = 1; i < pathParts.Length; i++)
+            for (int i = 1; i < parts.Length; i++)
             {
-                string nextPath = $"{currentPath}/{pathParts[i]}";
+                string nextPath = $"{currentPath}/{parts[i]}";
 
                 if (!AssetDatabase.IsValidFolder(nextPath))
                 {
-                    AssetDatabase.CreateFolder(currentPath, pathParts[i]);
+                    AssetDatabase.CreateFolder(currentPath, parts[i]);
                 }
 
                 currentPath = nextPath;

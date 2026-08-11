@@ -19,12 +19,13 @@ MonoBehaviour:
     \uC2A4\uD398\uC15C\uB9AC\uC2A4\uD2B8\xB7\uB9C8\uC2A4\uD130 \uCE90\uB9AD\uD130\uC785\uB2C8\uB2E4."
   grade: 6
   initialLevel: 1
+  growthTable: {fileID: 11400000, guid: e353654c25a0e5e803046d4d2f592cea, type: 2}
   unitClass: 6
   subclass: 600
   placement: 1
-  summonCost: 30
+  summonCost: 50
   redeployTime: 60
-  blockCount: 2
+  blockCount: 3
   baseStats:
     maxHp: 5000
     physicalAttack: 0
@@ -32,38 +33,58 @@ MonoBehaviour:
     baseAttacksPerSecond: 2
     physicalDefense: 300
     magicalDefense: 300
-    accuracy: 100
+    accuracy: 150
     evasion: 10
     moveSpeed: 0
   attackSettings:
     attackMode: 2
     damageType: 2
     attackTarget: 3
-    attackRange: 3.5
-    targetCount: 2
+    attackRange: 5
+    targetCount: 5
     rangeRotationMode: 1
     basicAttackRange:
       horizontalRadius: 5
       forwardDistance: 5
       backwardDistance: 5
       attackTiles:
-      - {x: -1, y: 0}
       - {x: 0, y: 1}
       - {x: 0, y: 2}
       - {x: 0, y: 3}
-      - {x: 1, y: 0}
       - {x: -1, y: 1}
       - {x: 1, y: 1}
-      - {x: -2, y: 1}
       - {x: 2, y: 1}
+      - {x: 2, y: 3}
+      - {x: 2, y: 4}
+      - {x: 1, y: 4}
+      - {x: 0, y: 4}
+      - {x: -1, y: 4}
+      - {x: -2, y: 4}
+      - {x: -2, y: 1}
+      - {x: -2, y: 2}
+      - {x: -2, y: 3}
+      - {x: -1, y: 3}
+      - {x: -1, y: 2}
+      - {x: 1, y: 2}
+      - {x: 1, y: 3}
+      - {x: 2, y: 2}
+      - {x: -1, y: 0}
+      - {x: -1, y: -1}
+      - {x: 0, y: -1}
+      - {x: 1, y: -1}
+      - {x: 1, y: 0}
   hpRegenPerSecond: 25
   criticalChancePercent: 10
-  criticalDamageBonusPercent: 50
+  criticalDamageBonusPercent: 77
   maxSkillGauge: 100
   skillGaugeRegenPerSecond: 2
   skillGaugePerAttack: 10
   passives:
-  - {fileID: 11400000, guid: 1271de9f1fb991b42a4614ede4bea924, type: 2}
-  - {fileID: 11400000, guid: bb0df75d7279795419c2c9a012a416e0, type: 2}
-  - {fileID: 11400000, guid: 588c1a5fb771e8e41956864d40529e5c, type: 2}
+  - {fileID: 11400000, guid: d7a758216f1ae8343ba6826202817551, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: d7a758216f1ae8343ba6826202817551, type: 2}
+    values:
+    - key: 22
+      value: 100
+    refs: []
   unitPrefab: {fileID: 6371960850893609525, guid: 679e1e002bbd8f34290915e2b074d52b, type: 3}

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace EndlessGuard.Unit.Runtime
@@ -13,7 +14,12 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
-            foreach (UnitRuntimeState unit in CombatRegistry.Units)
+            if (!CombatRegistry.TryGetUnitsAt(tile, out HashSet<UnitRuntimeState> tileUnits))
+            {
+                return false;
+            }
+
+            foreach (UnitRuntimeState unit in tileUnits)
             {
                 if (!IsValid(unit, tile))
                 {

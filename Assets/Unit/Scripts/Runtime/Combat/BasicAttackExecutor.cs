@@ -7,64 +7,60 @@ namespace EndlessGuard.Unit.Runtime
     {
         public static bool TryExecute(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackContext context, out BasicAttackResult result)
         {
-            if (attacker == null)
-            {
-                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingAttacker);
-                return false;
-            }
-
-            if (target == null)
-            {
-                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingTarget);
-                return false;
-            }
-
-            BasicAttackFailureReason failureReason = Validate(attacker.IsInitialized, attacker.Health, attacker.DataLink != null && attacker.DataLink.HasData, target.IsInitialized, target.Health, target.DataLink != null && target.DataLink.HasData);
-
-            if (failureReason != BasicAttackFailureReason.None)
-            {
-                result = BasicAttackResult.Failed(failureReason);
-                return false;
-            }
-
-            CombatStats attackerStats = attacker.DataLink.UnitData.BaseStats;
-            AttackSettings attackSettings = attacker.DataLink.UnitData.AttackSettings;
-            CombatStats targetStats = target.DataLink.EnemyData.BaseStats;
-
-            if (!BasicAttackRangeEvaluator.TryEvaluate(attackSettings, context, out _, out failureReason))
-            {
-                result = BasicAttackResult.Failed(failureReason);
-                return false;
-            }
-
-            if (!TryResolveDamageValues(attackerStats, attackSettings, targetStats, out float attackPower, out float defense, out failureReason))
-            {
-                result = BasicAttackResult.Failed(failureReason);
-                return false;
-            }
-
-            if (attacker.ReadyAttackCount <= 0)
-            {
-                result = BasicAttackResult.Failed(BasicAttackFailureReason.NoReadyAttack);
-                return false;
-            }
-
-            float calculatedDamage = CalculateDamage(attackPower, defense);
-            int consumedCount = attacker.ConsumeReadyAttacks(1);
-
-            if (consumedCount != 1)
-            {
-                result = BasicAttackResult.Failed(BasicAttackFailureReason.NoReadyAttack);
-                return false;
-            }
-
-            float appliedDamage = target.ApplyDamage(calculatedDamage);
-            float gainedSkillGauge = appliedDamage > 0f ? attacker.AddSkillGauge(attacker.DataLink.UnitData.SkillGaugePerAttack) : 0f;
-            result = new BasicAttackResult(true, BasicAttackFailureReason.None, attackSettings.DamageType, attackPower, defense, calculatedDamage, appliedDamage, gainedSkillGauge, target.Health.IsDead);
-            return true;
+            HitRuleSO hitRule = attacker != null && attacker.Attack != null ? attacker.Attack.HitRule : null;
+            DamageRuleSO damageRule = attacker != null && attacker.Attack != null ? attacker.Attack.DamageRule : null;
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, true, false, true, out result);
         }
 
         public static bool TryExecute(EnemyRuntimeState attacker, UnitRuntimeState target, BasicAttackContext context, out BasicAttackResult result)
+        {
+            HitRuleSO hitRule = attacker != null && attacker.Attack != null ? attacker.Attack.HitRule : null;
+            DamageRuleSO damageRule = attacker != null && attacker.Attack != null ? attacker.Attack.DamageRule : null;
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, true, false, out result);
+        }
+
+        public static bool TryExecute(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackContext context, HitRuleSO hitRule, out BasicAttackResult result)
+        {
+            DamageRuleSO damageRule = attacker != null && attacker.Attack != null ? attacker.Attack.DamageRule : null;
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, true, false, true, out result);
+        }
+
+        public static bool TryExecute(EnemyRuntimeState attacker, UnitRuntimeState target, BasicAttackContext context, HitRuleSO hitRule, out BasicAttackResult result)
+        {
+            DamageRuleSO damageRule = attacker != null && attacker.Attack != null ? attacker.Attack.DamageRule : null;
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, true, false, out result);
+        }
+
+        public static bool TryExecute(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackContext context, HitRuleSO hitRule, DamageRuleSO damageRule, out BasicAttackResult result)
+        {
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, true, false, true, out result);
+        }
+
+        public static bool TryExecute(EnemyRuntimeState attacker, UnitRuntimeState target, BasicAttackContext context, HitRuleSO hitRule, DamageRuleSO damageRule, out BasicAttackResult result)
+        {
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, true, false, out result);
+        }
+
+        internal static bool TryExecute(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackContext context, bool consumeReadyAttack, bool ignoreRange, out BasicAttackResult result)
+        {
+            return TryExecute(attacker, target, context, consumeReadyAttack, ignoreRange, true, out result);
+        }
+
+        internal static bool TryExecute(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackContext context, bool consumeReadyAttack, bool ignoreRange, bool gainSkillGauge, out BasicAttackResult result)
+        {
+            HitRuleSO hitRule = attacker != null && attacker.Attack != null ? attacker.Attack.HitRule : null;
+            DamageRuleSO damageRule = attacker != null && attacker.Attack != null ? attacker.Attack.DamageRule : null;
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, consumeReadyAttack, ignoreRange, gainSkillGauge, out result);
+        }
+
+        internal static bool TryExecute(EnemyRuntimeState attacker, UnitRuntimeState target, BasicAttackContext context, bool consumeReadyAttack, bool ignoreRange, out BasicAttackResult result)
+        {
+            HitRuleSO hitRule = attacker != null && attacker.Attack != null ? attacker.Attack.HitRule : null;
+            DamageRuleSO damageRule = attacker != null && attacker.Attack != null ? attacker.Attack.DamageRule : null;
+            return TryExecuteInternal(attacker, target, context, hitRule, damageRule, consumeReadyAttack, ignoreRange, out result);
+        }
+
+        private static bool TryExecuteInternal(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackContext context, HitRuleSO hitRule, DamageRuleSO damageRule, bool consumeReadyAttack, bool ignoreRange, bool gainSkillGauge, out BasicAttackResult result)
         {
             if (attacker == null)
             {
@@ -78,6 +74,18 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
+            if (hitRule == null)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingHitRule);
+                return false;
+            }
+
+            if (damageRule == null)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingData);
+                return false;
+            }
+
             BasicAttackFailureReason failureReason = Validate(attacker.IsInitialized, attacker.Health, attacker.DataLink != null && attacker.DataLink.HasData, target.IsInitialized, target.Health, target.DataLink != null && target.DataLink.HasData);
 
             if (failureReason != BasicAttackFailureReason.None)
@@ -86,11 +94,109 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
-            CombatStats attackerStats = attacker.DataLink.EnemyData.BaseStats;
-            AttackSettings attackSettings = attacker.DataLink.EnemyData.AttackSettings;
-            CombatStats targetStats = target.DataLink.UnitData.BaseStats;
+            RuntimeStats attackerStats = attacker.Stats;
+            AttackSettings attackSettings = attacker.DataLink.UnitData.AttackSettings;
+            RuntimeStats targetStats = target.Stats;
 
-            if (!BasicAttackRangeEvaluator.TryEvaluate(attackSettings, context, out _, out failureReason))
+            if (!ignoreRange)
+            {
+                bool baseLayerAllowed = BasicAttackRangeEvaluator.CanAttackTargetLayer(attackSettings.AttackTarget, context.TargetLayer);
+                bool passiveLayerAllowed = attacker.Passives != null && attacker.Passives.AllowsTargetLayer(attacker, context.TargetLayer);
+                bool ignoreTargetLayer = !baseLayerAllowed && passiveLayerAllowed;
+
+                if (!BasicAttackRangeEvaluator.TryEvaluate(attackSettings, context, ignoreTargetLayer, out _, out failureReason))
+                {
+                    result = BasicAttackResult.Failed(failureReason);
+                    return false;
+                }
+            }
+
+            if (!TryResolveDamageValues(attackerStats, attackSettings, targetStats, out float attackPower, out float defense, out failureReason))
+            {
+                result = BasicAttackResult.Failed(failureReason);
+                return false;
+            }
+
+            if (attacker.Passives != null)
+            {
+                attackPower = attacker.Passives.ModifyAttackPower(attacker, target, attackPower);
+            }
+
+            if (attackPower <= 0f)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.NoAttackPower);
+                return false;
+            }
+
+            if (consumeReadyAttack && !TryConsumeReadyAttack(attacker, out result))
+            {
+                return false;
+            }
+
+            float hitChancePercent = HitCalculator.CalculatePercent(attackerStats.Accuracy, targetStats.Evasion, hitRule);
+            bool wasHit = HitCalculator.Roll(hitChancePercent);
+
+            if (!wasHit)
+            {
+                PublishMiss(target.Health, target.Anchors, target.transform);
+                result = BasicAttackResult.Missed(attackSettings.DamageType, attackPower, defense, hitChancePercent);
+                NotifyResolved(attacker, target, result);
+                return true;
+            }
+
+            float baseDamage = DamageCalculator.Calculate(attackPower, defense, damageRule);
+            bool isCritical = RollCritical(attackerStats.CriticalChancePercent);
+            float criticalDamage = CalculateCriticalDamage(baseDamage, attackerStats.CriticalDamageBonusPercent, isCritical);
+            float calculatedDamage = attacker.Passives != null ? attacker.Passives.ModifyOutgoingDamage(attacker, target, criticalDamage) : criticalDamage;
+
+            DamageInfo damageInfo = new DamageInfo(calculatedDamage, attackSettings.DamageType, isCritical);
+            float appliedDamage = target.ApplyDamage(damageInfo);
+            float gainedSkillGauge = gainSkillGauge && appliedDamage > 0f ? attacker.AddSkillGauge(attacker.DataLink.UnitData.SkillGaugePerAttack) : 0f;
+
+            result = new BasicAttackResult(true, BasicAttackFailureReason.None, attackSettings.DamageType, attackPower, defense, hitChancePercent, true, calculatedDamage, appliedDamage, isCritical, gainedSkillGauge, target.Health.IsDead);
+            NotifyResolved(attacker, target, result);
+            return true;
+        }
+
+        private static bool TryExecuteInternal(EnemyRuntimeState attacker, UnitRuntimeState target, BasicAttackContext context, HitRuleSO hitRule, DamageRuleSO damageRule, bool consumeReadyAttack, bool ignoreRange, out BasicAttackResult result)
+        {
+            if (attacker == null)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingAttacker);
+                return false;
+            }
+
+            if (target == null)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingTarget);
+                return false;
+            }
+
+            if (hitRule == null)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingHitRule);
+                return false;
+            }
+
+            if (damageRule == null)
+            {
+                result = BasicAttackResult.Failed(BasicAttackFailureReason.MissingData);
+                return false;
+            }
+
+            BasicAttackFailureReason failureReason = Validate(attacker.IsInitialized, attacker.Health, attacker.DataLink != null && attacker.DataLink.HasData, target.IsInitialized, target.Health, target.DataLink != null && target.DataLink.HasData);
+
+            if (failureReason != BasicAttackFailureReason.None)
+            {
+                result = BasicAttackResult.Failed(failureReason);
+                return false;
+            }
+
+            RuntimeStats attackerStats = attacker.Stats;
+            AttackSettings attackSettings = attacker.DataLink.EnemyData.AttackSettings;
+            RuntimeStats targetStats = target.Stats;
+
+            if (!ignoreRange && !BasicAttackRangeEvaluator.TryEvaluate(attackSettings, context, out _, out failureReason))
             {
                 result = BasicAttackResult.Failed(failureReason);
                 return false;
@@ -102,23 +208,64 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
-            if (attacker.ReadyAttackCount <= 0)
+            if (consumeReadyAttack && !TryConsumeReadyAttack(attacker, out result))
+            {
+                return false;
+            }
+
+            float hitChancePercent = HitCalculator.CalculatePercent(attackerStats.Accuracy, targetStats.Evasion, hitRule);
+            bool wasHit = HitCalculator.Roll(hitChancePercent);
+
+            if (!wasHit)
+            {
+                PublishMiss(target.Health, target.Anchors, target.transform);
+                result = BasicAttackResult.Missed(attackSettings.DamageType, attackPower, defense, hitChancePercent);
+                NotifyResolved(attacker, target, result);
+                return true;
+            }
+
+            float calculatedDamage = DamageCalculator.Calculate(attackPower, defense, damageRule);
+            DamageInfo damageInfo = new DamageInfo(calculatedDamage, attackSettings.DamageType, false);
+            float appliedDamage = target.ApplyDamage(damageInfo);
+
+            result = new BasicAttackResult(true, BasicAttackFailureReason.None, attackSettings.DamageType, attackPower, defense, hitChancePercent, true, calculatedDamage, appliedDamage, false, 0f, target.Health.IsDead);
+            NotifyResolved(attacker, target, result);
+            return true;
+        }
+
+        private static void NotifyResolved(UnitRuntimeState attacker, EnemyRuntimeState target, BasicAttackResult result)
+        {
+            attacker.Passives?.NotifyBasicAttackResolved(attacker, target, result);
+            target.Passives?.NotifyBasicAttackReceived(target, attacker, result);
+        }
+
+        private static void NotifyResolved(EnemyRuntimeState attacker, UnitRuntimeState target, BasicAttackResult result)
+        {
+            attacker.Passives?.NotifyBasicAttackResolved(attacker, target, result);
+            target.Passives?.NotifyBasicAttackReceived(target, attacker, result);
+        }
+
+        private static bool TryConsumeReadyAttack(UnitRuntimeState attacker, out BasicAttackResult result)
+        {
+            if (attacker.ReadyAttackCount <= 0 || attacker.ConsumeReadyAttacks(1) != 1)
             {
                 result = BasicAttackResult.Failed(BasicAttackFailureReason.NoReadyAttack);
                 return false;
             }
 
-            float calculatedDamage = CalculateDamage(attackPower, defense);
-            int consumedCount = attacker.ConsumeReadyAttacks(1);
+            result = default;
+            return true;
+        }
 
-            if (consumedCount != 1)
+        private static bool TryConsumeReadyAttack(EnemyRuntimeState attacker, out BasicAttackResult result)
+        {
+            if (attacker.ReadyAttackCount <= 0 || attacker.ConsumeReadyAttacks(1) != 1)
             {
                 result = BasicAttackResult.Failed(BasicAttackFailureReason.NoReadyAttack);
                 return false;
             }
 
-            float appliedDamage = target.ApplyDamage(calculatedDamage);
-            result = new BasicAttackResult(true, BasicAttackFailureReason.None, attackSettings.DamageType, attackPower, defense, calculatedDamage, appliedDamage, 0f, target.Health.IsDead);
+            result = default;
             return true;
         }
 
@@ -152,13 +299,13 @@ namespace EndlessGuard.Unit.Runtime
             return BasicAttackFailureReason.None;
         }
 
-        private static bool TryResolveDamageValues(CombatStats attackerStats, AttackSettings attackSettings, CombatStats targetStats, out float attackPower, out float defense, out BasicAttackFailureReason failureReason)
+        private static bool TryResolveDamageValues(RuntimeStats attackerStats, AttackSettings attackSettings, RuntimeStats targetStats, out float attackPower, out float defense, out BasicAttackFailureReason failureReason)
         {
             attackPower = 0f;
             defense = 0f;
             failureReason = BasicAttackFailureReason.None;
 
-            if (attackerStats == null || attackSettings == null || targetStats == null)
+            if (attackerStats == null || !attackerStats.IsInitialized || attackSettings == null || targetStats == null || !targetStats.IsInitialized)
             {
                 failureReason = BasicAttackFailureReason.MissingData;
                 return false;
@@ -196,9 +343,43 @@ namespace EndlessGuard.Unit.Runtime
             return true;
         }
 
-        private static float CalculateDamage(float attackPower, float defense)
+        private static bool RollCritical(float criticalChancePercent)
         {
-            return Mathf.Max(1f, attackPower - Mathf.Max(0f, defense));
+            float chance = Mathf.Clamp(criticalChancePercent, 0f, 100f);
+
+            if (chance <= 0f)
+            {
+                return false;
+            }
+
+            if (chance >= 100f)
+            {
+                return true;
+            }
+
+            return Random.value < chance * 0.01f;
+        }
+
+        private static float CalculateCriticalDamage(float baseDamage, float criticalDamageBonusPercent, bool isCritical)
+        {
+            if (!isCritical)
+            {
+                return baseDamage;
+            }
+
+            float bonusMultiplier = Mathf.Max(0f, criticalDamageBonusPercent) * 0.01f;
+            return Mathf.Max(1f, baseDamage * (1f + bonusMultiplier));
+        }
+
+        private static void PublishMiss(CombatHealth targetHealth, CombatEntityAnchors anchors, Transform fallback)
+        {
+            if (targetHealth == null)
+            {
+                return;
+            }
+
+            Vector3 worldPosition = anchors != null && anchors.EffectPoint != null ? anchors.EffectPoint.position : fallback.position;
+            CombatFeedbackEvents.PublishAttackMissed(targetHealth, worldPosition);
         }
     }
 }

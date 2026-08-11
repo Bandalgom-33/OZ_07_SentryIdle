@@ -14,54 +14,53 @@ namespace EndlessGuard.Unit.Editor
             UnitClass.Guard,
             UnitClass.Defender,
             UnitClass.Supporter,
-            UnitClass.Sniper,
-            UnitClass.Specialist
+            UnitClass.Sniper
+        };
+
+        private static readonly EnemySize[] EnemySizeOptions =
+        {
+            EnemySize.Small,
+            EnemySize.Medium,
+            EnemySize.Large
         };
 
         private static readonly GUIContent[] UnitClassContents = CreateContents(UnitClassOptions);
 
-        public static void DrawUnitRestrictions(SerializedProperty allowedClasses, SerializedProperty allowedSubclasses)
+        private static readonly GUIContent[] EnemySizeContents = CreateContents(EnemySizeOptions);
+
+        public static void DrawUnitRestrictions(SerializedProperty allowedClasses)
         {
-            EditorGUILayout.LabelField("캐릭터 분류 제한", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("캐릭터 직군 패시브 풀", EditorStyles.boldLabel);
 
-            DrawUnitClassList(allowedClasses);
+            EditorGUILayout.HelpBox(
+                "일반 캐릭터는 자신의 상위 직군 풀에 등록된 패시브만 선택할 수 있습니다. 스페셜리스트는 예외로 모든 캐릭터 패시브를 선택할 수 있습니다.",
+                MessageType.Info);
 
-            List<UnitSubclass> subclassCandidates = BuildSubclassCandidates(allowedClasses);
-            DrawUnitSubclassList(allowedSubclasses, subclassCandidates);
-        }
-
-        private static void DrawUnitClassList(SerializedProperty property)
-        {
-            EditorGUILayout.Space(3f);
-            EditorGUILayout.LabelField("허용 상위 분류", EditorStyles.miniBoldLabel);
-
-            for (int i = 0; i < property.arraySize; i++)
+            for (int i = 0; i < allowedClasses.arraySize; i++)
             {
-                SerializedProperty element = property.GetArrayElementAtIndex(i);
+                SerializedProperty element = allowedClasses.GetArrayElementAtIndex(i);
                 UnitClass current = (UnitClass)element.intValue;
                 int selectedIndex = FindIndex(UnitClassOptions, current);
 
-                if (selectedIndex < 0)
-                {
-                    selectedIndex = 0;
-                    element.intValue = (int)UnitClassOptions[0];
-                }
-
                 EditorGUILayout.BeginHorizontal();
 
-                int newIndex = EditorGUILayout.Popup(
-                    new GUIContent($"상위 분류 {i + 1}"),
-                    selectedIndex,
-                    UnitClassContents);
-
-                if (newIndex != selectedIndex)
+                if (selectedIndex < 0)
                 {
-                    element.intValue = (int)UnitClassOptions[newIndex];
+                    EditorGUILayout.LabelField($"직군 풀 {i + 1}", $"{GetDisplayName(current)} (사용하지 않는 분류)");
+                }
+                else
+                {
+                    int newIndex = EditorGUILayout.Popup(new GUIContent($"직군 풀 {i + 1}"), selectedIndex, UnitClassContents);
+
+                    if (newIndex != selectedIndex)
+                    {
+                        element.intValue = (int)UnitClassOptions[newIndex];
+                    }
                 }
 
                 if (GUILayout.Button("제거", GUILayout.Width(48f)))
                 {
-                    property.DeleteArrayElementAtIndex(i);
+                    allowedClasses.DeleteArrayElementAtIndex(i);
                     EditorGUILayout.EndHorizontal();
                     break;
                 }
@@ -69,87 +68,65 @@ namespace EndlessGuard.Unit.Editor
                 EditorGUILayout.EndHorizontal();
             }
 
-            UnitClass nextClass = FindFirstUnusedClass(property);
+            UnitClass nextClass = FindFirstUnusedUnitClass(allowedClasses);
             bool canAdd = nextClass != UnitClass.None;
 
             using (new EditorGUI.DisabledScope(!canAdd))
             {
-                if (GUILayout.Button("허용 상위 분류 추가"))
+                if (GUILayout.Button("직군 풀 추가"))
                 {
-                    int newIndex = property.arraySize;
-                    property.arraySize++;
-                    property.GetArrayElementAtIndex(newIndex).intValue = (int)nextClass;
+                    int newIndex = allowedClasses.arraySize;
+                    allowedClasses.arraySize++;
+                    allowedClasses.GetArrayElementAtIndex(newIndex).intValue = (int)nextClass;
                 }
             }
 
-            if (HasDuplicateValues(property))
+            if (HasDuplicateValues(allowedClasses))
             {
-                EditorGUILayout.HelpBox("같은 상위 분류가 중복 등록되어 있습니다.", MessageType.Warning);
+                EditorGUILayout.HelpBox("같은 캐릭터 직군 풀이 중복 등록되어 있습니다.", MessageType.Warning);
             }
 
-            if (property.arraySize == 0)
+            if (allowedClasses.arraySize == 0)
             {
-                EditorGUILayout.HelpBox("상위 분류 제한이 비어 있어 모든 캐릭터 상위 분류를 허용합니다.", MessageType.Info);
+                EditorGUILayout.HelpBox(
+                    "일반 직군에 배정되지 않은 패시브입니다. 스페셜리스트는 모든 캐릭터 패시브를 사용할 수 있으므로 이 패시브도 선택할 수 있습니다.",
+                    MessageType.Info);
             }
         }
 
-        private static void DrawUnitSubclassList(SerializedProperty property, List<UnitSubclass> candidates)
+        public static void DrawEnemyRestrictions(SerializedProperty allowedSizes)
         {
-            EditorGUILayout.Space(5f);
-            EditorGUILayout.LabelField("허용 세부 분류", EditorStyles.miniBoldLabel);
+            EditorGUILayout.LabelField("몬스터 크기 패시브 풀", EditorStyles.boldLabel);
 
-            if (candidates.Count == 0)
+            EditorGUILayout.HelpBox(
+                "몬스터는 자신의 크기와 일치하는 패시브 풀에서만 패시브를 선택할 수 있습니다.",
+                MessageType.Info);
+
+            for (int i = 0; i < allowedSizes.arraySize; i++)
             {
-                EditorGUILayout.HelpBox("허용 상위 분류를 추가하면 해당 분류의 세부 분류만 선택할 수 있습니다.", MessageType.Info);
-
-                if (property.arraySize > 0)
-                {
-                    using (new EditorGUI.DisabledScope(true))
-                    {
-                        EditorGUILayout.PropertyField(property, new GUIContent("현재 세부 분류 제한"), true);
-                    }
-
-                    if (GUILayout.Button("현재 세부 분류 제한 모두 제거"))
-                    {
-                        property.ClearArray();
-                    }
-                }
-
-                return;
-            }
-
-            GUIContent[] candidateContents = CreateContents(candidates);
-
-            for (int i = 0; i < property.arraySize; i++)
-            {
-                SerializedProperty element = property.GetArrayElementAtIndex(i);
-                UnitSubclass current = (UnitSubclass)element.intValue;
-                int selectedIndex = FindIndex(candidates, current);
+                SerializedProperty element = allowedSizes.GetArrayElementAtIndex(i);
+                EnemySize current = (EnemySize)element.intValue;
+                int selectedIndex = FindIndex(EnemySizeOptions, current);
 
                 EditorGUILayout.BeginHorizontal();
 
                 if (selectedIndex < 0)
                 {
-                    EditorGUILayout.LabelField(
-                        $"세부 분류 {i + 1}",
-                        $"{GetDisplayName(current)} (현재 상위 분류와 불일치)");
+                    EditorGUILayout.LabelField($"크기 풀 {i + 1}", $"{GetDisplayName(current)} (사용하지 않는 크기)");
                 }
                 else
                 {
-                    int newIndex = EditorGUILayout.Popup(
-                        new GUIContent($"세부 분류 {i + 1}"),
-                        selectedIndex,
-                        candidateContents);
+                    int newIndex = EditorGUILayout.Popup(new GUIContent($"크기 풀 {i + 1}"), selectedIndex, EnemySizeContents);
 
                     if (newIndex != selectedIndex)
                     {
-                        element.intValue = (int)candidates[newIndex];
+                        element.intValue = (int)EnemySizeOptions[newIndex];
                     }
                 }
 
                 if (GUILayout.Button("제거", GUILayout.Width(48f)))
                 {
-                    property.DeleteArrayElementAtIndex(i);
+                    allowedSizes.DeleteArrayElementAtIndex(i);
                     EditorGUILayout.EndHorizontal();
                     break;
                 }
@@ -157,59 +134,33 @@ namespace EndlessGuard.Unit.Editor
                 EditorGUILayout.EndHorizontal();
             }
 
-            UnitSubclass nextSubclass = FindFirstUnusedSubclass(property, candidates);
-            bool canAdd = nextSubclass != UnitSubclass.None;
+            EnemySize nextSize = FindFirstUnusedEnemySize(allowedSizes);
+            bool canAdd = nextSize != EnemySize.None;
 
             using (new EditorGUI.DisabledScope(!canAdd))
             {
-                if (GUILayout.Button("허용 세부 분류 추가"))
+                if (GUILayout.Button("크기 풀 추가"))
                 {
-                    int newIndex = property.arraySize;
-                    property.arraySize++;
-                    property.GetArrayElementAtIndex(newIndex).intValue = (int)nextSubclass;
+                    int newIndex = allowedSizes.arraySize;
+                    allowedSizes.arraySize++;
+                    allowedSizes.GetArrayElementAtIndex(newIndex).intValue = (int)nextSize;
                 }
             }
 
-            if (HasInvalidSubclasses(property, candidates))
+            if (HasDuplicateValues(allowedSizes))
             {
-                EditorGUILayout.HelpBox("현재 허용 상위 분류에 속하지 않는 세부 분류가 있습니다. 해당 항목을 제거하세요.", MessageType.Warning);
+                EditorGUILayout.HelpBox("같은 몬스터 크기 풀이 중복 등록되어 있습니다.", MessageType.Warning);
             }
 
-            if (HasDuplicateValues(property))
+            if (allowedSizes.arraySize == 0)
             {
-                EditorGUILayout.HelpBox("같은 세부 분류가 중복 등록되어 있습니다.", MessageType.Warning);
-            }
-
-            if (property.arraySize == 0)
-            {
-                EditorGUILayout.HelpBox("세부 분류 제한이 비어 있어 선택한 상위 분류의 모든 세부 분류를 허용합니다.", MessageType.Info);
+                EditorGUILayout.HelpBox(
+                    "몬스터 크기 풀이 지정되지 않아 현재 어떤 몬스터도 이 패시브를 선택할 수 없습니다.",
+                    MessageType.Warning);
             }
         }
 
-        private static List<UnitSubclass> BuildSubclassCandidates(SerializedProperty allowedClasses)
-        {
-            List<UnitSubclass> candidates = new List<UnitSubclass>();
-
-            for (int i = 0; i < allowedClasses.arraySize; i++)
-            {
-                UnitClass unitClass = (UnitClass)allowedClasses.GetArrayElementAtIndex(i).intValue;
-                IReadOnlyList<UnitSubclass> subclasses = UnitClassRules.GetSubclasses(unitClass);
-
-                for (int j = 0; j < subclasses.Count; j++)
-                {
-                    UnitSubclass subclass = subclasses[j];
-
-                    if (subclass != UnitSubclass.None && !candidates.Contains(subclass))
-                    {
-                        candidates.Add(subclass);
-                    }
-                }
-            }
-
-            return candidates;
-        }
-
-        private static UnitClass FindFirstUnusedClass(SerializedProperty property)
+        private static UnitClass FindFirstUnusedUnitClass(SerializedProperty property)
         {
             for (int i = 0; i < UnitClassOptions.Length; i++)
             {
@@ -224,11 +175,11 @@ namespace EndlessGuard.Unit.Editor
             return UnitClass.None;
         }
 
-        private static UnitSubclass FindFirstUnusedSubclass(SerializedProperty property, IReadOnlyList<UnitSubclass> candidates)
+        private static EnemySize FindFirstUnusedEnemySize(SerializedProperty property)
         {
-            for (int i = 0; i < candidates.Count; i++)
+            for (int i = 0; i < EnemySizeOptions.Length; i++)
             {
-                UnitSubclass candidate = candidates[i];
+                EnemySize candidate = EnemySizeOptions[i];
 
                 if (!ContainsValue(property, (int)candidate))
                 {
@@ -236,7 +187,7 @@ namespace EndlessGuard.Unit.Editor
                 }
             }
 
-            return UnitSubclass.None;
+            return EnemySize.None;
         }
 
         private static bool ContainsValue(SerializedProperty property, int value)
@@ -258,24 +209,7 @@ namespace EndlessGuard.Unit.Editor
 
             for (int i = 0; i < property.arraySize; i++)
             {
-                int value = property.GetArrayElementAtIndex(i).intValue;
-
-                if (!usedValues.Add(value))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static bool HasInvalidSubclasses(SerializedProperty property, IReadOnlyList<UnitSubclass> candidates)
-        {
-            for (int i = 0; i < property.arraySize; i++)
-            {
-                UnitSubclass current = (UnitSubclass)property.GetArrayElementAtIndex(i).intValue;
-
-                if (FindIndex(candidates, current) < 0)
+                if (!usedValues.Add(property.GetArrayElementAtIndex(i).intValue))
                 {
                     return true;
                 }
@@ -316,12 +250,9 @@ namespace EndlessGuard.Unit.Editor
             FieldInfo field = typeof(T).GetField(value.ToString());
             InspectorNameAttribute inspectorName = field?.GetCustomAttribute<InspectorNameAttribute>();
 
-            if (inspectorName != null)
-            {
-                return inspectorName.displayName;
-            }
-
-            return ObjectNames.NicifyVariableName(value.ToString());
+            return inspectorName != null
+                ? inspectorName.displayName
+                : ObjectNames.NicifyVariableName(value.ToString());
         }
     }
 }

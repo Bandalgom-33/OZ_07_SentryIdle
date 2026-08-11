@@ -12,6 +12,7 @@ namespace EndlessGuard.Unit.Editor
         private const string EnemyCatalogPath = "Assets/Unit/Data/Catalogs/EnemyCatalog.asset";
         private const string UnitDataFolder = "Assets/Unit/Data/Units";
         private const string EnemyDataFolder = "Assets/Unit/Data/Enemies";
+        private const string UnitGrowthTablePath = "Assets/Unit/Data/Progression/UnitClassGrowthTable.asset";
 
         public static UnitCatalog LoadUnitCatalog()
         {
@@ -83,6 +84,17 @@ namespace EndlessGuard.Unit.Editor
 
             dataObject.Update();
             displayNameProperty.stringValue = displayName.Trim();
+
+            if (data is UnitDataSO)
+            {
+                SerializedProperty growthTableProperty = dataObject.FindProperty("growthTable");
+
+                if (growthTableProperty != null)
+                {
+                    growthTableProperty.objectReferenceValue = AssetDatabase.LoadAssetAtPath<UnitClassGrowthTableSO>(UnitGrowthTablePath);
+                }
+            }
+
             dataObject.ApplyModifiedProperties();
 
             EditorUtility.SetDirty(data);

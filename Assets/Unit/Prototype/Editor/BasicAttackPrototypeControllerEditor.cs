@@ -17,9 +17,14 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.Space(8f);
             EditorGUILayout.HelpBox("상대 타일, 월드 거리, 바라보는 방향과 대상 유형은 실제 생성된 인스턴스의 CombatGridPosition과 Transform 위치를 사용해 자동 계산합니다.", MessageType.Info);
+
             EditorGUILayout.LabelField("기본 공격 검증 상태", EditorStyles.boldLabel);
 
             DrawCurrentState(controller);
+
+            EditorGUILayout.Space(6f);
+
+            DrawCurrentHitChance(controller);
             DrawLastResult(controller);
 
             if (!EditorApplication.isPlaying)
@@ -92,9 +97,33 @@ namespace EndlessGuard.Unit.Editor
 
                 bool hasEnemyContext = controller.TryCreateEnemyAttackContext(out BasicAttackContext enemyContext);
                 DrawAutomaticContext("몬스터 자동 공격 상황", hasEnemyContext, enemyContext, GetEnemyAttackSettings(controller));
+            }
+        }
 
-                EditorGUILayout.Space(4f);
-                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(controller.LastMessage) ? "기본 공격 검증 결과가 없습니다." : controller.LastMessage);
+        private static void DrawCurrentHitChance(BasicAttackPrototypeController controller)
+        {
+            EditorGUILayout.LabelField("현재 RuntimeStats 명중 계산", EditorStyles.boldLabel);
+
+            UnitRuntimeState unit = controller.Unit;
+            EnemyRuntimeState enemy = controller.Enemy;
+
+            using (new EditorGUI.DisabledScope(true))
+            {
+                if (unit == null || enemy == null || unit.Stats == null || enemy.Stats == null)
+                {
+                    EditorGUILayout.HelpBox("캐릭터와 몬스터가 생성되면 현재 RuntimeStats 기준 명중률이 표시됩니다.", MessageType.Info);
+                    return;
+                }
+
+                EditorGUILayout.FloatField("캐릭터 명중", unit.Stats.Accuracy);
+                EditorGUILayout.FloatField("몬스터 회피", enemy.Stats.Evasion);
+                EditorGUILayout.FloatField("캐릭터 → 몬스터 명중률 (%)", CalculateUnitHitChance(unit, enemy));
+
+                EditorGUILayout.Space(3f);
+
+                EditorGUILayout.FloatField("몬스터 명중", enemy.Stats.Accuracy);
+                EditorGUILayout.FloatField("캐릭터 회피", unit.Stats.Evasion);
+                EditorGUILayout.FloatField("몬스터 → 캐릭터 명중률 (%)", CalculateEnemyHitChance(enemy, unit));
             }
         }
 
@@ -120,6 +149,7 @@ namespace EndlessGuard.Unit.Editor
             }
 
             Vector2Int evaluatedTile = BasicAttackRangeEvaluator.ConvertWorldTileToPatternTile(context.RelativeTargetTile, attackSettings.RangeRotationMode, context.FacingDirection);
+
             EditorGUILayout.Vector2IntField(new GUIContent("패턴 기준 변환 타일"), evaluatedTile);
             EditorGUILayout.FloatField(new GUIContent("공격 사거리"), attackSettings.AttackRange);
             EditorGUILayout.EnumPopup(new GUIContent("범위 회전 방식"), attackSettings.RangeRotationMode);
@@ -144,36 +174,69 @@ namespace EndlessGuard.Unit.Editor
                 EditorGUILayout.EnumPopup(new GUIContent("피해 유형"), result.DamageType);
                 EditorGUILayout.FloatField(new GUIContent("사용 공격력"), result.AttackPower);
                 EditorGUILayout.FloatField(new GUIContent("사용 방어력"), result.Defense);
+                EditorGUILayout.FloatField(new GUIContent("계산 명중률 (%)"), result.HitChancePercent);
+                EditorGUILayout.Toggle(new GUIContent("명중 여부"), result.WasHit);
                 EditorGUILayout.FloatField(new GUIContent("계산 피해"), result.CalculatedDamage);
                 EditorGUILayout.FloatField(new GUIContent("적용 피해"), result.AppliedDamage);
+                EditorGUILayout.Toggle(new GUIContent("치명타 여부"), result.IsCritical);
                 EditorGUILayout.FloatField(new GUIContent("획득 SP"), result.SkillGaugeGained);
                 EditorGUILayout.Toggle(new GUIContent("대상 사망"), result.TargetDied);
             }
         }
 
+        private static float CalculateUnitHitChance(UnitRuntimeState unit, EnemyRuntimeState enemy)
+        {
+            if (unit.Attack == null || unit.Attack.HitRule == null)
+            {
+                return 0f;
+            }
+
+            return HitCalculator.CalculatePercent(unit.Stats.Accuracy, enemy.Stats.Evasion, unit.Attack.HitRule);
+        }
+
+        private static float CalculateEnemyHitChance(EnemyRuntimeState enemy, UnitRuntimeState unit)
+        {
+            if (enemy.Attack == null || enemy.Attack.HitRule == null)
+            {
+                return 0f;
+            }
+
+            return HitCalculator.CalculatePercent(enemy.Stats.Accuracy, unit.Stats.Evasion, enemy.Attack.HitRule);
+        }
+
         private static AttackSettings GetUnitAttackSettings(BasicAttackPrototypeController controller)
         {
-            return controller.Unit == null || controller.Unit.DataLink == null || !controller.Unit.DataLink.HasData ? null : controller.Unit.DataLink.UnitData.AttackSettings;
+            return controller.Unit == null || controller.Unit.DataLink == null || !controller.Unit.DataLink.HasData
+                ? null
+                : controller.Unit.DataLink.UnitData.AttackSettings;
         }
 
         private static AttackSettings GetEnemyAttackSettings(BasicAttackPrototypeController controller)
         {
-            return controller.Enemy == null || controller.Enemy.DataLink == null || !controller.Enemy.DataLink.HasData ? null : controller.Enemy.DataLink.EnemyData.AttackSettings;
+            return controller.Enemy == null || controller.Enemy.DataLink == null || !controller.Enemy.DataLink.HasData
+                ? null
+                : controller.Enemy.DataLink.EnemyData.AttackSettings;
         }
 
         private static string GetUnitHealthText(BasicAttackPrototypeController controller)
         {
-            return controller.Unit == null || controller.Unit.Health == null ? "캐릭터 없음" : $"{controller.Unit.Health.CurrentHp:0.##} / {controller.Unit.Health.MaxHp:0.##}";
+            return controller.Unit == null || controller.Unit.Health == null
+                ? "캐릭터 없음"
+                : $"{controller.Unit.Health.CurrentHp:0.##} / {controller.Unit.Health.MaxHp:0.##}";
         }
 
         private static string GetUnitSkillGaugeText(BasicAttackPrototypeController controller)
         {
-            return controller.Unit == null ? "캐릭터 없음" : $"{controller.Unit.CurrentSkillGauge:0.##} / {controller.Unit.MaxSkillGauge:0.##}";
+            return controller.Unit == null
+                ? "캐릭터 없음"
+                : $"{controller.Unit.CurrentSkillGauge:0.##} / {controller.Unit.MaxSkillGauge:0.##}";
         }
 
         private static string GetEnemyHealthText(BasicAttackPrototypeController controller)
         {
-            return controller.Enemy == null || controller.Enemy.Health == null ? "몬스터 없음" : $"{controller.Enemy.Health.CurrentHp:0.##} / {controller.Enemy.Health.MaxHp:0.##}";
+            return controller.Enemy == null || controller.Enemy.Health == null
+                ? "몬스터 없음"
+                : $"{controller.Enemy.Health.CurrentHp:0.##} / {controller.Enemy.Health.MaxHp:0.##}";
         }
 
         private void Execute(System.Action action)

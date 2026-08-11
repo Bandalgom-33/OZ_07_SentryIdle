@@ -21,6 +21,13 @@ namespace EndlessGuard.Unit.Runtime
 
             unit.Attach(enemy);
             enemy.Attach(unit);
+
+            UnitRuntimeState unitState = unit.State;
+            EnemyRuntimeState enemyState = enemy.State;
+
+            unitState?.Passives?.NotifyBlockStarted(unitState, enemyState);
+            enemyState?.Passives?.NotifyBlocked(enemyState, unitState);
+
             return true;
         }
 
@@ -32,8 +39,14 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             UnitBlock unit = enemy.Blocker;
+            UnitRuntimeState unitState = unit != null ? unit.State : null;
+            EnemyRuntimeState enemyState = enemy.State;
+
             unit.Detach(enemy);
             enemy.Detach();
+
+            unitState?.Passives?.NotifyBlockEnded(unitState, enemyState);
+
             return true;
         }
     }

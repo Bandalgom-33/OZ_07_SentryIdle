@@ -24,6 +24,10 @@ namespace EndlessGuard.Unit.Data
         [Min(1)]
         [SerializeField] private int initialLevel = 1;
 
+        [Header("성장 데이터")]
+        [Tooltip("이 캐릭터의 상위 분류에 맞는 레벨업/승급 성장 규칙을 조회할 공통 성장 테이블입니다. 같은 테이블을 모든 캐릭터가 공유합니다.")]
+        [SerializeField] private UnitClassGrowthTableSO growthTable;
+
         [Header("캐릭터 분류")]
         [Tooltip("캐릭터의 상위 분류를 설정합니다.")]
         [SerializeField] private UnitClass unitClass = UnitClass.None;
@@ -82,8 +86,12 @@ namespace EndlessGuard.Unit.Data
         [SerializeField] private float skillGaugePerAttack;
 
         [Header("패시브 능력")]
-        [Tooltip("이 캐릭터가 사용하는 재사용 가능한 패시브 데이터 목록입니다. 상위 분류와 세부 분류에 고정되지 않습니다.")]
+        [Tooltip("이 캐릭터가 사용하는 재사용 가능한 패시브 데이터 목록입니다.")]
         [SerializeField] private List<PassiveDataSO> passives = new List<PassiveDataSO>();
+
+        [Header("패시브 개별 수치")]
+        [Tooltip("선택한 패시브의 숫자 수치를 이 캐릭터 전용으로 저장합니다. 패시브 기능은 공유하지만 이 목록의 수치는 캐릭터마다 다르게 설정할 수 있습니다.")]
+        [SerializeField] private List<PassiveTuning> passiveTunings = new List<PassiveTuning>();
 
         [Header("캐릭터 프리팹")]
         [Tooltip("이 데이터를 기준으로 생성되거나 연결된 캐릭터 프리팹입니다.")]
@@ -94,6 +102,7 @@ namespace EndlessGuard.Unit.Data
         public string Description => description;
         public UnitGrade Grade => grade;
         public int InitialLevel => initialLevel;
+        public UnitClassGrowthTableSO GrowthTable => growthTable;
         public UnitClass Class => unitClass;
         public UnitSubclass Subclass => subclass;
         public UnitPlacement Placement => placement;
@@ -109,6 +118,27 @@ namespace EndlessGuard.Unit.Data
         public float SkillGaugeRegenPerSecond => skillGaugeRegenPerSecond;
         public float SkillGaugePerAttack => skillGaugePerAttack;
         public IReadOnlyList<PassiveDataSO> Passives => passives;
+        public IReadOnlyList<PassiveTuning> PassiveTunings => passiveTunings;
         public GameObject UnitPrefab => unitPrefab;
+
+        public PassiveTuning GetPassiveTuning(PassiveDataSO passive)
+        {
+            if (passive == null || passiveTunings == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < passiveTunings.Count; i++)
+            {
+                PassiveTuning tuning = passiveTunings[i];
+
+                if (tuning != null && tuning.Passive == passive)
+                {
+                    return tuning;
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -47,6 +47,10 @@ GameObject:
   - component: {fileID: 8372716345387536262}
   - component: {fileID: 49693270321911218}
   - component: {fileID: 960476514598332465}
+  - component: {fileID: 1852086966027650409}
+  - component: {fileID: -6469121658513928003}
+  - component: {fileID: 1502010548655292046}
+  - component: {fileID: 2941483184732143972}
   m_Layer: 0
   m_Name: "ENEMY_0001_\uC694\uB974\uBB38\uAC04\uB4DC"
   m_TagString: Untagged
@@ -161,6 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1de2c4f6abc7ac4d89823a012f6b665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.EnemyBlock
+  blockStopDistance: 1.3
 --- !u!114 &960476514598332465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,6 +178,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e0718335980b5146970675eb7e80141, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.EnemyMove
+--- !u!114 &1852086966027650409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601565435819809601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d30d1861acd2845adb7c9d7664e8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.EnemyAttack
+  hitRule: {fileID: 11400000, guid: ffbc7d91e590cf84099ac2421f716b42, type: 2}
+  damageRule: {fileID: 11400000, guid: 47127f3d9f3f16f48b31fca59bbde292, type: 2}
+--- !u!114 &-6469121658513928003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601565435819809601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a57183c2fcf6a2d42b934957aa51137f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.DamageNumberEmitter
+--- !u!114 &1502010548655292046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601565435819809601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db9ca940dab366e44ba05ac7561da4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.HitFlash
+  flashColor: {r: 1, g: 0.8392157, b: 0.8392157, a: 1}
+  flashStrength: 0.45
+  flashDuration: 0.09
+--- !u!114 &2941483184732143972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601565435819809601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09cc9741e58cde14c97caa246b87c031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.HitShake
+  shakeDistance: 0.05
+  shakeCycles: 2.5
+  reactionDuration: 0.12
+  scaleUp: 1.07
+  scaleDown: 0.96
 --- !u!1 &7418093153962786182
 GameObject:
   m_ObjectHideFlags: 0

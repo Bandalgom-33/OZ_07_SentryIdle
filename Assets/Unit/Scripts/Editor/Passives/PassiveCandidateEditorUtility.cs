@@ -40,11 +40,16 @@ namespace EndlessGuard.Unit.Editor
             destination.Sort(CompareByAssetPath);
         }
 
-        public static void BuildUnitCandidates(IReadOnlyList<PassiveDataSO> allPassives, UnitClass unitClass, UnitSubclass subclass, List<PassiveDataSO> destination)
+        public static void BuildUnitCandidates(IReadOnlyList<PassiveDataSO> allPassives, UnitClass unitClass, List<PassiveDataSO> destination)
         {
+            if (destination == null)
+            {
+                return;
+            }
+
             destination.Clear();
 
-            if (unitClass == UnitClass.None || subclass == UnitSubclass.None)
+            if (allPassives == null || unitClass == UnitClass.None)
             {
                 return;
             }
@@ -53,18 +58,23 @@ namespace EndlessGuard.Unit.Editor
             {
                 PassiveDataSO passive = allPassives[i];
 
-                if (passive != null && passive.CanBeUsedByUnit(unitClass, subclass))
+                if (passive != null && passive.CanBeUsedByUnit(unitClass))
                 {
                     destination.Add(passive);
                 }
             }
         }
 
-        public static void BuildEnemyCandidates(IReadOnlyList<PassiveDataSO> allPassives, EnemyCategory category, EnemyMovementType movementType, EnemySize size, EnemyRole role, List<PassiveDataSO> destination)
+        public static void BuildEnemyCandidates(IReadOnlyList<PassiveDataSO> allPassives, EnemySize size, List<PassiveDataSO> destination)
         {
+            if (destination == null)
+            {
+                return;
+            }
+
             destination.Clear();
 
-            if (category == EnemyCategory.None || movementType == EnemyMovementType.None || size == EnemySize.None || role == EnemyRole.None)
+            if (allPassives == null || size == EnemySize.None)
             {
                 return;
             }
@@ -73,7 +83,7 @@ namespace EndlessGuard.Unit.Editor
             {
                 PassiveDataSO passive = allPassives[i];
 
-                if (passive != null && passive.CanBeUsedByEnemy(category, movementType, size, role))
+                if (passive != null && passive.CanBeUsedByEnemy(size))
                 {
                     destination.Add(passive);
                 }
@@ -82,6 +92,11 @@ namespace EndlessGuard.Unit.Editor
 
         public static GUIContent[] CreateOptionContents(IReadOnlyList<PassiveDataSO> candidates)
         {
+            if (candidates == null)
+            {
+                return new[] { new GUIContent("미설정") };
+            }
+
             GUIContent[] options = new GUIContent[candidates.Count + 1];
             options[0] = new GUIContent("미설정", "이 패시브 슬롯을 비워 둡니다.");
 
@@ -106,6 +121,11 @@ namespace EndlessGuard.Unit.Editor
                 return 0;
             }
 
+            if (candidates == null)
+            {
+                return -1;
+            }
+
             for (int i = 0; i < candidates.Count; i++)
             {
                 if (candidates[i] == target)
@@ -119,7 +139,7 @@ namespace EndlessGuard.Unit.Editor
 
         public static bool IsAlreadyAssigned(SerializedProperty passiveList, PassiveDataSO candidate, int ignoredIndex)
         {
-            if (candidate == null)
+            if (passiveList == null || candidate == null)
             {
                 return false;
             }
@@ -146,6 +166,7 @@ namespace EndlessGuard.Unit.Editor
         {
             string leftPath = AssetDatabase.GetAssetPath(left);
             string rightPath = AssetDatabase.GetAssetPath(right);
+
             return string.CompareOrdinal(leftPath, rightPath);
         }
     }
