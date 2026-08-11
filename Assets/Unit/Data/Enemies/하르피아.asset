@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2c753d8c0be754db225c08615d38a6, type: 3}
+  m_Name: "\uD558\uB974\uD53C\uC544"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.EnemyDataSO
+  enemyId: ENEMY_0005
+  displayName: "\uD558\uB974\uD53C\uC544"
+  description: "\uACF5\uC911\uC744 \uBE44\uD589\uD558\uBA70 \uC9C0\uD615\uACFC \uC800\uC9C0\uB97C
+    \uBB34\uC2DC\uD558\uACE0 \uC804\uC9C4\uD558\uBA70, \uC774\uB3D9 \uC911\uC5D0\uB3C4
+    \uBC94\uC704 \uC548\uC758 \uCE90\uB9AD\uD130\uB97C \uB9C8\uBC95 \uACF5\uACA9\uD574
+    \uACF5\uACA9\uC18D\uB3C4\uB97C \uAC10\uC18C\uC2DC\uD0A4\uB294 \uC18C\uD615 \uBAAC\uC2A4\uD130"
+  category: 1
+  movementType: 2
+  size: 1
+  role: 1
+  attackRule: 2
+  baseStats:
+    maxHp: 1600
+    physicalAttack: 0
+    magicalAttack: 240
+    baseAttacksPerSecond: 0.8
+    physicalDefense: 50
+    magicalDefense: 100
+    accuracy: 105
+    evasion: 20
+    moveSpeed: 1.8
+  attackSettings:
+    attackMode: 2
+    damageType: 2
+    attackTarget: 1
+    attackRange: 3
+    targetCount: 1
+    rangeRotationMode: 1
+    basicAttackRange:
+      horizontalRadius: 3
+      forwardDistance: 3
+      backwardDistance: 3
+      attackTiles:
+      - {x: 0, y: 3}
+      - {x: 0, y: 2}
+      - {x: 0, y: 1}
+      - {x: -1, y: 2}
+      - {x: -1, y: 1}
+      - {x: 1, y: 1}
+      - {x: 1, y: 2}
+  rewardExp: 90
+  rewardGold: 45
+  passives:
+  - {fileID: 11400000, guid: f2414a32478d8b24599f46139decb809, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: f2414a32478d8b24599f46139decb809, type: 2}
+    values:
+    - key: 7
+      value: 5
+    - key: 26
+      value: 30
+    refs: []
+  enemyPrefab: {fileID: 3008395081853249854, guid: 3294d7361a5f22d4e94ea88acb6d2528, type: 3}

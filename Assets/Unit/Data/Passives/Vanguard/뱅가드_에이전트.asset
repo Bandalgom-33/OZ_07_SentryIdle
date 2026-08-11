@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13bcb66759b0c0749aa3a5adc4381987, type: 3}
+  m_Name: "\uBC45\uAC00\uB4DC_\uC5D0\uC774\uC804\uD2B8"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.CostGainPassiveSO
+  displayName: "\uC5D0\uC774\uC804\uD2B8"
+  description: "\uC790\uC2E0\uC758 \uC2A4\uD0AC \uC0AC\uC6A9\uC5D0 \uC131\uACF5\uD558\uBA74
+    \uC18C\uD658 \uCF54\uC2A4\uD2B8\uB97C \uD68D\uB4DD\uD569\uB2C8\uB2E4."
+  usableBy: 1
+  compatibility:
+    allowedUnitClasses: 01000000
+    allowedEnemySizes: 
+  trigger: 5
+  summonCostGain: 5

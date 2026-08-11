@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc13dd53646eb2447b23c2576abc0d97, type: 3}
+  m_Name: "\uC2A4\uB098\uC774\uD37C_\uACF5\uC131\uC0AC\uC218"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.CritSummonSO
+  displayName: "\uACF5\uC131\uC0AC\uC218"
+  description: "\uAE30\uBCF8 \uACF5\uACA9\uC774 \uCE58\uBA85\uD0C0\uB85C \uC801\uC911\uD558\uBA74
+    \uC18C\uD658\uD569\uB2C8\uB2E4."
+  usableBy: 1
+  compatibility:
+    allowedUnitClasses: 05000000
+    allowedEnemySizes: 
+  summonPrefab: {fileID: 6121804433318743232, guid: e534fb89c0b164e498a35f9b6d3b97da, type: 3}
+  summonCooldownSeconds: 10
+  maxActiveSummons: 8
