@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb559248c4596cd458de9c284bd5014a, type: 3}
+  m_Name: "\uC815\uB839"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitDataSO
+  unitId: 
+  displayName: "\uC815\uB839"
+  description: "\uC5B8\uB355\uC5D0 \uC18C\uD658\uB418\uC5B4 \uC77C\uC815 \uC2DC\uAC04
+    \uB3D9\uC548 \uC9C0\uC0C1\uACFC \uACF5\uC911\uC758 \uC801\uC744 \uB9C8\uBC95\uC73C\uB85C
+    \uACF5\uACA9\uD558\uB294 \uC815\uB839\uC785\uB2C8\uB2E4."
+  grade: 0
+  initialLevel: 1
+  growthTable: {fileID: 0}
+  unitClass: 0
+  subclass: 0
+  placement: 3
+  summonCost: 0
+  redeployTime: 0
+  blockCount: 0
+  baseStats:
+    maxHp: 300
+    physicalAttack: 0
+    magicalAttack: 0
+    baseAttacksPerSecond: 1
+    physicalDefense: 150
+    magicalDefense: 150
+    accuracy: 200
+    evasion: 0
+    moveSpeed: 0
+  attackSettings:
+    attackMode: 2
+    damageType: 2
+    attackTarget: 3
+    attackRange: 5
+    targetCount: 3
+    rangeRotationMode: 0
+    basicAttackRange:
+      horizontalRadius: 5
+      forwardDistance: 5
+      backwardDistance: 5
+      attackTiles:
+      - {x: 0, y: 3}
+      - {x: 0, y: 2}
+      - {x: 0, y: 1}
+      - {x: -1, y: 1}
+      - {x: -1, y: 0}
+      - {x: -1, y: -1}
+      - {x: 0, y: -1}
+      - {x: 1, y: -1}
+      - {x: 1, y: 0}
+      - {x: 1, y: 1}
+      - {x: -1, y: 2}
+      - {x: 1, y: 2}
+      - {x: -1, y: 3}
+      - {x: -1, y: 4}
+      - {x: 0, y: 5}
+      - {x: 0, y: 4}
+      - {x: 1, y: 4}
+      - {x: 1, y: 3}
+      - {x: -2, y: -1}
+      - {x: -2, y: 0}
+      - {x: -2, y: 1}
+      - {x: 2, y: 1}
+      - {x: 2, y: 0}
+      - {x: 2, y: -1}
+      - {x: 2, y: -2}
+      - {x: 1, y: -2}
+      - {x: 0, y: -2}
+      - {x: -2, y: -2}
+      - {x: -1, y: -2}
+      - {x: -2, y: 2}
+      - {x: -2, y: 3}
+      - {x: -2, y: 4}
+      - {x: 2, y: 4}
+      - {x: 2, y: 3}
+      - {x: 2, y: 2}
+  hpRegenPerSecond: 0
+  criticalChancePercent: 0
+  criticalDamageBonusPercent: 0
+  maxSkillGauge: 0
+  skillGaugeRegenPerSecond: 0
+  skillGaugePerAttack: 0
+  passives: []
+  passiveTunings: []
+  unitPrefab: {fileID: 6121804433318743232, guid: e534fb89c0b164e498a35f9b6d3b97da, type: 3}

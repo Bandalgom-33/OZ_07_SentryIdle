@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f03045859f8c3a49a8852567a3a514a, type: 3}
+  m_Name: "\uC18C\uD615_\uC790\uD3ED\uBCD1"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.ExplosionSO
+  displayName: "\uC790\uD3ED\uBCD1"
+  description: "\uC0AC\uB9DD \uC2DC \uC8FC\uBCC0 \uC77C\uC815 \uBC94\uC704\uC758
+    \uCE90\uB9AD\uD130\uC5D0\uAC8C \uD3ED\uBC1C \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+  usableBy: 2
+  compatibility:
+    allowedUnitClasses: 
+    allowedEnemySizes: 01000000
+  damageType: 2
+  explosionDamage: 1000
+  explosionRadiusTiles: 1

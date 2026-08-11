@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6091ac3881c5b08469077c827beb3861, type: 3}
+  m_Name: "\uC11C\uD3EC\uD130_\uBE44\uD638\uC790"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.AllyAidSO
+  displayName: "\uBE44\uD638\uC790"
+  description: "\uCE58\uBA85\uD0C0 \uC801\uC911 \uC2DC \uBB34\uC791\uC704 \uC544\uAD70\uC5D0\uAC8C
+    \uBCF4\uD638\uB9C9, HP \uD68C\uBCF5, \uC2A4\uD0AC\uAC8C\uC774\uC9C0 \uD68C\uBCF5
+    \uC911 \uD558\uB098\uB97C \uC801\uC6A9\uD569\uB2C8\uB2E4."
+  usableBy: 1
+  compatibility:
+    allowedUnitClasses: 04000000
+    allowedEnemySizes: 
+  shieldAmount: 500
+  healAmount: 500
+  skillGaugeGain: 20

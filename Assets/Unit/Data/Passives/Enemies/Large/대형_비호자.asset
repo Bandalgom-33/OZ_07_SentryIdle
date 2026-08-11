@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e4ea23d492b52499ed8a91f04596a9, type: 3}
+  m_Name: "\uB300\uD615_\uBE44\uD638\uC790"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.DefenseAuraSO
+  displayName: "\uBE44\uD638\uC790"
+  description: "\uD544\uB4DC\uC5D0 \uC0B4\uC544\uC788\uB294 \uB3D9\uC548 \uC790\uC2E0\uC744
+    \uD3EC\uD568\uD55C \uBAA8\uB4E0 \uC544\uAD70 \uBAAC\uC2A4\uD130\uC758 \uBB3C\uB9AC\xB7\uB9C8\uBC95
+    \uBC29\uC5B4\uB825\uC744 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+  usableBy: 2
+  compatibility:
+    allowedUnitClasses: 
+    allowedEnemySizes: 03000000
+  physicalDefenseBonusPercent: 30
+  magicalDefenseBonusPercent: 30

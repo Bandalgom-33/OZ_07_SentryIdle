@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1781d8db18f0a2c4c9547e17d3249b1c, type: 3}
+  m_Name: "\uB300\uD615_\uC18C\uD658\uC0AC"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.SummonSO
+  displayName: "\uC18C\uD658\uC0AC"
+  description: "\uC77C\uC815 \uC8FC\uAE30\uB9C8\uB2E4 \uB9F5\uC758 \uC720\uD6A8\uD55C
+    \uB79C\uB364 \uC704\uCE58\uC5D0 \uC18C\uD658\uBB3C\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4.
+    \uC18C\uD658\uBB3C\uC740 \uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uCE90\uB9AD\uD130\uB97C
+    \uCD94\uC801\uD574 \uACF5\uACA9\uD569\uB2C8\uB2E4."
+  usableBy: 2
+  compatibility:
+    allowedUnitClasses: 
+    allowedEnemySizes: 03000000
+  summonIntervalSeconds: 10
+  summonCount: 1
+  summonPrefab: {fileID: 2262218435148668757, guid: 74e90650a650c7e4da56ed285b42d8d8, type: 3}
