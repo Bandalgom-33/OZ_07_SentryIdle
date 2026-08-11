@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "SizeDamagePassive", menuName = "Endless Guard/Passive/Å©±â ´ë»ó Ãß°¡ ÇÇÇØ")]
+    [CreateAssetMenu(fileName = "SizeDamagePassive", menuName = "Endless Guard/Passive/í¬ê¸° ëŒ€ìƒ ì¶”ê°€ í”¼í•´")]
     public sealed class SizeDamagePassiveSO : PassiveDataSO
     {
-        [Header("Å©±â ´ë»ó Ãß°¡ ÇÇÇØ ¼³Á¤")]
-        [Tooltip("Ãß°¡ ÇÇÇØ¸¦ Àû¿ëÇÒ ¸ó½ºÅÍ Å©±âÀÔ´Ï´Ù. ÀÌ °ªÀº ÆĞ½Ãºê ±â´É ÀÚÃ¼ÀÇ Á¶°ÇÀÌ¹Ç·Î Ä³¸¯ÅÍº° ¼ıÀÚ Á¶Á¤ ´ë»óÀÌ ¾Æ´Õ´Ï´Ù.")]
+        [Header("í¬ê¸° ëŒ€ìƒ ì¶”ê°€ í”¼í•´ ì„¤ì •")]
+        [Tooltip("ì¶”ê°€ í”¼í•´ë¥¼ ì ìš©í•  ëª¬ìŠ¤í„° í¬ê¸°ì…ë‹ˆë‹¤. ì´ ê°’ì€ íŒ¨ì‹œë¸Œ ê¸°ëŠ¥ ìì²´ì˜ ì¡°ê±´ì´ë¯€ë¡œ ìºë¦­í„°ë³„ ìˆ«ì ì¡°ì • ëŒ€ìƒì´ ì•„ë‹™ë‹ˆë‹¤.")]
         [SerializeField] private EnemySize targetSize = EnemySize.None;
 
-        [Tooltip("»õ Ä³¸¯ÅÍ°¡ ÀÌ ÆĞ½Ãºê¸¦ ¼±ÅÃÇÒ ¶§ »ç¿ëÇÒ ±âº» ÃßÃµ Ãß°¡ ÇÇÇØÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° PassiveTuning¿¡¼­ º°µµ·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ìƒˆ ìºë¦­í„°ê°€ ì´ íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•  ë•Œ ì‚¬ìš©í•  ê¸°ë³¸ ì¶”ì²œ ì¶”ê°€ í”¼í•´ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ PassiveTuningì—ì„œ ë³„ë„ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float bonusDamagePercent;
 

@@ -7,17 +7,17 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     public sealed class CombatGridPosition : MonoBehaviour
     {
-        [Header("·±Å¸ÀÓ °İÀÚ »óÅÂ")]
-        [Tooltip("ÇöÀç °³Ã¼°¡ ÀüÅõ¿¡¼­ »ç¿ëÇÏ´Â ³í¸® °İÀÚ Å¸ÀÏ ÁÂÇ¥ÀÔ´Ï´Ù.")]
+        [Header("ëŸ°íƒ€ì„ ê²©ì ìƒíƒœ")]
+        [Tooltip("í˜„ì¬ ê°œì²´ê°€ ì „íˆ¬ì—ì„œ ì‚¬ìš©í•˜ëŠ” ë…¼ë¦¬ ê²©ì íƒ€ì¼ ì¢Œí‘œì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector2Int tileCoordinate;
 
-        [Tooltip("ÇöÀç °³Ã¼°¡ ÀüÅõ¿¡¼­ ¹Ù¶óº¸´Â ³í¸® °İÀÚ ¹æÇâÀÔ´Ï´Ù.")]
+        [Tooltip("í˜„ì¬ ê°œì²´ê°€ ì „íˆ¬ì—ì„œ ë°”ë¼ë³´ëŠ” ë…¼ë¦¬ ê²©ì ë°©í–¥ì…ë‹ˆë‹¤.")]
         [SerializeField] private GridFacingDirection facingDirection = GridFacingDirection.North;
 
-        [Tooltip("´Ù¸¥ °ø°İÀÚ°¡ ÀÌ °³Ã¼¸¦ °ø°İÇÒ ¶§ »ç¿ëÇÏ´Â ÀüÅõ ´ë»ó ÃşÀÔ´Ï´Ù.")]
+        [Tooltip("ë‹¤ë¥¸ ê³µê²©ìê°€ ì´ ê°œì²´ë¥¼ ê³µê²©í•  ë•Œ ì‚¬ìš©í•˜ëŠ” ì „íˆ¬ ëŒ€ìƒ ì¸µì…ë‹ˆë‹¤.")]
         [SerializeField] private CombatTargetLayer targetLayer = CombatTargetLayer.Ground;
 
-        [Tooltip("¹èÄ¡ ¶Ç´Â ÀÌµ¿ ½Ã½ºÅÛ¿¡¼­ ³í¸® °İÀÚ »óÅÂ°¡ ÃÊ±âÈ­µÆ´ÂÁö Ç¥½ÃÇÕ´Ï´Ù.")]
+        [Tooltip("ë°°ì¹˜ ë˜ëŠ” ì´ë™ ì‹œìŠ¤í…œì—ì„œ ë…¼ë¦¬ ê²©ì ìƒíƒœê°€ ì´ˆê¸°í™”ëëŠ”ì§€ í‘œì‹œí•©ë‹ˆë‹¤.")]
         [SerializeField] private bool isInitialized;
 
         internal event Action<CombatGridPosition> OnTileChanged;

@@ -18,45 +18,45 @@ namespace EndlessGuard.Unit.Prototype
             Death
         }
 
-        [Header("°ËÁõ ´ë»ó ¿¬°á")]
-        [Tooltip("±âÁ¸ °ËÁõ ´ë»óÀ» Á¤¸®ÇÏ±â À§ÇÑ ÀüÅõ »óÅÂ °ËÁõ ÄÄÆ÷³ÍÆ®ÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ëŒ€ìƒ ì—°ê²°")]
+        [Tooltip("ê¸°ì¡´ ê²€ì¦ ëŒ€ìƒì„ ì •ë¦¬í•˜ê¸° ìœ„í•œ ì „íˆ¬ ìƒíƒœ ê²€ì¦ ì»´í¬ë„ŒíŠ¸ì…ë‹ˆë‹¤.")]
         [SerializeField] private CombatStatePrototypeController state;
 
-        [Tooltip("±âÁ¸ ÅëÇÕ ÀüÅõ ·çÇÁÀÇ Áßº¹ ½ÇÇàÀ» ¸·±â À§ÇØ ¿¬°áÇÕ´Ï´Ù.")]
+        [Tooltip("ê¸°ì¡´ í†µí•© ì „íˆ¬ ë£¨í”„ì˜ ì¤‘ë³µ ì‹¤í–‰ì„ ë§‰ê¸° ìœ„í•´ ì—°ê²°í•©ë‹ˆë‹¤.")]
         [SerializeField] private CombatLoop combatLoop;
 
-        [Tooltip("¿ø°Å¸® ¸ó½ºÅÍÀÇ °ø°İ ´ë»óÀÌ µÉ °ø½Ä Ä³¸¯ÅÍ ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Tooltip("ì›ê±°ë¦¬ ëª¬ìŠ¤í„°ì˜ ê³µê²© ëŒ€ìƒì´ ë  ê³µì‹ ìºë¦­í„° í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private GameObject unitPrefab;
 
-        [Tooltip("Prototype Æú´õ¿¡ ¸¸µç InRange ¿ø°Å¸® °ËÁõ ¸ó½ºÅÍ ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Tooltip("Prototype í´ë”ì— ë§Œë“  InRange ì›ê±°ë¦¬ ê²€ì¦ ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private GameObject enemyPrefab;
 
-        [Header("°ËÁõ °æ·Î")]
-        [Tooltip("°İÀÚ ÁÂÇ¥ (0, 0)ÀÇ ¿ùµå ±âÁØ À§Ä¡ÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ê²½ë¡œ")]
+        [Tooltip("ê²©ì ì¢Œí‘œ (0, 0)ì˜ ì›”ë“œ ê¸°ì¤€ ìœ„ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector3 worldOrigin;
 
-        [Tooltip("°İÀÚ ÇÑ Ä­ÀÇ ¿ùµå Å©±âÀÔ´Ï´Ù.")]
+        [Tooltip("ê²©ì í•œ ì¹¸ì˜ ì›”ë“œ í¬ê¸°ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float tileWorldSize = 1f;
 
-        [Tooltip("°ø°İ ´ë»ó Ä³¸¯ÅÍ°¡ À§Ä¡ÇÒ Å¸ÀÏÀÔ´Ï´Ù.")]
+        [Tooltip("ê³µê²© ëŒ€ìƒ ìºë¦­í„°ê°€ ìœ„ì¹˜í•  íƒ€ì¼ì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector2Int unitTile = Vector2Int.zero;
 
-        [Tooltip("¿ø°Å¸® ¸ó½ºÅÍ°¡ ÀÌµ¿À» ½ÃÀÛÇÒ Å¸ÀÏÀÔ´Ï´Ù.")]
+        [Tooltip("ì›ê±°ë¦¬ ëª¬ìŠ¤í„°ê°€ ì´ë™ì„ ì‹œì‘í•  íƒ€ì¼ì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector2Int startTile = new Vector2Int(4, 0);
 
-        [Tooltip("¿ø°Å¸® ¸ó½ºÅÍ°¡ ÇâÇÒ Ãâ±¸ Å¸ÀÏÀÔ´Ï´Ù.")]
+        [Tooltip("ì›ê±°ë¦¬ ëª¬ìŠ¤í„°ê°€ í–¥í•  ì¶œêµ¬ íƒ€ì¼ì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector2Int goalTile = new Vector2Int(-4, 0);
 
-        [Tooltip("°ËÁõ ´ë»óÀÌ »ı¼ºµÉ ¿ùµå Y À§Ä¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ê²€ì¦ ëŒ€ìƒì´ ìƒì„±ë  ì›”ë“œ Y ìœ„ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private float spawnHeight;
 
-        [Header("°ËÁõ Á¦ÇÑ")]
-        [Tooltip("ÀÌ ½Ã°£ ¾È¿¡ »ç°Å¸® ÁøÀÔ°ú Ã¹ °ø°İÀÌ ¹ß»ıÇÏÁö ¾ÊÀ¸¸é ½ÇÆĞÇÕ´Ï´Ù.")]
+        [Header("ê²€ì¦ ì œí•œ")]
+        [Tooltip("ì´ ì‹œê°„ ì•ˆì— ì‚¬ê±°ë¦¬ ì§„ì…ê³¼ ì²« ê³µê²©ì´ ë°œìƒí•˜ì§€ ì•Šìœ¼ë©´ ì‹¤íŒ¨í•©ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float attackTimeoutSeconds = 6f;
 
-        [Tooltip("´ë»óÀÌ »ç¶óÁø µÚ ÀÌ ½Ã°£ ¾È¿¡ Ãâ±¸¿¡ µµ´ŞÇÏÁö ¾ÊÀ¸¸é ½ÇÆĞÇÕ´Ï´Ù.")]
+        [Tooltip("ëŒ€ìƒì´ ì‚¬ë¼ì§„ ë’¤ ì´ ì‹œê°„ ì•ˆì— ì¶œêµ¬ì— ë„ë‹¬í•˜ì§€ ì•Šìœ¼ë©´ ì‹¤íŒ¨í•©ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float resumeTimeoutSeconds = 8f;
 
@@ -97,7 +97,7 @@ namespace EndlessGuard.Unit.Prototype
         public bool IsRunning => isRunning;
         public bool IsManualMode => lossMode == LossMode.Manual;
         public bool IsDeathMode => lossMode == LossMode.Death;
-        public string LossModeName => IsManualMode ? "¼öµ¿ Á¦°Å" : IsDeathMode ? "ÀÚ¿¬ »ç¸Á" : "¾øÀ½";
+        public string LossModeName => IsManualMode ? "ìˆ˜ë™ ì œê±°" : IsDeathMode ? "ìì—° ì‚¬ë§" : "ì—†ìŒ";
         public bool AttackPauseDetected => attackPauseDetected;
         public bool AttackOccurred => attackOccurred;
         public bool NotBlockedAtPause => notBlockedAtPause;
@@ -168,13 +168,13 @@ namespace EndlessGuard.Unit.Prototype
                 pauseWorldPosition = enemy.transform.position;
                 pauseWorldDistance = GetHorizontalDistance(enemy.transform.position, unit.transform.position);
                 notBlockedAtPause = enemy.Block != null && !enemy.Block.IsBlocked;
-                Debug.Log($"InRange °ø°İ Á¤Áö °¨Áö: ¿ùµå À§Ä¡ {pauseWorldPosition}, Ä³¸¯ÅÍ °Å¸® {pauseWorldDistance:0.##}, ÀúÁö ¿©ºÎ {!notBlockedAtPause}", enemy);
+                Debug.Log($"InRange ê³µê²© ì •ì§€ ê°ì§€: ì›”ë“œ ìœ„ì¹˜ {pauseWorldPosition}, ìºë¦­í„° ê±°ë¦¬ {pauseWorldDistance:0.##}, ì €ì§€ ì—¬ë¶€ {!notBlockedAtPause}", enemy);
             }
 
             if (!attackOccurred && unitCurrentHp < unitStartHp)
             {
                 attackOccurred = true;
-                Debug.Log($"InRange ¿ø°Å¸® °ø°İ ¼º°ø: Ä³¸¯ÅÍ HP {unitStartHp:0.##} ¡æ {unitCurrentHp:0.##}", enemy);
+                Debug.Log($"InRange ì›ê±°ë¦¬ ê³µê²© ì„±ê³µ: ìºë¦­í„° HP {unitStartHp:0.##} â†’ {unitCurrentHp:0.##}", enemy);
             }
 
             if (!targetLost && unit != null && unit.Health != null && unit.Health.IsDead)
@@ -183,11 +183,11 @@ namespace EndlessGuard.Unit.Prototype
 
                 if (IsDeathMode)
                 {
-                    BeginResumePhase("ÀÚ¿¬ »ç¸Á");
+                    BeginResumePhase("ìì—° ì‚¬ë§");
                 }
                 else
                 {
-                    FailTest("¼öµ¿ Á¦°Å °ËÁõ Áß Ä³¸¯ÅÍ°¡ ¸ÕÀú »ç¸ÁÇß½À´Ï´Ù. Ã¹ °ø°İ È®ÀÎ ÈÄ ´ë»ó Á¦°Å ¹öÆ°À» ´­·¯¾ß ÇÕ´Ï´Ù.");
+                    FailTest("ìˆ˜ë™ ì œê±° ê²€ì¦ ì¤‘ ìºë¦­í„°ê°€ ë¨¼ì € ì‚¬ë§í–ˆìŠµë‹ˆë‹¤. ì²« ê³µê²© í™•ì¸ í›„ ëŒ€ìƒ ì œê±° ë²„íŠ¼ì„ ëˆŒëŸ¬ì•¼ í•©ë‹ˆë‹¤.");
                     return;
                 }
             }
@@ -196,7 +196,7 @@ namespace EndlessGuard.Unit.Prototype
             {
                 if (!attackOccurred && phaseElapsedSeconds >= attackTimeoutSeconds)
                 {
-                    FailTest("Á¦ÇÑ ½Ã°£ ¾È¿¡ InRange »ç°Å¸® ÁøÀÔ°ú ¿ø°Å¸® °ø°İÀÌ ¹ß»ıÇÏÁö ¾Ê¾Ò½À´Ï´Ù.");
+                    FailTest("ì œí•œ ì‹œê°„ ì•ˆì— InRange ì‚¬ê±°ë¦¬ ì§„ì…ê³¼ ì›ê±°ë¦¬ ê³µê²©ì´ ë°œìƒí•˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
                 }
 
                 return;
@@ -207,7 +207,7 @@ namespace EndlessGuard.Unit.Prototype
             if (!movementResumed && Vector3.Distance(resumeStartPosition, enemy.transform.position) > ResumeMoveDistance)
             {
                 movementResumed = true;
-                Debug.Log("´ë»ó ¼Ò½Ç ÈÄ ¿ø°Å¸® ¸ó½ºÅÍ ÀÌµ¿ Àç°³ È®ÀÎ", enemy);
+                Debug.Log("ëŒ€ìƒ ì†Œì‹¤ í›„ ì›ê±°ë¦¬ ëª¬ìŠ¤í„° ì´ë™ ì¬ê°œ í™•ì¸", enemy);
             }
 
             if (goalReached)
@@ -218,7 +218,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (phaseElapsedSeconds >= resumeTimeoutSeconds)
             {
-                FailTest("´ë»ó ¼Ò½Ç ÈÄ Á¦ÇÑ ½Ã°£ ¾È¿¡ ÀÌµ¿À» Àç°³ÇÏ°í Ãâ±¸¿¡ µµ´ŞÇÏÁö ¸øÇß½À´Ï´Ù.");
+                FailTest("ëŒ€ìƒ ì†Œì‹¤ í›„ ì œí•œ ì‹œê°„ ì•ˆì— ì´ë™ì„ ì¬ê°œí•˜ê³  ì¶œêµ¬ì— ë„ë‹¬í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
             }
         }
 
@@ -242,7 +242,7 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (!isReady || unit == null || enemy == null || move == null || attack == null)
             {
-                message = "¸ÕÀú InRange °ËÁõ ÁØºñ¸¦ ½ÇÇàÇÏ¼¼¿ä.";
+                message = "ë¨¼ì € InRange ê²€ì¦ ì¤€ë¹„ë¥¼ ì‹¤í–‰í•˜ì„¸ìš”.";
                 Debug.LogWarning(message, this);
                 return;
             }
@@ -250,7 +250,7 @@ namespace EndlessGuard.Unit.Prototype
             phaseElapsedSeconds = 0f;
             move.SetPaused(false);
             isRunning = true;
-            message = $"InRange {LossModeName} °ËÁõÀ» ½ÃÀÛÇß½À´Ï´Ù.";
+            message = $"InRange {LossModeName} ê²€ì¦ì„ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.";
             Debug.Log(message, this);
         }
 
@@ -258,20 +258,20 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (!IsManualMode)
             {
-                message = "ÇöÀç °ËÁõ ¹æ½ÄÀº ÀÚ¿¬ »ç¸ÁÀÔ´Ï´Ù. ´ë»ó Á¦°Å ¹öÆ°À» »ç¿ëÇÏÁö ¾Ê½À´Ï´Ù.";
+                message = "í˜„ì¬ ê²€ì¦ ë°©ì‹ì€ ìì—° ì‚¬ë§ì…ë‹ˆë‹¤. ëŒ€ìƒ ì œê±° ë²„íŠ¼ì„ ì‚¬ìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.";
                 Debug.LogWarning(message, this);
                 return;
             }
 
             if (!isRunning || !attackOccurred || targetLost || unitObject == null)
             {
-                message = "¿ø°Å¸® °ø°İÀÌ È®ÀÎµÈ µÚ ÇÑ ¹ø¸¸ ´ë»óÀ» Á¦°ÅÇÒ ¼ö ÀÖ½À´Ï´Ù.";
+                message = "ì›ê±°ë¦¬ ê³µê²©ì´ í™•ì¸ëœ ë’¤ í•œ ë²ˆë§Œ ëŒ€ìƒì„ ì œê±°í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.";
                 Debug.LogWarning(message, this);
                 return;
             }
 
             targetRemoved = true;
-            BeginResumePhase("¼öµ¿ Á¦°Å");
+            BeginResumePhase("ìˆ˜ë™ ì œê±°");
             unitObject.SetActive(false);
         }
 
@@ -320,7 +320,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (state == null || combatLoop == null || unitPrefab == null || enemyPrefab == null)
             {
-                FailTest("State, CombatLoop, Ä³¸¯ÅÍ ÇÁ¸®ÆÕ ¶Ç´Â ¿ø°Å¸® ¸ó½ºÅÍ ÇÁ¸®ÆÕÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+                FailTest("State, CombatLoop, ìºë¦­í„° í”„ë¦¬íŒ¹ ë˜ëŠ” ì›ê±°ë¦¬ ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -339,21 +339,21 @@ namespace EndlessGuard.Unit.Prototype
 
             if (unit == null || enemy == null)
             {
-                FailTest("°ËÁõ ÇÁ¸®ÆÕ¿¡¼­ UnitRuntimeState ¶Ç´Â EnemyRuntimeState¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                FailTest("ê²€ì¦ í”„ë¦¬íŒ¹ì—ì„œ UnitRuntimeState ë˜ëŠ” EnemyRuntimeStateë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 CleanupActors();
                 return;
             }
 
             if (unit.GridPosition == null || enemy.GridPosition == null || enemy.Move == null || enemy.Attack == null || enemy.Block == null)
             {
-                FailTest("¿ø°Å¸® °ËÁõ¿¡ ÇÊ¿äÇÑ °øÅë ·±Å¸ÀÓ ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù.");
+                FailTest("ì›ê±°ë¦¬ ê²€ì¦ì— í•„ìš”í•œ ê³µí†µ ëŸ°íƒ€ì„ ì»´í¬ë„ŒíŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤.");
                 CleanupActors();
                 return;
             }
 
             if (enemy.DataLink == null || !enemy.DataLink.HasData || enemy.DataLink.EnemyData.AttackRule != EnemyAttackRule.InRange)
             {
-                FailTest("¿¬°áµÈ ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ °ø°İ ½ÃÀÛ ±ÔÄ¢ÀÌ InRange°¡ ¾Æ´Õ´Ï´Ù.");
+                FailTest("ì—°ê²°ëœ ëª¬ìŠ¤í„° ë°ì´í„°ì˜ ê³µê²© ì‹œì‘ ê·œì¹™ì´ InRangeê°€ ì•„ë‹™ë‹ˆë‹¤.");
                 CleanupActors();
                 return;
             }
@@ -365,7 +365,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (!move.SetPath(BuildPath()))
             {
-                FailTest("¿ø°Å¸® ¸ó½ºÅÍ °æ·Î¸¦ ¼³Á¤ÇÏÁö ¸øÇß½À´Ï´Ù.");
+                FailTest("ì›ê±°ë¦¬ ëª¬ìŠ¤í„° ê²½ë¡œë¥¼ ì„¤ì •í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 CleanupActors();
                 return;
             }
@@ -375,7 +375,7 @@ namespace EndlessGuard.Unit.Prototype
             unitCurrentHp = unitStartHp;
             currentEnemyPosition = enemy.transform.position;
             isReady = true;
-            message = $"InRange {LossModeName} °ËÁõ ÁØºñ ¿Ï·á: ¸ó½ºÅÍ ½ÃÀÛ {startTile}, Ä³¸¯ÅÍ {unitTile}, Ãâ±¸ {goalTile}";
+            message = $"InRange {LossModeName} ê²€ì¦ ì¤€ë¹„ ì™„ë£Œ: ëª¬ìŠ¤í„° ì‹œì‘ {startTile}, ìºë¦­í„° {unitTile}, ì¶œêµ¬ {goalTile}";
             Debug.Log(message, this);
         }
 
@@ -389,7 +389,7 @@ namespace EndlessGuard.Unit.Prototype
             targetLost = true;
             resumeStartPosition = enemy.transform.position;
             phaseElapsedSeconds = 0f;
-            message = $"°ø°İ ´ë»ó ¼Ò½Ç È®ÀÎ: {reason}. °ø°İ Á¤Áö ÇØÁ¦¿Í Ãâ±¸ ÀÌµ¿ Àç°³¸¦ È®ÀÎÇÕ´Ï´Ù.";
+            message = $"ê³µê²© ëŒ€ìƒ ì†Œì‹¤ í™•ì¸: {reason}. ê³µê²© ì •ì§€ í•´ì œì™€ ì¶œêµ¬ ì´ë™ ì¬ê°œë¥¼ í™•ì¸í•©ë‹ˆë‹¤.";
             Debug.Log(message, this);
         }
 
@@ -410,12 +410,12 @@ namespace EndlessGuard.Unit.Prototype
 
             if (finalPassed)
             {
-                message = $"InRange {LossModeName} °ËÁõ ¼º°ø: °Å¸® {pauseWorldDistance:0.##}¿¡¼­ Á¤Áö¡¤°ø°İ, ´ë»ó ¼Ò½Ç ÈÄ ÀÌµ¿ Àç°³, Ãâ±¸ µµ´Ş ¿Ï·á";
+                message = $"InRange {LossModeName} ê²€ì¦ ì„±ê³µ: ê±°ë¦¬ {pauseWorldDistance:0.##}ì—ì„œ ì •ì§€Â·ê³µê²©, ëŒ€ìƒ ì†Œì‹¤ í›„ ì´ë™ ì¬ê°œ, ì¶œêµ¬ ë„ë‹¬ ì™„ë£Œ";
                 Debug.Log(message, this);
                 return;
             }
 
-            FailTest("InRange ÃÖÁ¾ °ËÁõ °á°ú°¡ ¿¹»ó Á¶°Ç°ú ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.");
+            FailTest("InRange ìµœì¢… ê²€ì¦ ê²°ê³¼ê°€ ì˜ˆìƒ ì¡°ê±´ê³¼ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
         }
 
         private void FailTest(string failureMessage)

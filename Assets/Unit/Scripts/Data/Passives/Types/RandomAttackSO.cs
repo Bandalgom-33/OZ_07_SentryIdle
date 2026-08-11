@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "RandomAttack", menuName = "Endless Guard/Passive/¹«ÀÛÀ§ ´ÙÁß °ø°İ")]
+    [CreateAssetMenu(fileName = "RandomAttack", menuName = "Endless Guard/Passive/ë¬´ì‘ìœ„ ë‹¤ì¤‘ ê³µê²©")]
     public sealed class RandomAttackSO : PassiveDataSO
     {
-        [Header("¹«ÀÛÀ§ ´ÙÁß °ø°İ ±âº»°ª")]
-        [Tooltip("±âº» °ø°İ ½Ã ÇÊµå¿¡ »ì¾ÆÀÖ´Â À¯È¿ÇÑ Ä³¸¯ÅÍ Áß Áßº¹ ¾øÀÌ ¹«ÀÛÀ§·Î ¼±ÅÃÇÒ ±âº» °ø°İ ´ë»ó ¼öÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ë¬´ì‘ìœ„ ë‹¤ì¤‘ ê³µê²© ê¸°ë³¸ê°’")]
+        [Tooltip("ê¸°ë³¸ ê³µê²© ì‹œ í•„ë“œì— ì‚´ì•„ìˆëŠ” ìœ íš¨í•œ ìºë¦­í„° ì¤‘ ì¤‘ë³µ ì—†ì´ ë¬´ì‘ìœ„ë¡œ ì„ íƒí•  ê¸°ë³¸ ê³µê²© ëŒ€ìƒ ìˆ˜ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int randomTargetCount = 3;
 

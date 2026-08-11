@@ -7,57 +7,57 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(CanvasGroup))]
     public sealed class MissFeedback : MonoBehaviour
     {
-        [Header("MISS ÀÌµ¿")]
-        [Tooltip("MISS Ç¥½Ã°¡ È­¸é¿¡ Á¸ÀçÇÏ´Â ÀüÃ¼ ½Ã°£ÀÔ´Ï´Ù.")]
+        [Header("MISS ì´ë™")]
+        [Tooltip("MISS í‘œì‹œê°€ í™”ë©´ì— ì¡´ì¬í•˜ëŠ” ì „ì²´ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.05f)]
         [SerializeField] private float lifetime = 0.65f;
 
-        [Tooltip("MISS°¡ ÀÚ½ÅÀÇ ¼ö¸í µ¿¾È ÀÚ¿¬½º·´°Ô »ó½ÂÇÏ´Â °Å¸®ÀÔ´Ï´Ù.")]
+        [Tooltip("MISSê°€ ìì‹ ì˜ ìˆ˜ëª… ë™ì•ˆ ìì—°ìŠ¤ëŸ½ê²Œ ìƒìŠ¹í•˜ëŠ” ê±°ë¦¬ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float riseDistance = 48f;
 
-        [Tooltip("°°Àº ´ë»ó¿¡°Ô »õ·Î¿î MISS°¡ ¹ß»ıÇÒ ¶§ ±âÁ¸ MISS°¡ Ãß°¡·Î ¹Ğ·Á ¿Ã¶ó°¡´Â °Å¸®ÀÔ´Ï´Ù.")]
+        [Tooltip("ê°™ì€ ëŒ€ìƒì—ê²Œ ìƒˆë¡œìš´ MISSê°€ ë°œìƒí•  ë•Œ ê¸°ì¡´ MISSê°€ ì¶”ê°€ë¡œ ë°€ë ¤ ì˜¬ë¼ê°€ëŠ” ê±°ë¦¬ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float pushDistance = 14f;
 
-        [Tooltip("MISS°¡ ½ÃÀÛ À§Ä¡¿¡¼­ ¿Ã¶ó°¥ ¼ö ÀÖ´Â ÃÖ´ë ³ôÀÌÀÔ´Ï´Ù.")]
+        [Tooltip("MISSê°€ ì‹œì‘ ìœ„ì¹˜ì—ì„œ ì˜¬ë¼ê°ˆ ìˆ˜ ìˆëŠ” ìµœëŒ€ ë†’ì´ì…ë‹ˆë‹¤.")]
         [Min(1f)]
         [SerializeField] private float maxRiseHeight = 90f;
 
-        [Tooltip("¿¬¼Ó MISS·Î À§·Î ¹Ğ¸± ¶§ ºÎµå·´°Ô ÀÌµ¿ÇÏ´Â ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("ì—°ì† MISSë¡œ ìœ„ë¡œ ë°€ë¦´ ë•Œ ë¶€ë“œëŸ½ê²Œ ì´ë™í•˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float pushSmoothTime = 0.07f;
 
-        [Tooltip("¿¬¼Ó MISS·Î ¹Ğ¸± ¶§ »ç¿ëÇÒ ÃÖ´ë ÀÌµ¿ ¼ÓµµÀÔ´Ï´Ù.")]
+        [Tooltip("ì—°ì† MISSë¡œ ë°€ë¦´ ë•Œ ì‚¬ìš©í•  ìµœëŒ€ ì´ë™ ì†ë„ì…ë‹ˆë‹¤.")]
         [Min(1f)]
         [SerializeField] private float pushMaxSpeed = 280f;
 
-        [Header("MISS ÆË")]
-        [Tooltip("MISS°¡ Ã³À½ µîÀåÇÏ´Â Å©±âÀÔ´Ï´Ù.")]
+        [Header("MISS íŒ")]
+        [Tooltip("MISSê°€ ì²˜ìŒ ë“±ì¥í•˜ëŠ” í¬ê¸°ì…ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float startScale = 0.55f;
 
-        [Tooltip("MISS°¡ ¼ø°£ÀûÀ¸·Î ÆÅ Ä¿Áö´Â ÃÖ´ë Å©±âÀÔ´Ï´Ù.")]
+        [Tooltip("MISSê°€ ìˆœê°„ì ìœ¼ë¡œ íŒ ì»¤ì§€ëŠ” ìµœëŒ€ í¬ê¸°ì…ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float popScale = 1.20f;
 
-        [Tooltip("ÆËÀÌ ³¡³­ µÚ À¯ÁöÇÏ´Â Å©±âÀÔ´Ï´Ù.")]
+        [Tooltip("íŒì´ ëë‚œ ë’¤ ìœ ì§€í•˜ëŠ” í¬ê¸°ì…ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float settleScale = 1f;
 
-        [Tooltip("½ÃÀÛ Å©±â¿¡¼­ ÃÖ´ë Å©±â±îÁö Ä¿Áö´Â ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("ì‹œì‘ í¬ê¸°ì—ì„œ ìµœëŒ€ í¬ê¸°ê¹Œì§€ ì»¤ì§€ëŠ” ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float popDuration = 0.05f;
 
-        [Tooltip("ÃÖ´ë Å©±â¿¡¼­ ±âº» Å©±â·Î µ¹¾Æ¿À´Â ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("ìµœëŒ€ í¬ê¸°ì—ì„œ ê¸°ë³¸ í¬ê¸°ë¡œ ëŒì•„ì˜¤ëŠ” ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float settleDuration = 0.09f;
 
-        [Header("MISS Ç¥½Ã")]
-        [Tooltip("MISS ÀüÃ¼ Ç¥½Ã¸¦ ±â¿ïÀÏ °¢µµÀÔ´Ï´Ù. À½¼ö´Â ¿ŞÂÊÀ¸·Î ±â¿ï¾îÁı´Ï´Ù.")]
+        [Header("MISS í‘œì‹œ")]
+        [Tooltip("MISS ì „ì²´ í‘œì‹œë¥¼ ê¸°ìš¸ì¼ ê°ë„ì…ë‹ˆë‹¤. ìŒìˆ˜ëŠ” ì™¼ìª½ìœ¼ë¡œ ê¸°ìš¸ì–´ì§‘ë‹ˆë‹¤.")]
         [SerializeField] private float tiltAngle = -10f;
 
-        [Tooltip("ÀüÃ¼ Ç¥½Ã ½Ã°£ Áß ÀÌ ºñÀ² ÀÌÈÄºÎÅÍ Åõ¸íÇØÁö±â ½ÃÀÛÇÕ´Ï´Ù.")]
+        [Tooltip("ì „ì²´ í‘œì‹œ ì‹œê°„ ì¤‘ ì´ ë¹„ìœ¨ ì´í›„ë¶€í„° íˆ¬ëª…í•´ì§€ê¸° ì‹œì‘í•©ë‹ˆë‹¤.")]
         [Range(0f, 0.95f)]
         [SerializeField] private float fadeStartRatio = 0.35f;
 

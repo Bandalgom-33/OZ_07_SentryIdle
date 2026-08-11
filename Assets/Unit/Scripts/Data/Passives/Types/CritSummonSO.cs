@@ -2,18 +2,18 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "CritSummon", menuName = "Endless Guard/Passive/Ä¡¸íÅ¸ ¼ÒÈ¯")]
+    [CreateAssetMenu(fileName = "CritSummon", menuName = "Endless Guard/Passive/ì¹˜ëª…íƒ€ ì†Œí™˜")]
     public sealed class CritSummonSO : PassiveDataSO
     {
-        [Header("Ä¡¸íÅ¸ ¼ÒÈ¯ ±âº»°ª")]
-        [Tooltip("Ä³¸¯ÅÍº° ¼ÒÈ¯¹° ÇÁ¸®ÆÕÀÌ µû·Î ¼³Á¤µÇÁö ¾Ê¾ÒÀ» ¶§ »ç¿ëÇÒ ±âº» ¼ÒÈ¯¹° ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Header("ì¹˜ëª…íƒ€ ì†Œí™˜ ê¸°ë³¸ê°’")]
+        [Tooltip("ìºë¦­í„°ë³„ ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹ì´ ë”°ë¡œ ì„¤ì •ë˜ì§€ ì•Šì•˜ì„ ë•Œ ì‚¬ìš©í•  ê¸°ë³¸ ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private GameObject summonPrefab;
 
-        [Tooltip("Ä¡¸íÅ¸·Î ¼ÒÈ¯ÇÑ µÚ ´Ù½Ã ¼ÒÈ¯ÇÒ ¼ö ÀÖÀ» ¶§±îÁöÀÇ ´ë±â½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("ì¹˜ëª…íƒ€ë¡œ ì†Œí™˜í•œ ë’¤ ë‹¤ì‹œ ì†Œí™˜í•  ìˆ˜ ìˆì„ ë•Œê¹Œì§€ì˜ ëŒ€ê¸°ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float summonCooldownSeconds = 3f;
 
-        [Tooltip("ÀÌ ÆĞ½Ãºê·Î µ¿½Ã¿¡ À¯ÁöÇÒ ¼ö ÀÖ´Â ¼ÒÈ¯¹°ÀÇ ÃÖ´ë °³¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ì´ íŒ¨ì‹œë¸Œë¡œ ë™ì‹œì— ìœ ì§€í•  ìˆ˜ ìˆëŠ” ì†Œí™˜ë¬¼ì˜ ìµœëŒ€ ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int maxActiveSummons = 3;
 

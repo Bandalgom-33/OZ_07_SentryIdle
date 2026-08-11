@@ -23,19 +23,19 @@ namespace EndlessGuard.Unit.Editor
         {
             EditorGUILayout.Space(8f);
 
-            EditorGUILayout.LabelField("��ȯ �ڽ�Ʈ ȹ�� ����", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("소환 코스트 획득 설정", EditorStyles.boldLabel);
 
             EditorGUILayout.PropertyField(
                 trigger,
                 new GUIContent(
-                    "�ߵ� ����",
-                    "�� �нú갡 ��ȯ �ڽ�Ʈ�� ȹ���ϴ� ���� �̺�Ʈ�Դϴ�."));
+                    "발동 조건",
+                    "이 패시브가 소환 코스트를 획득하는 전투 이벤트입니다."));
 
             EditorGUILayout.PropertyField(
                 summonCostGain,
                 new GUIContent(
-                    "�⺻ �ڽ�Ʈ ȹ�淮",
-                    "�� ĳ���Ϳ� ó�� ������ ��õ���Դϴ�. ĳ���ͺ� ���� ��ġ�� UnitDataSO�� �нú� ���� ��ġ���� ���������� �����մϴ�."));
+                    "기본 코스트 획득량",
+                    "새 캐릭터에 처음 설정할 추천값입니다. 캐릭터별 실제 수치는 UnitDataSO의 패시브 개별 수치에서 독립적으로 조정합니다."));
         }
     }
 }

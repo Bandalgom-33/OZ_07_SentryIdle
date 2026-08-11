@@ -24,13 +24,13 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Áß°© ¹æ¾î·Â ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(physicalDefenseBonusPercent, new GUIContent("¹°¸® ¹æ¾î·Â Áõ°¡À² (%)", "Áß°© ÆÐ½Ãºê·Î Áõ°¡ÇÏ´Â ±âº» ÃßÃµ ¹°¸® ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(magicalDefenseBonusPercent, new GUIContent("¸¶¹ý ¹æ¾î·Â Áõ°¡À² (%)", "Áß°© ÆÐ½Ãºê·Î Áõ°¡ÇÏ´Â ±âº» ÃßÃµ ¸¶¹ý ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ì¤‘ê°‘ ë°©ì–´ë ¥ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(physicalDefenseBonusPercent, new GUIContent("ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)", "ì¤‘ê°‘ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë¬¼ë¦¬ ë°©ì–´ë ¥ ë¹„ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(magicalDefenseBonusPercent, new GUIContent("ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)", "ì¤‘ê°‘ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë§ˆë²• ë°©ì–´ë ¥ ë¹„ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Áß°© ÀÌµ¿¼Óµµ ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(moveSpeedReductionPercent, new GUIContent("ÀÌµ¿¼Óµµ °¨¼ÒÀ² (%)", "Áß°© ÆÐ½Ãºê·Î °¨¼ÒÇÏ´Â ±âº» ÃßÃµ ÀÌµ¿¼Óµµ ºñÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ì¤‘ê°‘ ì´ë™ì†ë„ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(moveSpeedReductionPercent, new GUIContent("ì´ë™ì†ë„ ê°ì†Œìœ¨ (%)", "ì¤‘ê°‘ íŒ¨ì‹œë¸Œë¡œ ê°ì†Œí•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ì´ë™ì†ë„ ë¹„ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
         }
     }
 }

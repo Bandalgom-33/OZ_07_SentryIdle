@@ -13,10 +13,10 @@ namespace EndlessGuard.Unit.Editor
         private string resultMessage;
         private MessageType resultType = MessageType.None;
 
-        [MenuItem("Tools/Endless Guard/µ¥ÀÌÅÍ Á¦ÀÛ µµ±¸")]
+        [MenuItem("Tools/Endless Guard/ë°ì´í„° ì œì‘ ë„êµ¬")]
         public static void OpenWindow()
         {
-            DataCreatorWindow window = GetWindow<DataCreatorWindow>("µ¥ÀÌÅÍ Á¦ÀÛ µµ±¸");
+            DataCreatorWindow window = GetWindow<DataCreatorWindow>("ë°ì´í„° ì œì‘ ë„êµ¬");
             window.minSize = new Vector2(440f, 360f);
         }
 
@@ -38,10 +38,10 @@ namespace EndlessGuard.Unit.Editor
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ¡¤¸ó½ºÅÍ µ¥ÀÌÅÍ Á¦ÀÛ µµ±¸", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìºë¦­í„°Â·ëª¬ìŠ¤í„° ë°ì´í„° ì œì‘ ë„êµ¬", EditorStyles.boldLabel);
             EditorGUILayout.Space(4f);
 
-            EditorGUILayout.HelpBox("Ç¥½Ã ÀÌ¸§À» ÀÔ·ÂÇÏ°í »ı¼ºÇÏ¸é ÁöÁ¤µÈ µ¥ÀÌÅÍ Æú´õ¿¡ ScriptableObject°¡ »ı¼ºµË´Ï´Ù. ID ¹ß±Ş°ú Catalog µî·Ïµµ ÇÔ²² Ã³¸®µË´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("í‘œì‹œ ì´ë¦„ì„ ì…ë ¥í•˜ê³  ìƒì„±í•˜ë©´ ì§€ì •ëœ ë°ì´í„° í´ë”ì— ScriptableObjectê°€ ìƒì„±ë©ë‹ˆë‹¤. ID ë°œê¸‰ê³¼ Catalog ë“±ë¡ë„ í•¨ê»˜ ì²˜ë¦¬ë©ë‹ˆë‹¤.", MessageType.Info);
 
             DrawCatalogStatus();
 
@@ -61,29 +61,29 @@ namespace EndlessGuard.Unit.Editor
         private void DrawCatalogStatus()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Catalog ¿¬°á »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Catalog ì—°ê²° ìƒíƒœ", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.ObjectField(new GUIContent("Ä³¸¯ÅÍ Catalog"), unitCatalog, typeof(UnitCatalog), false);
-                EditorGUILayout.ObjectField(new GUIContent("¸ó½ºÅÍ Catalog"), enemyCatalog, typeof(EnemyCatalog), false);
+                EditorGUILayout.ObjectField(new GUIContent("ìºë¦­í„° Catalog"), unitCatalog, typeof(UnitCatalog), false);
+                EditorGUILayout.ObjectField(new GUIContent("ëª¬ìŠ¤í„° Catalog"), enemyCatalog, typeof(EnemyCatalog), false);
 
                 if (unitCatalog != null)
                 {
-                    EditorGUILayout.TextField(new GUIContent("´ÙÀ½ Ä³¸¯ÅÍ ID"), $"UNIT_{unitCatalog.LastIssuedNumber + 1:D4}");
+                    EditorGUILayout.TextField(new GUIContent("ë‹¤ìŒ ìºë¦­í„° ID"), $"UNIT_{unitCatalog.LastIssuedNumber + 1:D4}");
                 }
 
                 if (enemyCatalog != null)
                 {
-                    EditorGUILayout.TextField(new GUIContent("´ÙÀ½ ¸ó½ºÅÍ ID"), $"ENEMY_{enemyCatalog.LastIssuedNumber + 1:D4}");
+                    EditorGUILayout.TextField(new GUIContent("ë‹¤ìŒ ëª¬ìŠ¤í„° ID"), $"ENEMY_{enemyCatalog.LastIssuedNumber + 1:D4}");
                 }
             }
 
             if (unitCatalog == null || enemyCatalog == null)
             {
-                EditorGUILayout.HelpBox("ÇÊ¼ö Catalog ¿¡¼ÂÀ» Ã£Áö ¸øÇß½À´Ï´Ù. Assets/Unit/Data/Catalogs °æ·Î¸¦ È®ÀÎÇÏ¼¼¿ä.", MessageType.Error);
+                EditorGUILayout.HelpBox("í•„ìˆ˜ Catalog ì—ì…‹ì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. Assets/Unit/Data/Catalogs ê²½ë¡œë¥¼ í™•ì¸í•˜ì„¸ìš”.", MessageType.Error);
 
-                if (GUILayout.Button("Catalog ´Ù½Ã ºÒ·¯¿À±â"))
+                if (GUILayout.Button("Catalog ë‹¤ì‹œ ë¶ˆëŸ¬ì˜¤ê¸°"))
                 {
                     LoadCatalogs();
                 }
@@ -92,16 +92,16 @@ namespace EndlessGuard.Unit.Editor
 
         private void DrawUnitCreator()
         {
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ µ¥ÀÌÅÍ »ı¼º", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("»ı¼º °æ·Î", "Assets/Unit/Data/Units");
+            EditorGUILayout.LabelField("ìºë¦­í„° ë°ì´í„° ìƒì„±", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìƒì„± ê²½ë¡œ", "Assets/Unit/Data/Units");
 
-            unitDisplayName = EditorGUILayout.TextField(new GUIContent("Ç¥½Ã ÀÌ¸§", "°ÔÀÓ È­¸é°ú Á¦ÀÛ µµ±¸¿¡ Ç¥½ÃÇÒ Ä³¸¯ÅÍ ÀÌ¸§ÀÔ´Ï´Ù."), unitDisplayName);
+            unitDisplayName = EditorGUILayout.TextField(new GUIContent("í‘œì‹œ ì´ë¦„", "ê²Œì„ í™”ë©´ê³¼ ì œì‘ ë„êµ¬ì— í‘œì‹œí•  ìºë¦­í„° ì´ë¦„ì…ë‹ˆë‹¤."), unitDisplayName);
 
             bool cannotCreate = unitCatalog == null || string.IsNullOrWhiteSpace(unitDisplayName);
 
             using (new EditorGUI.DisabledScope(cannotCreate))
             {
-                if (GUILayout.Button("Ä³¸¯ÅÍ µ¥ÀÌÅÍ »ı¼º"))
+                if (GUILayout.Button("ìºë¦­í„° ë°ì´í„° ìƒì„±"))
                 {
                     bool success = DataCreatorUtility.TryCreateUnitData(unitDisplayName, out UnitDataSO createdData, out string message);
                     resultMessage = message;
@@ -118,16 +118,16 @@ namespace EndlessGuard.Unit.Editor
 
         private void DrawEnemyCreator()
         {
-            EditorGUILayout.LabelField("¸ó½ºÅÍ µ¥ÀÌÅÍ »ı¼º", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("»ı¼º °æ·Î", "Assets/Unit/Data/Enemies");
+            EditorGUILayout.LabelField("ëª¬ìŠ¤í„° ë°ì´í„° ìƒì„±", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìƒì„± ê²½ë¡œ", "Assets/Unit/Data/Enemies");
 
-            enemyDisplayName = EditorGUILayout.TextField(new GUIContent("Ç¥½Ã ÀÌ¸§", "°ÔÀÓ È­¸é°ú Á¦ÀÛ µµ±¸¿¡ Ç¥½ÃÇÒ ¸ó½ºÅÍ ÀÌ¸§ÀÔ´Ï´Ù."), enemyDisplayName);
+            enemyDisplayName = EditorGUILayout.TextField(new GUIContent("í‘œì‹œ ì´ë¦„", "ê²Œì„ í™”ë©´ê³¼ ì œì‘ ë„êµ¬ì— í‘œì‹œí•  ëª¬ìŠ¤í„° ì´ë¦„ì…ë‹ˆë‹¤."), enemyDisplayName);
 
             bool cannotCreate = enemyCatalog == null || string.IsNullOrWhiteSpace(enemyDisplayName);
 
             using (new EditorGUI.DisabledScope(cannotCreate))
             {
-                if (GUILayout.Button("¸ó½ºÅÍ µ¥ÀÌÅÍ »ı¼º"))
+                if (GUILayout.Button("ëª¬ìŠ¤í„° ë°ì´í„° ìƒì„±"))
                 {
                     bool success = DataCreatorUtility.TryCreateEnemyData(enemyDisplayName, out EnemyDataSO createdData, out string message);
                     resultMessage = message;

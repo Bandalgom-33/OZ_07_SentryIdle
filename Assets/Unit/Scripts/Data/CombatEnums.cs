@@ -4,73 +4,73 @@ namespace EndlessGuard.Unit.Data
 {
     public enum AttackMode
     {
-        [InspectorName("°ø°İÇÏÁö ¾ÊÀ½")]
+        [InspectorName("ê³µê²©í•˜ì§€ ì•ŠìŒ")]
         None = 0,
 
-        [InspectorName("±Ù°Å¸®")]
+        [InspectorName("ê·¼ê±°ë¦¬")]
         Melee = 1,
 
-        [InspectorName("¿ø°Å¸®")]
+        [InspectorName("ì›ê±°ë¦¬")]
         Ranged = 2
     }
 
     public enum DamageType
     {
-        [InspectorName("ÇÇÇØ ¾øÀ½")]
+        [InspectorName("í”¼í•´ ì—†ìŒ")]
         None = 0,
 
-        [InspectorName("¹°¸® ÇÇÇØ")]
+        [InspectorName("ë¬¼ë¦¬ í”¼í•´")]
         Physical = 1,
 
-        [InspectorName("¸¶¹ı ÇÇÇØ")]
+        [InspectorName("ë§ˆë²• í”¼í•´")]
         Magical = 2
     }
 
     public enum AttackTarget
     {
-        [InspectorName("°ø°İ ´ë»ó ¾øÀ½")]
+        [InspectorName("ê³µê²© ëŒ€ìƒ ì—†ìŒ")]
         None = 0,
 
-        [InspectorName("Áö»ó")]
+        [InspectorName("ì§€ìƒ")]
         Ground = 1,
 
-        [InspectorName("°øÁß")]
+        [InspectorName("ê³µì¤‘")]
         Air = 2,
 
-        [InspectorName("Áö»ó¡¤°øÁß")]
+        [InspectorName("ì§€ìƒÂ·ê³µì¤‘")]
         GroundAndAir = 3
     }
 
     public enum AttackRangeRotationMode
     {
-        [InspectorName("¹æÇâ °íÁ¤")]
+        [InspectorName("ë°©í–¥ ê³ ì •")]
         Fixed = 0,
 
-        [InspectorName("¹Ù¶óº¸´Â ¹æÇâ µû¶ó È¸Àü")]
+        [InspectorName("ë°”ë¼ë³´ëŠ” ë°©í–¥ ë”°ë¼ íšŒì „")]
         FollowFacing = 1
     }
 
     public enum CombatTargetLayer
     {
-        [InspectorName("Áö»ó")]
+        [InspectorName("ì§€ìƒ")]
         Ground = 1,
 
-        [InspectorName("°øÁß")]
+        [InspectorName("ê³µì¤‘")]
         Air = 2
     }
 
     public enum GridFacingDirection
     {
-        [InspectorName("À§ÂÊ")]
+        [InspectorName("ìœ„ìª½")]
         North = 0,
 
-        [InspectorName("¿À¸¥ÂÊ")]
+        [InspectorName("ì˜¤ë¥¸ìª½")]
         East = 1,
 
-        [InspectorName("¾Æ·¡ÂÊ")]
+        [InspectorName("ì•„ë˜ìª½")]
         South = 2,
 
-        [InspectorName("¿ŞÂÊ")]
+        [InspectorName("ì™¼ìª½")]
         West = 3
     }
 }

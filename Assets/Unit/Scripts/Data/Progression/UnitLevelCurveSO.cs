@@ -7,23 +7,23 @@ namespace EndlessGuard.Unit.Data
     [CreateAssetMenu(fileName = "UnitLevelCurve", menuName = "Endless Guard/Progression/Unit Level Curve")]
     public sealed class UnitLevelCurveSO : ScriptableObject
     {
-        [Header("ÇÊ¿ä °æÇèÄ¡ °è»ê½Ä")]
-        [Tooltip("Lv.1¿¡¼­ Lv.2·Î ¿Ã¶ó°¥ ¶§ »ç¿ëÇÏ´Â ±âÁØ ÇÊ¿ä °æÇèÄ¡ÀÔ´Ï´Ù.")]
+        [Header("í•„ìš” ê²½í—˜ì¹˜ ê³„ì‚°ì‹")]
+        [Tooltip("Lv.1ì—ì„œ Lv.2ë¡œ ì˜¬ë¼ê°ˆ ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ì¤€ í•„ìš” ê²½í—˜ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private long baseRequiredExp = 100L;
 
-        [Tooltip("ÇöÀç ·¹º§ÀÌ 1 Áõ°¡ÇÒ ¶§¸¶´Ù Ãß°¡µÇ´Â ¼±Çü °æÇèÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("í˜„ì¬ ë ˆë²¨ì´ 1 ì¦ê°€í•  ë•Œë§ˆë‹¤ ì¶”ê°€ë˜ëŠ” ì„ í˜• ê²½í—˜ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private long linearIncreasePerLevel = 25L;
 
-        [Tooltip("·¹º§ÀÌ ³ô¾ÆÁú¼ö·Ï ¿Ï¸¸ÇÑ °î¼± ÇüÅÂ·Î Ãß°¡µÇ´Â °æÇèÄ¡ÀÇ °è¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ë ˆë²¨ì´ ë†’ì•„ì§ˆìˆ˜ë¡ ì™„ë§Œí•œ ê³¡ì„  í˜•íƒœë¡œ ì¶”ê°€ë˜ëŠ” ê²½í—˜ì¹˜ì˜ ê³„ìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float powerCoefficient = 5f;
 
-        [Tooltip("°ÅµìÁ¦°ö ¼ºÀå °î¼±ÀÇ Áö¼öÀÔ´Ï´Ù. °ªÀÌ ³ôÀ»¼ö·Ï ÈÄ¹İ ÇÊ¿ä °æÇèÄ¡°¡ ºü¸£°Ô Áõ°¡ÇÕ´Ï´Ù.")]
+        [Tooltip("ê±°ë“­ì œê³± ì„±ì¥ ê³¡ì„ ì˜ ì§€ìˆ˜ì…ë‹ˆë‹¤. ê°’ì´ ë†’ì„ìˆ˜ë¡ í›„ë°˜ í•„ìš” ê²½í—˜ì¹˜ê°€ ë¹ ë¥´ê²Œ ì¦ê°€í•©ë‹ˆë‹¤.")]
         [Range(1f, 3f)]
         [SerializeField] private float powerExponent = 1.5f;
 
-        [Header("Æ¯Á¤ ·¹º§ ¿¹¿Ü")]
-        [Tooltip("ÀÚµ¿ ¼ö½Ä ´ë½Å º°µµÀÇ ÇÊ¿ä °æÇèÄ¡¸¦ »ç¿ëÇÒ ·¹º§¸¸ µî·ÏÇÕ´Ï´Ù.")]
+        [Header("íŠ¹ì • ë ˆë²¨ ì˜ˆì™¸")]
+        [Tooltip("ìë™ ìˆ˜ì‹ ëŒ€ì‹  ë³„ë„ì˜ í•„ìš” ê²½í—˜ì¹˜ë¥¼ ì‚¬ìš©í•  ë ˆë²¨ë§Œ ë“±ë¡í•©ë‹ˆë‹¤.")]
         [SerializeField] private List<LevelExpOverride> levelOverrides = new List<LevelExpOverride>();
 
         public long BaseRequiredExp => Math.Max(1L, baseRequiredExp);

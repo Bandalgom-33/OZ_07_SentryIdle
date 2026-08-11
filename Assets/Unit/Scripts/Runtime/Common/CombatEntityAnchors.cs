@@ -5,17 +5,17 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     public sealed class CombatEntityAnchors : MonoBehaviour
     {
-        [Header("°øÅë ÇÁ¸®ÆÕ ±âÁØÁ¡")]
-        [Tooltip("Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍÀÇ ¸ðµ¨, ½ºÇÁ¶óÀÌÆ®¿Í ÀÓ½Ã Ä¸½¶ ºñÁÖ¾óÀ» ¹èÄ¡ÇÏ´Â ºÎ¸ð TransformÀÔ´Ï´Ù.")]
+        [Header("ê³µí†µ í”„ë¦¬íŒ¹ ê¸°ì¤€ì ")]
+        [Tooltip("ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ì˜ ëª¨ë¸, ìŠ¤í”„ë¼ì´íŠ¸ì™€ ìž„ì‹œ ìº¡ìŠ ë¹„ì£¼ì–¼ì„ ë°°ì¹˜í•˜ëŠ” ë¶€ëª¨ Transformìž…ë‹ˆë‹¤.")]
         [SerializeField] private Transform visualRoot;
 
-        [Tooltip("Åõ»çÃ¼¿Í ±âº» °ø°Ý È¿°ú°¡ ½ÃÀÛµÇ´Â ±âÁØÁ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("íˆ¬ì‚¬ì²´ì™€ ê¸°ë³¸ ê³µê²© íš¨ê³¼ê°€ ì‹œìž‘ë˜ëŠ” ê¸°ì¤€ì ìž…ë‹ˆë‹¤.")]
         [SerializeField] private Transform attackPoint;
 
-        [Tooltip("ÇÇ°Ý, ¹öÇÁ, »ç¸Á µîÀÇ ÀüÅõ È¿°ú¸¦ Ç¥½ÃÇÏ´Â ±âÁØÁ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("í”¼ê²©, ë²„í”„, ì‚¬ë§ ë“±ì˜ ì „íˆ¬ íš¨ê³¼ë¥¼ í‘œì‹œí•˜ëŠ” ê¸°ì¤€ì ìž…ë‹ˆë‹¤.")]
         [SerializeField] private Transform effectPoint;
 
-        [Tooltip("Ä³¸¯ÅÍ HP¿Í ½ºÅ³°ÔÀÌÁöÃ³·³ °³Ã¼ À§¿¡ Ç¥½ÃµÇ´Â UIÀÇ ±âÁØÁ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ìºë¦­í„° HPì™€ ìŠ¤í‚¬ê²Œì´ì§€ì²˜ëŸ¼ ê°œì²´ ìœ„ì— í‘œì‹œë˜ëŠ” UIì˜ ê¸°ì¤€ì ìž…ë‹ˆë‹¤.")]
         [SerializeField] private Transform uiAnchor;
 
         public Transform VisualRoot => visualRoot;

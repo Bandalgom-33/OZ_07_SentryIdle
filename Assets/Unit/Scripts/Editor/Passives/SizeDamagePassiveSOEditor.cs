@@ -25,15 +25,15 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.PropertyField(
                 targetSize,
-                new GUIContent("´ë»ó ¸ó½ºÅÍ Å©±â", "Ãß°¡ ÇÇÇØ¸¦ Àû¿ëÇÒ ¸ó½ºÅÍ Å©±âÀÔ´Ï´Ù."));
+                new GUIContent("ëŒ€ìƒ ëª¬ìŠ¤í„° í¬ê¸°", "ì¶”ê°€ í”¼í•´ë¥¼ ì ìš©í•  ëª¬ìŠ¤í„° í¬ê¸°ì…ë‹ˆë‹¤."));
 
             EditorGUILayout.PropertyField(
                 bonusDamagePercent,
-                new GUIContent("Ãß°¡ ÇÇÇØ ºñÀ² (%)", "100À» ÀÔ·ÂÇÏ¸é ±âº» ÇÇÇØ¿¡ 100%°¡ Ãß°¡µÇ¾î ÃÖÁ¾ 200% ÇÇÇØ°¡ µË´Ï´Ù."));
+                new GUIContent("ì¶”ê°€ í”¼í•´ ë¹„ìœ¨ (%)", "100ì„ ì…ë ¥í•˜ë©´ ê¸°ë³¸ í”¼í•´ì— 100%ê°€ ì¶”ê°€ë˜ì–´ ìµœì¢… 200% í”¼í•´ê°€ ë©ë‹ˆë‹¤."));
 
             if (!targetSize.hasMultipleDifferentValues && (EnemySize)targetSize.intValue == EnemySize.None)
             {
-                EditorGUILayout.HelpBox("Ãß°¡ ÇÇÇØ¸¦ Àû¿ëÇÒ ¸ó½ºÅÍ Å©±â¸¦ ¼±ÅÃÇÏ¼¼¿ä.", MessageType.Warning);
+                EditorGUILayout.HelpBox("ì¶”ê°€ í”¼í•´ë¥¼ ì ìš©í•  ëª¬ìŠ¤í„° í¬ê¸°ë¥¼ ì„ íƒí•˜ì„¸ìš”.", MessageType.Warning);
             }
         }
     }

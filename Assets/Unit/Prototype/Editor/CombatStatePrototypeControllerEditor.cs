@@ -14,39 +14,39 @@ namespace EndlessGuard.Unit.Editor
             CombatStatePrototypeController controller = (CombatStatePrototypeController)target;
 
             EditorGUILayout.Space(10f);
-            EditorGUILayout.LabelField("·±Å¸ÀÓ °ËÁõ »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ëŸ°íƒ€ì„ ê²€ì¦ ìƒíƒœ", EditorStyles.boldLabel);
 
             DrawRuntimeState(controller);
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("¾Æ·¡ °ËÁõ ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ì•„ë˜ ê²€ì¦ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("°ËÁõ ´ë»ó ´Ù½Ã »ı¼º"))
+            if (GUILayout.Button("ê²€ì¦ ëŒ€ìƒ ë‹¤ì‹œ ìƒì„±"))
             {
                 Execute(controller.SpawnActors);
             }
 
             EditorGUILayout.Space(6f);
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ °ËÁõ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìºë¦­í„° ê²€ì¦", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ ÇÇÇØ"))
+            if (GUILayout.Button("ìºë¦­í„° í”¼í•´"))
             {
                 Execute(controller.DamageUnit);
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ È¸º¹"))
+            if (GUILayout.Button("ìºë¦­í„° íšŒë³µ"))
             {
                 Execute(controller.HealUnit);
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ »ç¸Á"))
+            if (GUILayout.Button("ìºë¦­í„° ì‚¬ë§"))
             {
                 Execute(controller.KillUnit);
             }
@@ -55,12 +55,12 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ SP Áõ°¡"))
+            if (GUILayout.Button("ìºë¦­í„° SP ì¦ê°€"))
             {
                 Execute(controller.AddUnitSkillGauge);
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ SP ¼Ò¸ğ"))
+            if (GUILayout.Button("ìºë¦­í„° SP ì†Œëª¨"))
             {
                 Execute(controller.ConsumeUnitSkillGauge);
             }
@@ -69,12 +69,12 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ °ø°İ ÁøÇà"))
+            if (GUILayout.Button("ìºë¦­í„° ê³µê²© ì§„í–‰"))
             {
                 Execute(controller.AdvanceUnitAttackProgress);
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ ÁØºñ °ø°İ ¼Òºñ"))
+            if (GUILayout.Button("ìºë¦­í„° ì¤€ë¹„ ê³µê²© ì†Œë¹„"))
             {
                 Execute(controller.ConsumeUnitReadyAttacks);
             }
@@ -82,21 +82,21 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space(6f);
-            EditorGUILayout.LabelField("¸ó½ºÅÍ °ËÁõ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ëª¬ìŠ¤í„° ê²€ì¦", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("¸ó½ºÅÍ ÇÇÇØ"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° í”¼í•´"))
             {
                 Execute(controller.DamageEnemy);
             }
 
-            if (GUILayout.Button("¸ó½ºÅÍ È¸º¹"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° íšŒë³µ"))
             {
                 Execute(controller.HealEnemy);
             }
 
-            if (GUILayout.Button("¸ó½ºÅÍ »ç¸Á"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° ì‚¬ë§"))
             {
                 Execute(controller.KillEnemy);
             }
@@ -105,12 +105,12 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("¸ó½ºÅÍ °ø°İ ÁøÇà"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° ê³µê²© ì§„í–‰"))
             {
                 Execute(controller.AdvanceEnemyAttackProgress);
             }
 
-            if (GUILayout.Button("¸ó½ºÅÍ ÁØºñ °ø°İ ¼Òºñ"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° ì¤€ë¹„ ê³µê²© ì†Œë¹„"))
             {
                 Execute(controller.ConsumeEnemyReadyAttacks);
             }
@@ -119,7 +119,7 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.Space(6f);
 
-            if (GUILayout.Button("°ËÁõ ´ë»ó Á¦°Å"))
+            if (GUILayout.Button("ê²€ì¦ ëŒ€ìƒ ì œê±°"))
             {
                 Execute(controller.DespawnActors);
             }
@@ -132,28 +132,28 @@ namespace EndlessGuard.Unit.Editor
                 GameObject unitObject = controller.SpawnedUnit == null ? null : controller.SpawnedUnit.gameObject;
                 GameObject enemyObject = controller.SpawnedEnemy == null ? null : controller.SpawnedEnemy.gameObject;
 
-                EditorGUILayout.ObjectField(new GUIContent("»ı¼ºµÈ Ä³¸¯ÅÍ"), unitObject, typeof(GameObject), true);
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ HP"), GetUnitHealthText(controller));
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ SP"), GetUnitSkillGaugeText(controller));
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ °ø°İ ÁøÇàµµ"), GetUnitAttackProgressText(controller));
-                EditorGUILayout.IntField(new GUIContent("Ä³¸¯ÅÍ ÁØºñ °ø°İ ¼ö"), controller.SpawnedUnit == null ? 0 : controller.SpawnedUnit.ReadyAttackCount);
-                EditorGUILayout.IntField(new GUIContent("Ä³¸¯ÅÍ ´©Àû °ø°İ ¼Òºñ"), controller.UnitConsumedAttackCount);
-                EditorGUILayout.IntField(new GUIContent("Ä³¸¯ÅÍ HP º¯°æ ÀÌº¥Æ®"), controller.UnitHealthChangedCount);
-                EditorGUILayout.IntField(new GUIContent("Ä³¸¯ÅÍ SP º¯°æ ÀÌº¥Æ®"), controller.UnitSkillGaugeChangedCount);
-                EditorGUILayout.IntField(new GUIContent("OnUnitDied ¹ß»ı È½¼ö"), controller.UnitDeathEventCount);
+                EditorGUILayout.ObjectField(new GUIContent("ìƒì„±ëœ ìºë¦­í„°"), unitObject, typeof(GameObject), true);
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° HP"), GetUnitHealthText(controller));
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° SP"), GetUnitSkillGaugeText(controller));
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° ê³µê²© ì§„í–‰ë„"), GetUnitAttackProgressText(controller));
+                EditorGUILayout.IntField(new GUIContent("ìºë¦­í„° ì¤€ë¹„ ê³µê²© ìˆ˜"), controller.SpawnedUnit == null ? 0 : controller.SpawnedUnit.ReadyAttackCount);
+                EditorGUILayout.IntField(new GUIContent("ìºë¦­í„° ëˆ„ì  ê³µê²© ì†Œë¹„"), controller.UnitConsumedAttackCount);
+                EditorGUILayout.IntField(new GUIContent("ìºë¦­í„° HP ë³€ê²½ ì´ë²¤íŠ¸"), controller.UnitHealthChangedCount);
+                EditorGUILayout.IntField(new GUIContent("ìºë¦­í„° SP ë³€ê²½ ì´ë²¤íŠ¸"), controller.UnitSkillGaugeChangedCount);
+                EditorGUILayout.IntField(new GUIContent("OnUnitDied ë°œìƒ íšŸìˆ˜"), controller.UnitDeathEventCount);
 
                 EditorGUILayout.Space(4f);
 
-                EditorGUILayout.ObjectField(new GUIContent("»ı¼ºµÈ ¸ó½ºÅÍ"), enemyObject, typeof(GameObject), true);
-                EditorGUILayout.TextField(new GUIContent("¸ó½ºÅÍ HP"), GetEnemyHealthText(controller));
-                EditorGUILayout.TextField(new GUIContent("¸ó½ºÅÍ °ø°İ ÁøÇàµµ"), GetEnemyAttackProgressText(controller));
-                EditorGUILayout.IntField(new GUIContent("¸ó½ºÅÍ ÁØºñ °ø°İ ¼ö"), controller.SpawnedEnemy == null ? 0 : controller.SpawnedEnemy.ReadyAttackCount);
-                EditorGUILayout.IntField(new GUIContent("¸ó½ºÅÍ ´©Àû °ø°İ ¼Òºñ"), controller.EnemyConsumedAttackCount);
-                EditorGUILayout.IntField(new GUIContent("¸ó½ºÅÍ HP º¯°æ ÀÌº¥Æ®"), controller.EnemyHealthChangedCount);
-                EditorGUILayout.IntField(new GUIContent("OnEnemyDied ¹ß»ı È½¼ö"), controller.EnemyDeathEventCount);
+                EditorGUILayout.ObjectField(new GUIContent("ìƒì„±ëœ ëª¬ìŠ¤í„°"), enemyObject, typeof(GameObject), true);
+                EditorGUILayout.TextField(new GUIContent("ëª¬ìŠ¤í„° HP"), GetEnemyHealthText(controller));
+                EditorGUILayout.TextField(new GUIContent("ëª¬ìŠ¤í„° ê³µê²© ì§„í–‰ë„"), GetEnemyAttackProgressText(controller));
+                EditorGUILayout.IntField(new GUIContent("ëª¬ìŠ¤í„° ì¤€ë¹„ ê³µê²© ìˆ˜"), controller.SpawnedEnemy == null ? 0 : controller.SpawnedEnemy.ReadyAttackCount);
+                EditorGUILayout.IntField(new GUIContent("ëª¬ìŠ¤í„° ëˆ„ì  ê³µê²© ì†Œë¹„"), controller.EnemyConsumedAttackCount);
+                EditorGUILayout.IntField(new GUIContent("ëª¬ìŠ¤í„° HP ë³€ê²½ ì´ë²¤íŠ¸"), controller.EnemyHealthChangedCount);
+                EditorGUILayout.IntField(new GUIContent("OnEnemyDied ë°œìƒ íšŸìˆ˜"), controller.EnemyDeathEventCount);
 
                 EditorGUILayout.Space(4f);
-                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(controller.LastEventMessage) ? "¹ß»ıÇÑ °ËÁõ ÀÌº¥Æ®°¡ ¾ø½À´Ï´Ù." : controller.LastEventMessage);
+                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(controller.LastEventMessage) ? "ë°œìƒí•œ ê²€ì¦ ì´ë²¤íŠ¸ê°€ ì—†ìŠµë‹ˆë‹¤." : controller.LastEventMessage);
             }
         }
 
@@ -161,7 +161,7 @@ namespace EndlessGuard.Unit.Editor
         {
             if (controller.SpawnedUnit == null || controller.SpawnedUnit.Health == null)
             {
-                return "Ä³¸¯ÅÍ ¾øÀ½";
+                return "ìºë¦­í„° ì—†ìŒ";
             }
 
             return $"{controller.SpawnedUnit.Health.CurrentHp:0.##} / {controller.SpawnedUnit.Health.MaxHp:0.##}";
@@ -171,7 +171,7 @@ namespace EndlessGuard.Unit.Editor
         {
             if (controller.SpawnedUnit == null)
             {
-                return "Ä³¸¯ÅÍ ¾øÀ½";
+                return "ìºë¦­í„° ì—†ìŒ";
             }
 
             return $"{controller.SpawnedUnit.CurrentSkillGauge:0.##} / {controller.SpawnedUnit.MaxSkillGauge:0.##}";
@@ -179,14 +179,14 @@ namespace EndlessGuard.Unit.Editor
 
         private static string GetUnitAttackProgressText(CombatStatePrototypeController controller)
         {
-            return controller.SpawnedUnit == null ? "Ä³¸¯ÅÍ ¾øÀ½" : $"{controller.SpawnedUnit.AttackProgress:0.###}";
+            return controller.SpawnedUnit == null ? "ìºë¦­í„° ì—†ìŒ" : $"{controller.SpawnedUnit.AttackProgress:0.###}";
         }
 
         private static string GetEnemyHealthText(CombatStatePrototypeController controller)
         {
             if (controller.SpawnedEnemy == null || controller.SpawnedEnemy.Health == null)
             {
-                return "¸ó½ºÅÍ ¾øÀ½";
+                return "ëª¬ìŠ¤í„° ì—†ìŒ";
             }
 
             return $"{controller.SpawnedEnemy.Health.CurrentHp:0.##} / {controller.SpawnedEnemy.Health.MaxHp:0.##}";
@@ -194,7 +194,7 @@ namespace EndlessGuard.Unit.Editor
 
         private static string GetEnemyAttackProgressText(CombatStatePrototypeController controller)
         {
-            return controller.SpawnedEnemy == null ? "¸ó½ºÅÍ ¾øÀ½" : $"{controller.SpawnedEnemy.AttackProgress:0.###}";
+            return controller.SpawnedEnemy == null ? "ëª¬ìŠ¤í„° ì—†ìŒ" : $"{controller.SpawnedEnemy.AttackProgress:0.###}";
         }
 
         private void Execute(System.Action action)

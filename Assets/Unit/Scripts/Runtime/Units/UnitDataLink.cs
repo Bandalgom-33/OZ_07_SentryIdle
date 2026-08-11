@@ -6,8 +6,8 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     public sealed class UnitDataLink : MonoBehaviour
     {
-        [Header("Ä³¸¯ÅÍ µ¥ÀÌÅÍ ¿¬°á")]
-        [Tooltip("ÀÌ Ä³¸¯ÅÍ ÇÁ¸®ÆÕÀÇ ¿øº» Á¤Àû µ¥ÀÌÅÍ¸¦ º¸°üÇÏ´Â UnitDataSOÀÔ´Ï´Ù.")]
+        [Header("ìºë¦­í„° ë°ì´í„° ì—°ê²°")]
+        [Tooltip("ì´ ìºë¦­í„° í”„ë¦¬íŒ¹ì˜ ì›ë³¸ ì •ì  ë°ì´í„°ë¥¼ ë³´ê´€í•˜ëŠ” UnitDataSOìž…ë‹ˆë‹¤.")]
         [SerializeField] private UnitDataSO unitData;
 
         public UnitDataSO UnitData => unitData;

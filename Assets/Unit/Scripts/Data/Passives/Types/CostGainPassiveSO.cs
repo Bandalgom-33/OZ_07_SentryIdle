@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "CostGainPassive", menuName = "Endless Guard/Passive/¼ÒÈ¯ ÄÚ½ºÆ® È¹µæ")]
+    [CreateAssetMenu(fileName = "CostGainPassive", menuName = "Endless Guard/Passive/ì†Œí™˜ ì½”ìŠ¤íŠ¸ íšë“")]
     public sealed class CostGainPassiveSO : PassiveDataSO
     {
-        [Header("¼ÒÈ¯ ÄÚ½ºÆ® È¹µæ ¼³Á¤")]
-        [Tooltip("¼ÒÈ¯ ÄÚ½ºÆ®¸¦ È¹µæÇÏ´Â ¹ßµ¿ Á¶°ÇÀÔ´Ï´Ù.")]
+        [Header("ì†Œí™˜ ì½”ìŠ¤íŠ¸ íšë“ ì„¤ì •")]
+        [Tooltip("ì†Œí™˜ ì½”ìŠ¤íŠ¸ë¥¼ íšë“í•˜ëŠ” ë°œë™ ì¡°ê±´ì…ë‹ˆë‹¤.")]
         [SerializeField] private CostGainTrigger trigger = CostGainTrigger.None;
 
-        [Tooltip("»õ Ä³¸¯ÅÍ°¡ ÀÌ ÆĞ½Ãºê¸¦ ¼±ÅÃÇÒ ¶§ »ç¿ëÇÏ´Â ±âº» ÃßÃµ ¼ÒÈ¯ ÄÚ½ºÆ® È¹µæ·®ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° PassiveTuning¿¡¼­ º°µµ·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ìƒˆ ìºë¦­í„°ê°€ ì´ íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•  ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ì†Œí™˜ ì½”ìŠ¤íŠ¸ íšë“ëŸ‰ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ PassiveTuningì—ì„œ ë³„ë„ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0)]
         [SerializeField] private int summonCostGain;
 

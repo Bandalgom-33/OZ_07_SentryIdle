@@ -7,19 +7,19 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     public sealed class UnitBars : MonoBehaviour
     {
-        [Header("Ä³¸¯ÅÍ »óÅÂ ¹Ù")]
-        [Tooltip("ÇöÀç HP ºñÀ²¿¡ µû¶ó °¡·Î ±æÀÌ°¡ º¯°æµÇ´Â HP Ã¤¿ò ¿µ¿ªÀÔ´Ï´Ù.")]
+        [Header("ìºë¦­í„° ìƒíƒœ ë°”")]
+        [Tooltip("í˜„ì¬ HP ë¹„ìœ¨ì— ë”°ë¼ ê°€ë¡œ ê¸¸ì´ê°€ ë³€ê²½ë˜ëŠ” HP ì±„ì›€ ì˜ì—­ì…ë‹ˆë‹¤.")]
         [SerializeField] private RectTransform hpFill;
 
-        [Tooltip("ÇöÀç ½ºÅ³ °ÔÀÌÁö ºñÀ²¿¡ µû¶ó °¡·Î ±æÀÌ°¡ º¯°æµÇ´Â ½ºÅ³ °ÔÀÌÁö Ã¤¿ò ¿µ¿ªÀÔ´Ï´Ù.")]
+        [Tooltip("í˜„ì¬ ìŠ¤í‚¬ ê²Œì´ì§€ ë¹„ìœ¨ì— ë”°ë¼ ê°€ë¡œ ê¸¸ì´ê°€ ë³€ê²½ë˜ëŠ” ìŠ¤í‚¬ ê²Œì´ì§€ ì±„ì›€ ì˜ì—­ì…ë‹ˆë‹¤.")]
         [SerializeField] private RectTransform skillFill;
 
-        [Header("HP Ç¥½Ã")]
-        [Tooltip("¸¶Áö¸· ÇÇ°İ ÈÄ HP ¹Ù¸¦ À¯ÁöÇÏ´Â ½Ã°£ÀÔ´Ï´Ù.")]
+        [Header("HP í‘œì‹œ")]
+        [Tooltip("ë§ˆì§€ë§‰ í”¼ê²© í›„ HP ë°”ë¥¼ ìœ ì§€í•˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float hpVisibleDuration = 2f;
 
-        [Tooltip("HP ¹Ù°¡ »ç¶óÁú ¶§ »ç¿ëÇÏ´Â ÆäÀÌµå ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("HP ë°”ê°€ ì‚¬ë¼ì§ˆ ë•Œ ì‚¬ìš©í•˜ëŠ” í˜ì´ë“œ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float hpFadeDuration = 0.25f;
 

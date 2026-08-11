@@ -11,10 +11,10 @@ namespace EndlessGuard.Unit.Editor
         private string statusMessage;
         private MessageType statusMessageType = MessageType.None;
 
-        [MenuItem("Tools/Endless Guard/ÇÁ¸®ÆÕ »ı¼º µµ±¸")]
+        [MenuItem("Tools/Endless Guard/í”„ë¦¬íŒ¹ ìƒì„± ë„êµ¬")]
         public static void Open()
         {
-            PrefabCreatorWindow window = GetWindow<PrefabCreatorWindow>("ÇÁ¸®ÆÕ »ı¼º µµ±¸");
+            PrefabCreatorWindow window = GetWindow<PrefabCreatorWindow>("í”„ë¦¬íŒ¹ ìƒì„± ë„êµ¬");
             window.minSize = new Vector2(480f, 340f);
             window.TryLoadSelectedAsset();
         }
@@ -26,8 +26,8 @@ namespace EndlessGuard.Unit.Editor
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Endless Guard ÇÁ¸®ÆÕ »ı¼º µµ±¸", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ µ¥ÀÌÅÍ SO¸¦ ±âÁØÀ¸·Î ±âº» ÇÁ¸®ÆÕ ±¸Á¶¸¦ »ı¼ºÇÏ°í, »ı¼ºµÈ ÇÁ¸®ÆÕÀ» ¿øº» µ¥ÀÌÅÍÀÇ ¿¬°á ÇÁ¸®ÆÕ ÇÊµå¿¡ ÀÚµ¿ µî·ÏÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.LabelField("Endless Guard í”„ë¦¬íŒ¹ ìƒì„± ë„êµ¬", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„° SOë¥¼ ê¸°ì¤€ìœ¼ë¡œ ê¸°ë³¸ í”„ë¦¬íŒ¹ êµ¬ì¡°ë¥¼ ìƒì„±í•˜ê³ , ìƒì„±ëœ í”„ë¦¬íŒ¹ì„ ì›ë³¸ ë°ì´í„°ì˜ ì—°ê²° í”„ë¦¬íŒ¹ í•„ë“œì— ìë™ ë“±ë¡í•©ë‹ˆë‹¤.", MessageType.Info);
 
             EditorGUILayout.Space(8f);
             DrawUnitSection();
@@ -44,17 +44,17 @@ namespace EndlessGuard.Unit.Editor
 
         private void DrawUnitSection()
         {
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ ±âº» ÇÁ¸®ÆÕ", EditorStyles.boldLabel);
-            unitData = (UnitDataSO)EditorGUILayout.ObjectField(new GUIContent("Ä³¸¯ÅÍ µ¥ÀÌÅÍ", "±âº» ÇÁ¸®ÆÕÀ» »ı¼ºÇÒ UnitDataSOÀÔ´Ï´Ù."), unitData, typeof(UnitDataSO), false);
+            EditorGUILayout.LabelField("ìºë¦­í„° ê¸°ë³¸ í”„ë¦¬íŒ¹", EditorStyles.boldLabel);
+            unitData = (UnitDataSO)EditorGUILayout.ObjectField(new GUIContent("ìºë¦­í„° ë°ì´í„°", "ê¸°ë³¸ í”„ë¦¬íŒ¹ì„ ìƒì„±í•  UnitDataSOì…ë‹ˆë‹¤."), unitData, typeof(UnitDataSO), false);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.ObjectField(new GUIContent("ÇöÀç ¿¬°á ÇÁ¸®ÆÕ"), unitData == null ? null : unitData.UnitPrefab, typeof(GameObject), false);
+                EditorGUILayout.ObjectField(new GUIContent("í˜„ì¬ ì—°ê²° í”„ë¦¬íŒ¹"), unitData == null ? null : unitData.UnitPrefab, typeof(GameObject), false);
             }
 
             using (new EditorGUI.DisabledScope(unitData == null || unitData.UnitPrefab != null))
             {
-                if (GUILayout.Button("Ä³¸¯ÅÍ ±âº» ÇÁ¸®ÆÕ »ı¼º"))
+                if (GUILayout.Button("ìºë¦­í„° ê¸°ë³¸ í”„ë¦¬íŒ¹ ìƒì„±"))
                 {
                     bool success = PrefabCreatorUtility.TryCreateUnitPrefab(unitData, out GameObject prefabAsset, out string message);
                     statusMessage = message;
@@ -68,7 +68,7 @@ namespace EndlessGuard.Unit.Editor
                 }
             }
 
-            if (unitData != null && unitData.UnitPrefab != null && GUILayout.Button("¿¬°áµÈ Ä³¸¯ÅÍ ÇÁ¸®ÆÕ ¼±ÅÃ"))
+            if (unitData != null && unitData.UnitPrefab != null && GUILayout.Button("ì—°ê²°ëœ ìºë¦­í„° í”„ë¦¬íŒ¹ ì„ íƒ"))
             {
                 Selection.activeObject = unitData.UnitPrefab;
                 EditorGUIUtility.PingObject(unitData.UnitPrefab);
@@ -77,17 +77,17 @@ namespace EndlessGuard.Unit.Editor
 
         private void DrawEnemySection()
         {
-            EditorGUILayout.LabelField("¸ó½ºÅÍ ±âº» ÇÁ¸®ÆÕ", EditorStyles.boldLabel);
-            enemyData = (EnemyDataSO)EditorGUILayout.ObjectField(new GUIContent("¸ó½ºÅÍ µ¥ÀÌÅÍ", "±âº» ÇÁ¸®ÆÕÀ» »ı¼ºÇÒ EnemyDataSOÀÔ´Ï´Ù."), enemyData, typeof(EnemyDataSO), false);
+            EditorGUILayout.LabelField("ëª¬ìŠ¤í„° ê¸°ë³¸ í”„ë¦¬íŒ¹", EditorStyles.boldLabel);
+            enemyData = (EnemyDataSO)EditorGUILayout.ObjectField(new GUIContent("ëª¬ìŠ¤í„° ë°ì´í„°", "ê¸°ë³¸ í”„ë¦¬íŒ¹ì„ ìƒì„±í•  EnemyDataSOì…ë‹ˆë‹¤."), enemyData, typeof(EnemyDataSO), false);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.ObjectField(new GUIContent("ÇöÀç ¿¬°á ÇÁ¸®ÆÕ"), enemyData == null ? null : enemyData.EnemyPrefab, typeof(GameObject), false);
+                EditorGUILayout.ObjectField(new GUIContent("í˜„ì¬ ì—°ê²° í”„ë¦¬íŒ¹"), enemyData == null ? null : enemyData.EnemyPrefab, typeof(GameObject), false);
             }
 
             using (new EditorGUI.DisabledScope(enemyData == null || enemyData.EnemyPrefab != null))
             {
-                if (GUILayout.Button("¸ó½ºÅÍ ±âº» ÇÁ¸®ÆÕ »ı¼º"))
+                if (GUILayout.Button("ëª¬ìŠ¤í„° ê¸°ë³¸ í”„ë¦¬íŒ¹ ìƒì„±"))
                 {
                     bool success = PrefabCreatorUtility.TryCreateEnemyPrefab(enemyData, out GameObject prefabAsset, out string message);
                     statusMessage = message;
@@ -101,7 +101,7 @@ namespace EndlessGuard.Unit.Editor
                 }
             }
 
-            if (enemyData != null && enemyData.EnemyPrefab != null && GUILayout.Button("¿¬°áµÈ ¸ó½ºÅÍ ÇÁ¸®ÆÕ ¼±ÅÃ"))
+            if (enemyData != null && enemyData.EnemyPrefab != null && GUILayout.Button("ì—°ê²°ëœ ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ ì„ íƒ"))
             {
                 Selection.activeObject = enemyData.EnemyPrefab;
                 EditorGUIUtility.PingObject(enemyData.EnemyPrefab);

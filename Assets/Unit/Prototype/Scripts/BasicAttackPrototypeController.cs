@@ -7,8 +7,8 @@ namespace EndlessGuard.Unit.Prototype
     [RequireComponent(typeof(CombatStatePrototypeController))]
     public sealed class BasicAttackPrototypeController : MonoBehaviour
     {
-        [Header("°ËÁõ ´ë»ó ¿¬°á")]
-        [Tooltip("Ä³¸¯ÅÍ¿Í ¸ó½ºÅÍ ÀÎ½ºÅÏ½º¸¦ »ı¼ºÇÏ°í º¸°üÇÏ´Â ±âÁ¸ ÀüÅõ »óÅÂ °ËÁõ ÄÄÆ÷³ÍÆ®ÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ëŒ€ìƒ ì—°ê²°")]
+        [Tooltip("ìºë¦­í„°ì™€ ëª¬ìŠ¤í„° ì¸ìŠ¤í„´ìŠ¤ë¥¼ ìƒì„±í•˜ê³  ë³´ê´€í•˜ëŠ” ê¸°ì¡´ ì „íˆ¬ ìƒíƒœ ê²€ì¦ ì»´í¬ë„ŒíŠ¸ì…ë‹ˆë‹¤.")]
         [SerializeField] private CombatStatePrototypeController stateController;
 
         [HideInInspector]
@@ -72,7 +72,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (!CanPrepare(unit))
             {
-                lastMessage = "°ø°İÀ» ÁØºñÇÒ ¼ö ÀÖ´Â Ä³¸¯ÅÍ ÀÎ½ºÅÏ½º°¡ ¾ø½À´Ï´Ù.";
+                lastMessage = "ê³µê²©ì„ ì¤€ë¹„í•  ìˆ˜ ìˆëŠ” ìºë¦­í„° ì¸ìŠ¤í„´ìŠ¤ê°€ ì—†ìŠµë‹ˆë‹¤.";
                 return;
             }
 
@@ -80,13 +80,13 @@ namespace EndlessGuard.Unit.Prototype
 
             if (attacksPerSecond <= 0f)
             {
-                lastMessage = "Ä³¸¯ÅÍ ±âº» °ø°İ ºóµµ°¡ 0ÀÔ´Ï´Ù.";
+                lastMessage = "ìºë¦­í„° ê¸°ë³¸ ê³µê²© ë¹ˆë„ê°€ 0ì…ë‹ˆë‹¤.";
                 return;
             }
 
             float requiredSeconds = 1f / attacksPerSecond;
             unit.AdvanceAttackProgress(attacksPerSecond, requiredSeconds);
-            lastMessage = $"Ä³¸¯ÅÍ °ø°İ 1È¸ ÁØºñ: ÁøÇàµµ {unit.AttackProgress:0.###}, ÁØºñ °ø°İ {unit.ReadyAttackCount}È¸";
+            lastMessage = $"ìºë¦­í„° ê³µê²© 1íšŒ ì¤€ë¹„: ì§„í–‰ë„ {unit.AttackProgress:0.###}, ì¤€ë¹„ ê³µê²© {unit.ReadyAttackCount}íšŒ";
             Debug.Log(lastMessage, unit);
         }
 
@@ -96,7 +96,7 @@ namespace EndlessGuard.Unit.Prototype
             {
                 lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.GridContextUnavailable);
                 hasResult = true;
-                lastMessage = "Ä³¸¯ÅÍ ±âº» °ø°İ ½ÇÆĞ: °İÀÚ °ø°İ »óÈ²À» ÀÚµ¿ »ı¼ºÇÏÁö ¸øÇß½À´Ï´Ù.";
+                lastMessage = "ìºë¦­í„° ê¸°ë³¸ ê³µê²© ì‹¤íŒ¨: ê²©ì ê³µê²© ìƒí™©ì„ ìë™ ìƒì„±í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.Log(lastMessage, this);
                 return;
             }
@@ -107,12 +107,12 @@ namespace EndlessGuard.Unit.Prototype
             if (succeeded)
             {
                 unitAttackSuccessCount++;
-                lastMessage = $"Ä³¸¯ÅÍ ±âº» °ø°İ ¼º°ø: ÀÚµ¿ Å¸ÀÏ {context.RelativeTargetTile}, ÀÚµ¿ °Å¸® {context.HorizontalWorldDistance:0.###}, ÇÇÇØ {lastResult.AppliedDamage:0.##}, SP È¹µæ {lastResult.SkillGaugeGained:0.##}, ¸ó½ºÅÍ HP {Enemy.Health.CurrentHp:0.##}";
+                lastMessage = $"ìºë¦­í„° ê¸°ë³¸ ê³µê²© ì„±ê³µ: ìë™ íƒ€ì¼ {context.RelativeTargetTile}, ìë™ ê±°ë¦¬ {context.HorizontalWorldDistance:0.###}, í”¼í•´ {lastResult.AppliedDamage:0.##}, SP íšë“ {lastResult.SkillGaugeGained:0.##}, ëª¬ìŠ¤í„° HP {Enemy.Health.CurrentHp:0.##}";
                 Debug.Log(lastMessage, Unit);
                 return;
             }
 
-            lastMessage = $"Ä³¸¯ÅÍ ±âº» °ø°İ ½ÇÆĞ: {lastResult.FailureReason}, ÀÚµ¿ Å¸ÀÏ {context.RelativeTargetTile}, ÀÚµ¿ °Å¸® {context.HorizontalWorldDistance:0.###}, ¹æÇâ {context.FacingDirection}, ´ë»ó {context.TargetLayer}";
+            lastMessage = $"ìºë¦­í„° ê¸°ë³¸ ê³µê²© ì‹¤íŒ¨: {lastResult.FailureReason}, ìë™ íƒ€ì¼ {context.RelativeTargetTile}, ìë™ ê±°ë¦¬ {context.HorizontalWorldDistance:0.###}, ë°©í–¥ {context.FacingDirection}, ëŒ€ìƒ {context.TargetLayer}";
             Debug.Log(lastMessage, this);
         }
 
@@ -122,7 +122,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (!CanPrepare(enemy))
             {
-                lastMessage = "°ø°İÀ» ÁØºñÇÒ ¼ö ÀÖ´Â ¸ó½ºÅÍ ÀÎ½ºÅÏ½º°¡ ¾ø½À´Ï´Ù.";
+                lastMessage = "ê³µê²©ì„ ì¤€ë¹„í•  ìˆ˜ ìˆëŠ” ëª¬ìŠ¤í„° ì¸ìŠ¤í„´ìŠ¤ê°€ ì—†ìŠµë‹ˆë‹¤.";
                 return;
             }
 
@@ -130,13 +130,13 @@ namespace EndlessGuard.Unit.Prototype
 
             if (attacksPerSecond <= 0f)
             {
-                lastMessage = "¸ó½ºÅÍ ±âº» °ø°İ ºóµµ°¡ 0ÀÔ´Ï´Ù.";
+                lastMessage = "ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²© ë¹ˆë„ê°€ 0ì…ë‹ˆë‹¤.";
                 return;
             }
 
             float requiredSeconds = 1f / attacksPerSecond;
             enemy.AdvanceAttackProgress(attacksPerSecond, requiredSeconds);
-            lastMessage = $"¸ó½ºÅÍ °ø°İ 1È¸ ÁØºñ: ÁøÇàµµ {enemy.AttackProgress:0.###}, ÁØºñ °ø°İ {enemy.ReadyAttackCount}È¸";
+            lastMessage = $"ëª¬ìŠ¤í„° ê³µê²© 1íšŒ ì¤€ë¹„: ì§„í–‰ë„ {enemy.AttackProgress:0.###}, ì¤€ë¹„ ê³µê²© {enemy.ReadyAttackCount}íšŒ";
             Debug.Log(lastMessage, enemy);
         }
 
@@ -148,7 +148,7 @@ namespace EndlessGuard.Unit.Prototype
             {
                 lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.MissingAttacker);
                 hasResult = true;
-                lastMessage = "¸ó½ºÅÍ ±âº» °ø°İ ½ÇÆĞ: °ø°İÇÒ ¸ó½ºÅÍ°¡ ¾ø½À´Ï´Ù.";
+                lastMessage = "ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²© ì‹¤íŒ¨: ê³µê²©í•  ëª¬ìŠ¤í„°ê°€ ì—†ìŠµë‹ˆë‹¤.";
                 Debug.Log(lastMessage, this);
                 return;
             }
@@ -157,7 +157,7 @@ namespace EndlessGuard.Unit.Prototype
             {
                 lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.MissingTarget);
                 hasResult = true;
-                lastMessage = "¸ó½ºÅÍ ±âº» °ø°İ ½ÇÆĞ: ÀÚ½ÅÀ» ÀúÁöÇÑ °ø°İ ´ë»óÀ» Ã£Áö ¸øÇß½À´Ï´Ù.";
+                lastMessage = "ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²© ì‹¤íŒ¨: ìì‹ ì„ ì €ì§€í•œ ê³µê²© ëŒ€ìƒì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.Log(lastMessage, enemy);
                 return;
             }
@@ -166,7 +166,7 @@ namespace EndlessGuard.Unit.Prototype
             {
                 lastResult = BasicAttackResult.Failed(BasicAttackFailureReason.GridContextUnavailable);
                 hasResult = true;
-                lastMessage = "¸ó½ºÅÍ ±âº» °ø°İ ½ÇÆĞ: °İÀÚ °ø°İ »óÈ²À» ÀÚµ¿ »ı¼ºÇÏÁö ¸øÇß½À´Ï´Ù.";
+                lastMessage = "ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²© ì‹¤íŒ¨: ê²©ì ê³µê²© ìƒí™©ì„ ìë™ ìƒì„±í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.Log(lastMessage, enemy);
                 return;
             }
@@ -177,12 +177,12 @@ namespace EndlessGuard.Unit.Prototype
             if (succeeded)
             {
                 enemyAttackSuccessCount++;
-                lastMessage = $"¸ó½ºÅÍ ±âº» °ø°İ ¼º°ø: ´ë»ó {target.UnitId}, ÀÚµ¿ Å¸ÀÏ {context.RelativeTargetTile}, ÀÚµ¿ °Å¸® {context.HorizontalWorldDistance:0.###}, ÇÇÇØ {lastResult.AppliedDamage:0.##}, Ä³¸¯ÅÍ HP {target.Health.CurrentHp:0.##}";
+                lastMessage = $"ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²© ì„±ê³µ: ëŒ€ìƒ {target.UnitId}, ìë™ íƒ€ì¼ {context.RelativeTargetTile}, ìë™ ê±°ë¦¬ {context.HorizontalWorldDistance:0.###}, í”¼í•´ {lastResult.AppliedDamage:0.##}, ìºë¦­í„° HP {target.Health.CurrentHp:0.##}";
                 Debug.Log(lastMessage, enemy);
                 return;
             }
 
-            lastMessage = $"¸ó½ºÅÍ ±âº» °ø°İ ½ÇÆĞ: {lastResult.FailureReason}, ´ë»ó {target.UnitId}, ÀÚµ¿ Å¸ÀÏ {context.RelativeTargetTile}, ÀÚµ¿ °Å¸® {context.HorizontalWorldDistance:0.###}, ¹æÇâ {context.FacingDirection}, ´ë»ó À¯Çü {context.TargetLayer}";
+            lastMessage = $"ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²© ì‹¤íŒ¨: {lastResult.FailureReason}, ëŒ€ìƒ {target.UnitId}, ìë™ íƒ€ì¼ {context.RelativeTargetTile}, ìë™ ê±°ë¦¬ {context.HorizontalWorldDistance:0.###}, ë°©í–¥ {context.FacingDirection}, ëŒ€ìƒ ìœ í˜• {context.TargetLayer}";
             Debug.Log(lastMessage, enemy);
         }
 
