@@ -1,20 +1,20 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class TileNode
 {
-    //Grid ¹è¿­»ó ³í¸® ÁÂÇ¥
+    //Grid ë°°ì—´ìƒ ë…¼ë¦¬ ì¢Œí‘œ
     public Vector2Int GridPosition {  get; private set; }
 
-    //ÇöÀç Å¸ÀÏÀÇ Á¾·ù
+    //í˜„ì¬ íƒ€ì¼ì˜ ì¢…ë¥˜
     public TileType TileType { get; private set; }
 
-    //ÀûÀÌ ÀÌµ¿ÇÒ ¼ö ÀÖ´Â Å¸ÀÏÀÎÁö È®ÀÎ
+    //ì ì´ ì´ë™í•  ìˆ˜ ìˆëŠ” íƒ€ì¼ì¸ì§€ í™•ì¸
     public bool IsWalkable {  get; private set; }
 
-    //Ä³¸¯ÅÍ¸¦ ¹èÄ¡ÇÒ ¼ö ÀÖ´Â Å¸ÀÏÀÎÁö È®ÀÎ
+    //ìºë¦­í„°ë¥¼ ë°°ì¹˜í•  ìˆ˜ ìˆëŠ” íƒ€ì¼ì¸ì§€ í™•ì¸
     public bool IsDeployable {  get; private set; }
 
-    //ÇöÀç Å¸ÀÏÀÌ »ç¿ë ÁßÀÎÁö È®ÀÎ
+    //í˜„ì¬ íƒ€ì¼ì´ ì‚¬ìš© ì¤‘ì¸ì§€ í™•ì¸
     public bool IsOccupied { get; private set; }
 
     public TileNode(Vector2Int gridPosition)
@@ -23,7 +23,7 @@ public class TileNode
 
         IsOccupied = false;
 
-        //Ã³À½ »ı¼ºµÉ ¶§´Â Empty »óÅÂ·Î °íÁ¤
+        //ì²˜ìŒ ìƒì„±ë  ë•ŒëŠ” Empty ìƒíƒœë¡œ ê³ ì •
         SetTileType(TileType.Empty);
     }
 
