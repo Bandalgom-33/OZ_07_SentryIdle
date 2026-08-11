@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using System.Collections;
@@ -6,25 +6,25 @@ using UnityEngine.InputSystem.iOS;
 
 public class MapGenerator : MonoBehaviour
 {
-    [Header("Grid Å©±â")]
+    [Header("Grid í¬ê¸°")]
     [SerializeField, Min(1)] private int width = 12;
     [SerializeField, Min(1)] private int height = 8;
 
-    [Header("¸Ê Å©±â")]
+    [Header("ë§µ í¬ê¸°")]
     [SerializeField] private GridMapRenderer mapRenderer;
 
-    [Header("Àû »ı¼º ¼³Á¤")]
+    [Header("ì  ìƒì„± ì„¤ì •")]
     [SerializeField] private EnemyMover enemyPrefab;
 
-    [Header("ÀÚµ¿ ¹èÄ¡ Å×½ºÆ®")]
+    [Header("ìë™ ë°°ì¹˜ í…ŒìŠ¤íŠ¸")]
     [SerializeField] private GameObject meleeUnitPrefab;
     [SerializeField] private GameObject rangedUnitPrefab;
 
 
     private TileNode[,] grid;
-    //Ã¹ ¹øÂ° spawn °æ·Î
+    //ì²« ë²ˆì§¸ spawn ê²½ë¡œ
     private List<Vector2Int> pathPosition = new List<Vector2Int>();
-    //µÎ ¹øÂ° spawn °æ·Î
+    //ë‘ ë²ˆì§¸ spawn ê²½ë¡œ
     private List<Vector2Int> pathPositionB = new List<Vector2Int>();
    
 
@@ -43,7 +43,7 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         InitializedGrid();
-        //°íÁ¤ °æ·Î »ı¼ºÀº ÁÖ¼®Ã³¸®
+        //ê³ ì • ê²½ë¡œ ìƒì„±ì€ ì£¼ì„ì²˜ë¦¬
         // GenerateFixedPath();
         GenerateRandomPath();
 
@@ -57,11 +57,11 @@ public class MapGenerator : MonoBehaviour
         SpawnRangedUnit();
         SpawnRangedUnit();
 
-        //±âÁ¸ Àû »ı¼º¹æ½Ä ÁÖ¼® Ã³¸®
+        //ê¸°ì¡´ ì  ìƒì„±ë°©ì‹ ì£¼ì„ ì²˜ë¦¬
         //SpawnEnemy(pathPosition);
         //SpawnEnemy(pathPositionB);
 
-        //ÄÚ·çÆ¾À¸·Î Wave ¸¶´Ù Àû »ı¼º ±¸Çö
+        //ì½”ë£¨í‹´ìœ¼ë¡œ Wave ë§ˆë‹¤ ì  ìƒì„± êµ¬í˜„
         StartCoroutine(spawnWave(PathPosition, 3, 1.0f));
         StartCoroutine(spawnWave(pathPositionB, 3, 1.0f));
     }
@@ -84,33 +84,33 @@ public class MapGenerator : MonoBehaviour
 
     private void GenerateRandomPath()
     {
-        ////ÁÂÇ¥ ÃÊ±âÈ­
+        ////ì¢Œí‘œ ì´ˆê¸°í™”
         pathPosition.Clear();
         pathPositionB.Clear();
 
-        //Ã¹ ¹øÂ° spawnY ÁöÁ¡
+        //ì²« ë²ˆì§¸ spawnY ì§€ì 
         int spawnY = Random.Range(0, height);
-        //µÎ ¹øÂ° spawnBY ÁöÁ¡
+        //ë‘ ë²ˆì§¸ spawnBY ì§€ì 
         int spawnBY = Random.Range(0, height);
 
-        //µÎ spawnÀÌ ¸¸³ª´Â MergePointY ÁÂÇ¥
+        //ë‘ spawnì´ ë§Œë‚˜ëŠ” MergePointY ì¢Œí‘œ
         int mergeY = Random.Range(0, height);
-        //X ÁÂÇ¥  -> Ã¹ ¹øÂ° °æÀ¯Áö¿Í °ãÄ¡Áö ¾Ê°Ô ¼öÁ¤ ÇßÀ½
+        //X ì¢Œí‘œ  -> ì²« ë²ˆì§¸ ê²½ìœ ì§€ì™€ ê²¹ì¹˜ì§€ ì•Šê²Œ ìˆ˜ì • í–ˆìŒ
         int mergeX = Random.Range(1, 4);
 
-        //goalY ÁöÁ¡
+        //goalY ì§€ì 
         int goalY = Random.Range(0, height);
 
 
 
-        //Ã¹ ¹øÂ° °æ¿ìÁö
-        //Ã¹ ¹øÂ° °æ¿ìÁöÀÇ X ´Â 4, 5 ·Î °íÁ¤ -> ¸ÓÁö Æ÷ÀÎÆ®¸¦ À§ÇØ ¼öÁ¤ ÇßÀ½ 
+        //ì²« ë²ˆì§¸ ê²½ìš°ì§€
+        //ì²« ë²ˆì§¸ ê²½ìš°ì§€ì˜ X ëŠ” 4, 5 ë¡œ ê³ ì • -> ë¨¸ì§€ í¬ì¸íŠ¸ë¥¼ ìœ„í•´ ìˆ˜ì • í–ˆìŒ 
         int wayPoint1X = Random.Range(4, 6);
         int wayPoint1Y = Random.Range(0, height);
 
-        ////µÎ ¹øÂ° °æÀ¯Áö
-        //// µÎ¹øÀç °æ¿ìÁö´Â Goal.xÀÎ 11À» ÇÇÇÏ°í ¹Ù·Î ¾ÕÀÎ 10µµ ÇÇÇØ¾ß ÇÏ±â ¶§¹®¿¡
-        ////7,8,9 Áß¿¡ ÇÏ³ª
+        ////ë‘ ë²ˆì§¸ ê²½ìœ ì§€
+        //// ë‘ë²ˆì¬ ê²½ìš°ì§€ëŠ” Goal.xì¸ 11ì„ í”¼í•˜ê³  ë°”ë¡œ ì•ì¸ 10ë„ í”¼í•´ì•¼ í•˜ê¸° ë•Œë¬¸ì—
+        ////7,8,9 ì¤‘ì— í•˜ë‚˜
         int waypoint2X = Random.Range(width / 2 + 1, width - 2);
         int wayPoint2Y = Random.Range(0, height);
 
@@ -119,40 +119,40 @@ public class MapGenerator : MonoBehaviour
             spawnBY = Random.Range(0, height);
         }
 
-        ////Ã¹ ¹øÂ° ·£´ı ÀÔ±¸ ÁÂÇ¥
+        ////ì²« ë²ˆì§¸ ëœë¤ ì…êµ¬ ì¢Œí‘œ
         Vector2Int spawnPosition = new Vector2Int(0, spawnY);
-        //µÎ ¹øÂ° ·£´ı ÀÔ±¸ ÁÂÇ¥
+        //ë‘ ë²ˆì§¸ ëœë¤ ì…êµ¬ ì¢Œí‘œ
         Vector2Int spawnPositionB = new Vector2Int(0, spawnBY);
-        //µÎ ÀÔ±¸°¡ ¸¸³ª´Â ÁöÁ¡
+        //ë‘ ì…êµ¬ê°€ ë§Œë‚˜ëŠ” ì§€ì 
         Vector2Int mergePoint = new Vector2Int(mergeX, mergeY);
-        //·£´ı Ãâ±¸ ÁÂÇ¥
+        //ëœë¤ ì¶œêµ¬ ì¢Œí‘œ
         Vector2Int goalPosition = new Vector2Int(width - 1, goalY);
-        //Ã¹ ¹øÂ° °æÀ¯Áö ÁÂÇ¥
+        //ì²« ë²ˆì§¸ ê²½ìœ ì§€ ì¢Œí‘œ
         Vector2Int wayPoint1 = new Vector2Int(wayPoint1X, wayPoint1Y);
-        //µÎ ¹øÂ° °æ¿ìÁö ÀÚÇ¥
+        //ë‘ ë²ˆì§¸ ê²½ìš°ì§€ ìí‘œ
         Vector2Int wayPoint2 = new Vector2Int(waypoint2X, wayPoint2Y);
 
 
-        //// Spawn ¡æ Waypoint1 °æ·Î ÀÌ¾îÁÖ±â 
+        //// Spawn â†’ Waypoint1 ê²½ë¡œ ì´ì–´ì£¼ê¸° 
         //AddHorizontalPath(spawnPosition.x,wayPoint1.x,spawnPosition.y );
         //AddVerticalPath( spawnPosition.y, wayPoint1.y, wayPoint1.x);
 
-        //// Waypoint1 ¡æ Waypoint2
+        //// Waypoint1 â†’ Waypoint2
         //AddHorizontalPath(wayPoint1.x, wayPoint2.x,wayPoint1.y);
         //AddVerticalPath( wayPoint1.y, wayPoint2.y,wayPoint2.x);
 
-        //// Waypoint2 ¡æ Goal
+        //// Waypoint2 â†’ Goal
         //AddHorizontalPath(wayPoint2.x, goalPosition.x, wayPoint2.y );
         //AddVerticalPath( wayPoint2.y, goalPosition.y, goalPosition.x);
 
         //SpawnA -> mergePoint
-        //ÀÌ°Ô ¸ÓÁö Æ÷ÀÎÆ®¸¦ ·£´ıÀ¸·Î ÀâÀ¸´Ï±î °æ·Î°¡ ÀÌ»óÇØÁ®¼­ ÀÏ´Ü ½ºÆù -> ¸ÓÁöÆ÷ÀÎÆ® ±îÁø °íÁ¤ °æ·Î·Î ÇØº½
+        //ì´ê²Œ ë¨¸ì§€ í¬ì¸íŠ¸ë¥¼ ëœë¤ìœ¼ë¡œ ì¡ìœ¼ë‹ˆê¹Œ ê²½ë¡œê°€ ì´ìƒí•´ì ¸ì„œ ì¼ë‹¨ ìŠ¤í° -> ë¨¸ì§€í¬ì¸íŠ¸ ê¹Œì§„ ê³ ì • ê²½ë¡œë¡œ í•´ë´„
         // ConnectPoints(spawnPosition,mergePoint, pathPosition);
         AddHorizontalPath(spawnPosition.x, mergePoint.x, spawnPosition.y, pathPosition);
          AddVerticalPath(spawnPosition.y, mergePoint.y, mergePoint.x, pathPosition);
 
         //spawnB -> mergePoint
-        //À§¿Í µ¿ÀÏ
+        //ìœ„ì™€ ë™ì¼
         // ConnectPoints(spawnPositionB, mergePoint, pathPositionB);
         AddHorizontalPath( spawnPositionB.x,mergePoint.x,spawnPositionB.y,pathPositionB);
         AddVerticalPath(spawnPositionB.y, mergePoint.y,mergePoint.x, pathPositionB);
@@ -165,9 +165,9 @@ public class MapGenerator : MonoBehaviour
         //Waypoint2 -> Goal
         ConnectPoints(wayPoint2, goalPosition, pathPosition);
 
-        //A °æ·Î¿¡¼­ Merge À§Ä¡ Ã£±â
+        //A ê²½ë¡œì—ì„œ Merge ìœ„ì¹˜ ì°¾ê¸°
         int mergeIndex = pathPosition.IndexOf(mergePoint);
-        //Merge ÀÌÈÄ¿¡ °øÅë °æ·Î¸¦ B¿¡ º¹»çÇÏ±â
+        //Merge ì´í›„ì— ê³µí†µ ê²½ë¡œë¥¼ Bì— ë³µì‚¬í•˜ê¸°
         for (int i = mergeIndex + 1; i < pathPosition.Count; i++)
         {
             AddPathPosition(pathPosition[i], pathPositionB);
@@ -184,7 +184,7 @@ public class MapGenerator : MonoBehaviour
         GenerateTerrain();
     }
 
-    //°íÁ¤ °æ·Î ÁÖ¼®Ã³¸®
+    //ê³ ì • ê²½ë¡œ ì£¼ì„ì²˜ë¦¬
     //private void GenerateFixedPath()
     //{
     //    pathPosition.Clear();
@@ -198,12 +198,12 @@ public class MapGenerator : MonoBehaviour
     //    SetPathTileTypes();
     //}
 
-    //°¡·Î ¿¬°á ¸Ş¼­µå
+    //ê°€ë¡œ ì—°ê²° ë©”ì„œë“œ
     private void AddHorizontalPath(int startX,int endX, int y, List<Vector2Int> targetPath)
     {
-        //ÀÌµ¿ ¹æÇâÀÌ ¿ŞÂÊ ¿À¸¥ÂÊ ¸ğµÎ °¡´ÉÇÏ±â ¶§¹®¿¡ ¹æÇâÀÌ ÇÊ¿äÇÔ
-        //½ÃÀÛ X°¡ ³¡X º¸´Ù ÀÛ°Å³ª °°À¸¸é? -> 1¾¿ Áõ°¡
-        //½ÃÀÛX°¡ ³¡ Xº¸´Ù Å©¸é? -> -1¾¿ °¨¼Ò
+        //ì´ë™ ë°©í–¥ì´ ì™¼ìª½ ì˜¤ë¥¸ìª½ ëª¨ë‘ ê°€ëŠ¥í•˜ê¸° ë•Œë¬¸ì— ë°©í–¥ì´ í•„ìš”í•¨
+        //ì‹œì‘ Xê°€ ëX ë³´ë‹¤ ì‘ê±°ë‚˜ ê°™ìœ¼ë©´? -> 1ì”© ì¦ê°€
+        //ì‹œì‘Xê°€ ë Xë³´ë‹¤ í¬ë©´? -> -1ì”© ê°ì†Œ
         int direction = startX <= endX ? 1 : -1;
 
         for(int x=  startX; x < endX + direction;x += direction)
@@ -211,7 +211,7 @@ public class MapGenerator : MonoBehaviour
             AddPathPosition(new Vector2Int(x, y), targetPath);
         }
     }
-    //¼¼·Î ¿¬°á ¸Ş¼­µå 
+    //ì„¸ë¡œ ì—°ê²° ë©”ì„œë“œ 
     private void AddVerticalPath (int startY, int endY, int x, List<Vector2Int> targetPath)
     {
         int direction = startY <= endY ? 1 : -1;
@@ -222,22 +222,22 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    //µÎ Á¡À» ¿¬°áÇÏ´Â °øÅë ¸Ş¼­µå ¸¸µé±â
+    //ë‘ ì ì„ ì—°ê²°í•˜ëŠ” ê³µí†µ ë©”ì„œë“œ ë§Œë“¤ê¸°
     private void ConnectPoints(Vector2Int start,  Vector2Int end,List<Vector2Int> targetPath)
     {
-        //0ÀÌ ³ª¿À¸é ¼¼·ÎºÎÅÍ 1ÀÌ ³ª¿À¸é °¡·ÎºÎÅÍ
+        //0ì´ ë‚˜ì˜¤ë©´ ì„¸ë¡œë¶€í„° 1ì´ ë‚˜ì˜¤ë©´ ê°€ë¡œë¶€í„°
         int connectType = Random.Range(0, 2);
      
 
         if(connectType == 0 )
         {
-            //°¡·Î -> ¼¼·Î
+            //ê°€ë¡œ -> ì„¸ë¡œ
             AddHorizontalPath(start.x, end.x, start.y, targetPath);
             AddVerticalPath(start.y,end.y, end.x, targetPath);
         }
         else if(connectType == 1 )
         {
-            //¼¼·Î -> °¡·Î
+            //ì„¸ë¡œ -> ê°€ë¡œ
             AddVerticalPath(start.y,end.y, start.x, targetPath);
             AddHorizontalPath(start.x,end.x, end.y, targetPath);  
         }
@@ -246,7 +246,7 @@ public class MapGenerator : MonoBehaviour
 
     private void AddPathPosition(Vector2Int position, List<Vector2Int> targetPath)
     {
-        //¸¸¾à ¸®½ºÆ®¿¡ ¸¶Áö¸· ÁÂÇ¥¿Í »õ·Î ³ÖÀ¸·Á´Â ÁÂÇ¥°¡ °°À¸¸é Ãß°¡ ¤¤¤¤
+        //ë§Œì•½ ë¦¬ìŠ¤íŠ¸ì— ë§ˆì§€ë§‰ ì¢Œí‘œì™€ ìƒˆë¡œ ë„£ìœ¼ë ¤ëŠ” ì¢Œí‘œê°€ ê°™ìœ¼ë©´ ì¶”ê°€ ã„´ã„´
         if (targetPath.Count > 0 && targetPath[targetPath.Count - 1] == position) return;
 
         targetPath.Add(position);
@@ -259,7 +259,7 @@ public class MapGenerator : MonoBehaviour
         SetSinglePathTileTypes(pathPositionB);
     }
 
-    //Å¸ÀÏÀ» »öÀ¸·Î ±¸ºĞÇÏ±â
+    //íƒ€ì¼ì„ ìƒ‰ìœ¼ë¡œ êµ¬ë¶„í•˜ê¸°
     private void SetSinglePathTileTypes(IReadOnlyList<Vector2Int> path)
     {
         if (path.Count < 2) return;
@@ -272,25 +272,25 @@ public class MapGenerator : MonoBehaviour
 
             if (i == 0)
             {
-                //Ã¹ ¹øÂ° ÁÂÇ¥´Â Start
+                //ì²« ë²ˆì§¸ ì¢Œí‘œëŠ” Start
                 grid[position.x, position.y].SetTileType(TileType.Spawn);
             }
             else if (i == path.Count - 1)
             {
-                //¸¶Áö¸· ÁÂÇ¥´Â Goal
+                //ë§ˆì§€ë§‰ ì¢Œí‘œëŠ” Goal
                 grid[position.x, position.y].SetTileType(TileType.Goal);
             }
             else
             {
-                //³ª¸ÓÁö ÁÂÇ¥´Â path
+                //ë‚˜ë¨¸ì§€ ì¢Œí‘œëŠ” path
                 grid[position.x, position.y].SetTileType(TileType.Path);
             }
         }
     }
 
-    //Grid ¹üÀ§ È®ÀÎ ¸Ş¼­µå
-    //¿ì¸®°¡ ¸¸µé 12x8 ¸ÊÀÌ¸é 
-    //x -> 0~11 / y -> 0~7 ±¸°£À» È®ÀÎ
+    //Grid ë²”ìœ„ í™•ì¸ ë©”ì„œë“œ
+    //ìš°ë¦¬ê°€ ë§Œë“¤ 12x8 ë§µì´ë©´ 
+    //x -> 0~11 / y -> 0~7 êµ¬ê°„ì„ í™•ì¸
     private bool IsInsideGrid(Vector2Int position)
     {
         return position.x >= 0&&
@@ -305,17 +305,17 @@ public class MapGenerator : MonoBehaviour
         if (enemyPrefab == null) return;
         if(path == null || path.Count == 0) return;
 
-        //½ºÆù Æ÷Áö¼Ç ÁÂÇ¥ ¹Ş±â
+        //ìŠ¤í° í¬ì§€ì…˜ ì¢Œí‘œ ë°›ê¸°
         Vector2Int spawnGridPosition = path[0];
-        //World À§Ä¡·Î º¯È¯
+        //World ìœ„ì¹˜ë¡œ ë³€í™˜
         Vector3 spawnWorldPosition =   mapRenderer.GridToWorld(spawnGridPosition);
         spawnWorldPosition.y = 1.0f;
-        //»ı¼º ½ÃÅ°±â
+        //ìƒì„± ì‹œí‚¤ê¸°
         EnemyMover spawnEnemy = Instantiate(enemyPrefab,spawnWorldPosition,Quaternion.identity);
         spawnEnemy.Initialize(path, mapRenderer);
     }
 
-    //pathPositionÀÇ À¯È¿¼ºÀ» °Ë»çÇÏ´Â ¸Ş¼­µå
+    //pathPositionì˜ ìœ íš¨ì„±ì„ ê²€ì‚¬í•˜ëŠ” ë©”ì„œë“œ
     private bool ValidatePath(IReadOnlyList<Vector2Int>path,Vector2Int spawnPosition, Vector2Int goalPosition)
     {
         if (path.Count < 2) return false;
@@ -326,7 +326,7 @@ public class MapGenerator : MonoBehaviour
 
     }
 
-    //¾î´À °æ·Î¿¡ ¸î ¸¶¸®°¡ ¸î ÃÊ°£°İÀ¸·Î ³ª¿ÃÁö¿¡ ´ëÇÑ Wave ¸Ş¼­µå ¸¸µé±â
+    //ì–´ëŠ ê²½ë¡œì— ëª‡ ë§ˆë¦¬ê°€ ëª‡ ì´ˆê°„ê²©ìœ¼ë¡œ ë‚˜ì˜¬ì§€ì— ëŒ€í•œ Wave ë©”ì„œë“œ ë§Œë“¤ê¸°
     private IEnumerator spawnWave(IReadOnlyList<Vector2Int> path, int enemyCount,float spawnInterval)
     {
         for(int i = 0; i < enemyCount; i++)
@@ -344,10 +344,10 @@ public class MapGenerator : MonoBehaviour
             for(int y = 0; y < height; y++)
             {
                 TileNode node = grid[x, y];
-                //Empty Å¸ÀÏ Ã£±â
+                //Empty íƒ€ì¼ ì°¾ê¸°
                 if (node.TileType != TileType.Empty) continue;
 
-                //25 : 75 ºñÀ² »ı¼º
+                //25 : 75 ë¹„ìœ¨ ìƒì„±
                 float terrainRoll = Random.value;
                 if (terrainRoll < 0.25)
                 {
@@ -358,7 +358,7 @@ public class MapGenerator : MonoBehaviour
                     node.SetTileType(TileType.Ground);
                 }
 
-                    //50:50 °íÁ¤ »ı¼º
+                    //50:50 ê³ ì • ìƒì„±
                     int terrainType = Random.Range(0, 2);
 
                 if(terrainType == 0)
@@ -373,7 +373,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    //¹èÄ¡ °¡´ÉÇÑ Ã¹ ¹øÂ° Å¸ÀÏ Ã£±â
+    //ë°°ì¹˜ ê°€ëŠ¥í•œ ì²« ë²ˆì§¸ íƒ€ì¼ ì°¾ê¸°
     //private TileNode FindFirstDeployableTile(TileType targetTileType)
     //{
     //    for (int x = 0; x < width; x++)
@@ -391,7 +391,7 @@ public class MapGenerator : MonoBehaviour
     //    return null;
     //}
 
-    //¹èÄ¡ °¡´ÉÇÑ Å¸ÀÏ¿¡ ·£´ı ¹èÄ¡ ÇÏ±â
+    //ë°°ì¹˜ ê°€ëŠ¥í•œ íƒ€ì¼ì— ëœë¤ ë°°ì¹˜ í•˜ê¸°
     private TileNode FindRandomDeployableTile(TileType targetTileType)
     {
         List<TileNode> candidates = new List<TileNode>();
@@ -404,7 +404,7 @@ public class MapGenerator : MonoBehaviour
 
                 if(node.IsDeployable && !node.IsOccupied &&node.TileType == targetTileType)
                 {
-                    //path¿¡¼­ 2Ä­ ÀÌ³»ÀÎÁö¸¦ È®ÀÎÇÏ±â ¾Æ´Ï¸é Á¦¿Ü
+                    //pathì—ì„œ 2ì¹¸ ì´ë‚´ì¸ì§€ë¥¼ í™•ì¸í•˜ê¸° ì•„ë‹ˆë©´ ì œì™¸
                     if (targetTileType == TileType.HighGround && !IsNearPath(node.GridPosition, 2)) continue;
 
                     candidates.Add(node);
@@ -418,24 +418,24 @@ public class MapGenerator : MonoBehaviour
         return candidates[randomIndex];  
     }
 
-    //À¯´Ö ¹èÄ¡ Å×½ºÆ®
+    //ìœ ë‹› ë°°ì¹˜ í…ŒìŠ¤íŠ¸
     //private void SpawnTestUnits()
     //{
     //    if (meleeUnitPrefab != null)
     //    {
-    //        //ÇØ´ç Å¸ÀÏ ÁÂÇ¥ ¹Ş±â
+    //        //í•´ë‹¹ íƒ€ì¼ ì¢Œí‘œ ë°›ê¸°
     //        TileNode meleeTile = FindFirstDeployableTile(TileType.Path);
 
     //        if(meleeTile != null)
     //        {
-    //            //¿ùµå À§Ä¡·Î ÀüÈ¯ ½ÃÅ°±â
+    //            //ì›”ë“œ ìœ„ì¹˜ë¡œ ì „í™˜ ì‹œí‚¤ê¸°
     //            Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
 
     //            meleePosition.y = 0.5f;
 
-    //            //»ı¼º
+    //            //ìƒì„±
     //            Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
-    //            //Å¸ÀÏ »ç¿ëÁß true ·Î ÀüÈ¯
+    //            //íƒ€ì¼ ì‚¬ìš©ì¤‘ true ë¡œ ì „í™˜
     //            meleeTile.SetOCcupied(true);
     //        }
     //    }
@@ -458,26 +458,26 @@ public class MapGenerator : MonoBehaviour
     //}
 
 
-    //±Ù°Å¸® À¯´Ö ¹èÄ¡
+    //ê·¼ê±°ë¦¬ ìœ ë‹› ë°°ì¹˜
     private void SpawnMeleeUnit()
     {
         if (meleeUnitPrefab == null) return;
 
-        //·£´ı ÁÂÇ¥ ¹Ş±â
+        //ëœë¤ ì¢Œí‘œ ë°›ê¸°
         TileNode meleeTile = FindRandomDeployableTile(TileType.Path);
 
         if (meleeTile == null) return;
-        //¿ùµå ÁÂÇ¥·Î º¯È¯ ÇØÁÖ±â
+        //ì›”ë“œ ì¢Œí‘œë¡œ ë³€í™˜ í•´ì£¼ê¸°
         Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
         
         meleePosition.y = 0.5f;
-        //»ı¼º
+        //ìƒì„±
         Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
-        //ÇöÀç Å¸ÀÏ »ç¿ëÁßÀ¸·Î ¹Ù²Ù±â
+        //í˜„ì¬ íƒ€ì¼ ì‚¬ìš©ì¤‘ìœ¼ë¡œ ë°”ê¾¸ê¸°
         meleeTile.SetOccupied(true);
     }
 
-    //¿ø°Å¸® À¯´Ö ¹èÄ¡
+    //ì›ê±°ë¦¬ ìœ ë‹› ë°°ì¹˜
     private void SpawnRangedUnit()
     {
         if (rangedUnitPrefab == null) return;
@@ -495,7 +495,7 @@ public class MapGenerator : MonoBehaviour
         rangedTile.SetOccupied(true);
     }
 
-    //Àû °æ·Î¿ÍÀÇ °Å¸® °è»ê
+    //ì  ê²½ë¡œì™€ì˜ ê±°ë¦¬ ê³„ì‚°
     private bool IsNearPath(Vector2Int position, int maxDistance)
     {
         for(int x= 0;x < width; x++)
@@ -505,7 +505,7 @@ public class MapGenerator : MonoBehaviour
                 TileNode node = grid[x, y];
 
                 if(node.TileType != TileType.Path) continue;
-                //x¿Í y °Å¸® °è»êÇÏ±â
+                //xì™€ y ê±°ë¦¬ ê³„ì‚°í•˜ê¸°
                 int distance = Mathf.Abs(position.x - x) + Mathf.Abs(position.y - y);
 
                 if(distance <= maxDistance) return true;
