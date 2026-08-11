@@ -94,21 +94,21 @@ namespace EndlessGuard.Unit.Editor
         {
             if (candidates == null)
             {
-                return new[] { new GUIContent("¹Ì¼³Á¤") };
+                return new[] { new GUIContent("ë¯¸ì„¤ì •") };
             }
 
             GUIContent[] options = new GUIContent[candidates.Count + 1];
-            options[0] = new GUIContent("¹Ì¼³Á¤", "ÀÌ ÆĞ½Ãºê ½½·ÔÀ» ºñ¿ö µÓ´Ï´Ù.");
+            options[0] = new GUIContent("ë¯¸ì„¤ì •", "ì´ íŒ¨ì‹œë¸Œ ìŠ¬ë¡¯ì„ ë¹„ì›Œ ë‘¡ë‹ˆë‹¤.");
 
             for (int i = 0; i < candidates.Count; i++)
             {
                 PassiveDataSO passive = candidates[i];
                 string displayName = string.IsNullOrWhiteSpace(passive.DisplayName) ? passive.name : passive.DisplayName;
                 string label = string.Equals(displayName, passive.name, StringComparison.Ordinal) ? displayName : $"{displayName} ({passive.name})";
-                string description = string.IsNullOrWhiteSpace(passive.Description) ? "¼³¸íÀÌ ÀÔ·ÂµÇÁö ¾Ê¾Ò½À´Ï´Ù." : passive.Description;
+                string description = string.IsNullOrWhiteSpace(passive.Description) ? "ì„¤ëª…ì´ ì…ë ¥ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤." : passive.Description;
                 string assetPath = AssetDatabase.GetAssetPath(passive);
 
-                options[i + 1] = new GUIContent(label, $"{description}\n°æ·Î: {assetPath}");
+                options[i + 1] = new GUIContent(label, $"{description}\nê²½ë¡œ: {assetPath}");
             }
 
             return options;

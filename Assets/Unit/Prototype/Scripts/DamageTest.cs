@@ -8,27 +8,27 @@ namespace EndlessGuard.Unit.Prototype
     [RequireComponent(typeof(CombatLoop))]
     public sealed class DamageTest : MonoBehaviour
     {
-        [Header("°ËÁõ ´ë»ó ¿¬°á")]
-        [Tooltip("°ËÁõ¿ë Ä³¸¯ÅÍ¸¦ »ı¼ºÇÏ´Â ±âÁ¸ ÀüÅõ »óÅÂ ÄÄÆ÷³ÍÆ®ÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ëŒ€ìƒ ì—°ê²°")]
+        [Tooltip("ê²€ì¦ìš© ìºë¦­í„°ë¥¼ ìƒì„±í•˜ëŠ” ê¸°ì¡´ ì „íˆ¬ ìƒíƒœ ì»´í¬ë„ŒíŠ¸ì…ë‹ˆë‹¤.")]
         [SerializeField] private CombatStatePrototypeController state;
 
-        [Tooltip("¿¬¼Ó ÇÇÇØ °ËÁõ Áß ´Ù¸¥ ÀÚµ¿ ÀüÅõ°¡ ½ÇÇàµÇÁö ¾Êµµ·Ï Á¤ÁöÇÒ ÀüÅõ ·çÇÁÀÔ´Ï´Ù.")]
+        [Tooltip("ì—°ì† í”¼í•´ ê²€ì¦ ì¤‘ ë‹¤ë¥¸ ìë™ ì „íˆ¬ê°€ ì‹¤í–‰ë˜ì§€ ì•Šë„ë¡ ì •ì§€í•  ì „íˆ¬ ë£¨í”„ì…ë‹ˆë‹¤.")]
         [SerializeField] private CombatLoop combatLoop;
 
-        [Header("¿¬¼Ó ÇÇÇØ ¼³Á¤")]
-        [Tooltip("ÇÑ ¹ø¿¡ Àû¿ëÇÒ ÇÇÇØ·®ÀÔ´Ï´Ù.")]
+        [Header("ì—°ì† í”¼í•´ ì„¤ì •")]
+        [Tooltip("í•œ ë²ˆì— ì ìš©í•  í”¼í•´ëŸ‰ì…ë‹ˆë‹¤.")]
         [Min(1f)]
         [SerializeField] private float damageAmount = 600f;
 
-        [Tooltip("¿¬¼ÓÀ¸·Î Àû¿ëÇÒ ÇÇÇØ È½¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ì—°ì†ìœ¼ë¡œ ì ìš©í•  í”¼í•´ íšŸìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int hitCount = 6;
 
-        [Tooltip("°¢ ÇÇÇØ »çÀÌÀÇ ½Ã°£ °£°İÀÔ´Ï´Ù.")]
+        [Tooltip("ê° í”¼í•´ ì‚¬ì´ì˜ ì‹œê°„ ê°„ê²©ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float hitInterval = 0.1f;
 
-        [Tooltip("¿¬Å¸ ¿Ï·á ÈÄ ¸ğµç ÇÇÇØ ¼ıÀÚ°¡ Ç®·Î µ¹¾Æ¿Ã ¶§±îÁö ±â´Ù¸®´Â ÃÖ´ë ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("ì—°íƒ€ ì™„ë£Œ í›„ ëª¨ë“  í”¼í•´ ìˆ«ìê°€ í’€ë¡œ ëŒì•„ì˜¬ ë•Œê¹Œì§€ ê¸°ë‹¤ë¦¬ëŠ” ìµœëŒ€ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.5f)]
         [SerializeField] private float returnTimeoutSeconds = 2f;
 
@@ -132,7 +132,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (state == null || combatLoop == null)
             {
-                FailTest("CombatStatePrototypeController ¶Ç´Â CombatLoop°¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+                FailTest("CombatStatePrototypeController ë˜ëŠ” CombatLoopê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -140,19 +140,19 @@ namespace EndlessGuard.Unit.Prototype
 
             if (pool == null)
             {
-                FailTest("¾À¿¡¼­ DamageNumberPoolÀ» Ã£Áö ¸øÇß½À´Ï´Ù.");
+                FailTest("ì”¬ì—ì„œ DamageNumberPoolì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
             if (pool.ActiveCount > 0)
             {
-                FailTest("¾ÆÁ÷ È°¼º ÇÇÇØ ¼ıÀÚ°¡ ³²¾Æ ÀÖ½À´Ï´Ù. ¸ğµÎ »ç¶óÁø µÚ ´Ù½Ã ÁØºñÇÏ¼¼¿ä.");
+                FailTest("ì•„ì§ í™œì„± í”¼í•´ ìˆ«ìê°€ ë‚¨ì•„ ìˆìŠµë‹ˆë‹¤. ëª¨ë‘ ì‚¬ë¼ì§„ ë’¤ ë‹¤ì‹œ ì¤€ë¹„í•˜ì„¸ìš”.");
                 return;
             }
 
             if (hitCount != pool.MaxNumbersPerTarget)
             {
-                FailTest($"ÀÌ¹ø °ËÁõÀº Hit Count¿Í Max Numbers Per TargetÀ» °°°Ô »ç¿ëÇÕ´Ï´Ù. ÇöÀç {hitCount} / {pool.MaxNumbersPerTarget}");
+                FailTest($"ì´ë²ˆ ê²€ì¦ì€ Hit Countì™€ Max Numbers Per Targetì„ ê°™ê²Œ ì‚¬ìš©í•©ë‹ˆë‹¤. í˜„ì¬ {hitCount} / {pool.MaxNumbersPerTarget}");
                 return;
             }
 
@@ -162,13 +162,13 @@ namespace EndlessGuard.Unit.Prototype
 
             if (target == null || target.Health == null)
             {
-                FailTest("°ËÁõ¿ë Ä³¸¯ÅÍ¸¦ »ı¼ºÇÏÁö ¸øÇß½À´Ï´Ù.");
+                FailTest("ê²€ì¦ìš© ìºë¦­í„°ë¥¼ ìƒì„±í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
             if (target.GetComponent<DamageNumberEmitter>() == null)
             {
-                FailTest("°ËÁõ¿ë Ä³¸¯ÅÍ¿¡ DamageNumberEmitter°¡ ¾ø½À´Ï´Ù.");
+                FailTest("ê²€ì¦ìš© ìºë¦­í„°ì— DamageNumberEmitterê°€ ì—†ìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -176,7 +176,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (target.Health.CurrentHp <= requiredHp)
             {
-                FailTest($"Ä³¸¯ÅÍ HP°¡ ÇÇÇØ {damageAmount:0} ¡¿ {hitCount}È¸¸¦ ¹öÆ¼±â¿¡ ºÎÁ·ÇÕ´Ï´Ù.");
+                FailTest($"ìºë¦­í„° HPê°€ í”¼í•´ {damageAmount:0} Ã— {hitCount}íšŒë¥¼ ë²„í‹°ê¸°ì— ë¶€ì¡±í•©ë‹ˆë‹¤.");
                 return;
             }
 
@@ -184,7 +184,7 @@ namespace EndlessGuard.Unit.Prototype
             currentHp = startHp;
             isReady = true;
 
-            message = $"Push ÇÇÇØ ¼ıÀÚ °ËÁõ ÁØºñ ¿Ï·á: ÇÇÇØ {damageAmount:0} ¡¿ {hitCount}È¸, °£°İ {hitInterval:0.###}ÃÊ, ÃÖ´ë Ç¥½Ã {pool.MaxNumbersPerTarget}°³";
+            message = $"Push í”¼í•´ ìˆ«ì ê²€ì¦ ì¤€ë¹„ ì™„ë£Œ: í”¼í•´ {damageAmount:0} Ã— {hitCount}íšŒ, ê°„ê²© {hitInterval:0.###}ì´ˆ, ìµœëŒ€ í‘œì‹œ {pool.MaxNumbersPerTarget}ê°œ";
             Debug.Log(message, this);
         }
 
@@ -192,7 +192,7 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (!isReady || target == null || pool == null)
             {
-                message = "¸ÕÀú ÇÇÇØ ¼ıÀÚ °ËÁõ ÁØºñ¸¦ ½ÇÇàÇÏ¼¼¿ä.";
+                message = "ë¨¼ì € í”¼í•´ ìˆ«ì ê²€ì¦ ì¤€ë¹„ë¥¼ ì‹¤í–‰í•˜ì„¸ìš”.";
                 Debug.LogWarning(message, this);
                 return;
             }
@@ -202,7 +202,7 @@ namespace EndlessGuard.Unit.Prototype
             elapsedSeconds = 0f;
             returnElapsedSeconds = 0f;
 
-            message = "ÇÇÇØ ¼ıÀÚ Pop¡¤Push °ËÁõÀ» ½ÃÀÛÇß½À´Ï´Ù.";
+            message = "í”¼í•´ ìˆ«ì PopÂ·Push ê²€ì¦ì„ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.";
             Debug.Log(message, this);
         }
 
@@ -211,7 +211,7 @@ namespace EndlessGuard.Unit.Prototype
             isRunning = false;
             currentHp = target == null || target.Health == null ? 0f : target.Health.CurrentHp;
 
-            message = "ÇÇÇØ ¼ıÀÚ °ËÁõÀ» ¼öµ¿À¸·Î Á¤ÁöÇß½À´Ï´Ù.";
+            message = "í”¼í•´ ìˆ«ì ê²€ì¦ì„ ìˆ˜ë™ìœ¼ë¡œ ì •ì§€í–ˆìŠµë‹ˆë‹¤.";
             Debug.Log(message, this);
         }
 
@@ -265,7 +265,7 @@ namespace EndlessGuard.Unit.Prototype
             numberLimitPassed = peakActiveCount == pool.MaxNumbersPerTarget && activeCountAfterBurst == pool.MaxNumbersPerTarget;
             damagePassed = Mathf.Approximately(startHp - currentHp, totalAppliedDamage);
 
-            Debug.Log($"¿¬¼Ó ÇÇÇØ ¿Ï·á: {appliedHitCount}È¸, ÃÖ´ë µ¿½Ã ¼ıÀÚ {peakActiveCount}, ÇöÀç È°¼º ¼ıÀÚ {activeCountAfterBurst}", this);
+            Debug.Log($"ì—°ì† í”¼í•´ ì™„ë£Œ: {appliedHitCount}íšŒ, ìµœëŒ€ ë™ì‹œ ìˆ«ì {peakActiveCount}, í˜„ì¬ í™œì„± ìˆ«ì {activeCountAfterBurst}", this);
         }
 
         private void UpdatePoolReturn(float deltaTime)
@@ -281,7 +281,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (returnElapsedSeconds >= returnTimeoutSeconds)
             {
-                FailTest($"Á¦ÇÑ ½Ã°£ {returnTimeoutSeconds:0.##}ÃÊ ¾È¿¡ ÇÇÇØ ¼ıÀÚ°¡ ¸ğµÎ Ç®·Î ¹İÈ¯µÇÁö ¾Ê¾Ò½À´Ï´Ù. ³²Àº È°¼º ¼ıÀÚ {pool.ActiveCount}");
+                FailTest($"ì œí•œ ì‹œê°„ {returnTimeoutSeconds:0.##}ì´ˆ ì•ˆì— í”¼í•´ ìˆ«ìê°€ ëª¨ë‘ í’€ë¡œ ë°˜í™˜ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤. ë‚¨ì€ í™œì„± ìˆ«ì {pool.ActiveCount}");
             }
         }
 
@@ -291,7 +291,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (appliedDamage <= 0f)
             {
-                FailTest("ÇÇÇØ Àû¿ë¿¡ ½ÇÆĞÇß°Å³ª Ä³¸¯ÅÍ°¡ ¸ÕÀú »ç¸ÁÇß½À´Ï´Ù.");
+                FailTest("í”¼í•´ ì ìš©ì— ì‹¤íŒ¨í–ˆê±°ë‚˜ ìºë¦­í„°ê°€ ë¨¼ì € ì‚¬ë§í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -300,7 +300,7 @@ namespace EndlessGuard.Unit.Prototype
             currentHp = target.Health.CurrentHp;
             peakActiveCount = Mathf.Max(peakActiveCount, pool.ActiveCount);
 
-            Debug.Log($"¿¬¼Ó ÇÇÇØ {appliedHitCount}/{hitCount}: ÇÇÇØ {appliedDamage:0}, È°¼º ¼ıÀÚ {pool.ActiveCount}", this);
+            Debug.Log($"ì—°ì† í”¼í•´ {appliedHitCount}/{hitCount}: í”¼í•´ {appliedDamage:0}, í™œì„± ìˆ«ì {pool.ActiveCount}", this);
         }
 
         private void CompleteTest()
@@ -313,12 +313,12 @@ namespace EndlessGuard.Unit.Prototype
 
             if (finalPassed)
             {
-                message = $"Push ÇÇÇØ ¼ıÀÚ °ËÁõ ¼º°ø: {appliedHitCount}È¸ ¿¬¼Ó ÇÇÇØ, ÃÖ´ë {peakActiveCount}°³ Ç¥½Ã, ÀüºÎ ÀÚ¿¬ ¼Ò¸ê ÈÄ Ç® ¹İÈ¯";
+                message = $"Push í”¼í•´ ìˆ«ì ê²€ì¦ ì„±ê³µ: {appliedHitCount}íšŒ ì—°ì† í”¼í•´, ìµœëŒ€ {peakActiveCount}ê°œ í‘œì‹œ, ì „ë¶€ ìì—° ì†Œë©¸ í›„ í’€ ë°˜í™˜";
                 Debug.Log(message, this);
                 return;
             }
 
-            FailTest($"ÇÇÇØ ¼ıÀÚ °ËÁõ ½ÇÆĞ: Ç¥½Ã Á¦ÇÑ {numberLimitPassed}, ÇÇÇØ Àû¿ë {damagePassed}, Ç® ¹İÈ¯ {poolReturnPassed}");
+            FailTest($"í”¼í•´ ìˆ«ì ê²€ì¦ ì‹¤íŒ¨: í‘œì‹œ ì œí•œ {numberLimitPassed}, í”¼í•´ ì ìš© {damagePassed}, í’€ ë°˜í™˜ {poolReturnPassed}");
         }
 
         private void FailTest(string failureMessage)

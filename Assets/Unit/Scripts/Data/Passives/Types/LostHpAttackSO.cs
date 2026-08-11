@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "LostHpAttack", menuName = "Endless Guard/Passive/ÀÒÀº HP °ø°İ·Â Áõ°¡")]
+    [CreateAssetMenu(fileName = "LostHpAttack", menuName = "Endless Guard/Passive/ìƒì€ HP ê³µê²©ë ¥ ì¦ê°€")]
     public sealed class LostHpAttackSO : PassiveDataSO
     {
-        [Header("ÀÒÀº HP °ø°İ·Â Áõ°¡ ±âº»°ª")]
-        [Tooltip("ÀÒÀº HP 1%¸¶´Ù Áõ°¡ÇÏ´Â ¹°¸® °ø°İ·Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ º°µµ·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ìƒì€ HP ê³µê²©ë ¥ ì¦ê°€ ê¸°ë³¸ê°’")]
+        [Tooltip("ìƒì€ HP 1%ë§ˆë‹¤ ì¦ê°€í•˜ëŠ” ë¬¼ë¦¬ ê³µê²©ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë³„ë„ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalAttackPerLostHpPercent = 1f;
 
-        [Tooltip("ÀÌ ÆĞ½Ãºê·Î Áõ°¡ÇÒ ¼ö ÀÖ´Â ¹°¸® °ø°İ·ÂÀÇ ÃÖ´ë ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ º°µµ·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì´ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•  ìˆ˜ ìˆëŠ” ë¬¼ë¦¬ ê³µê²©ë ¥ì˜ ìµœëŒ€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë³„ë„ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float maxPhysicalAttackBonusPercent = 100f;
 

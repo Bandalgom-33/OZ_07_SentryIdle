@@ -14,37 +14,37 @@ namespace EndlessGuard.Unit.Editor
             AttackTest test = (AttackTest)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ÀÚµ¿ °ø°İ °ËÁõ »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìë™ ê³µê²© ê²€ì¦ ìƒíƒœ", EditorStyles.boldLabel);
             DrawState(test);
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("°ËÁõ ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ê²€ì¦ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("ÀÚµ¿ °ø°İ °ËÁõ ÁØºñ"))
+            if (GUILayout.Button("ìë™ ê³µê²© ê²€ì¦ ì¤€ë¹„"))
             {
                 Execute(test.SetupTest);
             }
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("ÀÚµ¿ °ø°İ ½ÃÀÛ"))
+            if (GUILayout.Button("ìë™ ê³µê²© ì‹œì‘"))
             {
                 Execute(test.StartTest);
             }
 
-            if (GUILayout.Button("ÀÚµ¿ °ø°İ Á¤Áö"))
+            if (GUILayout.Button("ìë™ ê³µê²© ì •ì§€"))
             {
                 Execute(test.StopTest);
             }
 
             EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("°ø°İ °ËÁõ ÃÊ±âÈ­"))
+            if (GUILayout.Button("ê³µê²© ê²€ì¦ ì´ˆê¸°í™”"))
             {
                 Execute(test.ResetResult);
             }
@@ -54,18 +54,18 @@ namespace EndlessGuard.Unit.Editor
         {
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.ObjectField(new GUIContent("°ø°İ ´ë»ó"), test.Target == null ? null : test.Target.gameObject, typeof(GameObject), true);
-                EditorGUILayout.Toggle(new GUIContent("°ËÁõ ÁØºñ ¿Ï·á"), test.IsReady);
-                EditorGUILayout.Toggle(new GUIContent("ÀÚµ¿ °ø°İ ½ÇÇà Áß"), test.IsRunning);
-                EditorGUILayout.FloatField(new GUIContent("°æ°ú ½Ã°£"), test.ElapsedSeconds);
-                EditorGUILayout.FloatField(new GUIContent("½ÃÀÛ HP"), test.StartHp);
-                EditorGUILayout.FloatField(new GUIContent("ÇöÀç HP"), test.CurrentHp);
-                EditorGUILayout.FloatField(new GUIContent("Àû¿ë ÇÇÇØ"), test.AppliedDamage);
-                EditorGUILayout.IntField(new GUIContent("Ã¹ ¹øÂ° °ø°İ È½¼ö"), test.FirstAttackCount);
-                EditorGUILayout.IntField(new GUIContent("µÎ ¹øÂ° °ø°İ È½¼ö"), test.SecondAttackCount);
-                EditorGUILayout.IntField(new GUIContent("¼¼ ¹øÂ° °ø°İ È½¼ö"), test.ThirdAttackCount);
-                EditorGUILayout.Toggle(new GUIContent("ÃÖÁ¾ °ËÁõ ¼º°ø"), test.FinalPassed);
-                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.Message) ? "ÀÚµ¿ °ø°İ °ËÁõ °á°ú°¡ ¾ø½À´Ï´Ù." : test.Message);
+                EditorGUILayout.ObjectField(new GUIContent("ê³µê²© ëŒ€ìƒ"), test.Target == null ? null : test.Target.gameObject, typeof(GameObject), true);
+                EditorGUILayout.Toggle(new GUIContent("ê²€ì¦ ì¤€ë¹„ ì™„ë£Œ"), test.IsReady);
+                EditorGUILayout.Toggle(new GUIContent("ìë™ ê³µê²© ì‹¤í–‰ ì¤‘"), test.IsRunning);
+                EditorGUILayout.FloatField(new GUIContent("ê²½ê³¼ ì‹œê°„"), test.ElapsedSeconds);
+                EditorGUILayout.FloatField(new GUIContent("ì‹œì‘ HP"), test.StartHp);
+                EditorGUILayout.FloatField(new GUIContent("í˜„ì¬ HP"), test.CurrentHp);
+                EditorGUILayout.FloatField(new GUIContent("ì ìš© í”¼í•´"), test.AppliedDamage);
+                EditorGUILayout.IntField(new GUIContent("ì²« ë²ˆì§¸ ê³µê²© íšŸìˆ˜"), test.FirstAttackCount);
+                EditorGUILayout.IntField(new GUIContent("ë‘ ë²ˆì§¸ ê³µê²© íšŸìˆ˜"), test.SecondAttackCount);
+                EditorGUILayout.IntField(new GUIContent("ì„¸ ë²ˆì§¸ ê³µê²© íšŸìˆ˜"), test.ThirdAttackCount);
+                EditorGUILayout.Toggle(new GUIContent("ìµœì¢… ê²€ì¦ ì„±ê³µ"), test.FinalPassed);
+                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.Message) ? "ìë™ ê³µê²© ê²€ì¦ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤." : test.Message);
             }
         }
 

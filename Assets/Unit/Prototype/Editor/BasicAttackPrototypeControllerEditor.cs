@@ -16,9 +16,9 @@ namespace EndlessGuard.Unit.Editor
             BasicAttackPrototypeController controller = (BasicAttackPrototypeController)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.HelpBox("»ó´ë Å¸ÀÏ, ¿ùµå °Å¸®, ¹Ù¶óº¸´Â ¹æÇâ°ú ´ë»ó À¯ÇüÀº ½ÇÁ¦ »ı¼ºµÈ ÀÎ½ºÅÏ½ºÀÇ CombatGridPosition°ú Transform À§Ä¡¸¦ »ç¿ëÇØ ÀÚµ¿ °è»êÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ìƒëŒ€ íƒ€ì¼, ì›”ë“œ ê±°ë¦¬, ë°”ë¼ë³´ëŠ” ë°©í–¥ê³¼ ëŒ€ìƒ ìœ í˜•ì€ ì‹¤ì œ ìƒì„±ëœ ì¸ìŠ¤í„´ìŠ¤ì˜ CombatGridPositionê³¼ Transform ìœ„ì¹˜ë¥¼ ì‚¬ìš©í•´ ìë™ ê³„ì‚°í•©ë‹ˆë‹¤.", MessageType.Info);
 
-            EditorGUILayout.LabelField("±âº» °ø°İ °ËÁõ »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ê¸°ë³¸ ê³µê²© ê²€ì¦ ìƒíƒœ", EditorStyles.boldLabel);
 
             DrawCurrentState(controller);
 
@@ -29,21 +29,21 @@ namespace EndlessGuard.Unit.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("°ËÁõ ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ê²€ì¦ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ ±âº» °ø°İ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìºë¦­í„° ê¸°ë³¸ ê³µê²©", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ °ø°İ 1È¸ ÁØºñ"))
+            if (GUILayout.Button("ìºë¦­í„° ê³µê²© 1íšŒ ì¤€ë¹„"))
             {
                 Execute(controller.PrepareUnitAttack);
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ ¡æ ¸ó½ºÅÍ °ø°İ"))
+            if (GUILayout.Button("ìºë¦­í„° â†’ ëª¬ìŠ¤í„° ê³µê²©"))
             {
                 Execute(controller.ExecuteUnitAttack);
             }
@@ -51,16 +51,16 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space(5f);
-            EditorGUILayout.LabelField("¸ó½ºÅÍ ±âº» °ø°İ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ëª¬ìŠ¤í„° ê¸°ë³¸ ê³µê²©", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("¸ó½ºÅÍ °ø°İ 1È¸ ÁØºñ"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° ê³µê²© 1íšŒ ì¤€ë¹„"))
             {
                 Execute(controller.PrepareEnemyAttack);
             }
 
-            if (GUILayout.Button("¸ó½ºÅÍ ¡æ Ä³¸¯ÅÍ °ø°İ"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° â†’ ìºë¦­í„° ê³µê²©"))
             {
                 Execute(controller.ExecuteEnemyAttack);
             }
@@ -69,7 +69,7 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.Space(5f);
 
-            if (GUILayout.Button("°ø°İ °á°ú ÃÊ±âÈ­"))
+            if (GUILayout.Button("ê³µê²© ê²°ê³¼ ì´ˆê¸°í™”"))
             {
                 Execute(controller.ResetResults);
             }
@@ -79,30 +79,30 @@ namespace EndlessGuard.Unit.Editor
         {
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.ObjectField(new GUIContent("ÇöÀç Ä³¸¯ÅÍ"), controller.Unit == null ? null : controller.Unit.gameObject, typeof(GameObject), true);
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ HP"), GetUnitHealthText(controller));
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ SP"), GetUnitSkillGaugeText(controller));
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ °ø°İ ÁøÇàµµ"), controller.Unit == null ? "Ä³¸¯ÅÍ ¾øÀ½" : $"{controller.Unit.AttackProgress:0.###}");
-                EditorGUILayout.IntField(new GUIContent("Ä³¸¯ÅÍ °ø°İ ¼º°ø È½¼ö"), controller.UnitAttackSuccessCount);
+                EditorGUILayout.ObjectField(new GUIContent("í˜„ì¬ ìºë¦­í„°"), controller.Unit == null ? null : controller.Unit.gameObject, typeof(GameObject), true);
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° HP"), GetUnitHealthText(controller));
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° SP"), GetUnitSkillGaugeText(controller));
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° ê³µê²© ì§„í–‰ë„"), controller.Unit == null ? "ìºë¦­í„° ì—†ìŒ" : $"{controller.Unit.AttackProgress:0.###}");
+                EditorGUILayout.IntField(new GUIContent("ìºë¦­í„° ê³µê²© ì„±ê³µ íšŸìˆ˜"), controller.UnitAttackSuccessCount);
 
                 bool hasUnitContext = controller.TryCreateUnitAttackContext(out BasicAttackContext unitContext);
-                DrawAutomaticContext("Ä³¸¯ÅÍ ÀÚµ¿ °ø°İ »óÈ²", hasUnitContext, unitContext, GetUnitAttackSettings(controller));
+                DrawAutomaticContext("ìºë¦­í„° ìë™ ê³µê²© ìƒí™©", hasUnitContext, unitContext, GetUnitAttackSettings(controller));
 
                 EditorGUILayout.Space(4f);
 
-                EditorGUILayout.ObjectField(new GUIContent("ÇöÀç ¸ó½ºÅÍ"), controller.Enemy == null ? null : controller.Enemy.gameObject, typeof(GameObject), true);
-                EditorGUILayout.TextField(new GUIContent("¸ó½ºÅÍ HP"), GetEnemyHealthText(controller));
-                EditorGUILayout.TextField(new GUIContent("¸ó½ºÅÍ °ø°İ ÁøÇàµµ"), controller.Enemy == null ? "¸ó½ºÅÍ ¾øÀ½" : $"{controller.Enemy.AttackProgress:0.###}");
-                EditorGUILayout.IntField(new GUIContent("¸ó½ºÅÍ °ø°İ ¼º°ø È½¼ö"), controller.EnemyAttackSuccessCount);
+                EditorGUILayout.ObjectField(new GUIContent("í˜„ì¬ ëª¬ìŠ¤í„°"), controller.Enemy == null ? null : controller.Enemy.gameObject, typeof(GameObject), true);
+                EditorGUILayout.TextField(new GUIContent("ëª¬ìŠ¤í„° HP"), GetEnemyHealthText(controller));
+                EditorGUILayout.TextField(new GUIContent("ëª¬ìŠ¤í„° ê³µê²© ì§„í–‰ë„"), controller.Enemy == null ? "ëª¬ìŠ¤í„° ì—†ìŒ" : $"{controller.Enemy.AttackProgress:0.###}");
+                EditorGUILayout.IntField(new GUIContent("ëª¬ìŠ¤í„° ê³µê²© ì„±ê³µ íšŸìˆ˜"), controller.EnemyAttackSuccessCount);
 
                 bool hasEnemyContext = controller.TryCreateEnemyAttackContext(out BasicAttackContext enemyContext);
-                DrawAutomaticContext("¸ó½ºÅÍ ÀÚµ¿ °ø°İ »óÈ²", hasEnemyContext, enemyContext, GetEnemyAttackSettings(controller));
+                DrawAutomaticContext("ëª¬ìŠ¤í„° ìë™ ê³µê²© ìƒí™©", hasEnemyContext, enemyContext, GetEnemyAttackSettings(controller));
             }
         }
 
         private static void DrawCurrentHitChance(BasicAttackPrototypeController controller)
         {
-            EditorGUILayout.LabelField("ÇöÀç RuntimeStats ¸íÁß °è»ê", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("í˜„ì¬ RuntimeStats ëª…ì¤‘ ê³„ì‚°", EditorStyles.boldLabel);
 
             UnitRuntimeState unit = controller.Unit;
             EnemyRuntimeState enemy = controller.Enemy;
@@ -111,19 +111,19 @@ namespace EndlessGuard.Unit.Editor
             {
                 if (unit == null || enemy == null || unit.Stats == null || enemy.Stats == null)
                 {
-                    EditorGUILayout.HelpBox("Ä³¸¯ÅÍ¿Í ¸ó½ºÅÍ°¡ »ı¼ºµÇ¸é ÇöÀç RuntimeStats ±âÁØ ¸íÁß·üÀÌ Ç¥½ÃµË´Ï´Ù.", MessageType.Info);
+                    EditorGUILayout.HelpBox("ìºë¦­í„°ì™€ ëª¬ìŠ¤í„°ê°€ ìƒì„±ë˜ë©´ í˜„ì¬ RuntimeStats ê¸°ì¤€ ëª…ì¤‘ë¥ ì´ í‘œì‹œë©ë‹ˆë‹¤.", MessageType.Info);
                     return;
                 }
 
-                EditorGUILayout.FloatField("Ä³¸¯ÅÍ ¸íÁß", unit.Stats.Accuracy);
-                EditorGUILayout.FloatField("¸ó½ºÅÍ È¸ÇÇ", enemy.Stats.Evasion);
-                EditorGUILayout.FloatField("Ä³¸¯ÅÍ ¡æ ¸ó½ºÅÍ ¸íÁß·ü (%)", CalculateUnitHitChance(unit, enemy));
+                EditorGUILayout.FloatField("ìºë¦­í„° ëª…ì¤‘", unit.Stats.Accuracy);
+                EditorGUILayout.FloatField("ëª¬ìŠ¤í„° íšŒí”¼", enemy.Stats.Evasion);
+                EditorGUILayout.FloatField("ìºë¦­í„° â†’ ëª¬ìŠ¤í„° ëª…ì¤‘ë¥  (%)", CalculateUnitHitChance(unit, enemy));
 
                 EditorGUILayout.Space(3f);
 
-                EditorGUILayout.FloatField("¸ó½ºÅÍ ¸íÁß", enemy.Stats.Accuracy);
-                EditorGUILayout.FloatField("Ä³¸¯ÅÍ È¸ÇÇ", unit.Stats.Evasion);
-                EditorGUILayout.FloatField("¸ó½ºÅÍ ¡æ Ä³¸¯ÅÍ ¸íÁß·ü (%)", CalculateEnemyHitChance(enemy, unit));
+                EditorGUILayout.FloatField("ëª¬ìŠ¤í„° ëª…ì¤‘", enemy.Stats.Accuracy);
+                EditorGUILayout.FloatField("ìºë¦­í„° íšŒí”¼", unit.Stats.Evasion);
+                EditorGUILayout.FloatField("ëª¬ìŠ¤í„° â†’ ìºë¦­í„° ëª…ì¤‘ë¥  (%)", CalculateEnemyHitChance(enemy, unit));
             }
         }
 
@@ -133,26 +133,26 @@ namespace EndlessGuard.Unit.Editor
 
             if (!hasContext)
             {
-                EditorGUILayout.TextField(new GUIContent("ÀÚµ¿ °è»ê »óÅÂ"), "°İÀÚ »óÅÂ È®ÀÎ ºÒ°¡");
+                EditorGUILayout.TextField(new GUIContent("ìë™ ê³„ì‚° ìƒíƒœ"), "ê²©ì ìƒíƒœ í™•ì¸ ë¶ˆê°€");
                 return;
             }
 
-            EditorGUILayout.Vector2IntField(new GUIContent("ÀÚµ¿ »ó´ë Å¸ÀÏ"), context.RelativeTargetTile);
-            EditorGUILayout.FloatField(new GUIContent("ÀÚµ¿ ¿ùµå °Å¸®"), context.HorizontalWorldDistance);
-            EditorGUILayout.EnumPopup(new GUIContent("ÀÚµ¿ ¹Ù¶óº¸´Â ¹æÇâ"), context.FacingDirection);
-            EditorGUILayout.EnumPopup(new GUIContent("ÀÚµ¿ ´ë»ó À¯Çü"), context.TargetLayer);
+            EditorGUILayout.Vector2IntField(new GUIContent("ìë™ ìƒëŒ€ íƒ€ì¼"), context.RelativeTargetTile);
+            EditorGUILayout.FloatField(new GUIContent("ìë™ ì›”ë“œ ê±°ë¦¬"), context.HorizontalWorldDistance);
+            EditorGUILayout.EnumPopup(new GUIContent("ìë™ ë°”ë¼ë³´ëŠ” ë°©í–¥"), context.FacingDirection);
+            EditorGUILayout.EnumPopup(new GUIContent("ìë™ ëŒ€ìƒ ìœ í˜•"), context.TargetLayer);
 
             if (attackSettings == null)
             {
-                EditorGUILayout.TextField(new GUIContent("ÆĞÅÏ ±âÁØ º¯È¯ Å¸ÀÏ"), "°ø°İ µ¥ÀÌÅÍ ¾øÀ½");
+                EditorGUILayout.TextField(new GUIContent("íŒ¨í„´ ê¸°ì¤€ ë³€í™˜ íƒ€ì¼"), "ê³µê²© ë°ì´í„° ì—†ìŒ");
                 return;
             }
 
             Vector2Int evaluatedTile = BasicAttackRangeEvaluator.ConvertWorldTileToPatternTile(context.RelativeTargetTile, attackSettings.RangeRotationMode, context.FacingDirection);
 
-            EditorGUILayout.Vector2IntField(new GUIContent("ÆĞÅÏ ±âÁØ º¯È¯ Å¸ÀÏ"), evaluatedTile);
-            EditorGUILayout.FloatField(new GUIContent("°ø°İ »ç°Å¸®"), attackSettings.AttackRange);
-            EditorGUILayout.EnumPopup(new GUIContent("¹üÀ§ È¸Àü ¹æ½Ä"), attackSettings.RangeRotationMode);
+            EditorGUILayout.Vector2IntField(new GUIContent("íŒ¨í„´ ê¸°ì¤€ ë³€í™˜ íƒ€ì¼"), evaluatedTile);
+            EditorGUILayout.FloatField(new GUIContent("ê³µê²© ì‚¬ê±°ë¦¬"), attackSettings.AttackRange);
+            EditorGUILayout.EnumPopup(new GUIContent("ë²”ìœ„ íšŒì „ ë°©ì‹"), attackSettings.RangeRotationMode);
         }
 
         private static void DrawLastResult(BasicAttackPrototypeController controller)
@@ -165,22 +165,22 @@ namespace EndlessGuard.Unit.Editor
             BasicAttackResult result = controller.LastResult;
 
             EditorGUILayout.Space(6f);
-            EditorGUILayout.LabelField("ÃÖ±Ù ±âº» °ø°İ °á°ú", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìµœê·¼ ê¸°ë³¸ ê³µê²© ê²°ê³¼", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.Toggle(new GUIContent("°ø°İ ¼º°ø"), result.Succeeded);
-                EditorGUILayout.EnumPopup(new GUIContent("½ÇÆĞ ¿øÀÎ"), result.FailureReason);
-                EditorGUILayout.EnumPopup(new GUIContent("ÇÇÇØ À¯Çü"), result.DamageType);
-                EditorGUILayout.FloatField(new GUIContent("»ç¿ë °ø°İ·Â"), result.AttackPower);
-                EditorGUILayout.FloatField(new GUIContent("»ç¿ë ¹æ¾î·Â"), result.Defense);
-                EditorGUILayout.FloatField(new GUIContent("°è»ê ¸íÁß·ü (%)"), result.HitChancePercent);
-                EditorGUILayout.Toggle(new GUIContent("¸íÁß ¿©ºÎ"), result.WasHit);
-                EditorGUILayout.FloatField(new GUIContent("°è»ê ÇÇÇØ"), result.CalculatedDamage);
-                EditorGUILayout.FloatField(new GUIContent("Àû¿ë ÇÇÇØ"), result.AppliedDamage);
-                EditorGUILayout.Toggle(new GUIContent("Ä¡¸íÅ¸ ¿©ºÎ"), result.IsCritical);
-                EditorGUILayout.FloatField(new GUIContent("È¹µæ SP"), result.SkillGaugeGained);
-                EditorGUILayout.Toggle(new GUIContent("´ë»ó »ç¸Á"), result.TargetDied);
+                EditorGUILayout.Toggle(new GUIContent("ê³µê²© ì„±ê³µ"), result.Succeeded);
+                EditorGUILayout.EnumPopup(new GUIContent("ì‹¤íŒ¨ ì›ì¸"), result.FailureReason);
+                EditorGUILayout.EnumPopup(new GUIContent("í”¼í•´ ìœ í˜•"), result.DamageType);
+                EditorGUILayout.FloatField(new GUIContent("ì‚¬ìš© ê³µê²©ë ¥"), result.AttackPower);
+                EditorGUILayout.FloatField(new GUIContent("ì‚¬ìš© ë°©ì–´ë ¥"), result.Defense);
+                EditorGUILayout.FloatField(new GUIContent("ê³„ì‚° ëª…ì¤‘ë¥  (%)"), result.HitChancePercent);
+                EditorGUILayout.Toggle(new GUIContent("ëª…ì¤‘ ì—¬ë¶€"), result.WasHit);
+                EditorGUILayout.FloatField(new GUIContent("ê³„ì‚° í”¼í•´"), result.CalculatedDamage);
+                EditorGUILayout.FloatField(new GUIContent("ì ìš© í”¼í•´"), result.AppliedDamage);
+                EditorGUILayout.Toggle(new GUIContent("ì¹˜ëª…íƒ€ ì—¬ë¶€"), result.IsCritical);
+                EditorGUILayout.FloatField(new GUIContent("íšë“ SP"), result.SkillGaugeGained);
+                EditorGUILayout.Toggle(new GUIContent("ëŒ€ìƒ ì‚¬ë§"), result.TargetDied);
             }
         }
 
@@ -221,21 +221,21 @@ namespace EndlessGuard.Unit.Editor
         private static string GetUnitHealthText(BasicAttackPrototypeController controller)
         {
             return controller.Unit == null || controller.Unit.Health == null
-                ? "Ä³¸¯ÅÍ ¾øÀ½"
+                ? "ìºë¦­í„° ì—†ìŒ"
                 : $"{controller.Unit.Health.CurrentHp:0.##} / {controller.Unit.Health.MaxHp:0.##}";
         }
 
         private static string GetUnitSkillGaugeText(BasicAttackPrototypeController controller)
         {
             return controller.Unit == null
-                ? "Ä³¸¯ÅÍ ¾øÀ½"
+                ? "ìºë¦­í„° ì—†ìŒ"
                 : $"{controller.Unit.CurrentSkillGauge:0.##} / {controller.Unit.MaxSkillGauge:0.##}";
         }
 
         private static string GetEnemyHealthText(BasicAttackPrototypeController controller)
         {
             return controller.Enemy == null || controller.Enemy.Health == null
-                ? "¸ó½ºÅÍ ¾øÀ½"
+                ? "ëª¬ìŠ¤í„° ì—†ìŒ"
                 : $"{controller.Enemy.Health.CurrentHp:0.##} / {controller.Enemy.Health.MaxHp:0.##}";
         }
 

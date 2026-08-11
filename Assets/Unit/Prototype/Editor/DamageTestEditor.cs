@@ -14,74 +14,74 @@ namespace EndlessGuard.Unit.Editor
             DamageTest test = (DamageTest)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ÇÇÇØ ¼ıÀÚ Pop¡¤Push °ËÁõ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("í”¼í•´ ìˆ«ì PopÂ·Push ê²€ì¦", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.ObjectField(new GUIContent("°ËÁõ Ä³¸¯ÅÍ"), test.Target == null ? null : test.Target.gameObject, typeof(GameObject), true);
+                EditorGUILayout.ObjectField(new GUIContent("ê²€ì¦ ìºë¦­í„°"), test.Target == null ? null : test.Target.gameObject, typeof(GameObject), true);
 
                 EditorGUILayout.Space(4f);
-                EditorGUILayout.Toggle(new GUIContent("°ËÁõ ÁØºñ ¿Ï·á"), test.IsReady);
-                EditorGUILayout.Toggle(new GUIContent("°ËÁõ ½ÇÇà Áß"), test.IsRunning);
-                EditorGUILayout.Toggle(new GUIContent("¿¬¼Ó ÇÇÇØ ÀÔ·Â ¿Ï·á"), test.BurstComplete);
+                EditorGUILayout.Toggle(new GUIContent("ê²€ì¦ ì¤€ë¹„ ì™„ë£Œ"), test.IsReady);
+                EditorGUILayout.Toggle(new GUIContent("ê²€ì¦ ì‹¤í–‰ ì¤‘"), test.IsRunning);
+                EditorGUILayout.Toggle(new GUIContent("ì—°ì† í”¼í•´ ì…ë ¥ ì™„ë£Œ"), test.BurstComplete);
 
                 EditorGUILayout.Space(4f);
-                EditorGUILayout.LabelField("¿¬¼Ó ¼ıÀÚ È®ÀÎ", EditorStyles.miniBoldLabel);
-                EditorGUILayout.IntField(new GUIContent("´ë»ó ÃÖ´ë Ç¥½Ã ¼ö"), test.MaxNumbersPerTarget);
-                EditorGUILayout.IntField(new GUIContent("Àû¿ë ÇÇÇØ È½¼ö"), test.AppliedHitCount);
-                EditorGUILayout.IntField(new GUIContent("ÃÖ´ë µ¿½Ã ¼ıÀÚ"), test.PeakActiveCount);
-                EditorGUILayout.IntField(new GUIContent("¿¬Å¸ Á¾·á È°¼º ¼ıÀÚ"), test.ActiveCountAfterBurst);
-                EditorGUILayout.Toggle(new GUIContent("Ç¥½Ã °³¼ö Á¦ÇÑ ¼º°ø"), test.NumberLimitPassed);
+                EditorGUILayout.LabelField("ì—°ì† ìˆ«ì í™•ì¸", EditorStyles.miniBoldLabel);
+                EditorGUILayout.IntField(new GUIContent("ëŒ€ìƒ ìµœëŒ€ í‘œì‹œ ìˆ˜"), test.MaxNumbersPerTarget);
+                EditorGUILayout.IntField(new GUIContent("ì ìš© í”¼í•´ íšŸìˆ˜"), test.AppliedHitCount);
+                EditorGUILayout.IntField(new GUIContent("ìµœëŒ€ ë™ì‹œ ìˆ«ì"), test.PeakActiveCount);
+                EditorGUILayout.IntField(new GUIContent("ì—°íƒ€ ì¢…ë£Œ í™œì„± ìˆ«ì"), test.ActiveCountAfterBurst);
+                EditorGUILayout.Toggle(new GUIContent("í‘œì‹œ ê°œìˆ˜ ì œí•œ ì„±ê³µ"), test.NumberLimitPassed);
 
                 EditorGUILayout.Space(4f);
-                EditorGUILayout.LabelField("Ç® ¹İÈ¯", EditorStyles.miniBoldLabel);
-                EditorGUILayout.Toggle(new GUIContent("Ç® ¹İÈ¯ ´ë±â ½ÃÀÛ"), test.PoolReturnStarted);
-                EditorGUILayout.IntField(new GUIContent("ÇöÀç È°¼º ¼ıÀÚ"), test.CurrentActiveCount);
-                EditorGUILayout.IntField(new GUIContent("ÇöÀç ´ë±â ¼ıÀÚ"), test.AvailableCount);
-                EditorGUILayout.FloatField(new GUIContent("¹İÈ¯ °æ°ú ½Ã°£"), test.ReturnElapsedSeconds);
-                EditorGUILayout.Toggle(new GUIContent("ÀüºÎ Ç® ¹İÈ¯"), test.PoolReturnPassed);
+                EditorGUILayout.LabelField("í’€ ë°˜í™˜", EditorStyles.miniBoldLabel);
+                EditorGUILayout.Toggle(new GUIContent("í’€ ë°˜í™˜ ëŒ€ê¸° ì‹œì‘"), test.PoolReturnStarted);
+                EditorGUILayout.IntField(new GUIContent("í˜„ì¬ í™œì„± ìˆ«ì"), test.CurrentActiveCount);
+                EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ëŒ€ê¸° ìˆ«ì"), test.AvailableCount);
+                EditorGUILayout.FloatField(new GUIContent("ë°˜í™˜ ê²½ê³¼ ì‹œê°„"), test.ReturnElapsedSeconds);
+                EditorGUILayout.Toggle(new GUIContent("ì „ë¶€ í’€ ë°˜í™˜"), test.PoolReturnPassed);
 
                 EditorGUILayout.Space(4f);
-                EditorGUILayout.LabelField("Ä³¸¯ÅÍ ÇÇÇØ", EditorStyles.miniBoldLabel);
-                EditorGUILayout.FloatField(new GUIContent("½ÃÀÛ HP"), test.StartHp);
-                EditorGUILayout.FloatField(new GUIContent("ÇöÀç HP"), test.CurrentHp);
-                EditorGUILayout.FloatField(new GUIContent("ÃÑ Àû¿ë ÇÇÇØ"), test.TotalAppliedDamage);
-                EditorGUILayout.Toggle(new GUIContent("ÇÇÇØ Àû¿ë ¼º°ø"), test.DamagePassed);
+                EditorGUILayout.LabelField("ìºë¦­í„° í”¼í•´", EditorStyles.miniBoldLabel);
+                EditorGUILayout.FloatField(new GUIContent("ì‹œì‘ HP"), test.StartHp);
+                EditorGUILayout.FloatField(new GUIContent("í˜„ì¬ HP"), test.CurrentHp);
+                EditorGUILayout.FloatField(new GUIContent("ì´ ì ìš© í”¼í•´"), test.TotalAppliedDamage);
+                EditorGUILayout.Toggle(new GUIContent("í”¼í•´ ì ìš© ì„±ê³µ"), test.DamagePassed);
 
                 EditorGUILayout.Space(4f);
-                EditorGUILayout.Toggle(new GUIContent("ÃÖÁ¾ °ËÁõ ¼º°ø"), test.FinalPassed);
-                EditorGUILayout.FloatField(new GUIContent("ÀüÃ¼ °æ°ú ½Ã°£"), test.ElapsedSeconds);
-                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.Message) ? "ÇÇÇØ ¼ıÀÚ Pop¡¤Push °ËÁõ °á°ú°¡ ¾ø½À´Ï´Ù." : test.Message);
+                EditorGUILayout.Toggle(new GUIContent("ìµœì¢… ê²€ì¦ ì„±ê³µ"), test.FinalPassed);
+                EditorGUILayout.FloatField(new GUIContent("ì „ì²´ ê²½ê³¼ ì‹œê°„"), test.ElapsedSeconds);
+                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.Message) ? "í”¼í•´ ìˆ«ì PopÂ·Push ê²€ì¦ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤." : test.Message);
             }
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("°ËÁõ ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ê²€ì¦ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("ÇÇÇØ ¼ıÀÚ °ËÁõ ÁØºñ"))
+            if (GUILayout.Button("í”¼í•´ ìˆ«ì ê²€ì¦ ì¤€ë¹„"))
             {
                 Execute(test.SetupTest);
             }
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("6¿¬Å¸ ½ÃÀÛ"))
+            if (GUILayout.Button("6ì—°íƒ€ ì‹œì‘"))
             {
                 Execute(test.StartTest);
             }
 
-            if (GUILayout.Button("°ËÁõ Á¤Áö"))
+            if (GUILayout.Button("ê²€ì¦ ì •ì§€"))
             {
                 Execute(test.StopTest);
             }
 
             EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("ÇÇÇØ ¼ıÀÚ °ËÁõ ÃÊ±âÈ­"))
+            if (GUILayout.Button("í”¼í•´ ìˆ«ì ê²€ì¦ ì´ˆê¸°í™”"))
             {
                 Execute(test.ResetResult);
             }

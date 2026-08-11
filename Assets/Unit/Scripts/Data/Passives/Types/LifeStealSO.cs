@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "LifeSteal", menuName = "Endless Guard/Passive/ÈíÇ÷")]
+    [CreateAssetMenu(fileName = "LifeSteal", menuName = "Endless Guard/Passive/í¡í˜ˆ")]
     public sealed class LifeStealSO : PassiveDataSO
     {
-        [Header("ÈíÇ÷ ±âº»°ª")]
-        [Tooltip("±âº» °ø°İÀ¸·Î ½ÇÁ¦ Àû¿ëÇÑ ÇÇÇØ·® Áß ÀÚ½ÅÀÇ HP·Î È¸º¹ÇÏ´Â ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("í¡í˜ˆ ê¸°ë³¸ê°’")]
+        [Tooltip("ê¸°ë³¸ ê³µê²©ìœ¼ë¡œ ì‹¤ì œ ì ìš©í•œ í”¼í•´ëŸ‰ ì¤‘ ìì‹ ì˜ HPë¡œ íšŒë³µí•˜ëŠ” ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Range(0f, 100f)]
         [SerializeField] private float lifeStealPercent = 30f;
 

@@ -6,10 +6,10 @@ namespace EndlessGuard.Unit.Data
     [Serializable]
     public sealed class PassiveValue
     {
-        [Tooltip("ÀÌ ¼öÄ¡°¡ ÆĞ½Ãºê¿¡¼­ ¾î¶² ÀÇ¹Ì·Î »ç¿ëµÇ´ÂÁö ³ªÅ¸³À´Ï´Ù.")]
+        [Tooltip("ì´ ìˆ˜ì¹˜ê°€ íŒ¨ì‹œë¸Œì—ì„œ ì–´ë–¤ ì˜ë¯¸ë¡œ ì‚¬ìš©ë˜ëŠ”ì§€ ë‚˜íƒ€ëƒ…ë‹ˆë‹¤.")]
         [SerializeField] private PassiveValueKey key = PassiveValueKey.None;
 
-        [Tooltip("ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ°¡ ½ÇÁ¦·Î »ç¿ëÇÒ ÆĞ½Ãºê ¼öÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ê°€ ì‹¤ì œë¡œ ì‚¬ìš©í•  íŒ¨ì‹œë¸Œ ìˆ˜ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private float value;
 
         public PassiveValueKey Key => key;

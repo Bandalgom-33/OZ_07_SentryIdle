@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using EndlessGuard.Unit.Data;
@@ -21,11 +21,11 @@ namespace EndlessGuard.Unit.Editor
 
             if (passives == null || passiveTunings == null)
             {
-                EditorGUILayout.HelpBox("ÆĞ½Ãºê °³º° ¼³Á¤ SerializedProperty¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.", MessageType.Error);
+                EditorGUILayout.HelpBox("íŒ¨ì‹œë¸Œ ê°œë³„ ì„¤ì • SerializedPropertyë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.", MessageType.Error);
                 return;
             }
 
-            passiveTunings.isExpanded = EditorGUILayout.Foldout(passiveTunings.isExpanded, "ÆĞ½Ãºê °³º° ¼³Á¤", true);
+            passiveTunings.isExpanded = EditorGUILayout.Foldout(passiveTunings.isExpanded, "íŒ¨ì‹œë¸Œ ê°œë³„ ì„¤ì •", true);
 
             if (!passiveTunings.isExpanded)
             {
@@ -34,7 +34,7 @@ namespace EndlessGuard.Unit.Editor
 
             if (isEditingMultipleObjects)
             {
-                EditorGUILayout.HelpBox($"¿©·¯ {ownerLabel} µ¥ÀÌÅÍ¸¦ µ¿½Ã¿¡ ¼±ÅÃÇÑ »óÅÂ¿¡¼­´Â °³Ã¼º° ÆĞ½Ãºê ¼³Á¤À» ÆíÁıÇÏÁö ¾Ê½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox($"ì—¬ëŸ¬ {ownerLabel} ë°ì´í„°ë¥¼ ë™ì‹œì— ì„ íƒí•œ ìƒíƒœì—ì„œëŠ” ê°œì²´ë³„ íŒ¨ì‹œë¸Œ ì„¤ì •ì„ í¸ì§‘í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
@@ -42,11 +42,11 @@ namespace EndlessGuard.Unit.Editor
 
             if (passives.arraySize == 0)
             {
-                EditorGUILayout.HelpBox("¼±ÅÃÇÑ ÆĞ½Ãºê°¡ ¾ø½À´Ï´Ù. ¸ÕÀú À§ÀÇ ÆĞ½Ãºê ´É·Â ¸ñ·Ï¿¡¼­ ÆĞ½Ãºê¸¦ ¼±ÅÃÇÏ¼¼¿ä.", MessageType.Info);
+                EditorGUILayout.HelpBox("ì„ íƒí•œ íŒ¨ì‹œë¸Œê°€ ì—†ìŠµë‹ˆë‹¤. ë¨¼ì € ìœ„ì˜ íŒ¨ì‹œë¸Œ ëŠ¥ë ¥ ëª©ë¡ì—ì„œ íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•˜ì„¸ìš”.", MessageType.Info);
                 return;
             }
 
-            EditorGUILayout.HelpBox("ÆĞ½Ãºê ±â´ÉÀº °ø¿ëÀ¸·Î »ç¿ëÇÏ°í, ¾Æ·¡ ¼ıÀÚ¿Í ¿¡¼Â ÂüÁ¶´Â ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ¿¡ °³º° ÀúÀåµË´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("íŒ¨ì‹œë¸Œ ê¸°ëŠ¥ì€ ê³µìš©ìœ¼ë¡œ ì‚¬ìš©í•˜ê³ , ì•„ë˜ ìˆ«ìì™€ ì—ì…‹ ì°¸ì¡°ëŠ” ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ì— ê°œë³„ ì €ì¥ë©ë‹ˆë‹¤.", MessageType.Info);
 
             for (int i = 0; i < passiveTunings.arraySize; i++)
             {
@@ -59,12 +59,12 @@ namespace EndlessGuard.Unit.Editor
 
                 EditorGUILayout.Space(6f);
 
-                string passiveName = passive != null && !string.IsNullOrWhiteSpace(passive.DisplayName) ? passive.DisplayName : "ÆĞ½Ãºê";
+                string passiveName = passive != null && !string.IsNullOrWhiteSpace(passive.DisplayName) ? passive.DisplayName : "íŒ¨ì‹œë¸Œ";
                 EditorGUILayout.LabelField($"{i + 1}. {passiveName}", EditorStyles.miniBoldLabel);
 
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUILayout.ObjectField("ÆĞ½Ãºê Á¤ÀÇ", passive, typeof(PassiveDataSO), false);
+                    EditorGUILayout.ObjectField("íŒ¨ì‹œë¸Œ ì •ì˜", passive, typeof(PassiveDataSO), false);
                 }
 
                 bool hasValues = valuesProperty != null && valuesProperty.arraySize > 0;
@@ -72,7 +72,7 @@ namespace EndlessGuard.Unit.Editor
 
                 if (!hasValues && !hasRefs)
                 {
-                    EditorGUILayout.HelpBox("ÀÌ ÆĞ½Ãºê¿¡´Â ÇöÀç °³Ã¼º°·Î Á¶Á¤ÇÒ ¼ıÀÚ³ª ¿¡¼Â ÂüÁ¶°¡ ¾ø½À´Ï´Ù.", MessageType.None);
+                    EditorGUILayout.HelpBox("ì´ íŒ¨ì‹œë¸Œì—ëŠ” í˜„ì¬ ê°œì²´ë³„ë¡œ ì¡°ì •í•  ìˆ«ìë‚˜ ì—ì…‹ ì°¸ì¡°ê°€ ì—†ìŠµë‹ˆë‹¤.", MessageType.None);
                     continue;
                 }
 
@@ -89,7 +89,7 @@ namespace EndlessGuard.Unit.Editor
             }
 
             EditorGUILayout.Space(3f);
-            EditorGUILayout.LabelField("°³º° ¼öÄ¡", EditorStyles.miniBoldLabel);
+            EditorGUILayout.LabelField("ê°œë³„ ìˆ˜ì¹˜", EditorStyles.miniBoldLabel);
 
             for (int i = 0; i < values.arraySize; i++)
             {
@@ -120,7 +120,7 @@ namespace EndlessGuard.Unit.Editor
             }
 
             EditorGUILayout.Space(3f);
-            EditorGUILayout.LabelField("°³º° ¿¡¼Â ÂüÁ¶", EditorStyles.miniBoldLabel);
+            EditorGUILayout.LabelField("ê°œë³„ ì—ì…‹ ì°¸ì¡°", EditorStyles.miniBoldLabel);
 
             for (int i = 0; i < refs.arraySize; i++)
             {
@@ -389,7 +389,7 @@ namespace EndlessGuard.Unit.Editor
                 return cached;
             }
 
-            GUIContent content = CreateLabel(typeof(PassiveValueKey), key.ToString(), "ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ°¡ ½ÇÁ¦·Î »ç¿ëÇÒ °³º° ÆĞ½Ãºê ¼öÄ¡ÀÔ´Ï´Ù.");
+            GUIContent content = CreateLabel(typeof(PassiveValueKey), key.ToString(), "ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ê°€ ì‹¤ì œë¡œ ì‚¬ìš©í•  ê°œë³„ íŒ¨ì‹œë¸Œ ìˆ˜ì¹˜ì…ë‹ˆë‹¤.");
 
             ValueLabelCache.Add(key, content);
             return content;
@@ -402,7 +402,7 @@ namespace EndlessGuard.Unit.Editor
                 return cached;
             }
 
-            GUIContent content = CreateLabel(typeof(PassiveRefKey), key.ToString(), "ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ°¡ ÇØ´ç ÆĞ½Ãºê¿¡¼­ ½ÇÁ¦·Î »ç¿ëÇÒ °³º° ¿¡¼Â ÂüÁ¶ÀÔ´Ï´Ù.");
+            GUIContent content = CreateLabel(typeof(PassiveRefKey), key.ToString(), "ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ê°€ í•´ë‹¹ íŒ¨ì‹œë¸Œì—ì„œ ì‹¤ì œë¡œ ì‚¬ìš©í•  ê°œë³„ ì—ì…‹ ì°¸ì¡°ì…ë‹ˆë‹¤.");
 
             RefLabelCache.Add(key, content);
             return content;

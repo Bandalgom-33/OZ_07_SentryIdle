@@ -9,12 +9,12 @@ namespace EndlessGuard.Unit.Prototype
     {
         private const int EnemyCount = 3;
 
-        [Header("°ËÁõ ´ë»ó ¿¬°á")]
-        [Tooltip("ÀÚµ¿ ÀÌµ¿°ú ÀúÁö °á°ú¸¦ Á¦°øÇÏ´Â °ËÁõ ÄÄÆ÷³ÍÆ®ÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ëŒ€ìƒ ì—°ê²°")]
+        [Tooltip("ìë™ ì´ë™ê³¼ ì €ì§€ ê²°ê³¼ë¥¼ ì œê³µí•˜ëŠ” ê²€ì¦ ì»´í¬ë„ŒíŠ¸ì…ë‹ˆë‹¤.")]
         [SerializeField] private BlockTest blockTest;
 
-        [Header("ÀÚµ¿ °ø°İ °ËÁõ")]
-        [Tooltip("µÎ ÀúÁö ¸ó½ºÅÍ°¡ °ø°İÇÏÁö ¸øÇßÀ» ¶§ °ËÁõÀ» Á¾·áÇÒ Á¦ÇÑ ½Ã°£ÀÔ´Ï´Ù.")]
+        [Header("ìë™ ê³µê²© ê²€ì¦")]
+        [Tooltip("ë‘ ì €ì§€ ëª¬ìŠ¤í„°ê°€ ê³µê²©í•˜ì§€ ëª»í–ˆì„ ë•Œ ê²€ì¦ì„ ì¢…ë£Œí•  ì œí•œ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float timeoutSeconds = 3f;
 
@@ -117,7 +117,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (elapsedSeconds >= timeoutSeconds)
             {
-                FailTest("ÀÚµ¿ °ø°İ Á¦ÇÑ ½Ã°£ ¾È¿¡ µÎ ÀúÁö ¸ó½ºÅÍ°¡ ¸ğµÎ °ø°İÇÏÁö ¸øÇß½À´Ï´Ù.");
+                FailTest("ìë™ ê³µê²© ì œí•œ ì‹œê°„ ì•ˆì— ë‘ ì €ì§€ ëª¬ìŠ¤í„°ê°€ ëª¨ë‘ ê³µê²©í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
             }
         }
 
@@ -132,31 +132,31 @@ namespace EndlessGuard.Unit.Prototype
 
             if (blockTest == null)
             {
-                FailTest("BlockTest°¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+                FailTest("BlockTestê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
                 return;
             }
 
             if (!blockTest.AutoMovePassed)
             {
-                FailTest("ÀÚµ¿ ÀÌµ¿ ÀúÁö °ËÁõÀ» ¸ÕÀú ¿Ï·áÇØ¾ß ÇÕ´Ï´Ù.");
+                FailTest("ìë™ ì´ë™ ì €ì§€ ê²€ì¦ì„ ë¨¼ì € ì™„ë£Œí•´ì•¼ í•©ë‹ˆë‹¤.");
                 return;
             }
 
             if (blockTest.UnitBlock == null || blockTest.UnitBlock.State == null)
             {
-                FailTest("ÀÚµ¿ °ø°İ ´ë»ó Ä³¸¯ÅÍ¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                FailTest("ìë™ ê³µê²© ëŒ€ìƒ ìºë¦­í„°ë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
             if (blockTest.FirstBlock == null || blockTest.SecondBlock == null || blockTest.ThirdBlock == null)
             {
-                FailTest("ÀÚµ¿ °ø°İ °ËÁõ¿¡ ÇÊ¿äÇÑ ¸ó½ºÅÍ 3¸¶¸®¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                FailTest("ìë™ ê³µê²© ê²€ì¦ì— í•„ìš”í•œ ëª¬ìŠ¤í„° 3ë§ˆë¦¬ë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
             if (!blockTest.FirstBlock.IsBlocked || !blockTest.SecondBlock.IsBlocked || blockTest.ThirdBlock.IsBlocked)
             {
-                FailTest("Ã¹ ¹øÂ°¿Í µÎ ¹øÂ° ¸ó½ºÅÍ¸¸ ÀúÁöµÈ »óÅÂ°¡ ¾Æ´Õ´Ï´Ù.");
+                FailTest("ì²« ë²ˆì§¸ì™€ ë‘ ë²ˆì§¸ ëª¬ìŠ¤í„°ë§Œ ì €ì§€ëœ ìƒíƒœê°€ ì•„ë‹™ë‹ˆë‹¤.");
                 return;
             }
 
@@ -167,20 +167,20 @@ namespace EndlessGuard.Unit.Prototype
 
             if (attacks[0] == null || attacks[1] == null || attacks[2] == null)
             {
-                FailTest("°ËÁõ ¸ó½ºÅÍ¿¡¼­ EnemyAttackÀ» Ã£Áö ¸øÇß½À´Ï´Ù.");
+                FailTest("ê²€ì¦ ëª¬ìŠ¤í„°ì—ì„œ EnemyAttackì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
             if (target.Health == null || target.Health.IsDead)
             {
-                FailTest("°ø°İ ´ë»ó Ä³¸¯ÅÍ°¡ ¾ø°Å³ª ÀÌ¹Ì »ç¸ÁÇß½À´Ï´Ù.");
+                FailTest("ê³µê²© ëŒ€ìƒ ìºë¦­í„°ê°€ ì—†ê±°ë‚˜ ì´ë¯¸ ì‚¬ë§í–ˆìŠµë‹ˆë‹¤.");
                 return;
             }
 
             startHp = target.Health.CurrentHp;
             currentHp = startHp;
             isReady = true;
-            message = $"ÀÚµ¿ °ø°İ °ËÁõ ÁØºñ ¿Ï·á: Ä³¸¯ÅÍ ½ÃÀÛ HP {startHp:0.##}";
+            message = $"ìë™ ê³µê²© ê²€ì¦ ì¤€ë¹„ ì™„ë£Œ: ìºë¦­í„° ì‹œì‘ HP {startHp:0.##}";
             Debug.Log(message, this);
         }
 
@@ -188,14 +188,14 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (!isReady || target == null)
             {
-                message = "¸ÕÀú ÀÚµ¿ °ø°İ °ËÁõ ÁØºñ¸¦ ½ÇÇàÇÏ¼¼¿ä.";
+                message = "ë¨¼ì € ìë™ ê³µê²© ê²€ì¦ ì¤€ë¹„ë¥¼ ì‹¤í–‰í•˜ì„¸ìš”.";
                 Debug.LogWarning(message, this);
                 return;
             }
 
             isRunning = true;
             elapsedSeconds = 0f;
-            message = "ÀúÁöµÈ ¸ó½ºÅÍ 2¸¶¸®ÀÇ ÀÚµ¿ °ø°İÀ» ½ÃÀÛÇß½À´Ï´Ù.";
+            message = "ì €ì§€ëœ ëª¬ìŠ¤í„° 2ë§ˆë¦¬ì˜ ìë™ ê³µê²©ì„ ì‹œì‘í–ˆìŠµë‹ˆë‹¤.";
             Debug.Log(message, this);
         }
 
@@ -203,7 +203,7 @@ namespace EndlessGuard.Unit.Prototype
         {
             isRunning = false;
             currentHp = target == null || target.Health == null ? 0f : target.Health.CurrentHp;
-            message = "ÀÚµ¿ °ø°İ °ËÁõÀ» ¼öµ¿À¸·Î Á¤ÁöÇß½À´Ï´Ù.";
+            message = "ìë™ ê³µê²© ê²€ì¦ì„ ìˆ˜ë™ìœ¼ë¡œ ì •ì§€í–ˆìŠµë‹ˆë‹¤.";
             Debug.Log(message, this);
         }
 
@@ -231,12 +231,12 @@ namespace EndlessGuard.Unit.Prototype
 
             if (finalPassed)
             {
-                message = $"ÀÚµ¿ °ø°İ °ËÁõ ¼º°ø: Ã¹ ¹øÂ° {firstAttackCount}È¸, µÎ ¹øÂ° {secondAttackCount}È¸, ¼¼ ¹øÂ° {thirdAttackCount}È¸, Àû¿ë ÇÇÇØ {AppliedDamage:0.##}";
+                message = $"ìë™ ê³µê²© ê²€ì¦ ì„±ê³µ: ì²« ë²ˆì§¸ {firstAttackCount}íšŒ, ë‘ ë²ˆì§¸ {secondAttackCount}íšŒ, ì„¸ ë²ˆì§¸ {thirdAttackCount}íšŒ, ì ìš© í”¼í•´ {AppliedDamage:0.##}";
                 Debug.Log(message, this);
                 return;
             }
 
-            message = $"ÀÚµ¿ °ø°İ °ËÁõ ½ÇÆĞ: Ã¹ ¹øÂ° {firstAttackCount}È¸, µÎ ¹øÂ° {secondAttackCount}È¸, ¼¼ ¹øÂ° {thirdAttackCount}È¸, Àû¿ë ÇÇÇØ {AppliedDamage:0.##}";
+            message = $"ìë™ ê³µê²© ê²€ì¦ ì‹¤íŒ¨: ì²« ë²ˆì§¸ {firstAttackCount}íšŒ, ë‘ ë²ˆì§¸ {secondAttackCount}íšŒ, ì„¸ ë²ˆì§¸ {thirdAttackCount}íšŒ, ì ìš© í”¼í•´ {AppliedDamage:0.##}";
             Debug.LogWarning(message, this);
         }
 

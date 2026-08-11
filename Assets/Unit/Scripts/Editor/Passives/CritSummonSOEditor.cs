@@ -24,15 +24,15 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Ä¡¸íÅ¸ ¼ÒÈ¯ ¼³Á¤", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ì¹˜ëª…íƒ€ ì†Œí™˜ ì„¤ì •", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(summonPrefab, new GUIContent("¼ÒÈ¯¹° ÇÁ¸®ÆÕ", "Ä¡¸íÅ¸ ÀûÁß ½Ã »ı¼ºÇÒ ¼ÒÈ¯¹° ÇÁ¸®ÆÕÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(summonCooldownSeconds, new GUIContent("¼ÒÈ¯ ´ë±â½Ã°£ (ÃÊ)", "Ä¡¸íÅ¸·Î ¼ÒÈ¯ÇÑ µÚ ´Ù½Ã ¼ÒÈ¯ÇÒ ¼ö ÀÖÀ» ¶§±îÁöÀÇ ´ë±â½Ã°£ÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(maxActiveSummons, new GUIContent("ÃÖ´ë µ¿½Ã ¼ÒÈ¯ ¼ö", "ÀÌ ÆĞ½Ãºê·Î µ¿½Ã¿¡ À¯ÁöÇÒ ¼ö ÀÖ´Â ¼ÒÈ¯¹°ÀÇ ÃÖ´ë °³¼öÀÔ´Ï´Ù."));
+            EditorGUILayout.PropertyField(summonPrefab, new GUIContent("ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹", "ì¹˜ëª…íƒ€ ì ì¤‘ ì‹œ ìƒì„±í•  ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(summonCooldownSeconds, new GUIContent("ì†Œí™˜ ëŒ€ê¸°ì‹œê°„ (ì´ˆ)", "ì¹˜ëª…íƒ€ë¡œ ì†Œí™˜í•œ ë’¤ ë‹¤ì‹œ ì†Œí™˜í•  ìˆ˜ ìˆì„ ë•Œê¹Œì§€ì˜ ëŒ€ê¸°ì‹œê°„ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(maxActiveSummons, new GUIContent("ìµœëŒ€ ë™ì‹œ ì†Œí™˜ ìˆ˜", "ì´ íŒ¨ì‹œë¸Œë¡œ ë™ì‹œì— ìœ ì§€í•  ìˆ˜ ìˆëŠ” ì†Œí™˜ë¬¼ì˜ ìµœëŒ€ ê°œìˆ˜ì…ë‹ˆë‹¤."));
 
             if (summonPrefab.objectReferenceValue == null)
             {
-                EditorGUILayout.HelpBox("¼ÒÈ¯¹° ÇÁ¸®ÆÕÀ» ¿¬°áÇØ¾ß Ä¡¸íÅ¸ ÀûÁß ½Ã ½ÇÁ¦ ¼ÒÈ¯ÀÌ °¡´ÉÇÕ´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox("ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹ì„ ì—°ê²°í•´ì•¼ ì¹˜ëª…íƒ€ ì ì¤‘ ì‹œ ì‹¤ì œ ì†Œí™˜ì´ ê°€ëŠ¥í•©ë‹ˆë‹¤.", MessageType.Warning);
             }
         }
     }

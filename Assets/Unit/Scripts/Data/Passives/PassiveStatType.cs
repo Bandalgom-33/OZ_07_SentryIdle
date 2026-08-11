@@ -4,43 +4,43 @@ namespace EndlessGuard.Unit.Data
 {
     public enum PassiveStatType
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("ÃÖ´ë HP")]
+        [InspectorName("ìµœëŒ€ HP")]
         MaxHp = 1,
 
-        [InspectorName("ÃÊ´ç HP Àç»ı")]
+        [InspectorName("ì´ˆë‹¹ HP ì¬ìƒ")]
         HpRegenPerSecond = 2,
 
-        [InspectorName("¹°¸® °ø°İ·Â")]
+        [InspectorName("ë¬¼ë¦¬ ê³µê²©ë ¥")]
         PhysicalAttack = 3,
 
-        [InspectorName("¸¶¹ı °ø°İ·Â")]
+        [InspectorName("ë§ˆë²• ê³µê²©ë ¥")]
         MagicalAttack = 4,
 
-        [InspectorName("¹°¸® ¹æ¾î·Â")]
+        [InspectorName("ë¬¼ë¦¬ ë°©ì–´ë ¥")]
         PhysicalDefense = 5,
 
-        [InspectorName("¸¶¹ı ¹æ¾î·Â")]
+        [InspectorName("ë§ˆë²• ë°©ì–´ë ¥")]
         MagicalDefense = 6,
 
-        [InspectorName("°ø°İ¼Óµµ")]
+        [InspectorName("ê³µê²©ì†ë„")]
         AttacksPerSecond = 7,
 
-        [InspectorName("¸íÁß")]
+        [InspectorName("ëª…ì¤‘")]
         Accuracy = 8,
 
-        [InspectorName("È¸ÇÇ")]
+        [InspectorName("íšŒí”¼")]
         Evasion = 9,
 
-        [InspectorName("Ä¡¸íÅ¸ È®·ü")]
+        [InspectorName("ì¹˜ëª…íƒ€ í™•ë¥ ")]
         CriticalChancePercent = 10,
 
-        [InspectorName("Ä¡¸íÅ¸ ÇÇÇØ·®")]
+        [InspectorName("ì¹˜ëª…íƒ€ í”¼í•´ëŸ‰")]
         CriticalDamageBonusPercent = 11,
 
-        [InspectorName("ÀÌµ¿¼Óµµ")]
+        [InspectorName("ì´ë™ì†ë„")]
         MoveSpeed = 12
     }
 }

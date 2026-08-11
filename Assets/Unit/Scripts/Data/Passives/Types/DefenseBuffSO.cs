@@ -2,23 +2,23 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "DefenseBuff", menuName = "Endless Guard/Passive/¹æ¾î·Â Áõ°¡")]
+    [CreateAssetMenu(fileName = "DefenseBuff", menuName = "Endless Guard/Passive/ë°©ì–´ë ¥ ì¦ê°€")]
     public sealed class DefenseBuffSO : PassiveDataSO
     {
-        [Header("¹æ¾î·Â Áõ°¡ Á¶°Ç")]
-        [Tooltip("¹°¸®¡¤¸¶¹ı ¹æ¾î·Â Áõ°¡ È¿°ú°¡ È°¼ºÈ­µÇ´Â Á¶°ÇÀÔ´Ï´Ù.")]
+        [Header("ë°©ì–´ë ¥ ì¦ê°€ ì¡°ê±´")]
+        [Tooltip("ë¬¼ë¦¬Â·ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ íš¨ê³¼ê°€ í™œì„±í™”ë˜ëŠ” ì¡°ê±´ì…ë‹ˆë‹¤.")]
         [SerializeField] private DefenseBuffTrigger trigger = DefenseBuffTrigger.None;
 
-        [Header("¹æ¾î·Â Áõ°¡ ±âº»°ª")]
-        [Tooltip("Á¶°ÇÀ» ¸¸Á·ÇÏ´Â µ¿¾È Áõ°¡ÇÏ´Â ¹°¸® ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ë°©ì–´ë ¥ ì¦ê°€ ê¸°ë³¸ê°’")]
+        [Tooltip("ì¡°ê±´ì„ ë§Œì¡±í•˜ëŠ” ë™ì•ˆ ì¦ê°€í•˜ëŠ” ë¬¼ë¦¬ ë°©ì–´ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalDefenseBonusPercent = 100f;
 
-        [Tooltip("Á¶°ÇÀ» ¸¸Á·ÇÏ´Â µ¿¾È Áõ°¡ÇÏ´Â ¸¶¹ı ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì¡°ê±´ì„ ë§Œì¡±í•˜ëŠ” ë™ì•ˆ ì¦ê°€í•˜ëŠ” ë§ˆë²• ë°©ì–´ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalDefenseBonusPercent = 100f;
 
-        [Tooltip("È¸ÇÇ ¼º°ø Á¶°Ç¿¡¼­ ¹æ¾î·Â Áõ°¡ È¿°ú°¡ À¯ÁöµÇ´Â ½Ã°£ÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. ÀúÁö Áß Á¶°Ç¿¡¼­´Â »ç¿ëÇÏÁö ¾Ê½À´Ï´Ù.")]
+        [Tooltip("íšŒí”¼ ì„±ê³µ ì¡°ê±´ì—ì„œ ë°©ì–´ë ¥ ì¦ê°€ íš¨ê³¼ê°€ ìœ ì§€ë˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ì €ì§€ ì¤‘ ì¡°ê±´ì—ì„œëŠ” ì‚¬ìš©í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float durationSeconds = 3f;
 

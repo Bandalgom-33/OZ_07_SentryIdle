@@ -7,25 +7,25 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(CombatEntityAnchors))]
     public sealed class HitShake : MonoBehaviour
     {
-        [Header("ÇÇ°İ Èçµé¸²")]
-        [Tooltip("ÇÇ°İ ¼ø°£ ¿ÜÇüÀÌ ÁÂ¿ì·Î Èçµé¸®´Â ÃÖ´ë °Å¸®ÀÔ´Ï´Ù.")]
+        [Header("í”¼ê²© í”ë“¤ë¦¼")]
+        [Tooltip("í”¼ê²© ìˆœê°„ ì™¸í˜•ì´ ì¢Œìš°ë¡œ í”ë“¤ë¦¬ëŠ” ìµœëŒ€ ê±°ë¦¬ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float shakeDistance = 0.05f;
 
-        [Tooltip("ÇÑ ¹øÀÇ ÇÇ°İ ¹İÀÀ µ¿¾È ÁÂ¿ì Èçµé¸²ÀÌ ¹İº¹µÇ´Â È½¼öÀÔ´Ï´Ù.")]
+        [Tooltip("í•œ ë²ˆì˜ í”¼ê²© ë°˜ì‘ ë™ì•ˆ ì¢Œìš° í”ë“¤ë¦¼ì´ ë°˜ë³µë˜ëŠ” íšŸìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(0.5f)]
         [SerializeField] private float shakeCycles = 2.5f;
 
-        [Tooltip("ÇÇ°İ Èçµé¸²°ú Å©±â ¹İµ¿ÀÌ ³¡³¯ ¶§±îÁöÀÇ ÀüÃ¼ ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("í”¼ê²© í”ë“¤ë¦¼ê³¼ í¬ê¸° ë°˜ë™ì´ ëë‚  ë•Œê¹Œì§€ì˜ ì „ì²´ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float reactionDuration = 0.12f;
 
-        [Header("ÇÇ°İ Å©±â ¹İµ¿")]
-        [Tooltip("ÇÇ°İ Á÷ÈÄ ¼ø°£ÀûÀ¸·Î Ä¿Áö´Â Å©±â ¹èÀ²ÀÔ´Ï´Ù.")]
+        [Header("í”¼ê²© í¬ê¸° ë°˜ë™")]
+        [Tooltip("í”¼ê²© ì§í›„ ìˆœê°„ì ìœ¼ë¡œ ì»¤ì§€ëŠ” í¬ê¸° ë°°ìœ¨ì…ë‹ˆë‹¤.")]
         [Min(1f)]
         [SerializeField] private float scaleUp = 1.07f;
 
-        [Tooltip("È®´ë Á÷ÈÄ »ìÂ¦ ´­¸®µí ÀÛ¾ÆÁö´Â Å©±â ¹èÀ²ÀÔ´Ï´Ù.")]
+        [Tooltip("í™•ëŒ€ ì§í›„ ì‚´ì§ ëˆŒë¦¬ë“¯ ì‘ì•„ì§€ëŠ” í¬ê¸° ë°°ìœ¨ì…ë‹ˆë‹¤.")]
         [Range(0.5f, 1f)]
         [SerializeField] private float scaleDown = 0.96f;
 

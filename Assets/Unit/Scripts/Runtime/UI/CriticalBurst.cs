@@ -7,43 +7,43 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(RectTransform))]
     public sealed class CriticalBurst : MonoBehaviour
     {
-        [Header("Ä¡¸íÅ¸ Æø¹ß ÇÁ·¹ÀÓ")]
-        [Tooltip("Ä¡¸íÅ¸ ¼ıÀÚ µÚ¿¡¼­ Ç¥½ÃµÇ´Â Æø¹ßÇü ¿Ü°û ±×·¡ÇÈÀÔ´Ï´Ù.")]
+        [Header("ì¹˜ëª…íƒ€ í­ë°œ í”„ë ˆì„")]
+        [Tooltip("ì¹˜ëª…íƒ€ ìˆ«ì ë’¤ì—ì„œ í‘œì‹œë˜ëŠ” í­ë°œí˜• ì™¸ê³½ ê·¸ë˜í”½ì…ë‹ˆë‹¤.")]
         [SerializeField] private BurstGraphic burstGraphic;
 
-        [Tooltip("Æø¹ßÇü ¿Ü°û¼±ÀÇ ±âº» »ö»óÀÔ´Ï´Ù.")]
+        [Tooltip("í­ë°œí˜• ì™¸ê³½ì„ ì˜ ê¸°ë³¸ ìƒ‰ìƒì…ë‹ˆë‹¤.")]
         [SerializeField] private Color burstColor = new Color32(255, 175, 45, 255);
 
-        [Tooltip("Ä¡¸íÅ¸ ¼ıÀÚ ¿µ¿ª¿¡ Ãß°¡ÇÒ °¡·Î¡¤¼¼·Î ¿©¹éÀÔ´Ï´Ù. ¼ıÀÚ ¿¡¼Â Å©±â°¡ ¹Ù²î¾îµµ ÀÌ ¿©¹éÀ» ±âÁØÀ¸·Î ÀÚµ¿ ¸ÂÃä´Ï´Ù.")]
+        [Tooltip("ì¹˜ëª…íƒ€ ìˆ«ì ì˜ì—­ì— ì¶”ê°€í•  ê°€ë¡œÂ·ì„¸ë¡œ ì—¬ë°±ì…ë‹ˆë‹¤. ìˆ«ì ì—ì…‹ í¬ê¸°ê°€ ë°”ë€Œì–´ë„ ì´ ì—¬ë°±ì„ ê¸°ì¤€ìœ¼ë¡œ ìë™ ë§ì¶¥ë‹ˆë‹¤.")]
         [SerializeField] private Vector2 framePadding = new Vector2(40f, 24f);
 
-        [Tooltip("Ä¡¸íÅ¸ ¼ıÀÚÀÇ Åõ¸íµµ¿¡ °öÇÒ Æø¹ß ÇÁ·¹ÀÓÀÇ ÃÖ´ë Åõ¸íµµ ºñÀ²ÀÔ´Ï´Ù.")]
+        [Tooltip("ì¹˜ëª…íƒ€ ìˆ«ìì˜ íˆ¬ëª…ë„ì— ê³±í•  í­ë°œ í”„ë ˆì„ì˜ ìµœëŒ€ íˆ¬ëª…ë„ ë¹„ìœ¨ì…ë‹ˆë‹¤.")]
         [Range(0f, 1f)]
         [SerializeField] private float burstAlpha = 0.85f;
 
-        [Header("Ä¡¸íÅ¸ ÀÛÀº ½ºÆÄÅ©")]
-        [Tooltip("Æø¹ß ÁÖº¯¿¡¼­ Âª°Ô ÆÛÁö´Â ÀÛÀº ½ºÆÄÅ© ÀÌ¹ÌÁöµéÀÔ´Ï´Ù.")]
+        [Header("ì¹˜ëª…íƒ€ ì‘ì€ ìŠ¤íŒŒí¬")]
+        [Tooltip("í­ë°œ ì£¼ë³€ì—ì„œ ì§§ê²Œ í¼ì§€ëŠ” ì‘ì€ ìŠ¤íŒŒí¬ ì´ë¯¸ì§€ë“¤ì…ë‹ˆë‹¤.")]
         [SerializeField] private Image[] sparks;
 
-        [Tooltip("½ºÆÄÅ©ÀÇ ±âº» »ö»óÀÔ´Ï´Ù.")]
+        [Tooltip("ìŠ¤íŒŒí¬ì˜ ê¸°ë³¸ ìƒ‰ìƒì…ë‹ˆë‹¤.")]
         [SerializeField] private Color sparkColor = new Color32(255, 220, 110, 255);
 
-        [Tooltip("½ºÆÄÅ©°¡ Ç¥½ÃµÇ´Â ÀüÃ¼ ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("ìŠ¤íŒŒí¬ê°€ í‘œì‹œë˜ëŠ” ì „ì²´ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.05f)]
         [SerializeField] private float sparkDuration = 0.16f;
 
-        [Tooltip("½ºÆÄÅ©°¡ Áß½É¿¡¼­ ¹Ù±ùÀ¸·Î ÀÌµ¿ÇÏ´Â °Å¸®ÀÔ´Ï´Ù.")]
+        [Tooltip("ìŠ¤íŒŒí¬ê°€ ì¤‘ì‹¬ì—ì„œ ë°”ê¹¥ìœ¼ë¡œ ì´ë™í•˜ëŠ” ê±°ë¦¬ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float sparkDistance = 34f;
 
-        [Tooltip("½ºÆÄÅ©µéÀÌ ÆÛÁö´Â ¹æÇâÀÇ ½ÃÀÛ °¢µµÀÔ´Ï´Ù.")]
+        [Tooltip("ìŠ¤íŒŒí¬ë“¤ì´ í¼ì§€ëŠ” ë°©í–¥ì˜ ì‹œì‘ ê°ë„ì…ë‹ˆë‹¤.")]
         [SerializeField] private float sparkAngleOffset = 22.5f;
 
-        [Tooltip("½ºÆÄÅ©°¡ Ã³À½ Ç¥½ÃµÉ ¶§ÀÇ Å©±âÀÔ´Ï´Ù.")]
+        [Tooltip("ìŠ¤íŒŒí¬ê°€ ì²˜ìŒ í‘œì‹œë  ë•Œì˜ í¬ê¸°ì…ë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float sparkStartScale = 1f;
 
-        [Tooltip("½ºÆÄÅ©°¡ »ç¶óÁú ¶§ÀÇ Å©±âÀÔ´Ï´Ù.")]
+        [Tooltip("ìŠ¤íŒŒí¬ê°€ ì‚¬ë¼ì§ˆ ë•Œì˜ í¬ê¸°ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float sparkEndScale = 0.25f;
 

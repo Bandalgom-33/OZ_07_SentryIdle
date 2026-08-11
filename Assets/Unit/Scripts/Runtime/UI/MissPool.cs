@@ -7,18 +7,18 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(Canvas))]
     public sealed class MissPool : MonoBehaviour
     {
-        [Header("MISS Ç®")]
-        [Tooltip("Ç®¿¡¼­ Àç»ç¿ëÇÒ MISS Ç¥½Ã ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Header("MISS í’€")]
+        [Tooltip("í’€ì—ì„œ ì¬ì‚¬ìš©í•  MISS í‘œì‹œ í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private MissFeedback missPrefab;
 
-        [Tooltip("¿ùµå À§Ä¡¸¦ È­¸é ÁÂÇ¥·Î º¯È¯ÇÒ Ä«¸Ş¶óÀÔ´Ï´Ù.")]
+        [Tooltip("ì›”ë“œ ìœ„ì¹˜ë¥¼ í™”ë©´ ì¢Œí‘œë¡œ ë³€í™˜í•  ì¹´ë©”ë¼ì…ë‹ˆë‹¤.")]
         [SerializeField] private Camera worldCamera;
 
-        [Tooltip("ÀüÅõ ½ÃÀÛ ½Ã ¹Ì¸® »ı¼ºÇÒ MISS Ç¥½Ã °³¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ì „íˆ¬ ì‹œì‘ ì‹œ ë¯¸ë¦¬ ìƒì„±í•  MISS í‘œì‹œ ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int initialCapacity = 12;
 
-        [Tooltip("°°Àº ´ë»ó¿¡°Ô µ¿½Ã¿¡ Ç¥½ÃÇÒ ¼ö ÀÖ´Â MISS ÃÖ´ë °³¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ê°™ì€ ëŒ€ìƒì—ê²Œ ë™ì‹œì— í‘œì‹œí•  ìˆ˜ ìˆëŠ” MISS ìµœëŒ€ ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Range(1, 10)]
         [SerializeField] private int maxPerTarget = 4;
 
@@ -40,7 +40,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (instance != null && instance != this)
             {
-                Debug.LogError("MissPoolÀÌ ¾À¿¡ µÑ ÀÌ»ó Á¸ÀçÇÕ´Ï´Ù.", this);
+                Debug.LogError("MissPoolì´ ì”¬ì— ë‘˜ ì´ìƒ ì¡´ì¬í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }
@@ -56,7 +56,7 @@ namespace EndlessGuard.Unit.Runtime
 
             if (canvasRect == null)
             {
-                Debug.LogError("MissPoolÀº RectTransformÀÌ ÀÖ´Â Canvas¿¡ ¹èÄ¡ÇØ¾ß ÇÕ´Ï´Ù.", this);
+                Debug.LogError("MissPoolì€ RectTransformì´ ìˆëŠ” Canvasì— ë°°ì¹˜í•´ì•¼ í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }
@@ -123,7 +123,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (missPrefab == null)
             {
-                Debug.LogError("MissPool¿¡ MissFeedback ÇÁ¸®ÆÕÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.", this);
+                Debug.LogError("MissPoolì— MissFeedback í”„ë¦¬íŒ¹ì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", this);
                 return;
             }
 

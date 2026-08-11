@@ -4,19 +4,19 @@ namespace EndlessGuard.Unit.Data
 {
     public abstract class PassiveDataSO : ScriptableObject
     {
-        [Header("ÆÐ½Ãºê ±âº» Á¤º¸")]
-        [Tooltip("Ä³¸¯ÅÍ¡¤¸ó½ºÅÍ µ¥ÀÌÅÍ¿Í Á¦ÀÛ µµ±¸¿¡ Ç¥½ÃµÇ´Â ÆÐ½Ãºê ÀÌ¸§ÀÔ´Ï´Ù.")]
+        [Header("íŒ¨ì‹œë¸Œ ê¸°ë³¸ ì •ë³´")]
+        [Tooltip("ìºë¦­í„°Â·ëª¬ìŠ¤í„° ë°ì´í„°ì™€ ì œìž‘ ë„êµ¬ì— í‘œì‹œë˜ëŠ” íŒ¨ì‹œë¸Œ ì´ë¦„ìž…ë‹ˆë‹¤.")]
         [SerializeField] private string displayName;
 
-        [Tooltip("ÆÐ½ÃºêÀÇ ¹ßµ¿ Á¶°Ç°ú È¿°ú¸¦ ¼³¸íÇÏ´Â ³»¿ëÀÔ´Ï´Ù.")]
+        [Tooltip("íŒ¨ì‹œë¸Œì˜ ë°œë™ ì¡°ê±´ê³¼ íš¨ê³¼ë¥¼ ì„¤ëª…í•˜ëŠ” ë‚´ìš©ìž…ë‹ˆë‹¤.")]
         [TextArea(2, 5)]
         [SerializeField] private string description;
 
-        [Tooltip("ÀÌ ÆÐ½Ãºê¸¦ Ä³¸¯ÅÍ, ¸ó½ºÅÍ ¶Ç´Â ¾çÂÊ ¸ðµÎ°¡ »ç¿ëÇÒ ¼ö ÀÖ´ÂÁö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Tooltip("ì´ íŒ¨ì‹œë¸Œë¥¼ ìºë¦­í„°, ëª¬ìŠ¤í„° ë˜ëŠ” ì–‘ìª½ ëª¨ë‘ê°€ ì‚¬ìš©í•  ìˆ˜ ìžˆëŠ”ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private PassiveUserType usableBy = PassiveUserType.Both;
 
-        [Header("ÆÐ½Ãºê ¼±ÅÃ Ç®")]
-        [Tooltip("Ä³¸¯ÅÍ´Â »óÀ§ Á÷±º, ¸ó½ºÅÍ´Â Å©±â¸¦ ±âÁØÀ¸·Î ÀÌ ÆÐ½Ãºê¸¦ ¼±ÅÃÇÒ ¼ö ÀÖ´Â ¹üÀ§¸¦ ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Header("íŒ¨ì‹œë¸Œ ì„ íƒ í’€")]
+        [Tooltip("ìºë¦­í„°ëŠ” ìƒìœ„ ì§êµ°, ëª¬ìŠ¤í„°ëŠ” í¬ê¸°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì´ íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•  ìˆ˜ ìžˆëŠ” ë²”ìœ„ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private PassiveCompatibility compatibility = new PassiveCompatibility();
 
         public string DisplayName => displayName;

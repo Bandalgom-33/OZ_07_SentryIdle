@@ -11,14 +11,14 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(EnemyMove))]
     public sealed class EnemyRuntimeState : MonoBehaviour
     {
-        [Header("¸ó½ºÅÍ ·±Å¸ÀÓ »óÅÂ")]
-        [Tooltip("±âº» °ø°İ ½ÇÇàÀ» À§ÇØ ´©ÀûµÇ´Â °ø°İ ÁøÇàµµÀÔ´Ï´Ù.")]
+        [Header("ëª¬ìŠ¤í„° ëŸ°íƒ€ì„ ìƒíƒœ")]
+        [Tooltip("ê¸°ë³¸ ê³µê²© ì‹¤í–‰ì„ ìœ„í•´ ëˆ„ì ë˜ëŠ” ê³µê²© ì§„í–‰ë„ì…ë‹ˆë‹¤.")]
         [SerializeField] private AttackProgressState attackProgress = new AttackProgressState();
 
-        [Tooltip("±âÁØ ÀüÅõ ´É·ÂÄ¡¿¡ ¼ºÀå, ÆĞ½Ãºê¿Í ÀüÅõ È¿°ú¸¦ ¹İ¿µÇÏ¿© »ç¿ëÇÏ´Â ·±Å¸ÀÓ ´É·ÂÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ê¸°ì¤€ ì „íˆ¬ ëŠ¥ë ¥ì¹˜ì— ì„±ì¥, íŒ¨ì‹œë¸Œì™€ ì „íˆ¬ íš¨ê³¼ë¥¼ ë°˜ì˜í•˜ì—¬ ì‚¬ìš©í•˜ëŠ” ëŸ°íƒ€ì„ ëŠ¥ë ¥ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private RuntimeStats runtimeStats = new RuntimeStats();
 
-        [Tooltip("EnemyDataSO¿¡ ¼³Á¤µÈ ÆĞ½Ãºê¸¦ ÇöÀç ÀüÅõ¿¡¼­ ½ÇÇà¡¤°ü¸®ÇÏ´Â ·±Å¸ÀÓ »óÅÂÀÔ´Ï´Ù.")]
+        [Tooltip("EnemyDataSOì— ì„¤ì •ëœ íŒ¨ì‹œë¸Œë¥¼ í˜„ì¬ ì „íˆ¬ì—ì„œ ì‹¤í–‰Â·ê´€ë¦¬í•˜ëŠ” ëŸ°íƒ€ì„ ìƒíƒœì…ë‹ˆë‹¤.")]
         [SerializeField] private EnemyPassiveRuntime passiveRuntime = new EnemyPassiveRuntime();
 
         private PassiveStatusRuntime passiveStatuses = new PassiveStatusRuntime();
@@ -138,7 +138,7 @@ namespace EndlessGuard.Unit.Runtime
             if (dataLink == null || !dataLink.HasData || dataLink.EnemyData.BaseStats == null || move == null || block == null || attack == null)
             {
                 isInitialized = false;
-                Debug.LogError($"{name} ¸ó½ºÅÍÀÇ ·±Å¸ÀÓ »óÅÂ¸¦ ÃÊ±âÈ­ÇÒ µ¥ÀÌÅÍ, EnemyMove, EnemyBlock ¶Ç´Â EnemyAttackÀÌ ¾ø½À´Ï´Ù.", this);
+                Debug.LogError($"{name} ëª¬ìŠ¤í„°ì˜ ëŸ°íƒ€ì„ ìƒíƒœë¥¼ ì´ˆê¸°í™”í•  ë°ì´í„°, EnemyMove, EnemyBlock ë˜ëŠ” EnemyAttackì´ ì—†ìŠµë‹ˆë‹¤.", this);
                 return;
             }
 
@@ -160,7 +160,7 @@ namespace EndlessGuard.Unit.Runtime
             if (!runtimeStats.Initialize(dataLink.EnemyData.BaseStats))
             {
                 isInitialized = false;
-                Debug.LogError($"{name} ¸ó½ºÅÍÀÇ RuntimeStats¸¦ ÃÊ±âÈ­ÇÏÁö ¸øÇß½À´Ï´Ù.", this);
+                Debug.LogError($"{name} ëª¬ìŠ¤í„°ì˜ RuntimeStatsë¥¼ ì´ˆê¸°í™”í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.", this);
                 return;
             }
 

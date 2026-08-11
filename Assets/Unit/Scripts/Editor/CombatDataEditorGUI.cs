@@ -17,7 +17,7 @@ namespace EndlessGuard.Unit.Editor
         public static void DrawCombatStats(SerializedProperty property)
         {
             EditorGUILayout.Space(8f);
-            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "°øÅë ±âº» ÀüÅõ ´É·ÂÄ¡", true);
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "ê³µí†µ ê¸°ë³¸ ì „íˆ¬ ëŠ¥ë ¥ì¹˜", true);
 
             if (!property.isExpanded)
             {
@@ -26,17 +26,17 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("maxHp"), new GUIContent("ÃÖ´ë HP", "·¹º§ ¼ºÀå, °øÅë °­È­, ÆĞ½Ãºê¿Í ¹öÇÁ°¡ Àû¿ëµÇ±â Àü ±âÁØ ÃÖ´ë HPÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("physicalAttack"), new GUIContent("¹°¸® °ø°İ·Â", "¹°¸® ±âº» °ø°İ°ú ¹°¸® °ø°İÇü ´É·ÂÀÇ ±âÁØ °ø°İ·ÂÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("magicalAttack"), new GUIContent("¸¶¹ı °ø°İ·Â", "¸¶¹ı ±âº» °ø°İ°ú ¸¶¹ı °ø°İÇü ´É·ÂÀÇ ±âÁØ °ø°İ·ÂÀÔ´Ï´Ù."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("maxHp"), new GUIContent("ìµœëŒ€ HP", "ë ˆë²¨ ì„±ì¥, ê³µí†µ ê°•í™”, íŒ¨ì‹œë¸Œì™€ ë²„í”„ê°€ ì ìš©ë˜ê¸° ì „ ê¸°ì¤€ ìµœëŒ€ HPì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("physicalAttack"), new GUIContent("ë¬¼ë¦¬ ê³µê²©ë ¥", "ë¬¼ë¦¬ ê¸°ë³¸ ê³µê²©ê³¼ ë¬¼ë¦¬ ê³µê²©í˜• ëŠ¥ë ¥ì˜ ê¸°ì¤€ ê³µê²©ë ¥ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("magicalAttack"), new GUIContent("ë§ˆë²• ê³µê²©ë ¥", "ë§ˆë²• ê¸°ë³¸ ê³µê²©ê³¼ ë§ˆë²• ê³µê²©í˜• ëŠ¥ë ¥ì˜ ê¸°ì¤€ ê³µê²©ë ¥ì…ë‹ˆë‹¤."));
 
             DrawAttackRate(property);
 
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("physicalDefense"), new GUIContent("¹°¸® ¹æ¾î·Â", "¹°¸® ÇÇÇØ¸¦ ¹ŞÀ» ¶§ »ç¿ëÇÏ´Â ±âÁØ ¹æ¾î·ÂÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("magicalDefense"), new GUIContent("¸¶¹ı ¹æ¾î·Â", "¸¶¹ı ÇÇÇØ¸¦ ¹ŞÀ» ¶§ »ç¿ëÇÏ´Â ±âÁØ ¹æ¾î·ÂÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("accuracy"), new GUIContent("¸íÁß·Â", "ÃÖÁ¾ ¸íÁß È®·üÀ» °è»êÇÒ ¶§ »ç¿ëÇÏ´Â ±âÁØ ´É·ÂÄ¡ÀÌ¸ç ±× ÀÚÃ¼°¡ ÆÛ¼¾Æ® °ªÀº ¾Æ´Õ´Ï´Ù."));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("evasion"), new GUIContent("È¸ÇÇ·Â", "ÃÖÁ¾ È¸ÇÇ È®·üÀ» °è»êÇÒ ¶§ »ç¿ëÇÏ´Â ±âÁØ ´É·ÂÄ¡ÀÌ¸ç ±× ÀÚÃ¼°¡ ÆÛ¼¾Æ® °ªÀº ¾Æ´Õ´Ï´Ù."));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("moveSpeed"), new GUIContent("ÀÌµ¿¼Óµµ", "1ÃÊ µ¿¾È ÀÌµ¿ÇÏ´Â ¿ùµå °Å¸®ÀÇ ±âÁØ°ªÀÔ´Ï´Ù."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("physicalDefense"), new GUIContent("ë¬¼ë¦¬ ë°©ì–´ë ¥", "ë¬¼ë¦¬ í”¼í•´ë¥¼ ë°›ì„ ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ì¤€ ë°©ì–´ë ¥ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("magicalDefense"), new GUIContent("ë§ˆë²• ë°©ì–´ë ¥", "ë§ˆë²• í”¼í•´ë¥¼ ë°›ì„ ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ì¤€ ë°©ì–´ë ¥ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("accuracy"), new GUIContent("ëª…ì¤‘ë ¥", "ìµœì¢… ëª…ì¤‘ í™•ë¥ ì„ ê³„ì‚°í•  ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ì¤€ ëŠ¥ë ¥ì¹˜ì´ë©° ê·¸ ìì²´ê°€ í¼ì„¼íŠ¸ ê°’ì€ ì•„ë‹™ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("evasion"), new GUIContent("íšŒí”¼ë ¥", "ìµœì¢… íšŒí”¼ í™•ë¥ ì„ ê³„ì‚°í•  ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ì¤€ ëŠ¥ë ¥ì¹˜ì´ë©° ê·¸ ìì²´ê°€ í¼ì„¼íŠ¸ ê°’ì€ ì•„ë‹™ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("moveSpeed"), new GUIContent("ì´ë™ì†ë„", "1ì´ˆ ë™ì•ˆ ì´ë™í•˜ëŠ” ì›”ë“œ ê±°ë¦¬ì˜ ê¸°ì¤€ê°’ì…ë‹ˆë‹¤."));
 
             EditorGUI.indentLevel--;
         }
@@ -47,18 +47,18 @@ namespace EndlessGuard.Unit.Editor
 
             if (attacksPerSecond == null)
             {
-                EditorGUILayout.HelpBox("±âº» °ø°İ ºóµµ ÇÊµå¸¦ Ã£Áö ¸øÇß½À´Ï´Ù. CombatStatsÀÇ baseAttacksPerSecond ÇÊµå¸¦ È®ÀÎÇÏ¼¼¿ä.", MessageType.Error);
+                EditorGUILayout.HelpBox("ê¸°ë³¸ ê³µê²© ë¹ˆë„ í•„ë“œë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. CombatStatsì˜ baseAttacksPerSecond í•„ë“œë¥¼ í™•ì¸í•˜ì„¸ìš”.", MessageType.Error);
                 return;
             }
 
-            EditorGUILayout.PropertyField(attacksPerSecond, new GUIContent("±âº» °ø°İ ºóµµ (È¸/ÃÊ)", "°­È­ Àü 1ÃÊ´ç ±âº» °ø°İ È½¼öÀÔ´Ï´Ù. 2´Â 1ÃÊ¿¡ 2È¸, 0.5´Â 2ÃÊ¿¡ 1È¸¸¦ ÀÇ¹ÌÇÕ´Ï´Ù."));
+            EditorGUILayout.PropertyField(attacksPerSecond, new GUIContent("ê¸°ë³¸ ê³µê²© ë¹ˆë„ (íšŒ/ì´ˆ)", "ê°•í™” ì „ 1ì´ˆë‹¹ ê¸°ë³¸ ê³µê²© íšŸìˆ˜ì…ë‹ˆë‹¤. 2ëŠ” 1ì´ˆì— 2íšŒ, 0.5ëŠ” 2ì´ˆì— 1íšŒë¥¼ ì˜ë¯¸í•©ë‹ˆë‹¤."));
 
             if (attacksPerSecond.hasMultipleDifferentValues)
             {
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUILayout.TextField(new GUIContent("°è»êµÈ ±âº» °ø°İ °£°İ (ÃÊ)"), "¿©·¯ °ª");
-                    EditorGUILayout.TextField(new GUIContent("±âº» °ø°İ ÇØ¼®"), "¿©·¯ °ª");
+                    EditorGUILayout.TextField(new GUIContent("ê³„ì‚°ëœ ê¸°ë³¸ ê³µê²© ê°„ê²© (ì´ˆ)"), "ì—¬ëŸ¬ ê°’");
+                    EditorGUILayout.TextField(new GUIContent("ê¸°ë³¸ ê³µê²© í•´ì„"), "ì—¬ëŸ¬ ê°’");
                 }
 
                 return;
@@ -70,14 +70,14 @@ namespace EndlessGuard.Unit.Editor
             {
                 if (rate <= 0f)
                 {
-                    EditorGUILayout.TextField(new GUIContent("°è»êµÈ ±âº» °ø°İ °£°İ (ÃÊ)"), "°ø°İÇÏÁö ¾ÊÀ½");
-                    EditorGUILayout.TextField(new GUIContent("±âº» °ø°İ ÇØ¼®"), "±âº» °ø°İ ºóµµ°¡ 0ÀÔ´Ï´Ù.");
+                    EditorGUILayout.TextField(new GUIContent("ê³„ì‚°ëœ ê¸°ë³¸ ê³µê²© ê°„ê²© (ì´ˆ)"), "ê³µê²©í•˜ì§€ ì•ŠìŒ");
+                    EditorGUILayout.TextField(new GUIContent("ê¸°ë³¸ ê³µê²© í•´ì„"), "ê¸°ë³¸ ê³µê²© ë¹ˆë„ê°€ 0ì…ë‹ˆë‹¤.");
                     return;
                 }
 
                 float interval = 1f / rate;
-                EditorGUILayout.FloatField(new GUIContent("°è»êµÈ ±âº» °ø°İ °£°İ (ÃÊ)", "±âº» °ø°İ ºóµµ¸¦ ±âÁØÀ¸·Î ÀÚµ¿ °è»êµÇ´Â Âü°í°ªÀÔ´Ï´Ù."), interval);
-                EditorGUILayout.TextField(new GUIContent("±âº» °ø°İ ÇØ¼®", "ÀÔ·ÂÇÑ °ø°İ ºóµµ¸¦ »ç¶÷ÀÌ ÀĞ±â ½¬¿î ¹®ÀåÀ¸·Î Ç¥½ÃÇÕ´Ï´Ù."), BuildAttackRateDescription(rate, interval));
+                EditorGUILayout.FloatField(new GUIContent("ê³„ì‚°ëœ ê¸°ë³¸ ê³µê²© ê°„ê²© (ì´ˆ)", "ê¸°ë³¸ ê³µê²© ë¹ˆë„ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ìë™ ê³„ì‚°ë˜ëŠ” ì°¸ê³ ê°’ì…ë‹ˆë‹¤."), interval);
+                EditorGUILayout.TextField(new GUIContent("ê¸°ë³¸ ê³µê²© í•´ì„", "ì…ë ¥í•œ ê³µê²© ë¹ˆë„ë¥¼ ì‚¬ëŒì´ ì½ê¸° ì‰¬ìš´ ë¬¸ì¥ìœ¼ë¡œ í‘œì‹œí•©ë‹ˆë‹¤."), BuildAttackRateDescription(rate, interval));
             }
         }
 
@@ -85,16 +85,16 @@ namespace EndlessGuard.Unit.Editor
         {
             if (attacksPerSecond >= 1f)
             {
-                return $"1ÃÊ¿¡ ¾à {attacksPerSecond:0.###}È¸ °ø°İ";
+                return $"1ì´ˆì— ì•½ {attacksPerSecond:0.###}íšŒ ê³µê²©";
             }
 
-            return $"¾à {interval:0.###}ÃÊ¿¡ 1È¸ °ø°İ";
+            return $"ì•½ {interval:0.###}ì´ˆì— 1íšŒ ê³µê²©";
         }
 
         public static void DrawAttackSettings(SerializedProperty property)
         {
             EditorGUILayout.Space(8f);
-            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "±âº» °ø°İ ¼³Á¤", true);
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "ê¸°ë³¸ ê³µê²© ì„¤ì •", true);
 
             if (!property.isExpanded)
             {
@@ -110,11 +110,11 @@ namespace EndlessGuard.Unit.Editor
             SerializedProperty targetCount = property.FindPropertyRelative("targetCount");
             SerializedProperty basicAttackRange = property.FindPropertyRelative("basicAttackRange");
 
-            EditorGUILayout.PropertyField(attackMode, new GUIContent("°ø°İ ¹æ½Ä", "±âº» °ø°İÀ» ÇÏÁö ¾Ê´ÂÁö, ±Ù°Å¸® ¶Ç´Â ¿ø°Å¸® ¹æ½ÄÀÎÁö ¼³Á¤ÇÕ´Ï´Ù."));
-            EditorGUILayout.PropertyField(damageType, new GUIContent("±âº» °ø°İ ÇÇÇØ À¯Çü", "±âº» °ø°İÀÌ ¹°¸® ÇÇÇØÀÎÁö ¸¶¹ı ÇÇÇØÀÎÁö ¼³Á¤ÇÕ´Ï´Ù."));
-            EditorGUILayout.PropertyField(attackTarget, new GUIContent("°ø°İ °¡´É ´ë»ó", "Áö»ó, °øÁß ¶Ç´Â ¾çÂÊ ¸ğµÎ¸¦ ±âº» °ø°İÇÒ ¼ö ÀÖ´ÂÁö ¼³Á¤ÇÕ´Ï´Ù."));
-            EditorGUILayout.PropertyField(attackRange, new GUIContent("°ø°İ »ç°Å¸®", "´ë»óÀ» Å½»öÇÏ°í ±âº» °ø°İÇÒ ¼ö ÀÖ´Â ±âÁØ ¿ùµå °Å¸®ÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(targetCount, new GUIContent("µ¿½Ã °ø°İ ´ë»ó ¼ö", "ÇÑ ¹øÀÇ ±âº» °ø°İÀ¸·Î µ¿½Ã¿¡ °ø°İÇÒ ¼ö ÀÖ´Â ÃÖ´ë ´ë»ó ¼öÀÔ´Ï´Ù."));
+            EditorGUILayout.PropertyField(attackMode, new GUIContent("ê³µê²© ë°©ì‹", "ê¸°ë³¸ ê³µê²©ì„ í•˜ì§€ ì•ŠëŠ”ì§€, ê·¼ê±°ë¦¬ ë˜ëŠ” ì›ê±°ë¦¬ ë°©ì‹ì¸ì§€ ì„¤ì •í•©ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(damageType, new GUIContent("ê¸°ë³¸ ê³µê²© í”¼í•´ ìœ í˜•", "ê¸°ë³¸ ê³µê²©ì´ ë¬¼ë¦¬ í”¼í•´ì¸ì§€ ë§ˆë²• í”¼í•´ì¸ì§€ ì„¤ì •í•©ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(attackTarget, new GUIContent("ê³µê²© ê°€ëŠ¥ ëŒ€ìƒ", "ì§€ìƒ, ê³µì¤‘ ë˜ëŠ” ì–‘ìª½ ëª¨ë‘ë¥¼ ê¸°ë³¸ ê³µê²©í•  ìˆ˜ ìˆëŠ”ì§€ ì„¤ì •í•©ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(attackRange, new GUIContent("ê³µê²© ì‚¬ê±°ë¦¬", "ëŒ€ìƒì„ íƒìƒ‰í•˜ê³  ê¸°ë³¸ ê³µê²©í•  ìˆ˜ ìˆëŠ” ê¸°ì¤€ ì›”ë“œ ê±°ë¦¬ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(targetCount, new GUIContent("ë™ì‹œ ê³µê²© ëŒ€ìƒ ìˆ˜", "í•œ ë²ˆì˜ ê¸°ë³¸ ê³µê²©ìœ¼ë¡œ ë™ì‹œì— ê³µê²©í•  ìˆ˜ ìˆëŠ” ìµœëŒ€ ëŒ€ìƒ ìˆ˜ì…ë‹ˆë‹¤."));
 
             DrawRangeRotationMode(property);
             BasicAttackRangeEditorGUI.Draw(basicAttackRange, attackRange);
@@ -128,11 +128,11 @@ namespace EndlessGuard.Unit.Editor
 
             if (rotationMode == null)
             {
-                EditorGUILayout.HelpBox("°ø°İ ¹üÀ§ È¸Àü ¹æ½Ä ÇÊµå¸¦ Ã£Áö ¸øÇß½À´Ï´Ù. AttackSettingsÀÇ rangeRotationMode ÇÊµå¸¦ È®ÀÎÇÏ¼¼¿ä.", MessageType.Error);
+                EditorGUILayout.HelpBox("ê³µê²© ë²”ìœ„ íšŒì „ ë°©ì‹ í•„ë“œë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. AttackSettingsì˜ rangeRotationMode í•„ë“œë¥¼ í™•ì¸í•˜ì„¸ìš”.", MessageType.Error);
                 return;
             }
 
-            EditorGUILayout.PropertyField(rotationMode, new GUIContent("°ø°İ ¹üÀ§ È¸Àü ¹æ½Ä", "±âº» °ø°İ Å¸ÀÏ ¹üÀ§´Â ÇöÀç Facing ¹æÇâ¿¡ ¸ÂÃç »ç¿ëÇÏ¸ç, ÀüÅõ Áß FacingÀ» °íÁ¤ÇÒÁö À¯È¿ÇÑ ´ë»ó ¹æÇâ¿¡ µû¶ó ÀÚµ¿ º¯°æÇÒÁö ¼³Á¤ÇÕ´Ï´Ù."));
+            EditorGUILayout.PropertyField(rotationMode, new GUIContent("ê³µê²© ë²”ìœ„ íšŒì „ ë°©ì‹", "ê¸°ë³¸ ê³µê²© íƒ€ì¼ ë²”ìœ„ëŠ” í˜„ì¬ Facing ë°©í–¥ì— ë§ì¶° ì‚¬ìš©í•˜ë©°, ì „íˆ¬ ì¤‘ Facingì„ ê³ ì •í• ì§€ ìœ íš¨í•œ ëŒ€ìƒ ë°©í–¥ì— ë”°ë¼ ìë™ ë³€ê²½í• ì§€ ì„¤ì •í•©ë‹ˆë‹¤."));
 
             if (rotationMode.hasMultipleDifferentValues)
             {
@@ -143,17 +143,17 @@ namespace EndlessGuard.Unit.Editor
 
             if (selectedMode == AttackRangeRotationMode.Fixed)
             {
-                EditorGUILayout.HelpBox("¹æÇâ °íÁ¤: ÃÊ±â FacingÀ» À¯ÁöÇÏ°í, ÀúÀåµÈ +Y ±âÁØ °ø°İ ¹üÀ§¸¦ ±× Facing ¹æÇâ¿¡ ¸ÂÃç È¸ÀüÇØ¼­ °è¼Ó »ç¿ëÇÕ´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ë°©í–¥ ê³ ì •: ì´ˆê¸° Facingì„ ìœ ì§€í•˜ê³ , ì €ì¥ëœ +Y ê¸°ì¤€ ê³µê²© ë²”ìœ„ë¥¼ ê·¸ Facing ë°©í–¥ì— ë§ì¶° íšŒì „í•´ì„œ ê³„ì† ì‚¬ìš©í•©ë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
-            EditorGUILayout.HelpBox("¹Ù¶óº¸´Â ¹æÇâ µû¶ó È¸Àü: ÃÊ±â FacingÀ¸·Î ½ÃÀÛÇÏ°í, ÀüÅõ Áß À¯È¿ÇÑ ´ë»ó ¹æÇâ¿¡ µû¶ó Facing°ú °ø°İ ¹üÀ§°¡ ÀÚµ¿À¸·Î È¸ÀüÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ë°”ë¼ë³´ëŠ” ë°©í–¥ ë”°ë¼ íšŒì „: ì´ˆê¸° Facingìœ¼ë¡œ ì‹œì‘í•˜ê³ , ì „íˆ¬ ì¤‘ ìœ íš¨í•œ ëŒ€ìƒ ë°©í–¥ì— ë”°ë¼ Facingê³¼ ê³µê²© ë²”ìœ„ê°€ ìë™ìœ¼ë¡œ íšŒì „í•©ë‹ˆë‹¤.", MessageType.Info);
         }
 
         public static void DrawPassiveList(SerializedProperty property)
         {
             EditorGUILayout.Space(8f);
-            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "ÆĞ½Ãºê ´É·Â", true);
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "íŒ¨ì‹œë¸Œ ëŠ¥ë ¥", true);
 
             if (!property.isExpanded)
             {
@@ -162,7 +162,7 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUI.indentLevel++;
 
-            int newSize = Mathf.Max(0, EditorGUILayout.IntField(new GUIContent("ÆĞ½Ãºê °³¼ö", "ÀÌ µ¥ÀÌÅÍ°¡ »ç¿ëÇÏ´Â ÆĞ½Ãºê ¸ñ·ÏÀÇ °³¼öÀÔ´Ï´Ù."), property.arraySize));
+            int newSize = Mathf.Max(0, EditorGUILayout.IntField(new GUIContent("íŒ¨ì‹œë¸Œ ê°œìˆ˜", "ì´ ë°ì´í„°ê°€ ì‚¬ìš©í•˜ëŠ” íŒ¨ì‹œë¸Œ ëª©ë¡ì˜ ê°œìˆ˜ì…ë‹ˆë‹¤."), property.arraySize));
 
             if (newSize != property.arraySize)
             {
@@ -171,7 +171,7 @@ namespace EndlessGuard.Unit.Editor
 
             for (int i = 0; i < property.arraySize; i++)
             {
-                EditorGUILayout.PropertyField(property.GetArrayElementAtIndex(i), new GUIContent($"ÆĞ½Ãºê {i + 1}"));
+                EditorGUILayout.PropertyField(property.GetArrayElementAtIndex(i), new GUIContent($"íŒ¨ì‹œë¸Œ {i + 1}"));
             }
 
             EditorGUI.indentLevel--;

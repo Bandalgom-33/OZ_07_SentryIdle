@@ -22,13 +22,13 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("¸¶½ºÅÍ ´É·ÂÄ¡ ¼³Á¤", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ë§ˆìŠ¤í„° ëŠ¥ë ¥ì¹˜ ì„¤ì •", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(statType, new GUIContent("ÁöÁ¤ ÀüÅõ ´É·ÂÄ¡", "¸¶½ºÅÍ ÆÐ½Ãºê·Î Áõ°¡½ÃÅ³ ÀüÅõ ´É·ÂÄ¡ÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(statBonusPercent, new GUIContent("ÁöÁ¤ ´É·ÂÄ¡ Áõ°¡À² (%)", "¼±ÅÃÇÑ ÀüÅõ ´É·ÂÄ¡¿¡ Àû¿ëÇÒ ±âº» ÃßÃµ Áõ°¡À²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.PropertyField(statType, new GUIContent("ì§€ì • ì „íˆ¬ ëŠ¥ë ¥ì¹˜", "ë§ˆìŠ¤í„° íŒ¨ì‹œë¸Œë¡œ ì¦ê°€ì‹œí‚¬ ì „íˆ¬ ëŠ¥ë ¥ì¹˜ìž…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(statBonusPercent, new GUIContent("ì§€ì • ëŠ¥ë ¥ì¹˜ ì¦ê°€ìœ¨ (%)", "ì„ íƒí•œ ì „íˆ¬ ëŠ¥ë ¥ì¹˜ì— ì ìš©í•  ê¸°ë³¸ ì¶”ì²œ ì¦ê°€ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("¸¶½ºÅÍ ÆÐ½Ãºê´Â Áö»ó¡¤°øÁß ¸ó½ºÅÍ¸¦ ¸ðµÎ ±âº» °ø°Ý ´ë»óÀ¸·Î Çã¿ëÇÕ´Ï´Ù. ÀÌ °ø°Ý ´ë»ó È®ÀåÀº º°µµÀÇ ¼öÄ¡ ¼³Á¤ ¾øÀÌ ¸¶½ºÅÍ ÆÐ½Ãºê ±â´É ÀÚÃ¼·Î Àû¿ëÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ë§ˆìŠ¤í„° íŒ¨ì‹œë¸ŒëŠ” ì§€ìƒÂ·ê³µì¤‘ ëª¬ìŠ¤í„°ë¥¼ ëª¨ë‘ ê¸°ë³¸ ê³µê²© ëŒ€ìƒìœ¼ë¡œ í—ˆìš©í•©ë‹ˆë‹¤. ì´ ê³µê²© ëŒ€ìƒ í™•ìž¥ì€ ë³„ë„ì˜ ìˆ˜ì¹˜ ì„¤ì • ì—†ì´ ë§ˆìŠ¤í„° íŒ¨ì‹œë¸Œ ê¸°ëŠ¥ ìžì²´ë¡œ ì ìš©í•©ë‹ˆë‹¤.", MessageType.Info);
         }
     }
 }
