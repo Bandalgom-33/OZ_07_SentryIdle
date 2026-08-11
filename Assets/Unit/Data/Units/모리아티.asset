@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb559248c4596cd458de9c284bd5014a, type: 3}
+  m_Name: "\uBAA8\uB9AC\uC544\uD2F0"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitDataSO
+  unitId: UNIT_0008
+  displayName: "\uBAA8\uB9AC\uC544\uD2F0"
+  description: "\uCE58\uBA85\uD0C0 \uACF5\uACA9\uC744 \uD1B5\uD574 \uC544\uAD70\uC5D0\uAC8C
+    \uBCF4\uD638\uB9C9, \uCCB4\uB825 \uD68C\uBCF5 \uB610\uB294 \uC2A4\uD0AC\uAC8C\uC774\uC9C0
+    \uC9C0\uC6D0\uC744 \uC81C\uACF5\uD558\uB294 \uC11C\uD3EC\uD130\xB7\uBE44\uD638\uC790
+    \uCE90\uB9AD\uD130"
+  grade: 5
+  initialLevel: 1
+  growthTable: {fileID: 11400000, guid: e353654c25a0e5e803046d4d2f592cea, type: 2}
+  unitClass: 4
+  subclass: 401
+  placement: 2
+  summonCost: 25
+  redeployTime: 65
+  blockCount: 0
+  baseStats:
+    maxHp: 3400
+    physicalAttack: 0
+    magicalAttack: 500
+    baseAttacksPerSecond: 1.1
+    physicalDefense: 130
+    magicalDefense: 260
+    accuracy: 110
+    evasion: 10
+    moveSpeed: 0
+  attackSettings:
+    attackMode: 2
+    damageType: 2
+    attackTarget: 3
+    attackRange: 3
+    targetCount: 1
+    rangeRotationMode: 1
+    basicAttackRange:
+      horizontalRadius: 3
+      forwardDistance: 3
+      backwardDistance: 3
+      attackTiles:
+      - {x: 0, y: 2}
+      - {x: -1, y: 2}
+      - {x: -1, y: 1}
+      - {x: 0, y: 1}
+      - {x: 1, y: 1}
+      - {x: 1, y: 2}
+      - {x: 0, y: 3}
+      - {x: -1, y: 0}
+      - {x: -1, y: -1}
+      - {x: 0, y: -1}
+      - {x: 1, y: -1}
+      - {x: 1, y: 0}
+  hpRegenPerSecond: 0.8
+  criticalChancePercent: 25
+  criticalDamageBonusPercent: 50
+  maxSkillGauge: 120
+  skillGaugeRegenPerSecond: 2
+  skillGaugePerAttack: 4
+  passives:
+  - {fileID: 11400000, guid: 38f5826c503c627458aaa7fe52d85994, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: 38f5826c503c627458aaa7fe52d85994, type: 2}
+    values:
+    - key: 10
+      value: 20
+    - key: 14
+      value: 500
+    - key: 15
+      value: 500
+    refs: []
+  unitPrefab: {fileID: 5030949352643827477, guid: 0d98d440af4194942b9b452901beae67, type: 3}

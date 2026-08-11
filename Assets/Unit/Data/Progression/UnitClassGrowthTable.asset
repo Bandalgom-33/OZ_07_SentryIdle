@@ -1,0 +1,154 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6ac28f78be191eaadd2548ab52861e, type: 3}
+  m_Name: UnitClassGrowthTable
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitClassGrowthTableSO
+  levelCurve: {fileID: 11400000, guid: 132eded16dd3b0a41ba7a6f20328335f, type: 2}
+  profiles:
+  - unitClass: 1
+    levelGrowth:
+      affectedStats: 415
+      percentPerStep: 1.5
+      stackMode: 0
+    promotionGrowth:
+      affectedStats: 2047
+      percentPerStep: 10
+      stackMode: 0
+    baseMaxLevel: 30
+    promotionLevelCaps:
+    - promotionStage: 1
+      maxLevel: 45
+    - promotionStage: 2
+      maxLevel: 60
+    - promotionStage: 3
+      maxLevel: 75
+    - promotionStage: 4
+      maxLevel: 90
+    - promotionStage: 5
+      maxLevel: 105
+    - promotionStage: 6
+      maxLevel: 120
+  - unitClass: 2
+    levelGrowth:
+      affectedStats: 1789
+      percentPerStep: 1.5
+      stackMode: 0
+    promotionGrowth:
+      affectedStats: 2047
+      percentPerStep: 10
+      stackMode: 0
+    baseMaxLevel: 30
+    promotionLevelCaps:
+    - promotionStage: 1
+      maxLevel: 45
+    - promotionStage: 2
+      maxLevel: 60
+    - promotionStage: 3
+      maxLevel: 75
+    - promotionStage: 4
+      maxLevel: 90
+    - promotionStage: 5
+      maxLevel: 105
+    - promotionStage: 6
+      maxLevel: 120
+  - unitClass: 3
+    levelGrowth:
+      affectedStats: 355
+      percentPerStep: 1.8
+      stackMode: 0
+    promotionGrowth:
+      affectedStats: 2047
+      percentPerStep: 10
+      stackMode: 0
+    baseMaxLevel: 30
+    promotionLevelCaps:
+    - promotionStage: 1
+      maxLevel: 45
+    - promotionStage: 2
+      maxLevel: 60
+    - promotionStage: 3
+      maxLevel: 75
+    - promotionStage: 4
+      maxLevel: 90
+    - promotionStage: 5
+      maxLevel: 105
+    - promotionStage: 6
+      maxLevel: 120
+  - unitClass: 4
+    levelGrowth:
+      affectedStats: 1695
+      percentPerStep: 1.4
+      stackMode: 0
+    promotionGrowth:
+      affectedStats: 2047
+      percentPerStep: 10
+      stackMode: 0
+    baseMaxLevel: 30
+    promotionLevelCaps:
+    - promotionStage: 1
+      maxLevel: 45
+    - promotionStage: 2
+      maxLevel: 60
+    - promotionStage: 3
+      maxLevel: 75
+    - promotionStage: 4
+      maxLevel: 90
+    - promotionStage: 5
+      maxLevel: 105
+    - promotionStage: 6
+      maxLevel: 120
+  - unitClass: 5
+    levelGrowth:
+      affectedStats: 1948
+      percentPerStep: 1.7
+      stackMode: 0
+    promotionGrowth:
+      affectedStats: 2047
+      percentPerStep: 10
+      stackMode: 0
+    baseMaxLevel: 30
+    promotionLevelCaps:
+    - promotionStage: 1
+      maxLevel: 45
+    - promotionStage: 2
+      maxLevel: 60
+    - promotionStage: 3
+      maxLevel: 75
+    - promotionStage: 4
+      maxLevel: 90
+    - promotionStage: 5
+      maxLevel: 105
+    - promotionStage: 6
+      maxLevel: 120
+  - unitClass: 6
+    levelGrowth:
+      affectedStats: 2047
+      percentPerStep: 1.2
+      stackMode: 0
+    promotionGrowth:
+      affectedStats: 2047
+      percentPerStep: 10
+      stackMode: 0
+    baseMaxLevel: 30
+    promotionLevelCaps:
+    - promotionStage: 1
+      maxLevel: 45
+    - promotionStage: 2
+      maxLevel: 60
+    - promotionStage: 3
+      maxLevel: 75
+    - promotionStage: 4
+      maxLevel: 90
+    - promotionStage: 5
+      maxLevel: 105
+    - promotionStage: 6
+      maxLevel: 120
