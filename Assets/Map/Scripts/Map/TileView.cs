@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class TileView : MonoBehaviour
 {
-    [Header("Å¸ÀÏ Å¸ÀÔº° Materaial")]
+    [Header("íƒ€ì¼ íƒ€ì…ë³„ Materaial")]
     [SerializeField] private Material emptyMaterial;
     [SerializeField] private Material pathMaterial;
     [SerializeField] private Material spawnMaterial;
@@ -11,7 +11,7 @@ public class TileView : MonoBehaviour
     [SerializeField] private Material highGroundMaterial;
 
 
-    [Header("Å¸ÀÏ ³ôÀÌ ¼³Á¤")]
+    [Header("íƒ€ì¼ ë†’ì´ ì„¤ì •")]
     [SerializeField] private float highGroundHeight = 0.25f;
 
     private TileNode node;
@@ -31,7 +31,7 @@ public class TileView : MonoBehaviour
 
         node = tilenode;
 
-        //ÇÏÀÌ¶óÅ°¿¡¼­ ÁÂÇ¥ È®ÀÎÀ» ½±°Ô ÀÌ¸§¼³Á¤ÇÏ±â
+        //í•˜ì´ë¼í‚¤ì—ì„œ ì¢Œí‘œ í™•ì¸ì„ ì‰½ê²Œ ì´ë¦„ì„¤ì •í•˜ê¸°
         gameObject.name = $"Tile_{node.GridPosition.x}_{node.GridPosition.y}";
 
         ApplyMaterial();
@@ -43,10 +43,10 @@ public class TileView : MonoBehaviour
         if(node == null) return;
 
         Debug.Log(
-           $"ÁÂÇ¥: {node.GridPosition} / " +
-           $"Å¸ÀÔ: {node.TileType} / " +
-           $"ÀÌµ¿ °¡´É: {node.IsWalkable} / " +
-           $"¹èÄ¡ °¡´É: {node.IsDeployable}"
+           $"ì¢Œí‘œ: {node.GridPosition} / " +
+           $"íƒ€ì…: {node.TileType} / " +
+           $"ì´ë™ ê°€ëŠ¥: {node.IsWalkable} / " +
+           $"ë°°ì¹˜ ê°€ëŠ¥: {node.IsDeployable}"
        );
     }
 
@@ -82,7 +82,7 @@ public class TileView : MonoBehaviour
         }
     }
 
-    //¹èÄ¡ °¡´É Å¸ÀÏ ³ôÀÌ Á¶ÀıÇÏ±â
+    //ë°°ì¹˜ ê°€ëŠ¥ íƒ€ì¼ ë†’ì´ ì¡°ì ˆí•˜ê¸°
     private void ApplyHeight()
     {
         Vector3 position = transform.position;
