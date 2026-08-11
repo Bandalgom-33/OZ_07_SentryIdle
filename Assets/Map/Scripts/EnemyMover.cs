@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System.Collections.Generic;
 
 
@@ -7,11 +7,11 @@ public class EnemyMover : MonoBehaviour
     [SerializeField] private float moveSpeed = 2.0f;
   
 
-    //Enemy°¡ µû¶ó°¥ Grid ÁÂÇ¥ ¸ñ·Ï
+    //Enemyê°€ ë”°ë¼ê°ˆ Grid ì¢Œí‘œ ëª©ë¡
     private IReadOnlyList<Vector2Int> path;
-    //ÇöÀç ¸î¹øÂ° ÀÎÁö ÀúÀå
+    //í˜„ì¬ ëª‡ë²ˆì§¸ ì¸ì§€ ì €ì¥
     private int currentPathIndex;
-    //Grid ÁÂÇ¥¸¦ World À§Ä¡Ä¡·Î º¯È¯ÇÏ±â À§ÇØ »ç¿ë
+    //Grid ì¢Œí‘œë¥¼ World ìœ„ì¹˜ì¹˜ë¡œ ë³€í™˜í•˜ê¸° ìœ„í•´ ì‚¬ìš©
     private GridMapRenderer mapRenderer;
 
 
@@ -24,30 +24,30 @@ public class EnemyMover : MonoBehaviour
 
     void Update()
     {
-        //°æ·Î ¾ø´Â »óÅÂ Ã¼Å©
+        //ê²½ë¡œ ì—†ëŠ” ìƒíƒœ ì²´í¬
         if (path == null || mapRenderer == null || path.Count == 0) return;   
-        //ÀÎµ¦½º °æ·Î ¹üÀ§ Ã¼Å©
+        //ì¸ë±ìŠ¤ ê²½ë¡œ ë²”ìœ„ ì²´í¬
         if(currentPathIndex >= path.Count) return;
 
-        //ÇöÀç ÀÎµ¦½º¸¦ ÀÌ¿ëÇØ¼­ ÇâÇÒ ¸ñÇ¥ ÁÂÇ¥¸¦ ÇÏ³ª ¹Ş¾Æ¼­
+        //í˜„ì¬ ì¸ë±ìŠ¤ë¥¼ ì´ìš©í•´ì„œ í–¥í•  ëª©í‘œ ì¢Œí‘œë¥¼ í•˜ë‚˜ ë°›ì•„ì„œ
         Vector2Int targetGridPosition = path[currentPathIndex];
-        // ¹ŞÀº Vector2Int¸¦  World À§Ä¡·Î º¯È¯
+        // ë°›ì€ Vector2Intë¥¼  World ìœ„ì¹˜ë¡œ ë³€í™˜
         Vector3 targetWorldPosition = mapRenderer.GridToWorld(targetGridPosition);
-        //ÀûÀÇ yÀ§Ä¡(³ôÀÌ)¸¦ ¸ÂÃçÁÖÀÚ
+        //ì ì˜ yìœ„ì¹˜(ë†’ì´)ë¥¼ ë§ì¶°ì£¼ì
         targetWorldPosition.y = transform.position.y;
         float moveDistance = moveSpeed * Time.deltaTime;
-        //»õ·Î¿î À§Ä¡ °è»ê
+        //ìƒˆë¡œìš´ ìœ„ì¹˜ ê³„ì‚°
         Vector3 newPosition = Vector3.MoveTowards(transform.position, targetWorldPosition, moveDistance);
         
         transform.position = newPosition;
 
-        //°Å¸® °è»ê
+        //ê±°ë¦¬ ê³„ì‚°
         float distance = Vector3.Distance(transform.position, targetWorldPosition);
-        //µµÂøÇÏ¸é ÀÎµ¦½º Áõ°¡
+        //ë„ì°©í•˜ë©´ ì¸ë±ìŠ¤ ì¦ê°€
         if(distance < 0.01f)
         {
             currentPathIndex++;
-            //ÇöÀç ÀÎµ¦½º°¡ °æ·Î °³¼öº¸´Ù Å©¸é
+            //í˜„ì¬ ì¸ë±ìŠ¤ê°€ ê²½ë¡œ ê°œìˆ˜ë³´ë‹¤ í¬ë©´
             if(currentPathIndex >= path.Count)
             {
                 EnemyArrivedExit();
@@ -55,7 +55,7 @@ public class EnemyMover : MonoBehaviour
         }
     }
 
-    //Àû »èÁ¦ ¸Ş¼­µå ÀÌ°Ç ÃßÈÄ¿¡ Àû µµÂø½Ã Ã¼·Â ±ïÀÌ´Â ·ÎÁ÷ Ãß°¡ ¿¹Á¤
+    //ì  ì‚­ì œ ë©”ì„œë“œ ì´ê±´ ì¶”í›„ì— ì  ë„ì°©ì‹œ ì²´ë ¥ ê¹ì´ëŠ” ë¡œì§ ì¶”ê°€ ì˜ˆì •
     private void EnemyArrivedExit()
     {
         Destroy(gameObject);
