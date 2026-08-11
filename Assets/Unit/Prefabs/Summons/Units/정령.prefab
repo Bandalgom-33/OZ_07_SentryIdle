@@ -398,7 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.UnitSummonRuntime
   spawnOffset: {x: 0, y: 0, z: 0}
-  lifetimeSeconds: 10
+  lifetimeSeconds: 25
   releaseWhenOwnerDies: 1
   statModifiers: []
   ownerStatInheritances:

@@ -20,5 +20,5 @@ MonoBehaviour:
     allowedUnitClasses: 05000000
     allowedEnemySizes: 
   summonPrefab: {fileID: 6121804433318743232, guid: e534fb89c0b164e498a35f9b6d3b97da, type: 3}
-  summonCooldownSeconds: 10
+  summonCooldownSeconds: 5
   maxActiveSummons: 8
