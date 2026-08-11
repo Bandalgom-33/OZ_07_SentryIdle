@@ -7,21 +7,21 @@ namespace EndlessGuard.Unit.Data
     [Serializable]
     public sealed class BasicAttackRangeData
     {
-        [Header("°İÀÚ Ç¥½Ã ¼³Á¤")]
-        [Tooltip("°ø°İ ÁÖÃ¼ÀÇ ÁÂ¿ì¿¡ Ç¥½ÃÇÒ Å¸ÀÏ ¼öÀÔ´Ï´Ù. 3ÀÌ¸é ¿ŞÂÊ 3Ä­°ú ¿À¸¥ÂÊ 3Ä­À» Ç¥½ÃÇÕ´Ï´Ù.")]
+        [Header("ê²©ì í‘œì‹œ ì„¤ì •")]
+        [Tooltip("ê³µê²© ì£¼ì²´ì˜ ì¢Œìš°ì— í‘œì‹œí•  íƒ€ì¼ ìˆ˜ì…ë‹ˆë‹¤. 3ì´ë©´ ì™¼ìª½ 3ì¹¸ê³¼ ì˜¤ë¥¸ìª½ 3ì¹¸ì„ í‘œì‹œí•©ë‹ˆë‹¤.")]
         [Range(0, 6)]
         [SerializeField] private int horizontalRadius = 3;
 
-        [Tooltip("°ø°İ ÁÖÃ¼ÀÇ Á¤¸é¿¡ Ç¥½ÃÇÒ Å¸ÀÏ ¼öÀÔ´Ï´Ù. ±âÁØ ¹æÇâ¿¡¼­ ¾çÀÇ Y ÁÂÇ¥°¡ Á¤¸éÀÔ´Ï´Ù.")]
+        [Tooltip("ê³µê²© ì£¼ì²´ì˜ ì •ë©´ì— í‘œì‹œí•  íƒ€ì¼ ìˆ˜ì…ë‹ˆë‹¤. ê¸°ì¤€ ë°©í–¥ì—ì„œ ì–‘ì˜ Y ì¢Œí‘œê°€ ì •ë©´ì…ë‹ˆë‹¤.")]
         [Range(0, 10)]
         [SerializeField] private int forwardDistance = 3;
 
-        [Tooltip("°ø°İ ÁÖÃ¼ÀÇ ÈÄ¹æ¿¡ Ç¥½ÃÇÒ Å¸ÀÏ ¼öÀÔ´Ï´Ù. ±âÁØ ¹æÇâ¿¡¼­ À½ÀÇ Y ÁÂÇ¥°¡ ÈÄ¹æÀÔ´Ï´Ù.")]
+        [Tooltip("ê³µê²© ì£¼ì²´ì˜ í›„ë°©ì— í‘œì‹œí•  íƒ€ì¼ ìˆ˜ì…ë‹ˆë‹¤. ê¸°ì¤€ ë°©í–¥ì—ì„œ ìŒì˜ Y ì¢Œí‘œê°€ í›„ë°©ì…ë‹ˆë‹¤.")]
         [Range(0, 10)]
         [SerializeField] private int backwardDistance = 1;
 
-        [Header("¼±ÅÃµÈ °ø°İ Å¸ÀÏ")]
-        [Tooltip("°ø°İ ÁÖÃ¼ÀÇ À§Ä¡¸¦ (0, 0)À¸·Î ÇßÀ» ¶§ ±âº» °ø°İÀÌ °¡´ÉÇÑ »ó´ë Å¸ÀÏ ÁÂÇ¥ÀÔ´Ï´Ù.")]
+        [Header("ì„ íƒëœ ê³µê²© íƒ€ì¼")]
+        [Tooltip("ê³µê²© ì£¼ì²´ì˜ ìœ„ì¹˜ë¥¼ (0, 0)ìœ¼ë¡œ í–ˆì„ ë•Œ ê¸°ë³¸ ê³µê²©ì´ ê°€ëŠ¥í•œ ìƒëŒ€ íƒ€ì¼ ì¢Œí‘œì…ë‹ˆë‹¤.")]
         [SerializeField] private List<Vector2Int> attackTiles = new List<Vector2Int>();
 
         public int HorizontalRadius => horizontalRadius;

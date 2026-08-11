@@ -7,13 +7,13 @@ namespace EndlessGuard.Unit.Data
     [Serializable]
     public sealed class PassiveTuning
     {
-        [Tooltip("°³º° ¼öÄ¡¿Í ÂüÁ¶¸¦ Àû¿ëÇÒ ÆĞ½Ãºê Á¤ÀÇÀÔ´Ï´Ù.")]
+        [Tooltip("ê°œë³„ ìˆ˜ì¹˜ì™€ ì°¸ì¡°ë¥¼ ì ìš©í•  íŒ¨ì‹œë¸Œ ì •ì˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private PassiveDataSO passive;
 
-        [Tooltip("ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ°¡ ÇØ´ç ÆĞ½Ãºê¿¡¼­ ½ÇÁ¦·Î »ç¿ëÇÒ °³º° ¼ıÀÚ ¼öÄ¡ ¸ñ·ÏÀÔ´Ï´Ù.")]
+        [Tooltip("ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ê°€ í•´ë‹¹ íŒ¨ì‹œë¸Œì—ì„œ ì‹¤ì œë¡œ ì‚¬ìš©í•  ê°œë³„ ìˆ«ì ìˆ˜ì¹˜ ëª©ë¡ì…ë‹ˆë‹¤.")]
         [SerializeField] private List<PassiveValue> values = new List<PassiveValue>();
 
-        [Tooltip("ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ°¡ ÇØ´ç ÆĞ½Ãºê¿¡¼­ ½ÇÁ¦·Î »ç¿ëÇÒ °³º° ¿¡¼Â ÂüÁ¶ ¸ñ·ÏÀÔ´Ï´Ù.")]
+        [Tooltip("ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ê°€ í•´ë‹¹ íŒ¨ì‹œë¸Œì—ì„œ ì‹¤ì œë¡œ ì‚¬ìš©í•  ê°œë³„ ì—ì…‹ ì°¸ì¡° ëª©ë¡ì…ë‹ˆë‹¤.")]
         [SerializeField] private List<PassiveRef> refs = new List<PassiveRef>();
 
         public PassiveDataSO Passive => passive;

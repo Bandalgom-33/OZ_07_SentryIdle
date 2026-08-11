@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Explosion", menuName = "Endless Guard/Passive/»ç¸Á Æø¹ß")]
+    [CreateAssetMenu(fileName = "Explosion", menuName = "Endless Guard/Passive/ì‚¬ë§ í­ë°œ")]
     public sealed class ExplosionSO : PassiveDataSO
     {
-        [Header("»ç¸Á Æø¹ß ¼³Á¤")]
-        [Tooltip("»ç¸Á ½Ã ÁÖº¯ Ä³¸¯ÅÍ¿¡°Ô Àû¿ëÇÒ ÇÇÇØ À¯ÇüÀÔ´Ï´Ù.")]
+        [Header("ì‚¬ë§ í­ë°œ ì„¤ì •")]
+        [Tooltip("ì‚¬ë§ ì‹œ ì£¼ë³€ ìºë¦­í„°ì—ê²Œ ì ìš©í•  í”¼í•´ ìœ í˜•ì…ë‹ˆë‹¤.")]
         [SerializeField] private DamageType damageType = DamageType.Physical;
 
-        [Header("»ç¸Á Æø¹ß ±âº»°ª")]
-        [Tooltip("»ç¸Á ½Ã Æø¹ß ¹üÀ§ ¾ÈÀÇ Ä³¸¯ÅÍ¿¡°Ô Àû¿ëÇÏ´Â ±âº» ÇÇÇØ·®ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì‚¬ë§ í­ë°œ ê¸°ë³¸ê°’")]
+        [Tooltip("ì‚¬ë§ ì‹œ í­ë°œ ë²”ìœ„ ì•ˆì˜ ìºë¦­í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê¸°ë³¸ í”¼í•´ëŸ‰ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float explosionDamage = 1000f;
 
-        [Tooltip("»ç¸Á Æø¹ßÀÌ Àû¿ëµÇ´Â °İÀÚ ¹İ°æÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì‚¬ë§ í­ë°œì´ ì ìš©ë˜ëŠ” ê²©ì ë°˜ê²½ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float explosionRadiusTiles = 1f;
 

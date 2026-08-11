@@ -8,8 +8,8 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(CombatHealth))]
     public sealed class EnemyBlock : MonoBehaviour
     {
-        [Header("ÀúÁö À§Ä¡")]
-        [Tooltip("ÀúÁöµÉ ¶§ Ä³¸¯ÅÍ Å¸ÀÏ Áß½ÉÀ¸·ÎºÎÅÍ ¸ó½ºÅÍ Áß½ÉÀÌ ¶³¾îÁú °Å¸®ÀÔ´Ï´Ù. Å¸ÀÏ °£°İÀ» 1·Î º¸¸ç, ¼ÒÇü 0.8, ÁßÇü 1.0, ´ëÇü 1.2 ÀÌ»óÀ» ±âÁØÀ¸·Î ÇÁ¸®ÆÕ¸¶´Ù Á¶ÀıÇÕ´Ï´Ù.")]
+        [Header("ì €ì§€ ìœ„ì¹˜")]
+        [Tooltip("ì €ì§€ë  ë•Œ ìºë¦­í„° íƒ€ì¼ ì¤‘ì‹¬ìœ¼ë¡œë¶€í„° ëª¬ìŠ¤í„° ì¤‘ì‹¬ì´ ë–¨ì–´ì§ˆ ê±°ë¦¬ì…ë‹ˆë‹¤. íƒ€ì¼ ê°„ê²©ì„ 1ë¡œ ë³´ë©°, ì†Œí˜• 0.8, ì¤‘í˜• 1.0, ëŒ€í˜• 1.2 ì´ìƒì„ ê¸°ì¤€ìœ¼ë¡œ í”„ë¦¬íŒ¹ë§ˆë‹¤ ì¡°ì ˆí•©ë‹ˆë‹¤.")]
         [SerializeField, Min(0f)]
         private float blockStopDistance = 1f;
 

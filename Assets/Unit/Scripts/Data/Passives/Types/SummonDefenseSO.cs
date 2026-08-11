@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "SummonDefense", menuName = "Endless Guard/Passive/¼ÒÈ¯¹° ¼ö ¹æ¾î·Â Áõ°¡")]
+    [CreateAssetMenu(fileName = "SummonDefense", menuName = "Endless Guard/Passive/ì†Œí™˜ë¬¼ ìˆ˜ ë°©ì–´ë ¥ ì¦ê°€")]
     public sealed class SummonDefenseSO : PassiveDataSO
     {
-        [Header("¼ÒÈ¯¹° ¹æ¾î·Â Áõ°¡ ±âº»°ª")]
-        [Tooltip("¾Æ±º ¼ÒÈ¯¹° 1°³´ç Áõ°¡ÇÏ´Â ¹°¸® ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì†Œí™˜ë¬¼ ë°©ì–´ë ¥ ì¦ê°€ ê¸°ë³¸ê°’")]
+        [Tooltip("ì•„êµ° ì†Œí™˜ë¬¼ 1ê°œë‹¹ ì¦ê°€í•˜ëŠ” ë¬¼ë¦¬ ë°©ì–´ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalDefensePerSummonPercent = 10f;
 
-        [Tooltip("¾Æ±º ¼ÒÈ¯¹° 1°³´ç Áõ°¡ÇÏ´Â ¸¶¹ı ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì•„êµ° ì†Œí™˜ë¬¼ 1ê°œë‹¹ ì¦ê°€í•˜ëŠ” ë§ˆë²• ë°©ì–´ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalDefensePerSummonPercent = 10f;
 

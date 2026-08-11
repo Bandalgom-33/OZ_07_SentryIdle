@@ -14,26 +14,26 @@ namespace EndlessGuard.Unit.Runtime
         private const float HealthRegenTickSeconds = 0.1f;
         private const float SkillGaugeRegenTickSeconds = 0.1f;
 
-        [Header("Ä³¸¯ÅÍ ·±Å¸ÀÓ »óÅÂ")]
-        [Tooltip("±âº» °ø°İ ½ÇÇàÀ» À§ÇØ ´©ÀûµÇ´Â °ø°İ ÁøÇàµµÀÔ´Ï´Ù.")]
+        [Header("ìºë¦­í„° ëŸ°íƒ€ì„ ìƒíƒœ")]
+        [Tooltip("ê¸°ë³¸ ê³µê²© ì‹¤í–‰ì„ ìœ„í•´ ëˆ„ì ë˜ëŠ” ê³µê²© ì§„í–‰ë„ì…ë‹ˆë‹¤.")]
         [SerializeField] private AttackProgressState attackProgress = new AttackProgressState();
 
-        [Tooltip("±âÁØ ÀüÅõ ´É·ÂÄ¡¿¡ ¼ºÀå, ÆĞ½Ãºê¿Í ÀüÅõ È¿°ú¸¦ ¹İ¿µÇÏ¿© »ç¿ëÇÏ´Â ·±Å¸ÀÓ ´É·ÂÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ê¸°ì¤€ ì „íˆ¬ ëŠ¥ë ¥ì¹˜ì— ì„±ì¥, íŒ¨ì‹œë¸Œì™€ ì „íˆ¬ íš¨ê³¼ë¥¼ ë°˜ì˜í•˜ì—¬ ì‚¬ìš©í•˜ëŠ” ëŸ°íƒ€ì„ ëŠ¥ë ¥ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private RuntimeStats runtimeStats = new RuntimeStats();
 
-        [Tooltip("UnitDataSO¿¡ ¼³Á¤µÈ ÆĞ½Ãºê¸¦ ÇöÀç ÀüÅõ¿¡¼­ ½ÇÇà¡¤°ü¸®ÇÏ´Â ·±Å¸ÀÓ »óÅÂÀÔ´Ï´Ù.")]
+        [Tooltip("UnitDataSOì— ì„¤ì •ëœ íŒ¨ì‹œë¸Œë¥¼ í˜„ì¬ ì „íˆ¬ì—ì„œ ì‹¤í–‰Â·ê´€ë¦¬í•˜ëŠ” ëŸ°íƒ€ì„ ìƒíƒœì…ë‹ˆë‹¤.")]
         [SerializeField] private UnitPassiveRuntime passiveRuntime = new UnitPassiveRuntime();
 
-        [Tooltip("·¹º§/½Â±Ş ÁøÇàµµ¿¡ µû¶ó »óÀ§ ºĞ·ù ¼ºÀå ÇÁ·ÎÇÊÀ» RuntimeStats¿¡ Àû¿ëÇÏ´Â »óÅÂÀÔ´Ï´Ù.")]
+        [Tooltip("ë ˆë²¨/ìŠ¹ê¸‰ ì§„í–‰ë„ì— ë”°ë¼ ìƒìœ„ ë¶„ë¥˜ ì„±ì¥ í”„ë¡œí•„ì„ RuntimeStatsì— ì ìš©í•˜ëŠ” ìƒíƒœì…ë‹ˆë‹¤.")]
         [SerializeField] private UnitGrowthRuntime growthRuntime = new UnitGrowthRuntime();
 
-        [Tooltip("´Ù¸¥ ´ã´çÀÇ °øÅë °­È­ °á°ú¸¦ RuntimeStats¿¡ Àû¿ëÇÏ´Â »óÅÂÀÔ´Ï´Ù.")]
+        [Tooltip("ë‹¤ë¥¸ ë‹´ë‹¹ì˜ ê³µí†µ ê°•í™” ê²°ê³¼ë¥¼ RuntimeStatsì— ì ìš©í•˜ëŠ” ìƒíƒœì…ë‹ˆë‹¤.")]
         [SerializeField] private CommonGrowthRuntime commonGrowthRuntime = new CommonGrowthRuntime();
 
         private PassiveStatusRuntime passiveStatuses = new PassiveStatusRuntime();
         private UnitProgressData progressData;
 
-        [Tooltip("ÇöÀç º¸À¯ ÁßÀÎ ½ºÅ³°ÔÀÌÁöÀÔ´Ï´Ù. Ä³¸¯ÅÍ »ı¼º ½Ã 0À¸·Î ½ÃÀÛÇÕ´Ï´Ù.")]
+        [Tooltip("í˜„ì¬ ë³´ìœ  ì¤‘ì¸ ìŠ¤í‚¬ê²Œì´ì§€ì…ë‹ˆë‹¤. ìºë¦­í„° ìƒì„± ì‹œ 0ìœ¼ë¡œ ì‹œì‘í•©ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float currentSkillGauge;
 
@@ -153,7 +153,7 @@ namespace EndlessGuard.Unit.Runtime
             if (dataLink == null || !dataLink.HasData || dataLink.UnitData.BaseStats == null || block == null || attack == null)
             {
                 isInitialized = false;
-                Debug.LogError($"{name} Ä³¸¯ÅÍÀÇ ·±Å¸ÀÓ »óÅÂ¸¦ ÃÊ±âÈ­ÇÒ µ¥ÀÌÅÍ, UnitBlock ¶Ç´Â UnitAttackÀÌ ¾ø½À´Ï´Ù.", this);
+                Debug.LogError($"{name} ìºë¦­í„°ì˜ ëŸ°íƒ€ì„ ìƒíƒœë¥¼ ì´ˆê¸°í™”í•  ë°ì´í„°, UnitBlock ë˜ëŠ” UnitAttackì´ ì—†ìŠµë‹ˆë‹¤.", this);
                 return;
             }
 
@@ -185,7 +185,7 @@ namespace EndlessGuard.Unit.Runtime
             if (!runtimeStats.Initialize(dataLink.UnitData.BaseStats))
             {
                 isInitialized = false;
-                Debug.LogError($"{name} Ä³¸¯ÅÍÀÇ RuntimeStats¸¦ ÃÊ±âÈ­ÇÏÁö ¸øÇß½À´Ï´Ù.", this);
+                Debug.LogError($"{name} ìºë¦­í„°ì˜ RuntimeStatsë¥¼ ì´ˆê¸°í™”í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.", this);
                 return;
             }
 

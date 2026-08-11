@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Heal", menuName = "Endless Guard/Passive/ÁÖ±âÀû ¾Æ±º È¸º¹")]
+    [CreateAssetMenu(fileName = "Heal", menuName = "Endless Guard/Passive/ì£¼ê¸°ì  ì•„êµ° íšŒë³µ")]
     public sealed class HealSO : PassiveDataSO
     {
-        [Header("¾Æ±º È¸º¹ ±âº»°ª")]
-        [Tooltip("È¸º¹ÀÌ ¹ßµ¿ÇßÀ» ¶§ ´ë»ó ¾Æ±º ¸ó½ºÅÍ¿¡°Ô È¸º¹ÇÏ´Â HPÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì•„êµ° íšŒë³µ ê¸°ë³¸ê°’")]
+        [Tooltip("íšŒë³µì´ ë°œë™í–ˆì„ ë•Œ ëŒ€ìƒ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ íšŒë³µí•˜ëŠ” HPì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float healAmount = 500f;
 
-        [Tooltip("¾Æ±º È¸º¹ È¿°ú°¡ ¹İº¹ÇØ¼­ ¹ßµ¿ÇÏ´Â ÁÖ±âÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì•„êµ° íšŒë³µ íš¨ê³¼ê°€ ë°˜ë³µí•´ì„œ ë°œë™í•˜ëŠ” ì£¼ê¸°ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float healIntervalSeconds = 5f;
 

@@ -4,67 +4,67 @@ namespace EndlessGuard.Unit.Data
 {
     public enum EnemyCategory
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("ÀÏ¹İ")]
+        [InspectorName("ì¼ë°˜")]
         Normal = 1,
 
-        [InspectorName("¿¤¸®Æ®")]
+        [InspectorName("ì—˜ë¦¬íŠ¸")]
         Elite = 2,
 
-        [InspectorName("º¸½º")]
+        [InspectorName("ë³´ìŠ¤")]
         Boss = 3
     }
 
     public enum EnemyMovementType
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("Áö»ó")]
+        [InspectorName("ì§€ìƒ")]
         Ground = 1,
 
-        [InspectorName("°øÁß")]
+        [InspectorName("ê³µì¤‘")]
         Air = 2
     }
 
     public enum EnemySize
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("¼ÒÇü")]
+        [InspectorName("ì†Œí˜•")]
         Small = 1,
 
-        [InspectorName("ÁßÇü")]
+        [InspectorName("ì¤‘í˜•")]
         Medium = 2,
 
-        [InspectorName("´ëÇü")]
+        [InspectorName("ëŒ€í˜•")]
         Large = 3
     }
 
     public enum EnemyRole
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("°ø°İÇü")]
+        [InspectorName("ê³µê²©í˜•")]
         Attacker = 1,
 
-        [InspectorName("¼­Æ÷ÅÍ")]
+        [InspectorName("ì„œí¬í„°")]
         Supporter = 2
     }
 
     public enum EnemyAttackRule
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("ÀúÁöµÈ ´ë»ó¸¸ °ø°İ")]
+        [InspectorName("ì €ì§€ëœ ëŒ€ìƒë§Œ ê³µê²©")]
         BlockedOnly = 1,
 
-        [InspectorName("¹üÀ§ ³» ´ë»ó °ø°İ")]
+        [InspectorName("ë²”ìœ„ ë‚´ ëŒ€ìƒ ê³µê²©")]
         InRange = 2
     }
 }

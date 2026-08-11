@@ -15,30 +15,30 @@ namespace EndlessGuard.Unit.Editor
             MoveTest test = (MoveTest)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ÀÌµ¿ °ËÁõ »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ì´ë™ ê²€ì¦ ìƒíƒœ", EditorStyles.boldLabel);
             DrawState(test);
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("°ËÁõ ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ê²€ì¦ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("ÀÌµ¿ °ËÁõ ÁØºñ"))
+            if (GUILayout.Button("ì´ë™ ê²€ì¦ ì¤€ë¹„"))
             {
                 Execute(test.Setup);
             }
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("ÀÌµ¿ ½ÃÀÛ"))
+            if (GUILayout.Button("ì´ë™ ì‹œì‘"))
             {
                 Execute(test.StartMove);
             }
 
-            if (GUILayout.Button("ÀÌµ¿ Á¤Áö"))
+            if (GUILayout.Button("ì´ë™ ì •ì§€"))
             {
                 Execute(test.StopMove);
             }
@@ -51,18 +51,18 @@ namespace EndlessGuard.Unit.Editor
             using (new EditorGUI.DisabledScope(true))
             {
                 EnemyMove move = test.EnemyMove;
-                EditorGUILayout.ObjectField(new GUIContent("°ËÁõ ¸ó½ºÅÍ"), move == null ? null : move.gameObject, typeof(GameObject), true);
-                EditorGUILayout.Toggle(new GUIContent("ÀÌµ¿ ½ÇÇà Áß"), test.IsRunning);
-                EditorGUILayout.Toggle(new GUIContent("ÀúÁöµÊ"), move != null && move.IsBlocked);
-                EditorGUILayout.Toggle(new GUIContent("Ãâ±¸ µµ´Ş"), test.ReachedGoal);
-                EditorGUILayout.IntField(new GUIContent("´ÙÀ½ °æ·Î ÀÎµ¦½º"), move == null ? 0 : move.NodeIndex);
-                EditorGUILayout.IntField(new GUIContent("ÀüÃ¼ °æ·Î ¼ö"), move == null ? 0 : move.NodeCount);
-                EditorGUILayout.Vector3Field(new GUIContent("ÇöÀç ¿ùµå À§Ä¡"), move == null ? Vector3.zero : move.transform.position);
+                EditorGUILayout.ObjectField(new GUIContent("ê²€ì¦ ëª¬ìŠ¤í„°"), move == null ? null : move.gameObject, typeof(GameObject), true);
+                EditorGUILayout.Toggle(new GUIContent("ì´ë™ ì‹¤í–‰ ì¤‘"), test.IsRunning);
+                EditorGUILayout.Toggle(new GUIContent("ì €ì§€ë¨"), move != null && move.IsBlocked);
+                EditorGUILayout.Toggle(new GUIContent("ì¶œêµ¬ ë„ë‹¬"), test.ReachedGoal);
+                EditorGUILayout.IntField(new GUIContent("ë‹¤ìŒ ê²½ë¡œ ì¸ë±ìŠ¤"), move == null ? 0 : move.NodeIndex);
+                EditorGUILayout.IntField(new GUIContent("ì „ì²´ ê²½ë¡œ ìˆ˜"), move == null ? 0 : move.NodeCount);
+                EditorGUILayout.Vector3Field(new GUIContent("í˜„ì¬ ì›”ë“œ ìœ„ì¹˜"), move == null ? Vector3.zero : move.transform.position);
 
                 CombatGridPosition grid = move == null ? null : move.GetComponent<CombatGridPosition>();
-                EditorGUILayout.Vector2IntField(new GUIContent("ÇöÀç Å¸ÀÏ ÁÂÇ¥"), grid == null ? Vector2Int.zero : grid.TileCoordinate);
-                EditorGUILayout.EnumPopup(new GUIContent("ÇöÀç ¹æÇâ"), grid == null ? EndlessGuard.Unit.Data.GridFacingDirection.North : grid.FacingDirection);
-                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.LastMessage) ? "ÀÌµ¿ °ËÁõ °á°ú°¡ ¾ø½À´Ï´Ù." : test.LastMessage);
+                EditorGUILayout.Vector2IntField(new GUIContent("í˜„ì¬ íƒ€ì¼ ì¢Œí‘œ"), grid == null ? Vector2Int.zero : grid.TileCoordinate);
+                EditorGUILayout.EnumPopup(new GUIContent("í˜„ì¬ ë°©í–¥"), grid == null ? EndlessGuard.Unit.Data.GridFacingDirection.North : grid.FacingDirection);
+                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.LastMessage) ? "ì´ë™ ê²€ì¦ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤." : test.LastMessage);
             }
         }
 

@@ -9,8 +9,8 @@ namespace EndlessGuard.Unit.Data
     {
         [SerializeField, HideInInspector] private int lastIssuedNumber;
 
-        [Header("╦С╫╨ем ╣╔юлем ╦Я╥о")]
-        [Tooltip("╟тюс©║ а╦юГго╢б ╦П╣Г ╦С╫╨ем ╣╔юлем ╦Я╥оют╢о╢ы. а╕юш ╣╣╠╦©║╪╜ ╫е╠т ╦С╫╨ем ╣╔юлем╦╕ ╩Щ╪╨гр ╤╖ юз╣©ю╦╥н ╣Н╥огу╢о╢ы.")]
+        [Header("К╙╛Л┼╓М└╟ К█╟Л²╢М└╟ К╙╘К║²")]
+        [Tooltip("Й╡▄Л·└Л≈░ Л║╢Л·╛М∙≤К┼■ К╙╗К⌠═ К╙╛Л┼╓М└╟ К█╟Л²╢М└╟ К╙╘К║²Л·┘К▀┬К▀╓. Л═°Л·▒ К▐└Й╣╛Л≈░Л└° Л▀═Й╥° К╙╛Л┼╓М└╟ К█╟Л²╢М└╟К╔╪ Л┐²Л└╠М∙═ К∙▄ Л·░К▐≥Л°╪К║° К⌠╠К║²М∙╘К▀┬К▀╓.")]
         [SerializeField] private List<EnemyDataSO> enemies = new List<EnemyDataSO>();
 
         public int LastIssuedNumber => lastIssuedNumber;

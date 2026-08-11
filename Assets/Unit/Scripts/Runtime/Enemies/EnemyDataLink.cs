@@ -6,8 +6,8 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     public sealed class EnemyDataLink : MonoBehaviour
     {
-        [Header("¸ó½ºÅÍ µ¥ÀÌÅÍ ¿¬°á")]
-        [Tooltip("ÀÌ ¸ó½ºÅÍ ÇÁ¸®ÆÕÀÇ ¿øº» Á¤Àû µ¥ÀÌÅÍ¸¦ º¸°üÇÏ´Â EnemyDataSOÀÔ´Ï´Ù.")]
+        [Header("ëª¬ìŠ¤í„° ë°ì´í„° ì—°ê²°")]
+        [Tooltip("ì´ ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ì˜ ì›ë³¸ ì •ì  ë°ì´í„°ë¥¼ ë³´ê´€í•˜ëŠ” EnemyDataSOìž…ë‹ˆë‹¤.")]
         [SerializeField] private EnemyDataSO enemyData;
 
         public EnemyDataSO EnemyData => enemyData;

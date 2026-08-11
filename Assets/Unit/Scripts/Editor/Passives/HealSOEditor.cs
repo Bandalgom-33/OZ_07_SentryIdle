@@ -22,13 +22,13 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("¾Æ±º È¸º¹ ±âº»°ª", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ì•„êµ° íšŒë³µ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(healAmount, new GUIContent("HP È¸º¹·®", "È¸º¹ÀÌ ¹ßµ¿ÇßÀ» ¶§ ´ë»ó ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â ±âº» ÃßÃµ È¸º¹·®ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(healIntervalSeconds, new GUIContent("È¸º¹ ÁÖ±â (ÃÊ)", "¾Æ±º È¸º¹ È¿°ú°¡ ¹Ýº¹ÇØ¼­ ¹ßµ¿ÇÏ´Â ±âº» ÃßÃµ ÁÖ±âÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.PropertyField(healAmount, new GUIContent("HP íšŒë³µëŸ‰", "íšŒë³µì´ ë°œë™í–ˆì„ ë•Œ ëŒ€ìƒ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ íšŒë³µëŸ‰ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(healIntervalSeconds, new GUIContent("íšŒë³µ ì£¼ê¸° (ì´ˆ)", "ì•„êµ° íšŒë³µ íš¨ê³¼ê°€ ë°˜ë³µí•´ì„œ ë°œë™í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ì£¼ê¸°ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("È¸º¹ ´ë»óÀº »ì¾ÆÀÖ´Â ¾Æ±º ¸ó½ºÅÍ Áß ÇöÀç HP ºñÀ²ÀÌ °¡Àå ³·Àº ¸ó½ºÅÍ 1¸íÀÔ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("íšŒë³µ ëŒ€ìƒì€ ì‚´ì•„ìžˆëŠ” ì•„êµ° ëª¬ìŠ¤í„° ì¤‘ í˜„ìž¬ HP ë¹„ìœ¨ì´ ê°€ìž¥ ë‚®ì€ ëª¬ìŠ¤í„° 1ëª…ìž…ë‹ˆë‹¤.", MessageType.Info);
         }
     }
 }

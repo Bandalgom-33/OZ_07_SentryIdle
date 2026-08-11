@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "AirAttack", menuName = "Endless Guard/Passive/°øÁß °ø°Ý Çã¿ë")]
+    [CreateAssetMenu(fileName = "AirAttack", menuName = "Endless Guard/Passive/ê³µì¤‘ ê³µê²© í—ˆìš©")]
     public sealed class AirAttackSO : PassiveDataSO
     {
     }

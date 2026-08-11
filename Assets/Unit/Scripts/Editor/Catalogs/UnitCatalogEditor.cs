@@ -24,28 +24,28 @@ namespace EndlessGuard.Unit.Editor
         {
             serializedObject.Update();
 
-            CombatDataEditorGUI.DrawReadOnlyProperty(script, "½ºÅ©¸³Æ®", "ÀÌ Catalog ¿¡¼ÂÀ» Á¤ÀÇÇÏ´Â C# ½ºÅ©¸³Æ®ÀÔ´Ï´Ù.");
+            CombatDataEditorGUI.DrawReadOnlyProperty(script, "ìŠ¤í¬ë¦½íŠ¸", "ì´ Catalog ì—ì…‹ì„ ì •ì˜í•˜ëŠ” C# ìŠ¤í¬ë¦½íŠ¸ì…ë‹ˆë‹¤.");
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ID ¹ß±Ş »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ID ë°œê¸‰ ìƒíƒœ", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.IntField(new GUIContent("¸¶Áö¸· ¹ß±Ş ¹øÈ£", "»èÁ¦µÈ µ¥ÀÌÅÍÀÇ ¹øÈ£¸¦ ´Ù½Ã »ç¿ëÇÏÁö ¾Ê±â À§ÇØ ¸¶Áö¸· ¹ß±Ş ÀÌ·ÂÀ» º¸°üÇÕ´Ï´Ù."), lastIssuedNumber.intValue);
-                EditorGUILayout.TextField(new GUIContent("´ÙÀ½ ¹ß±Ş ¿¹Á¤ ID", "ÇöÀç ¹ß±Ş ÀÌ·ÂÀ» ±âÁØÀ¸·Î ´ÙÀ½¿¡ »ı¼ºµÉ Ä³¸¯ÅÍ IDÀÔ´Ï´Ù."), $"UNIT_{lastIssuedNumber.intValue + 1:D4}");
+                EditorGUILayout.IntField(new GUIContent("ë§ˆì§€ë§‰ ë°œê¸‰ ë²ˆí˜¸", "ì‚­ì œëœ ë°ì´í„°ì˜ ë²ˆí˜¸ë¥¼ ë‹¤ì‹œ ì‚¬ìš©í•˜ì§€ ì•Šê¸° ìœ„í•´ ë§ˆì§€ë§‰ ë°œê¸‰ ì´ë ¥ì„ ë³´ê´€í•©ë‹ˆë‹¤."), lastIssuedNumber.intValue);
+                EditorGUILayout.TextField(new GUIContent("ë‹¤ìŒ ë°œê¸‰ ì˜ˆì • ID", "í˜„ì¬ ë°œê¸‰ ì´ë ¥ì„ ê¸°ì¤€ìœ¼ë¡œ ë‹¤ìŒì— ìƒì„±ë  ìºë¦­í„° IDì…ë‹ˆë‹¤."), $"UNIT_{lastIssuedNumber.intValue + 1:D4}");
             }
 
             EditorGUILayout.Space(5f);
-            EditorGUILayout.HelpBox("Assets/Unit/Data/Units Æú´õ¸¸ °Ë»öÇÕ´Ï´Ù. ±âÁ¸ ID´Â º¯°æÇÏÁö ¾Ê°í, ID°¡ ºñ¾î ÀÖ´Â µ¥ÀÌÅÍ¿¡¸¸ »õ ID¸¦ ¹ß±ŞÇÕ´Ï´Ù. Catalog ¸ñ·ÏÀº °Ë»ö °á°ú·Î ´Ù½Ã ±¸¼ºµË´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("Assets/Unit/Data/Units í´ë”ë§Œ ê²€ìƒ‰í•©ë‹ˆë‹¤. ê¸°ì¡´ IDëŠ” ë³€ê²½í•˜ì§€ ì•Šê³ , IDê°€ ë¹„ì–´ ìˆëŠ” ë°ì´í„°ì—ë§Œ ìƒˆ IDë¥¼ ë°œê¸‰í•©ë‹ˆë‹¤. Catalog ëª©ë¡ì€ ê²€ìƒ‰ ê²°ê³¼ë¡œ ë‹¤ì‹œ êµ¬ì„±ë©ë‹ˆë‹¤.", MessageType.Info);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.PropertyField(units, new GUIContent("µî·ÏµÈ Ä³¸¯ÅÍ µ¥ÀÌÅÍ"), true);
+                EditorGUILayout.PropertyField(units, new GUIContent("ë“±ë¡ëœ ìºë¦­í„° ë°ì´í„°"), true);
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ µ¥ÀÌÅÍ °Ë»ö¡¤ID ¹ß±Ş¡¤µî·Ï"))
+            if (GUILayout.Button("ìºë¦­í„° ë°ì´í„° ê²€ìƒ‰Â·ID ë°œê¸‰Â·ë“±ë¡"))
             {
                 CatalogSyncResult result = CatalogEditorUtility.SyncUnitCatalog((UnitCatalog)target);
                 resultMessage = result.Message;

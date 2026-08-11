@@ -20,11 +20,11 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("╩Себюл╩С а╓х╜ ╠Б╨╩╟╙", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(cleanseIntervalSeconds, new GUIContent("а╓х╜ аж╠Б (цй)", "╬ф╠╨ ╦С╫╨емюг ╩Себюл╩Сю╩ а╕╟его╢б х©╟З╟║ ╧щ╨╧гь╪╜ ╧ъ╣©го╢б ╠Б╨╩ цъц╣ аж╠Бют╢о╢ы. ╫га╕ ╪Жд║╢б ╦С╫╨ем ╣╔юлемюг фп╫ц╨Й ╟Ё╨╟ ╪Жд║©║╪╜ а╤а╓гр ╪Ж юж╫ю╢о╢ы."));
+            EditorGUILayout.LabelField("Л┐│М┐°Л²╢Л┐│ Л═∙М≥■ Й╦╟КЁ╦Й╟▓", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(cleanseIntervalSeconds, new GUIContent("Л═∙М≥■ Лё╪Й╦╟ (Л╢┬)", "Л∙└Й╣╟ К╙╛Л┼╓М└╟Л²≤ Л┐│М┐°Л²╢Л┐│Л²└ Л═°Й╠╟М∙≤К┼■ М ╗ЙЁ╪Й╟─ К╟≤КЁ╣М∙╢Л└° К╟°К▐≥М∙≤К┼■ Й╦╟КЁ╦ Л╤■Л╡° Лё╪Й╦╟Л·┘К▀┬К▀╓. Л▀╓Л═° Л┬≤Л╧≤К┼■ К╙╛Л┼╓М└╟ К█╟Л²╢М└╟Л²≤ М▄╗Л▀°К╦▄ Й╟°КЁ└ Л┬≤Л╧≤Л≈░Л└° Л║╟Л═∙М∙═ Л┬≤ Л·┬Л┼╣К▀┬К▀╓."));
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("а╓х╜ ╟║╢игя ╩Себюл╩С а╬╥Ы, ╢К╩С ©Л╪╠╪Ью╖©м гя ╧Ь©║ а╓х╜гр ╢К╩С ╪Ж╢б ╫га╕ ╩Себюл╩С ╫ц╫╨ешю╩ ╠╦гЖгр ╤╖ гт╡╡ ╟Аа╓гу╢о╢ы.", MessageType.Info);
+            EditorGUILayout.HelpBox("Л═∙М≥■ Й╟─К┼╔М∙° Л┐│М┐°Л²╢Л┐│ Л╒┘К╔≤, К▄─Л┐│ Л ╟Л└═Л┬°Л°└Л≥─ М∙° К╡┬Л≈░ Л═∙М≥■М∙═ К▄─Л┐│ Л┬≤К┼■ Л▀╓Л═° Л┐│М┐°Л²╢Л┐│ Л▀°Л┼╓М┘°Л²└ Й╣╛М≤└М∙═ К∙▄ М∙╗Й╩≤ Й╡╟Л═∙М∙╘К▀┬К▀╓.", MessageType.Info);
         }
     }
 }

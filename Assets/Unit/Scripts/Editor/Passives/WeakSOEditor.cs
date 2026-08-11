@@ -24,11 +24,11 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("¹æ¾î·Â °¨¼Ò ±âº»°ª", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ë°©ì–´ë ¥ ê°ì†Œ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(physicalDefenseReductionPercent, new GUIContent("¹°¸® ¹æ¾î·Â °¨¼ÒÀ² (%)", "±âº» °ø°Ý ÀûÁß ½Ã ´ë»ó¿¡°Ô Àû¿ëÇÒ ¹°¸® ¹æ¾î·Â °¨¼ÒÀ²ÀÇ ±âº» ÃßÃµ°ªÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(magicalDefenseReductionPercent, new GUIContent("¸¶¹ý ¹æ¾î·Â °¨¼ÒÀ² (%)", "±âº» °ø°Ý ÀûÁß ½Ã ´ë»ó¿¡°Ô Àû¿ëÇÒ ¸¶¹ý ¹æ¾î·Â °¨¼ÒÀ²ÀÇ ±âº» ÃßÃµ°ªÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(durationSeconds, new GUIContent("Áö¼Ó½Ã°£ (ÃÊ)", "¹æ¾î·Â °¨¼Ò È¿°ú°¡ À¯ÁöµÇ´Â ½Ã°£ÀÇ ±âº» ÃßÃµ°ªÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.PropertyField(physicalDefenseReductionPercent, new GUIContent("ë¬¼ë¦¬ ë°©ì–´ë ¥ ê°ì†Œìœ¨ (%)", "ê¸°ë³¸ ê³µê²© ì ì¤‘ ì‹œ ëŒ€ìƒì—ê²Œ ì ìš©í•  ë¬¼ë¦¬ ë°©ì–´ë ¥ ê°ì†Œìœ¨ì˜ ê¸°ë³¸ ì¶”ì²œê°’ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(magicalDefenseReductionPercent, new GUIContent("ë§ˆë²• ë°©ì–´ë ¥ ê°ì†Œìœ¨ (%)", "ê¸°ë³¸ ê³µê²© ì ì¤‘ ì‹œ ëŒ€ìƒì—ê²Œ ì ìš©í•  ë§ˆë²• ë°©ì–´ë ¥ ê°ì†Œìœ¨ì˜ ê¸°ë³¸ ì¶”ì²œê°’ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(durationSeconds, new GUIContent("ì§€ì†ì‹œê°„ (ì´ˆ)", "ë°©ì–´ë ¥ ê°ì†Œ íš¨ê³¼ê°€ ìœ ì§€ë˜ëŠ” ì‹œê°„ì˜ ê¸°ë³¸ ì¶”ì²œê°’ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
         }
     }
 }

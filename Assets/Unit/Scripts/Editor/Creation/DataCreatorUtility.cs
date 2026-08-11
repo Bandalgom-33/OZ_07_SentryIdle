@@ -27,13 +27,13 @@ namespace EndlessGuard.Unit.Editor
         public static bool TryCreateUnitData(string displayName, out UnitDataSO createdData, out string message)
         {
             UnitCatalog catalog = LoadUnitCatalog();
-            return TryCreateData<UnitDataSO, UnitCatalog>(displayName, UnitDataFolder, "UnitData", catalog, CatalogEditorUtility.SyncUnitCatalog, data => data.UnitId, "Ä³¸¯ÅÍ", out createdData, out message);
+            return TryCreateData<UnitDataSO, UnitCatalog>(displayName, UnitDataFolder, "UnitData", catalog, CatalogEditorUtility.SyncUnitCatalog, data => data.UnitId, "ìºë¦­í„°", out createdData, out message);
         }
 
         public static bool TryCreateEnemyData(string displayName, out EnemyDataSO createdData, out string message)
         {
             EnemyCatalog catalog = LoadEnemyCatalog();
-            return TryCreateData<EnemyDataSO, EnemyCatalog>(displayName, EnemyDataFolder, "EnemyData", catalog, CatalogEditorUtility.SyncEnemyCatalog, data => data.EnemyId, "¸ó½ºÅÍ", out createdData, out message);
+            return TryCreateData<EnemyDataSO, EnemyCatalog>(displayName, EnemyDataFolder, "EnemyData", catalog, CatalogEditorUtility.SyncEnemyCatalog, data => data.EnemyId, "ëª¬ìŠ¤í„°", out createdData, out message);
         }
 
         private static bool TryCreateData<TData, TCatalog>(string displayName, string folderPath, string fallbackFileName, TCatalog catalog, Func<TCatalog, CatalogSyncResult> syncCatalog, Func<TData, string> idGetter, string dataLabel, out TData createdData, out string message)
@@ -44,19 +44,19 @@ namespace EndlessGuard.Unit.Editor
 
             if (string.IsNullOrWhiteSpace(displayName))
             {
-                message = $"{dataLabel} Ç¥½Ã ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä.";
+                message = $"{dataLabel} í‘œì‹œ ì´ë¦„ì„ ì…ë ¥í•˜ì„¸ìš”.";
                 return false;
             }
 
             if (catalog == null)
             {
-                message = $"{dataLabel} Catalog ¿¡¼ÂÀ» Ã£Áö ¸øÇß½À´Ï´Ù.";
+                message = $"{dataLabel} Catalog ì—ì…‹ì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 return false;
             }
 
             if (!AssetDatabase.IsValidFolder(folderPath))
             {
-                message = $"{dataLabel} µ¥ÀÌÅÍ Æú´õ¸¦ Ã£Áö ¸øÇß½À´Ï´Ù: {folderPath}";
+                message = $"{dataLabel} ë°ì´í„° í´ë”ë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤: {folderPath}";
                 return false;
             }
 
@@ -78,7 +78,7 @@ namespace EndlessGuard.Unit.Editor
             if (displayNameProperty == null)
             {
                 AssetDatabase.DeleteAsset(assetPath);
-                message = $"{dataLabel} µ¥ÀÌÅÍ¿¡¼­ displayName ÇÊµå¸¦ Ã£Áö ¸øÇØ »ı¼ºÀ» Ãë¼ÒÇß½À´Ï´Ù.";
+                message = $"{dataLabel} ë°ì´í„°ì—ì„œ displayName í•„ë“œë¥¼ ì°¾ì§€ ëª»í•´ ìƒì„±ì„ ì·¨ì†Œí–ˆìŠµë‹ˆë‹¤.";
                 return false;
             }
 
@@ -106,7 +106,7 @@ namespace EndlessGuard.Unit.Editor
             {
                 AssetDatabase.DeleteAsset(assetPath);
                 AssetDatabase.SaveAssets();
-                message = $"{dataLabel} µ¥ÀÌÅÍ »ı¼ºÀ» Ãë¼ÒÇß½À´Ï´Ù. {syncResult.Message}";
+                message = $"{dataLabel} ë°ì´í„° ìƒì„±ì„ ì·¨ì†Œí–ˆìŠµë‹ˆë‹¤. {syncResult.Message}";
                 return false;
             }
 
@@ -114,7 +114,7 @@ namespace EndlessGuard.Unit.Editor
             Selection.activeObject = data;
             EditorGUIUtility.PingObject(data);
 
-            message = $"{dataLabel} µ¥ÀÌÅÍ »ı¼ºÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù.\nID: {idGetter(data)}\n°æ·Î: {assetPath}";
+            message = $"{dataLabel} ë°ì´í„° ìƒì„±ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.\nID: {idGetter(data)}\nê²½ë¡œ: {assetPath}";
             return true;
         }
 

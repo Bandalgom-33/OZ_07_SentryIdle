@@ -304,7 +304,7 @@ namespace EndlessGuard.Unit.Runtime
 
             if (shader == null)
             {
-                Debug.LogError("AidEffect¿¡¼­ »ç¿ëÇÒ Shader¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                Debug.LogError("AidEffectì—ì„œ ì‚¬ìš©í•  Shaderë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return null;
             }
 

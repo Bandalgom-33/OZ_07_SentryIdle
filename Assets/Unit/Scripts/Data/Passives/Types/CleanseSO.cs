@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Cleanse", menuName = "Endless Guard/Passive/ÁÖ±âÀû »óÅÂÀÌ»ó Á¤È­")]
+    [CreateAssetMenu(fileName = "Cleanse", menuName = "Endless Guard/Passive/ì£¼ê¸°ì  ìƒíƒœì´ìƒ ì •í™”")]
     public sealed class CleanseSO : PassiveDataSO
     {
-        [Header("»óÅÂÀÌ»ó Á¤È­ ±âº»°ª")]
-        [Tooltip("¾Æ±º ¸ó½ºÅÍÀÇ »óÅÂÀÌ»óÀ» Á¦°ÅÇÏ´Â È¿°ú°¡ ¹İº¹ÇØ¼­ ¹ßµ¿ÇÏ´Â ÁÖ±âÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ìƒíƒœì´ìƒ ì •í™” ê¸°ë³¸ê°’")]
+        [Tooltip("ì•„êµ° ëª¬ìŠ¤í„°ì˜ ìƒíƒœì´ìƒì„ ì œê±°í•˜ëŠ” íš¨ê³¼ê°€ ë°˜ë³µí•´ì„œ ë°œë™í•˜ëŠ” ì£¼ê¸°ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float cleanseIntervalSeconds = 5f;
 

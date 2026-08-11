@@ -8,18 +8,18 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(Canvas))]
     public sealed class DamageNumberPool : MonoBehaviour
     {
-        [Header("ÇÇÇØ ¼ıÀÚ Ç®")]
-        [Tooltip("Ç®¿¡¼­ Àç»ç¿ëÇÒ ÇÇÇØ ¼ıÀÚ ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Header("í”¼í•´ ìˆ«ì í’€")]
+        [Tooltip("í’€ì—ì„œ ì¬ì‚¬ìš©í•  í”¼í•´ ìˆ«ì í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private DamageNumber numberPrefab;
 
-        [Tooltip("ÀüÅõ ¿ùµå À§Ä¡¸¦ È­¸é ÁÂÇ¥·Î º¯È¯ÇÒ Ä«¸Ş¶óÀÔ´Ï´Ù. ºñ¾î ÀÖÀ¸¸é ½ÃÀÛ ½Ã MainCamera¸¦ ÇÑ ¹ø Ã£½À´Ï´Ù.")]
+        [Tooltip("ì „íˆ¬ ì›”ë“œ ìœ„ì¹˜ë¥¼ í™”ë©´ ì¢Œí‘œë¡œ ë³€í™˜í•  ì¹´ë©”ë¼ì…ë‹ˆë‹¤. ë¹„ì–´ ìˆìœ¼ë©´ ì‹œì‘ ì‹œ MainCameraë¥¼ í•œ ë²ˆ ì°¾ìŠµë‹ˆë‹¤.")]
         [SerializeField] private Camera worldCamera;
 
-        [Tooltip("ÀüÅõ ½ÃÀÛ ½Ã ¹Ì¸® »ı¼ºÇÒ ÇÇÇØ ¼ıÀÚ °³¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ì „íˆ¬ ì‹œì‘ ì‹œ ë¯¸ë¦¬ ìƒì„±í•  í”¼í•´ ìˆ«ì ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int initialCapacity = 32;
 
-        [Tooltip("°°Àº ´ë»ó¿¡°Ô µ¿½Ã¿¡ Ç¥½ÃÇÒ ¼ö ÀÖ´Â ÇÇÇØ ¼ıÀÚÀÇ ÃÖ´ë °³¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ê°™ì€ ëŒ€ìƒì—ê²Œ ë™ì‹œì— í‘œì‹œí•  ìˆ˜ ìˆëŠ” í”¼í•´ ìˆ«ìì˜ ìµœëŒ€ ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Range(1, 20)]
         [SerializeField] private int maxNumbersPerTarget = 6;
 
@@ -43,7 +43,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (instance != null && instance != this)
             {
-                Debug.LogError("DamageNumberPoolÀÌ ¾À¿¡ µÑ ÀÌ»ó Á¸ÀçÇÕ´Ï´Ù.", this);
+                Debug.LogError("DamageNumberPoolì´ ì”¬ì— ë‘˜ ì´ìƒ ì¡´ì¬í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }
@@ -59,7 +59,7 @@ namespace EndlessGuard.Unit.Runtime
 
             if (canvasRect == null)
             {
-                Debug.LogError("DamageNumberPoolÀº RectTransformÀÌ ÀÖ´Â Canvas ¿ÀºêÁ§Æ®¿¡ ¹èÄ¡ÇØ¾ß ÇÕ´Ï´Ù.", this);
+                Debug.LogError("DamageNumberPoolì€ RectTransformì´ ìˆëŠ” Canvas ì˜¤ë¸Œì íŠ¸ì— ë°°ì¹˜í•´ì•¼ í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }
@@ -133,7 +133,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (numberPrefab == null)
             {
-                Debug.LogError("DamageNumberPool¿¡ DamageNumber ÇÁ¸®ÆÕÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.", this);
+                Debug.LogError("DamageNumberPoolì— DamageNumber í”„ë¦¬íŒ¹ì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", this);
                 return;
             }
 

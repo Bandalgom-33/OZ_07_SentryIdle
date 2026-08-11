@@ -26,14 +26,14 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Àú°Ý ´ë»ó Á¶°Ç", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(targetSize, new GUIContent("´ë»ó ¸ó½ºÅÍ Å©±â", "Àú°Ý¼ö ÆÐ½ÃºêÀÇ Ãß°¡ ÇÇÇØ¸¦ Àû¿ëÇÒ ¸ó½ºÅÍ Å©±âÀÔ´Ï´Ù."));
+            EditorGUILayout.LabelField("ì €ê²© ëŒ€ìƒ ì¡°ê±´", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(targetSize, new GUIContent("ëŒ€ìƒ ëª¬ìŠ¤í„° í¬ê¸°", "ì €ê²©ìˆ˜ íŒ¨ì‹œë¸Œì˜ ì¶”ê°€ í”¼í•´ë¥¼ ì ìš©í•  ëª¬ìŠ¤í„° í¬ê¸°ìž…ë‹ˆë‹¤."));
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Àú°Ý Ãß°¡ ÇÇÇØ ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(bonusDamagePercent, new GUIContent("´ë»ó ±âº» Ãß°¡ ÇÇÇØÀ² (%)", "Á¶°Ç¿¡ ¸Â´Â ¸ó½ºÅÍ¿¡°Ô ±âº»ÀûÀ¸·Î Àû¿ëÇÏ´Â Ãß°¡ ÇÇÇØÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(damagePerDistancePercent, new GUIContent("°Å¸® 1´ç Ãß°¡ ÇÇÇØÀ² (%)", "°ø°ÝÀÚ¿Í ´ë»ó »çÀÌÀÇ °Å¸® 1´ç Ãß°¡µÇ´Â ÇÇÇØÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(maxDistanceDamagePercent, new GUIContent("°Å¸® Ãß°¡ ÇÇÇØ ÃÖ´ëÄ¡ (%)", "°Å¸®·Î Áõ°¡ÇÒ ¼ö ÀÖ´Â Ãß°¡ ÇÇÇØÀ²ÀÇ ÃÖ´ëÄ¡ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ì €ê²© ì¶”ê°€ í”¼í•´ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(bonusDamagePercent, new GUIContent("ëŒ€ìƒ ê¸°ë³¸ ì¶”ê°€ í”¼í•´ìœ¨ (%)", "ì¡°ê±´ì— ë§žëŠ” ëª¬ìŠ¤í„°ì—ê²Œ ê¸°ë³¸ì ìœ¼ë¡œ ì ìš©í•˜ëŠ” ì¶”ê°€ í”¼í•´ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(damagePerDistancePercent, new GUIContent("ê±°ë¦¬ 1ë‹¹ ì¶”ê°€ í”¼í•´ìœ¨ (%)", "ê³µê²©ìžì™€ ëŒ€ìƒ ì‚¬ì´ì˜ ê±°ë¦¬ 1ë‹¹ ì¶”ê°€ë˜ëŠ” í”¼í•´ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(maxDistanceDamagePercent, new GUIContent("ê±°ë¦¬ ì¶”ê°€ í”¼í•´ ìµœëŒ€ì¹˜ (%)", "ê±°ë¦¬ë¡œ ì¦ê°€í•  ìˆ˜ ìžˆëŠ” ì¶”ê°€ í”¼í•´ìœ¨ì˜ ìµœëŒ€ì¹˜ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
         }
     }
 }

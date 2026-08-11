@@ -6,16 +6,16 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     public sealed class BurstGraphic : MaskableGraphic
     {
-        [Header("Æø¹ßÇü ¿Ü°û¼±")]
-        [Tooltip("Æø¹ß ¿Ü°û¿¡ »ı¼ºµÇ´Â Å« °¡½ÃÀÇ °³¼öÀÔ´Ï´Ù.")]
+        [Header("í­ë°œí˜• ì™¸ê³½ì„ ")]
+        [Tooltip("í­ë°œ ì™¸ê³½ì— ìƒì„±ë˜ëŠ” í° ê°€ì‹œì˜ ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Range(6, 24)]
         [SerializeField] private int spikeCount = 14;
 
-        [Tooltip("Å« °¡½Ã »çÀÌ·Î µé¾î°¡´Â ¾ÈÂÊ ²ÀÁşÁ¡ÀÇ ±íÀÌÀÔ´Ï´Ù.")]
+        [Tooltip("í° ê°€ì‹œ ì‚¬ì´ë¡œ ë“¤ì–´ê°€ëŠ” ì•ˆìª½ ê¼­ì§“ì ì˜ ê¹Šì´ì…ë‹ˆë‹¤.")]
         [Range(0.5f, 0.95f)]
         [SerializeField] private float innerSpikeRatio = 0.72f;
 
-        [Tooltip("Æø¹ßÇü ¿Ü°û¼±ÀÇ µÎ²²ÀÔ´Ï´Ù.")]
+        [Tooltip("í­ë°œí˜• ì™¸ê³½ì„ ì˜ ë‘ê»˜ì…ë‹ˆë‹¤.")]
         [Min(1f)]
         [SerializeField] private float outlineWidth = 5f;
 

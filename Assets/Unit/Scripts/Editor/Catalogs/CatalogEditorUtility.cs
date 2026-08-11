@@ -33,12 +33,12 @@ namespace EndlessGuard.Unit.Editor
 
         public static CatalogSyncResult SyncUnitCatalog(UnitCatalog catalog)
         {
-            return SyncCatalog(catalog, LoadAssets<UnitDataSO>(UnitDataFolder), "lastIssuedNumber", "units", "unitId", UnitPrefix, data => data.UnitId, "Ä³¸¯ÅÍ");
+            return SyncCatalog(catalog, LoadAssets<UnitDataSO>(UnitDataFolder), "lastIssuedNumber", "units", "unitId", UnitPrefix, data => data.UnitId, "ìºë¦­í„°");
         }
 
         public static CatalogSyncResult SyncEnemyCatalog(EnemyCatalog catalog)
         {
-            return SyncCatalog(catalog, LoadAssets<EnemyDataSO>(EnemyDataFolder), "lastIssuedNumber", "enemies", "enemyId", EnemyPrefix, data => data.EnemyId, "¸ó½ºÅÍ");
+            return SyncCatalog(catalog, LoadAssets<EnemyDataSO>(EnemyDataFolder), "lastIssuedNumber", "enemies", "enemyId", EnemyPrefix, data => data.EnemyId, "ëª¬ìŠ¤í„°");
         }
 
         private static CatalogSyncResult SyncCatalog<TCatalog, TData>(TCatalog catalog, List<TData> dataAssets, string lastIssuedFieldName, string listFieldName, string idFieldName,
@@ -48,7 +48,7 @@ namespace EndlessGuard.Unit.Editor
         {
             if (catalog == null)
             {
-                return new CatalogSyncResult(false, 0, 0, 0, $"{dataLabel} Catalog ÂüÁ¶°¡ ¾ø½À´Ï´Ù.");
+                return new CatalogSyncResult(false, 0, 0, 0, $"{dataLabel} Catalog ì°¸ì¡°ê°€ ì—†ìŠµë‹ˆë‹¤.");
             }
 
             SerializedObject catalogObject = new SerializedObject(catalog);
@@ -57,7 +57,7 @@ namespace EndlessGuard.Unit.Editor
 
             if (lastIssuedProperty == null || listProperty == null)
             {
-                return new CatalogSyncResult(false, 0, 0, 0, $"{dataLabel} CatalogÀÇ Á÷·ÄÈ­ ÇÊµå¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                return new CatalogSyncResult(false, 0, 0, 0, $"{dataLabel} Catalogì˜ ì§ë ¬í™” í•„ë“œë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
             }
 
             int lastIssuedNumber = lastIssuedProperty.intValue;
@@ -78,16 +78,16 @@ namespace EndlessGuard.Unit.Editor
                 if (!TryParseId(currentId, idPrefix, out int parsedNumber))
                 {
                     string assetPath = AssetDatabase.GetAssetPath(data);
-                    Debug.LogError($"{assetPath}ÀÇ ID Çü½ÄÀÌ ¿Ã¹Ù¸£Áö ¾Ê½À´Ï´Ù: {currentId}", data);
-                    return new CatalogSyncResult(false, dataAssets.Count, 0, lastIssuedNumber, "Àß¸øµÈ ID Çü½ÄÀÌ ÀÖ¾î µ¿±âÈ­¸¦ Áß´ÜÇß½À´Ï´Ù. ConsoleÀ» È®ÀÎÇÏ¼¼¿ä.");
+                    Debug.LogError($"{assetPath}ì˜ ID í˜•ì‹ì´ ì˜¬ë°”ë¥´ì§€ ì•ŠìŠµë‹ˆë‹¤: {currentId}", data);
+                    return new CatalogSyncResult(false, dataAssets.Count, 0, lastIssuedNumber, "ì˜ëª»ëœ ID í˜•ì‹ì´ ìˆì–´ ë™ê¸°í™”ë¥¼ ì¤‘ë‹¨í–ˆìŠµë‹ˆë‹¤. Consoleì„ í™•ì¸í•˜ì„¸ìš”.");
                 }
 
                 if (usedIds.TryGetValue(currentId, out TData duplicateData))
                 {
                     string firstPath = AssetDatabase.GetAssetPath(duplicateData);
                     string secondPath = AssetDatabase.GetAssetPath(data);
-                    Debug.LogError($"Áßº¹ ID°¡ ¹ß°ßµÇ¾ú½À´Ï´Ù: {currentId}\n{firstPath}\n{secondPath}", data);
-                    return new CatalogSyncResult(false, dataAssets.Count, 0, lastIssuedNumber, "Áßº¹ ID°¡ ÀÖ¾î µ¿±âÈ­¸¦ Áß´ÜÇß½À´Ï´Ù. ConsoleÀ» È®ÀÎÇÏ¼¼¿ä.");
+                    Debug.LogError($"ì¤‘ë³µ IDê°€ ë°œê²¬ë˜ì—ˆìŠµë‹ˆë‹¤: {currentId}\n{firstPath}\n{secondPath}", data);
+                    return new CatalogSyncResult(false, dataAssets.Count, 0, lastIssuedNumber, "ì¤‘ë³µ IDê°€ ìˆì–´ ë™ê¸°í™”ë¥¼ ì¤‘ë‹¨í–ˆìŠµë‹ˆë‹¤. Consoleì„ í™•ì¸í•˜ì„¸ìš”.");
                 }
 
                 usedIds.Add(currentId, data);
@@ -105,8 +105,8 @@ namespace EndlessGuard.Unit.Editor
                 if (dataObject.FindProperty(idFieldName) == null)
                 {
                     string assetPath = AssetDatabase.GetAssetPath(missingIdAssets[i]);
-                    Debug.LogError($"{assetPath}¿¡¼­ ID ÇÊµå {idFieldName}À» Ã£Áö ¸øÇß½À´Ï´Ù.", missingIdAssets[i]);
-                    return new CatalogSyncResult(false, dataAssets.Count, 0, lastIssuedNumber, "ID ÇÊµå¸¦ Ã£Áö ¸øÇØ µ¿±âÈ­¸¦ Áß´ÜÇß½À´Ï´Ù. ConsoleÀ» È®ÀÎÇÏ¼¼¿ä.");
+                    Debug.LogError($"{assetPath}ì—ì„œ ID í•„ë“œ {idFieldName}ì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.", missingIdAssets[i]);
+                    return new CatalogSyncResult(false, dataAssets.Count, 0, lastIssuedNumber, "ID í•„ë“œë¥¼ ì°¾ì§€ ëª»í•´ ë™ê¸°í™”ë¥¼ ì¤‘ë‹¨í–ˆìŠµë‹ˆë‹¤. Consoleì„ í™•ì¸í•˜ì„¸ìš”.");
                 }
             }
 
@@ -149,7 +149,7 @@ namespace EndlessGuard.Unit.Editor
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
 
-            string message = $"{dataLabel} µ¥ÀÌÅÍ {dataAssets.Count}°³¸¦ µî·ÏÇß°í, »õ ID {issuedCount}°³¸¦ ¹ß±ŞÇß½À´Ï´Ù. ¸¶Áö¸· ¹ß±Ş ¹øÈ£´Â {lastIssuedNumber}ÀÔ´Ï´Ù.";
+            string message = $"{dataLabel} ë°ì´í„° {dataAssets.Count}ê°œë¥¼ ë“±ë¡í–ˆê³ , ìƒˆ ID {issuedCount}ê°œë¥¼ ë°œê¸‰í–ˆìŠµë‹ˆë‹¤. ë§ˆì§€ë§‰ ë°œê¸‰ ë²ˆí˜¸ëŠ” {lastIssuedNumber}ì…ë‹ˆë‹¤.";
             return new CatalogSyncResult(true, dataAssets.Count, issuedCount, lastIssuedNumber, message);
         }
 

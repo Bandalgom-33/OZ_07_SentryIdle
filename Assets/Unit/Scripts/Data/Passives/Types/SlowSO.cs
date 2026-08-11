@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Slow", menuName = "Endless Guard/Passive/ÀÌµ¿¼Óµµ °¨¼Ò")]
+    [CreateAssetMenu(fileName = "Slow", menuName = "Endless Guard/Passive/ì´ë™ì†ë„ ê°ì†Œ")]
     public sealed class SlowSO : PassiveDataSO
     {
-        [Header("ÀÌµ¿¼Óµµ °¨¼Ò ±âº»°ª")]
-        [Tooltip("±âº» °ø°İ ÀûÁß ½Ã ´ë»óÀÇ ÀÌµ¿¼Óµµ¸¦ °¨¼Ò½ÃÅ°´Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì´ë™ì†ë„ ê°ì†Œ ê¸°ë³¸ê°’")]
+        [Tooltip("ê¸°ë³¸ ê³µê²© ì ì¤‘ ì‹œ ëŒ€ìƒì˜ ì´ë™ì†ë„ë¥¼ ê°ì†Œì‹œí‚¤ëŠ” ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Range(0f, 100f)]
         [SerializeField] private float moveSpeedReductionPercent = 30f;
 
-        [Tooltip("ÀÌµ¿¼Óµµ °¨¼Ò È¿°ú°¡ À¯ÁöµÇ´Â ½Ã°£ÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì´ë™ì†ë„ ê°ì†Œ íš¨ê³¼ê°€ ìœ ì§€ë˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float durationSeconds = 3f;
 

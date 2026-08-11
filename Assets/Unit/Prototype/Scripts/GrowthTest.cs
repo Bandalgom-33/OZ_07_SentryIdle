@@ -6,56 +6,56 @@ namespace EndlessGuard.Unit.Prototype
     [DisallowMultipleComponent]
     public sealed class GrowthTest : MonoBehaviour
     {
-        [Header("°ñµå °øÅë ¼ºÀå °ËÁõ ¼öÄ¡")]
-        [Tooltip("ÃÖ´ë HP ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Header("ê³¨ë“œ ê³µí†µ ì„±ì¥ ê²€ì¦ ìˆ˜ì¹˜")]
+        [Tooltip("ìµœëŒ€ HP ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float maxHpAmount = 1000f;
 
-        [Tooltip("ÃÊ´ç HP Àç»ı ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ì´ˆë‹¹ HP ì¬ìƒ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float hpRegenAmount = 25f;
 
-        [Tooltip("¹°¸® °ø°İ·Â ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ë¬¼ë¦¬ ê³µê²©ë ¥ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalAttackAmount = 100f;
 
-        [Tooltip("¸¶¹ı °ø°İ·Â ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ë§ˆë²• ê³µê²©ë ¥ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalAttackAmount = 100f;
 
-        [Tooltip("¹°¸® ¹æ¾î·Â ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ë¬¼ë¦¬ ë°©ì–´ë ¥ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalDefenseAmount = 100f;
 
-        [Tooltip("¸¶¹ı ¹æ¾î·Â ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ë§ˆë²• ë°©ì–´ë ¥ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalDefenseAmount = 100f;
 
-        [Tooltip("°ø°İ¼Óµµ ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍÀÇ ÃÊ´ç ±âº» °ø°İ È½¼ö¿¡ ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ê³µê²©ì†ë„ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì˜ ì´ˆë‹¹ ê¸°ë³¸ ê³µê²© íšŸìˆ˜ì— ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackSpeedAmount = 0.5f;
 
-        [Tooltip("¸íÁß ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ëª…ì¤‘ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float accuracyAmount = 10f;
 
-        [Tooltip("È¸ÇÇ ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ °ªÀÔ´Ï´Ù.")]
+        [Tooltip("íšŒí”¼ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float evasionAmount = 10f;
 
-        [Tooltip("Ä¡¸íÅ¸ È®·ü ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ ÆÛ¼¾Æ®Æ÷ÀÎÆ® °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ì¹˜ëª…íƒ€ í™•ë¥  ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  í¼ì„¼íŠ¸í¬ì¸íŠ¸ ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float criticalChanceAmount = 10f;
 
-        [Tooltip("Ä¡¸íÅ¸ ÇÇÇØ·® ¼ºÀå ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ ¸ğµç ÇÊµå Ä³¸¯ÅÍ¿¡°Ô ´õÇÒ ÆÛ¼¾Æ®Æ÷ÀÎÆ® °ªÀÔ´Ï´Ù.")]
+        [Tooltip("ì¹˜ëª…íƒ€ í”¼í•´ëŸ‰ ì„±ì¥ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ëª¨ë“  í•„ë“œ ìºë¦­í„°ì—ê²Œ ë”í•  í¼ì„¼íŠ¸í¬ì¸íŠ¸ ê°’ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float criticalDamageAmount = 25f;
 
-        [Header("°ËÁõ »óÅÂ")]
-        [Tooltip("¸¶Áö¸· ¼ºÀå ¹öÆ°ÀÌ Àû¿ëµÈ Ä³¸¯ÅÍ ¼öÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ìƒíƒœ")]
+        [Tooltip("ë§ˆì§€ë§‰ ì„±ì¥ ë²„íŠ¼ì´ ì ìš©ëœ ìºë¦­í„° ìˆ˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private int lastAppliedUnitCount;
 
-        [Tooltip("¸¶Áö¸· ¼ºÀå °ËÁõ °á°úÀÔ´Ï´Ù.")]
+        [Tooltip("ë§ˆì§€ë§‰ ì„±ì¥ ê²€ì¦ ê²°ê³¼ì…ë‹ˆë‹¤.")]
         [TextArea(2, 4)]
         [SerializeField] private string lastMessage;
 
@@ -88,7 +88,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("ÃÖ´ë HP", maxHpAmount, appliedCount);
+            Complete("ìµœëŒ€ HP", maxHpAmount, appliedCount);
         }
 
         public void AddHpRegen()
@@ -106,7 +106,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("ÃÊ´ç HP Àç»ı", hpRegenAmount, appliedCount);
+            Complete("ì´ˆë‹¹ HP ì¬ìƒ", hpRegenAmount, appliedCount);
         }
 
         public void AddPhysicalAttack()
@@ -124,7 +124,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("¹°¸® °ø°İ·Â", physicalAttackAmount, appliedCount);
+            Complete("ë¬¼ë¦¬ ê³µê²©ë ¥", physicalAttackAmount, appliedCount);
         }
 
         public void AddMagicalAttack()
@@ -142,7 +142,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("¸¶¹ı °ø°İ·Â", magicalAttackAmount, appliedCount);
+            Complete("ë§ˆë²• ê³µê²©ë ¥", magicalAttackAmount, appliedCount);
         }
 
         public void AddPhysicalDefense()
@@ -160,7 +160,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("¹°¸® ¹æ¾î·Â", physicalDefenseAmount, appliedCount);
+            Complete("ë¬¼ë¦¬ ë°©ì–´ë ¥", physicalDefenseAmount, appliedCount);
         }
 
         public void AddMagicalDefense()
@@ -178,7 +178,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("¸¶¹ı ¹æ¾î·Â", magicalDefenseAmount, appliedCount);
+            Complete("ë§ˆë²• ë°©ì–´ë ¥", magicalDefenseAmount, appliedCount);
         }
 
         public void AddAttackSpeed()
@@ -196,7 +196,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("°ø°İ¼Óµµ", attackSpeedAmount, appliedCount);
+            Complete("ê³µê²©ì†ë„", attackSpeedAmount, appliedCount);
         }
 
         public void AddAccuracy()
@@ -214,7 +214,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("¸íÁß", accuracyAmount, appliedCount);
+            Complete("ëª…ì¤‘", accuracyAmount, appliedCount);
         }
 
         public void AddEvasion()
@@ -232,7 +232,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("È¸ÇÇ", evasionAmount, appliedCount);
+            Complete("íšŒí”¼", evasionAmount, appliedCount);
         }
 
         public void AddCriticalChance()
@@ -250,7 +250,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("Ä¡¸íÅ¸ È®·ü", criticalChanceAmount, appliedCount);
+            Complete("ì¹˜ëª…íƒ€ í™•ë¥ ", criticalChanceAmount, appliedCount);
         }
 
         public void AddCriticalDamage()
@@ -268,7 +268,7 @@ namespace EndlessGuard.Unit.Prototype
                 appliedCount++;
             }
 
-            Complete("Ä¡¸íÅ¸ ÇÇÇØ·®", criticalDamageAmount, appliedCount);
+            Complete("ì¹˜ëª…íƒ€ í”¼í•´ëŸ‰", criticalDamageAmount, appliedCount);
         }
 
         private static bool CanApply(UnitRuntimeState unit)
@@ -282,12 +282,12 @@ namespace EndlessGuard.Unit.Prototype
 
             if (appliedCount <= 0)
             {
-                lastMessage = $"{statName} ¼ºÀåÀ» Àû¿ëÇÒ ÇÊµå Ä³¸¯ÅÍ°¡ ¾ø½À´Ï´Ù.";
+                lastMessage = $"{statName} ì„±ì¥ì„ ì ìš©í•  í•„ë“œ ìºë¦­í„°ê°€ ì—†ìŠµë‹ˆë‹¤.";
                 Debug.LogWarning(lastMessage, this);
                 return;
             }
 
-            lastMessage = $"{statName} +{amount:0.###} Àû¿ë ¿Ï·á: ÇÊµå Ä³¸¯ÅÍ {appliedCount}¸í";
+            lastMessage = $"{statName} +{amount:0.###} ì ìš© ì™„ë£Œ: í•„ë“œ ìºë¦­í„° {appliedCount}ëª…";
             Debug.Log(lastMessage, this);
         }
     }

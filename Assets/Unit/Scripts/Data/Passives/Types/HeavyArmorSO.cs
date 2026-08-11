@@ -2,20 +2,20 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "HeavyArmor", menuName = "Endless Guard/Passive/Áß°©")]
+    [CreateAssetMenu(fileName = "HeavyArmor", menuName = "Endless Guard/Passive/ì¤‘ê°‘")]
     public sealed class HeavyArmorSO : PassiveDataSO
     {
-        [Header("Áß°© ¹æ¾î·Â ±âº»°ª")]
-        [Tooltip("Áß°© ÆĞ½Ãºê·Î Áõ°¡ÇÏ´Â ¹°¸® ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì¤‘ê°‘ ë°©ì–´ë ¥ ê¸°ë³¸ê°’")]
+        [Tooltip("ì¤‘ê°‘ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•˜ëŠ” ë¬¼ë¦¬ ë°©ì–´ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalDefenseBonusPercent = 50f;
 
-        [Tooltip("Áß°© ÆĞ½Ãºê·Î Áõ°¡ÇÏ´Â ¸¶¹ı ¹æ¾î·Â ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì¤‘ê°‘ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•˜ëŠ” ë§ˆë²• ë°©ì–´ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalDefenseBonusPercent = 50f;
 
-        [Header("Áß°© ÀÌµ¿¼Óµµ ±âº»°ª")]
-        [Tooltip("Áß°© ÆĞ½Ãºê·Î °¨¼ÒÇÏ´Â ÀÌµ¿¼Óµµ ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì¤‘ê°‘ ì´ë™ì†ë„ ê¸°ë³¸ê°’")]
+        [Tooltip("ì¤‘ê°‘ íŒ¨ì‹œë¸Œë¡œ ê°ì†Œí•˜ëŠ” ì´ë™ì†ë„ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Range(0f, 100f)]
         [SerializeField] private float moveSpeedReductionPercent = 20f;
 
