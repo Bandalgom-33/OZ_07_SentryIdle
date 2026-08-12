@@ -75,6 +75,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<DataSaveEvent>(OnSave);
         EventBus.Subscribe<DataLoadEvent>(OnLoad);
         EventBus.Subscribe<DataResetEvent>(OnReset);
+        EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
     }
 
     // 비동기 DP 회복 루프 시작 및 기본 리젠 시간 초기화 연산
@@ -91,6 +92,16 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Unsubscribe<DataSaveEvent>(OnSave);
         EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
         EventBus.Unsubscribe<DataResetEvent>(OnReset);
+        EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
+    }
+
+    // 적 처치 시 보상 골드 획득 핸들러
+    private void OnEnemyDied(EnemyDiedEvent eventMessage)
+    {
+        if (eventMessage.rewardGold > 0)
+        {
+            GetGold(eventMessage.rewardGold);
+        }
     }
 
 #endregion

@@ -56,6 +56,9 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
     public int Width => width;
     public int Height => height;
 
+    // 외부 소환 매니저(MapUnitSummonManager)에서 월드 좌표 변환 시 참조하기 위한 프로퍼티
+    public GridMapRenderer MapRenderer => mapRenderer;
+
     private void Awake()
     {
         combatLoop = FindFirstObjectByType<CombatLoop>();
@@ -81,6 +84,10 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         GenerateMap();
     }
 
+    // 맵 생성 완료 여부 및 이벤트 (외부 MapUnitSummonManager 연동용)
+    public bool IsMapGenerated { get; private set; }
+    public event System.Action OnMapGenerated;
+
     public void GenerateMap()
     {
         InitializeGrid();
@@ -94,11 +101,9 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         mapRenderer.RenderMap(grid);
 
-        SpawnMeleeUnit();
-        SpawnMeleeUnit();
-
-        SpawnRangedUnit();
-        SpawnRangedUnit();
+        // 맵 생성 완료 상태 처리 및 이벤트 알림
+        IsMapGenerated = true;
+        OnMapGenerated?.Invoke();
 
         if (combatLoop == null)
         {
@@ -106,6 +111,12 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
             return;
         }
 
+        StartCoroutine(SpawnWave(pathPosition, enemyCountPerPath, enemySpawnInterval));
+        StartCoroutine(SpawnWave(pathPositionB, enemyCountPerPath, enemySpawnInterval));
+    }
+
+    public void MobSpawnWave()
+    {
         StartCoroutine(SpawnWave(pathPosition, enemyCountPerPath, enemySpawnInterval));
         StartCoroutine(SpawnWave(pathPositionB, enemyCountPerPath, enemySpawnInterval));
     }
@@ -496,6 +507,8 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
             Destroy(instance);
             return;
         }
+
+        SpawnedEnemyManager.Instance.RegisterEnemy(state);
     }
 
     private PathNode[] BuildPathNodes(IReadOnlyList<Vector2Int> mapPath, EnemyMovementType movementType)
@@ -598,7 +611,8 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         }
     }
 
-    private TileNode FindRandomDeployableTile(TileType targetTileType)
+    // 외부 소환 매니저에서 배치 가능 타일을 탐색할 수 있도록 public으로 공개
+    public TileNode FindRandomDeployableTile(TileType targetTileType)
     {
         List<TileNode> candidates = new List<TileNode>();
 
@@ -692,7 +706,8 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         rangedTile.SetOccupied(true);
     }
 
-    private bool IsNearPath(Vector2Int position, int maxDistance)
+    // 외부 타일 검사 로직에서 이동 경로 인접 여부를 확인할 수 있도록 public으로 공개
+    public bool IsNearPath(Vector2Int position, int maxDistance)
     {
         for (int x = 0; x < width; x++)
         {

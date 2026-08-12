@@ -231,11 +231,23 @@ namespace EndlessGuard.Unit.Runtime
                 passiveRuntime.Deactivate();
             }
 
+            int rewardGold = 0;
+            int rewardExp = 0;
+
+            if (dataLink != null && dataLink.HasData && dataLink.EnemyData != null)
+            {
+                rewardGold = dataLink.EnemyData.RewardGold;
+                rewardExp = dataLink.EnemyData.RewardExp;
+            }
+
             if (!isSummon)
             {
                 EnemySize enemySize = dataLink != null && dataLink.HasData ? dataLink.EnemyData.Size : EnemySize.None;
                 CombatEvents.PublishEnemyDied(new EnemyDiedInfo(runtimeId, EnemyId, enemySize, transform.position));
             }
+
+            // 중앙 EventBus로 사망 정보 및 보상 발행
+            EventBus.Publish(new EnemyDiedEvent(gameObject, EnemyId, rewardGold, rewardExp, transform.position));
 
             if (summonRuntime != null)
             {
