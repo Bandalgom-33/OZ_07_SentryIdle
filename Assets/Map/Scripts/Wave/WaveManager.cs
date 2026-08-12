@@ -7,10 +7,9 @@ public class WaveManager : MonoBehaviour
     [Header("맵 참조하기")] 
     [SerializeField] private MapGenerator mapGenerator;
     [SerializeField] private GridMapRenderer mapRenderer;
-    
-    
+     
     [Header("Wave 설정")]
-    //총 웨이브 수
+   //총 웨이브 수
     [SerializeField] private int waveCount = 3;
     //한 웨이브당 적 소환 갯수
     [SerializeField] private int enemyCountPerWave = 3;
@@ -41,6 +40,7 @@ public class WaveManager : MonoBehaviour
         spawnEnemy.Initialize(path,mapRenderer);
     }
 
+    //웨이브 시작 메서드
     public void StartWave()
     {
         if(mapGenerator == null) return;
