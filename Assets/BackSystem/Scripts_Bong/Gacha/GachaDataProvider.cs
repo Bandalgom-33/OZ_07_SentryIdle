@@ -28,8 +28,7 @@ public class GachaDataProvider : MonoBehaviour
         InitializePoolFromCatalog();
     }
 
-    // 팀원 UnitCatalog.asset 데이터로부터 6단계 등급별 풀 동적 세팅
-    // 이유: 하드코딩된 더미 풀 대신 실제 팀원 ScriptableObject 데이터베이스를 원본 수정 없이 동적 읽기 처리함
+    // 등급별 가챠 카탈로그 풀 동적 설정 처리
     public void InitializePoolFromCatalog()
     {
         _rewardPool.Clear();
@@ -69,8 +68,7 @@ public class GachaDataProvider : MonoBehaviour
 
     #region 추첨 로직 메서드
 
-    // 6단계 등급(OneStar ~ SixStar) 확률 가중치 기반 등급 결정 연산
-    // 이유: 천장(isPity) 달성 시 6성(SixStar) 확정 지급 및 1성~6성 확률 분포 추첨 구현
+    // 등급별 가중치 기반 확률 추첨 연산
     public UnitGrade RollGrade(bool isPity)
     {
         // 천장 달성 시 최고 등급 6성(SixStar) 확정 리턴
@@ -90,8 +88,7 @@ public class GachaDataProvider : MonoBehaviour
         else                         return UnitGrade.SixStar;   // 0.99 ~ 1.00 (1%)
     }
 
-    // 선택된 등급의 캐릭터 풀에서 무작위 1종 추첨
-    // 이유: 해당 등급 풀이 비어있을 경우 폴백(Fallback) 조치로 가용 가능한 가장 가까운 등급 유닛 반환
+    // 등급별 유닛 풀 무작위 1종 추출 연산
     public IGachaRewardItem GetRandomItemByGrade(UnitGrade grade)
     {
         if (_rewardPool.TryGetValue(grade, out List<IGachaRewardItem> itemList) && itemList.Count > 0)

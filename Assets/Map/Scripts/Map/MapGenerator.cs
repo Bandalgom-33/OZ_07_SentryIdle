@@ -121,6 +121,59 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         StartCoroutine(SpawnWave(pathPositionB, enemyCountPerPath, enemySpawnInterval));
     }
 
+    // 필드의 모든 아군 유닛과 적 유닛을 제거하고 타일 점유 해제
+    public void ClearAllUnitsAndEnemies()
+    {
+        // 1. 진행 중인 스폰 코루틴 중단
+        StopAllCoroutines();
+
+        // 2. 타일 점유 상태 해제
+        if (grid != null)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    grid[x, y]?.SetOccupied(false);
+                }
+            }
+        }
+
+        // 3. 적 유닛 제거
+        var activeEnemies = new List<EnemyRuntimeState>(CombatRegistry.Enemies);
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy != null)
+            {
+                SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
+                Destroy(enemy.gameObject);
+            }
+        }
+
+        // 4. 아군 유닛 제거 (MapUnitSummonManager 추적 딕셔너리 및 이벤트 일괄 초기화)
+        var summonManager = FindFirstObjectByType<EndlessGuard.Map.MapUnitSummonManager>();
+        if (summonManager != null)
+        {
+            summonManager.ClearAllUnits();
+        }
+
+        var activeUnits = new List<UnitRuntimeState>(CombatRegistry.Units);
+        foreach (var unit in activeUnits)
+        {
+            if (unit != null)
+            {
+                Destroy(unit.gameObject);
+            }
+        }
+    }
+
+    // 필드 유닛 청소 후 맵은 그대로 둔 채 몬스터 웨이브 재시작
+    public void RestartWave()
+    {
+        ClearAllUnitsAndEnemies();
+        MobSpawnWave();
+    }
+
     public void InitializeGrid()
     {
         grid = new TileNode[width, height];

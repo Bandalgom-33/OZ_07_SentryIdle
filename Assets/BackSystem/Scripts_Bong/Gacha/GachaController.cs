@@ -53,8 +53,7 @@ public class GachaController : SingletonBase<GachaController>
 
     #region 가챠 실행 핵심 메서드
 
-    // 1회 또는 10회 가챠 실행 로직
-    // 이유: 재화(다이아) 소모 검증 후 6단계 등급 추첨, 천장 스택 계산 및 보유 여부(IsOwned) 업데이트를 일괄 처리함
+    // 가챠 횟수별 추첨 실행 및 보유 처리
     public List<IGachaRewardItem> ExecuteGacha(int drawCount)
     {
         int requiredCost = (drawCount >= 10) ? tenDrawCost : singleDrawCost * drawCount;

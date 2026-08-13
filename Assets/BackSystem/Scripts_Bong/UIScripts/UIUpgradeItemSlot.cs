@@ -138,7 +138,7 @@ public class UIUpgradeItemSlot : MonoBehaviour
     // 강화를 요청할 때 매니저로 이벤트 발행
     private void RequestUpgrade(int count)
     {
-        // UpgradeUi 스크립트 또는 CurrencyUpgradeManager 이벤트에 전달
+        // UpgradeUi 스크립트 또는 UpgradeManager 이벤트에 전달
         UpgradeUi.TriggerUpgradeRequest(UpgradeTypeIndex, count);
     }
 
