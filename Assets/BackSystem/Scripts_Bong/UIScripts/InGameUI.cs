@@ -87,6 +87,7 @@ public class InGameUI : MonoBehaviour
         CurrencyManager.OnDiamondChange += UpdateDiamondUI;
         CurrencyManager.OnDpCostChange += UpdateDpCostUI;
         CurrencyManager.OnDpCostSliderChange += UpdateDpRegenSlider;
+        GameManager.OnLifeChanged += UpdateLifeUI;
     }
 
     private void OnDisable()
@@ -97,6 +98,7 @@ public class InGameUI : MonoBehaviour
         CurrencyManager.OnDiamondChange -= UpdateDiamondUI;
         CurrencyManager.OnDpCostChange -= UpdateDpCostUI;
         CurrencyManager.OnDpCostSliderChange -= UpdateDpRegenSlider;
+        GameManager.OnLifeChanged -= UpdateLifeUI;
     }
 
     #endregion
@@ -165,8 +167,8 @@ public class InGameUI : MonoBehaviour
         }
     }
 
-    // 4. 상단 재화 2 (다이아) 텍스트 갱신
-    private void UpdateDiamondUI(int diamond)
+    // 상단 다이아 텍스트 갱신 처리
+    private void UpdateDiamondUI(long diamond)
     {
         if (diamondText != null)
         {

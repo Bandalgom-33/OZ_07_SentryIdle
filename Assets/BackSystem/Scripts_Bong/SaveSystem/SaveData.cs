@@ -16,27 +16,51 @@ public class SaveData
     public string lastSaveTimestamp = string.Empty;
 }
 
-// 보유 재화 데이터 
+// 보유 재화 저장 데이터
 [Serializable]
 public class CurrencyData
 {
     public long gold;
-    public int diamond;
+    public long diamond;
+    public long waveStone;
+    public long stageStone;
+    public long raidStone;
 }
 
-// 재화 업그레이드 데이터
+// 재화 및 공통 스탯 업그레이드 레벨 저장 데이터
 [Serializable]
 public class CurrencyUpgradeData
 {
+    // 재화 보너스 레벨 (0~5번)
     public int goldBonusLevel;
     public int goldMagnificationLevel;
     public int diamondBonusLevel;
     public int diamondMagnificationLevel;
     public int dpCostBonusLevel;
-    public int dpCostMagnificationLevel;
+    public int maxDpCostLevel;
+
+    // 공통 스탯 레벨 (6~16번)
+    public int physicalAttackLevel;
+    public int magicalAttackLevel;
+    public int maxHpLevel;
+    public int hpRegenLevel;
+    public int physicalDefenseLevel;
+    public int magicalDefenseLevel;
+    public int attackSpeedLevel;
+    public int accuracyLevel;
+    public int evasionLevel;
+    public int criticalChanceLevel;
+    public int criticalDamageLevel;
+
+    // 하위 호환용 프로퍼티
+    public int dpCostMagnificationLevel
+    {
+        get => maxDpCostLevel;
+        set => maxDpCostLevel = value;
+    }
 }
 
-// 웨이브 데이터 저장
+// 웨이브 데이터
 [Serializable]
 public class StageData
 {

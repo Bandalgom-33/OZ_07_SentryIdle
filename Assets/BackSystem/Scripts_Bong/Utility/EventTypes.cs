@@ -1,4 +1,18 @@
 
+using System;
+using UnityEngine;
+
+// 게임 내 6대 재화 종류 정의
+public enum CurrencyType
+{
+    Gold,
+    Diamond,
+    DpCost,
+    WaveStone,   // 보스 라운드(5라운드) 클리어 마석
+    StageStone,  // 원정 방치 던전 클리어 마석
+    RaidStone    // 보스 레이드 클리어 마석
+}
+
 #region 게임 상태 및 세팅 이벤트
     
     //게임 상태 변경
