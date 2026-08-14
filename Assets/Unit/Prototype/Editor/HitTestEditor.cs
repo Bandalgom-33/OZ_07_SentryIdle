@@ -14,7 +14,7 @@ namespace EndlessGuard.Unit.Prototype
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("¸íÁß·ü °ËÁõ ½ÇÇà"))
+            if (GUILayout.Button("ëª…ì¤‘ë¥  ê²€ì¦ ì‹¤í–‰"))
             {
                 HitTest hitTest = (HitTest)target;
                 hitTest.RunTest();

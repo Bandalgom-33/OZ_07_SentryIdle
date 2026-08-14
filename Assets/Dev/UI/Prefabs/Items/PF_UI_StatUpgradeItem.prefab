@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5770721386943083812}
   - component: {fileID: 1202410071521517043}
   - component: {fileID: 2182021031310203561}
+  - component: {fileID: 1973554903226197636}
   m_Layer: 5
   m_Name: PF_UI_StatUpgradeItem
   m_TagString: Untagged
@@ -105,6 +106,29 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1973554903226197636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2314562428407294209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b6697ce6f538d249b499792039da91a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIUpgradeItemSlot
+  statIcon: {fileID: 1474147862666700426}
+  statNameText: {fileID: 8499899309573088874}
+  levelText: {fileID: 834392864724725365}
+  currentValueText: {fileID: 2485521611385524495}
+  nextValueText: {fileID: 3725525054473353390}
+  costText: {fileID: 4969028185366924037}
+  btnUpgradeOne: {fileID: 5886379704012799269}
+  btnUpgradeTen: {fileID: 655837428155782440}
+  btnUpgradeMax: {fileID: 1945123930729403802}
+  purchasableColor: {r: 0.1, g: 0.58, b: 0.82, a: 1}
+  unpurchasableColor: {r: 0.29, g: 0.32, b: 0.36, a: 1}
 --- !u!1 &2870081712117107696
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,6 +998,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+--- !u!114 &5886379704012799269 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7975839413021100094, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+  m_PrefabInstance: {fileID: 4548425167838033179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!224 &6360170575425849465 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7448001501966433634, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
@@ -1093,6 +1128,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7448001501966433634, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
   m_PrefabInstance: {fileID: 7473124462423923990}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &655837428155782440 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7975839413021100094, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+  m_PrefabInstance: {fileID: 7473124462423923990}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &8381665481476677028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1207,3 +1253,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7448001501966433634, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
   m_PrefabInstance: {fileID: 8381665481476677028}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1945123930729403802 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7975839413021100094, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+  m_PrefabInstance: {fileID: 8381665481476677028}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button

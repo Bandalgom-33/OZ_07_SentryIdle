@@ -10,15 +10,15 @@ namespace EndlessGuard.Unit.Runtime
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int ColorId = Shader.PropertyToID("_Color");
 
-        [Header("ÇÇ°İ ÇÃ·¡½Ã")]
-        [Tooltip("ÇÇ°İ ¼ø°£ ¿ÜÇü¿¡ ¼¯À» ÇÃ·¡½Ã »ö»óÀÔ´Ï´Ù.")]
+        [Header("í”¼ê²© í”Œë˜ì‹œ")]
+        [Tooltip("í”¼ê²© ìˆœê°„ ì™¸í˜•ì— ì„ì„ í”Œë˜ì‹œ ìƒ‰ìƒì…ë‹ˆë‹¤.")]
         [SerializeField] private Color flashColor = new Color32(255, 214, 214, 255);
 
-        [Tooltip("¿ø·¡ »ö»ó¿¡ ÇÃ·¡½Ã »ö»óÀ» ¾ó¸¶³ª °­ÇÏ°Ô ¼¯À»Áö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Tooltip("ì›ë˜ ìƒ‰ìƒì— í”Œë˜ì‹œ ìƒ‰ìƒì„ ì–¼ë§ˆë‚˜ ê°•í•˜ê²Œ ì„ì„ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [Range(0f, 1f)]
         [SerializeField] private float flashStrength = 0.45f;
 
-        [Tooltip("ÇÇ°İ ÇÃ·¡½Ã°¡ ¿ø·¡ »öÀ¸·Î µ¹¾Æ¿À´Â ÀüÃ¼ ½Ã°£ÀÔ´Ï´Ù.")]
+        [Tooltip("í”¼ê²© í”Œë˜ì‹œê°€ ì›ë˜ ìƒ‰ìœ¼ë¡œ ëŒì•„ì˜¤ëŠ” ì „ì²´ ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float flashDuration = 0.09f;
 

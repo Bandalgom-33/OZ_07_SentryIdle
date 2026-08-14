@@ -14,7 +14,7 @@ namespace EndlessGuard.Unit.Prototype
 
             EditorGUILayout.Space();
 
-            if (GUILayout.Button("ÇÇÇØ °ø½Ä °ËÁõ ½ÇÇà"))
+            if (GUILayout.Button("í”¼í•´ ê³µì‹ ê²€ì¦ ì‹¤í–‰"))
             {
                 DamageRuleTest damageRuleTest = (DamageRuleTest)target;
                 damageRuleTest.RunTest();

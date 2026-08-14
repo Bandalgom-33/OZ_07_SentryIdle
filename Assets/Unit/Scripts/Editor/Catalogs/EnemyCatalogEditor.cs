@@ -24,28 +24,28 @@ namespace EndlessGuard.Unit.Editor
         {
             serializedObject.Update();
 
-            CombatDataEditorGUI.DrawReadOnlyProperty(script, "½ºÅ©¸³Æ®", "ÀÌ Catalog ¿¡¼ÂÀ» Á¤ÀÇÇÏ´Â C# ½ºÅ©¸³Æ®ÀÔ´Ï´Ù.");
+            CombatDataEditorGUI.DrawReadOnlyProperty(script, "ìŠ¤í¬ë¦½íŠ¸", "ì´ Catalog ì—ì…‹ì„ ì •ì˜í•˜ëŠ” C# ìŠ¤í¬ë¦½íŠ¸ì…ë‹ˆë‹¤.");
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ID ¹ß±Ş »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ID ë°œê¸‰ ìƒíƒœ", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.IntField(new GUIContent("¸¶Áö¸· ¹ß±Ş ¹øÈ£", "»èÁ¦µÈ µ¥ÀÌÅÍÀÇ ¹øÈ£¸¦ ´Ù½Ã »ç¿ëÇÏÁö ¾Ê±â À§ÇØ ¸¶Áö¸· ¹ß±Ş ÀÌ·ÂÀ» º¸°üÇÕ´Ï´Ù."), lastIssuedNumber.intValue);
-                EditorGUILayout.TextField(new GUIContent("´ÙÀ½ ¹ß±Ş ¿¹Á¤ ID", "ÇöÀç ¹ß±Ş ÀÌ·ÂÀ» ±âÁØÀ¸·Î ´ÙÀ½¿¡ »ı¼ºµÉ ¸ó½ºÅÍ IDÀÔ´Ï´Ù."), $"ENEMY_{lastIssuedNumber.intValue + 1:D4}");
+                EditorGUILayout.IntField(new GUIContent("ë§ˆì§€ë§‰ ë°œê¸‰ ë²ˆí˜¸", "ì‚­ì œëœ ë°ì´í„°ì˜ ë²ˆí˜¸ë¥¼ ë‹¤ì‹œ ì‚¬ìš©í•˜ì§€ ì•Šê¸° ìœ„í•´ ë§ˆì§€ë§‰ ë°œê¸‰ ì´ë ¥ì„ ë³´ê´€í•©ë‹ˆë‹¤."), lastIssuedNumber.intValue);
+                EditorGUILayout.TextField(new GUIContent("ë‹¤ìŒ ë°œê¸‰ ì˜ˆì • ID", "í˜„ì¬ ë°œê¸‰ ì´ë ¥ì„ ê¸°ì¤€ìœ¼ë¡œ ë‹¤ìŒì— ìƒì„±ë  ëª¬ìŠ¤í„° IDì…ë‹ˆë‹¤."), $"ENEMY_{lastIssuedNumber.intValue + 1:D4}");
             }
 
             EditorGUILayout.Space(5f);
-            EditorGUILayout.HelpBox("Assets/Unit/Data/Enemies Æú´õ¸¸ °Ë»öÇÕ´Ï´Ù. ±âÁ¸ ID´Â º¯°æÇÏÁö ¾Ê°í, ID°¡ ºñ¾î ÀÖ´Â µ¥ÀÌÅÍ¿¡¸¸ »õ ID¸¦ ¹ß±ŞÇÕ´Ï´Ù. Catalog ¸ñ·ÏÀº °Ë»ö °á°ú·Î ´Ù½Ã ±¸¼ºµË´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("Assets/Unit/Data/Enemies í´ë”ë§Œ ê²€ìƒ‰í•©ë‹ˆë‹¤. ê¸°ì¡´ IDëŠ” ë³€ê²½í•˜ì§€ ì•Šê³ , IDê°€ ë¹„ì–´ ìˆëŠ” ë°ì´í„°ì—ë§Œ ìƒˆ IDë¥¼ ë°œê¸‰í•©ë‹ˆë‹¤. Catalog ëª©ë¡ì€ ê²€ìƒ‰ ê²°ê³¼ë¡œ ë‹¤ì‹œ êµ¬ì„±ë©ë‹ˆë‹¤.", MessageType.Info);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.PropertyField(enemies, new GUIContent("µî·ÏµÈ ¸ó½ºÅÍ µ¥ÀÌÅÍ"), true);
+                EditorGUILayout.PropertyField(enemies, new GUIContent("ë“±ë¡ëœ ëª¬ìŠ¤í„° ë°ì´í„°"), true);
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("¸ó½ºÅÍ µ¥ÀÌÅÍ °Ë»ö¡¤ID ¹ß±Ş¡¤µî·Ï"))
+            if (GUILayout.Button("ëª¬ìŠ¤í„° ë°ì´í„° ê²€ìƒ‰Â·ID ë°œê¸‰Â·ë“±ë¡"))
             {
                 CatalogSyncResult result = CatalogEditorUtility.SyncEnemyCatalog((EnemyCatalog)target);
                 resultMessage = result.Message;

@@ -20,11 +20,11 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("µ¹°Ý ÀÌµ¿¼Óµµ ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(bonusMoveSpeedPercent, new GUIContent("ÀÌµ¿¼Óµµ Áõ°¡À² (%)", "¸ó½ºÅÍ°¡ Ã³À½À¸·Î ÀúÁöµÇ±â Àü±îÁö Àû¿ëÇÒ ±âº» ÃßÃµ ÀÌµ¿¼Óµµ Áõ°¡À²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ëŒê²© ì´ë™ì†ë„ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(bonusMoveSpeedPercent, new GUIContent("ì´ë™ì†ë„ ì¦ê°€ìœ¨ (%)", "ëª¬ìŠ¤í„°ê°€ ì²˜ìŒìœ¼ë¡œ ì €ì§€ë˜ê¸° ì „ê¹Œì§€ ì ìš©í•  ê¸°ë³¸ ì¶”ì²œ ì´ë™ì†ë„ ì¦ê°€ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("ÀÌ ÀÌµ¿¼Óµµ º¸³Ê½º´Â ¸ó½ºÅÍ°¡ Ã³À½À¸·Î ÀúÁöµÇ´Â ¼ø°£ ÇØÁ¦µÇ¸ç, ÀÌÈÄ ÀúÁö°¡ Ç®·Áµµ ´Ù½Ã È°¼ºÈ­µÇÁö ¾Ê½À´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ì´ ì´ë™ì†ë„ ë³´ë„ˆìŠ¤ëŠ” ëª¬ìŠ¤í„°ê°€ ì²˜ìŒìœ¼ë¡œ ì €ì§€ë˜ëŠ” ìˆœê°„ í•´ì œë˜ë©°, ì´í›„ ì €ì§€ê°€ í’€ë ¤ë„ ë‹¤ì‹œ í™œì„±í™”ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", MessageType.Info);
         }
     }
 }

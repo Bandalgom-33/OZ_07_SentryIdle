@@ -4,148 +4,148 @@ namespace EndlessGuard.Unit.Data
 {
     public enum UnitGrade
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("1¼º")]
+        [InspectorName("1ì„±")]
         OneStar = 1,
 
-        [InspectorName("2¼º")]
+        [InspectorName("2ì„±")]
         TwoStar = 2,
 
-        [InspectorName("3¼º")]
+        [InspectorName("3ì„±")]
         ThreeStar = 3,
 
-        [InspectorName("4¼º")]
+        [InspectorName("4ì„±")]
         FourStar = 4,
 
-        [InspectorName("5¼º")]
+        [InspectorName("5ì„±")]
         FiveStar = 5,
 
-        [InspectorName("6¼º")]
+        [InspectorName("6ì„±")]
         SixStar = 6
     }
 
     public enum UnitClass
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("¹ğ°¡µå")]
+        [InspectorName("ë±…ê°€ë“œ")]
         Vanguard = 1,
 
-        [InspectorName("°¡µå")]
+        [InspectorName("ê°€ë“œ")]
         Guard = 2,
 
-        [InspectorName("µğÆæ´õ")]
+        [InspectorName("ë””íœë”")]
         Defender = 3,
 
-        [InspectorName("¼­Æ÷ÅÍ")]
+        [InspectorName("ì„œí¬í„°")]
         Supporter = 4,
 
-        [InspectorName("½º³ªÀÌÆÛ")]
+        [InspectorName("ìŠ¤ë‚˜ì´í¼")]
         Sniper = 5,
 
-        [InspectorName("½ºÆä¼È¸®½ºÆ®")]
+        [InspectorName("ìŠ¤í˜ì…œë¦¬ìŠ¤íŠ¸")]
         Specialist = 6
     }
 
     public enum UnitSubclass
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("Ã´ÈÄº´")]
+        [InspectorName("ì²™í›„ë³‘")]
         VanguardPioneer = 100,
 
-        [InspectorName("µ¹°İ¼ö")]
+        [InspectorName("ëŒê²©ìˆ˜")]
         VanguardCharger = 101,
 
-        [InspectorName("±â¼ö")]
+        [InspectorName("ê¸°ìˆ˜")]
         VanguardStandardBearer = 102,
 
-        [InspectorName("Àü¼ú°¡")]
+        [InspectorName("ì „ìˆ ê°€")]
         VanguardTactician = 103,
 
-        [InspectorName("¿¡ÀÌÀüÆ®")]
+        [InspectorName("ì—ì´ì „íŠ¸")]
         VanguardAgent = 104,
 
-        [InspectorName("Ã¥»ç")]
+        [InspectorName("ì±…ì‚¬")]
         VanguardStrategist = 105,
 
-        [InspectorName("µå·¡µå³ëÆ®")]
+        [InspectorName("ë“œë˜ë“œë…¸íŠ¸")]
         GuardDreadnought = 200,
 
-        [InspectorName("°ø°İ¼ö")]
+        [InspectorName("ê³µê²©ìˆ˜")]
         GuardFighter = 201,
 
-        [InspectorName("·Îµå")]
+        [InspectorName("ë¡œë“œ")]
         GuardLord = 202,
 
-        [InspectorName("¾ÆÃ÷ ÆÄÀÌÅÍ")]
+        [InspectorName("ì•„ì¸  íŒŒì´í„°")]
         GuardArtsFighter = 203,
 
-        [InspectorName("±³°ü")]
+        [InspectorName("êµê´€")]
         GuardInstructor = 204,
 
-        [InspectorName("¼Ö·Îºí·¹ÀÌµå")]
+        [InspectorName("ì†”ë¡œë¸”ë ˆì´ë“œ")]
         GuardSoloBlade = 205,
 
-        [InspectorName("ÇÁ·ÎÅØÅÍ")]
+        [InspectorName("í”„ë¡œí…í„°")]
         DefenderProtector = 300,
 
-        [InspectorName("°¡µğ¾ğ")]
+        [InspectorName("ê°€ë””ì–¸")]
         DefenderGuardian = 301,
 
-        [InspectorName("Àú°Å³ÊÆ®")]
+        [InspectorName("ì €ê±°ë„ˆíŠ¸")]
         DefenderJuggernaut = 302,
 
-        [InspectorName("¾ÆÃ÷ ÇÁ·ÎÅØÅÍ")]
+        [InspectorName("ì•„ì¸  í”„ë¡œí…í„°")]
         DefenderArtsProtector = 303,
 
-        [InspectorName("°áÀüÀÚ")]
+        [InspectorName("ê²°ì „ì")]
         DefenderDuelist = 304,
 
-        [InspectorName("Æ÷Æ®¸®½º")]
+        [InspectorName("í¬íŠ¸ë¦¬ìŠ¤")]
         DefenderFortress = 305,
 
-        [InspectorName("°¨¼ÓÀÚ")]
+        [InspectorName("ê°ì†ì")]
         SupporterSlower = 400,
 
-        [InspectorName("ºñÈ£ÀÚ")]
+        [InspectorName("ë¹„í˜¸ì")]
         SupporterShelterer = 401,
 
-        [InspectorName("¾àÈ­ÀÚ")]
+        [InspectorName("ì•½í™”ì")]
         SupporterWeakener = 402,
 
-        [InspectorName("¸í»ç¼ö")]
+        [InspectorName("ëª…ì‚¬ìˆ˜")]
         SniperMarksman = 500,
 
-        [InspectorName("Æ÷°İ¼ö")]
+        [InspectorName("í¬ê²©ìˆ˜")]
         SniperArtillery = 501,
 
-        [InspectorName("Àú°İ¼ö")]
+        [InspectorName("ì €ê²©ìˆ˜")]
         SniperSharpshooter = 502,
 
-        [InspectorName("°ø¼º»ç¼ö")]
+        [InspectorName("ê³µì„±ì‚¬ìˆ˜")]
         SniperSiegeArcher = 503,
 
-        [InspectorName("¸¶½ºÅÍ")]
+        [InspectorName("ë§ˆìŠ¤í„°")]
         SpecialistMaster = 600
     }
 
     public enum UnitPlacement
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("Áö»ó")]
+        [InspectorName("ì§€ìƒ")]
         Ground = 1,
 
-        [InspectorName("¾ğ´ö")]
+        [InspectorName("ì–¸ë•")]
         HighGround = 2,
 
-        [InspectorName("Áö»ó¡¤¾ğ´ö")]
+        [InspectorName("ì§€ìƒÂ·ì–¸ë•")]
         GroundAndHighGround = 3
     }
 }

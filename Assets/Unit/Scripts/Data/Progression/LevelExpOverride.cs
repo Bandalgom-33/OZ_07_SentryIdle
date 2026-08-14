@@ -6,11 +6,11 @@ namespace EndlessGuard.Unit.Data
     [Serializable]
     public sealed class LevelExpOverride
     {
-        [Tooltip("ÀÌ ·¹º§¿¡¼­ ´ÙÀ½ ·¹º§·Î ¿Ã¶ó°¥ ¶§ ¿¹¿Ü °æÇèÄ¡¸¦ Àû¿ëÇÕ´Ï´Ù. 29¸¦ ÀÔ·ÂÇÏ¸é Lv.29¿¡¼­ Lv.30À¸·Î ¿Ã¶ó°¥ ¶§ »ç¿ëµË´Ï´Ù.")]
+        [Tooltip("ì´ ë ˆë²¨ì—ì„œ ë‹¤ìŒ ë ˆë²¨ë¡œ ì˜¬ë¼ê°ˆ ë•Œ ì˜ˆì™¸ ê²½í—˜ì¹˜ë¥¼ ì ìš©í•©ë‹ˆë‹¤. 29ë¥¼ ìž…ë ¥í•˜ë©´ Lv.29ì—ì„œ Lv.30ìœ¼ë¡œ ì˜¬ë¼ê°ˆ ë•Œ ì‚¬ìš©ë©ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int currentLevel = 1;
 
-        [Tooltip("ÇØ´ç ·¹º§¿¡¼­ ´ÙÀ½ ·¹º§·Î ¿Ã¶ó°¡±â À§ÇØ ÇÊ¿äÇÑ °æÇèÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("í•´ë‹¹ ë ˆë²¨ì—ì„œ ë‹¤ìŒ ë ˆë²¨ë¡œ ì˜¬ë¼ê°€ê¸° ìœ„í•´ í•„ìš”í•œ ê²½í—˜ì¹˜ìž…ë‹ˆë‹¤.")]
         [SerializeField] private long requiredExp = 1L;
 
         public int CurrentLevel => Mathf.Max(1, currentLevel);

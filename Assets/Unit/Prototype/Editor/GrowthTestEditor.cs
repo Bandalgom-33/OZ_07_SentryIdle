@@ -42,96 +42,96 @@ namespace EndlessGuard.Unit.Editor
         {
             serializedObject.Update();
 
-            EditorGUILayout.LabelField("°ñµå °øÅë ¼ºÀå °ËÁõ ¼öÄ¡", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(maxHpAmount, new GUIContent("ÃÖ´ë HP Áõ°¡·®"));
-            EditorGUILayout.PropertyField(hpRegenAmount, new GUIContent("ÃÊ´ç HP Àç»ı Áõ°¡·®"));
-            EditorGUILayout.PropertyField(physicalAttackAmount, new GUIContent("¹°¸® °ø°İ·Â Áõ°¡·®"));
-            EditorGUILayout.PropertyField(magicalAttackAmount, new GUIContent("¸¶¹ı °ø°İ·Â Áõ°¡·®"));
-            EditorGUILayout.PropertyField(physicalDefenseAmount, new GUIContent("¹°¸® ¹æ¾î·Â Áõ°¡·®"));
-            EditorGUILayout.PropertyField(magicalDefenseAmount, new GUIContent("¸¶¹ı ¹æ¾î·Â Áõ°¡·®"));
-            EditorGUILayout.PropertyField(attackSpeedAmount, new GUIContent("°ø°İ¼Óµµ Áõ°¡·® (È¸/ÃÊ)"));
-            EditorGUILayout.PropertyField(accuracyAmount, new GUIContent("¸íÁß Áõ°¡·®"));
-            EditorGUILayout.PropertyField(evasionAmount, new GUIContent("È¸ÇÇ Áõ°¡·®"));
-            EditorGUILayout.PropertyField(criticalChanceAmount, new GUIContent("Ä¡¸íÅ¸ È®·ü Áõ°¡·® (%p)"));
-            EditorGUILayout.PropertyField(criticalDamageAmount, new GUIContent("Ä¡¸íÅ¸ ÇÇÇØ·® Áõ°¡·® (%p)"));
+            EditorGUILayout.LabelField("ê³¨ë“œ ê³µí†µ ì„±ì¥ ê²€ì¦ ìˆ˜ì¹˜", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(maxHpAmount, new GUIContent("ìµœëŒ€ HP ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(hpRegenAmount, new GUIContent("ì´ˆë‹¹ HP ì¬ìƒ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(physicalAttackAmount, new GUIContent("ë¬¼ë¦¬ ê³µê²©ë ¥ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(magicalAttackAmount, new GUIContent("ë§ˆë²• ê³µê²©ë ¥ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(physicalDefenseAmount, new GUIContent("ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(magicalDefenseAmount, new GUIContent("ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(attackSpeedAmount, new GUIContent("ê³µê²©ì†ë„ ì¦ê°€ëŸ‰ (íšŒ/ì´ˆ)"));
+            EditorGUILayout.PropertyField(accuracyAmount, new GUIContent("ëª…ì¤‘ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(evasionAmount, new GUIContent("íšŒí”¼ ì¦ê°€ëŸ‰"));
+            EditorGUILayout.PropertyField(criticalChanceAmount, new GUIContent("ì¹˜ëª…íƒ€ í™•ë¥  ì¦ê°€ëŸ‰ (%p)"));
+            EditorGUILayout.PropertyField(criticalDamageAmount, new GUIContent("ì¹˜ëª…íƒ€ í”¼í•´ëŸ‰ ì¦ê°€ëŸ‰ (%p)"));
 
             serializedObject.ApplyModifiedProperties();
 
             GrowthTest growthTest = (GrowthTest)target;
 
             EditorGUILayout.Space(10f);
-            EditorGUILayout.LabelField("°ñµå °øÅë ¼ºÀå ¹öÆ°", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ê³¨ë“œ ê³µí†µ ì„±ì¥ ë²„íŠ¼", EditorStyles.boldLabel);
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("¾Æ·¡ ¼ºÀå ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÕ´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ì•„ë˜ ì„±ì¥ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•©ë‹ˆë‹¤.", MessageType.Info);
             }
 
             using (new EditorGUI.DisabledScope(!EditorApplication.isPlaying))
             {
-                if (GUILayout.Button($"ÃÖ´ë HP +{growthTest.MaxHpAmount:0.###}"))
+                if (GUILayout.Button($"ìµœëŒ€ HP +{growthTest.MaxHpAmount:0.###}"))
                 {
                     Execute(growthTest.AddMaxHp);
                 }
 
-                if (GUILayout.Button($"ÃÊ´ç HP Àç»ı +{growthTest.HpRegenAmount:0.###}"))
+                if (GUILayout.Button($"ì´ˆë‹¹ HP ì¬ìƒ +{growthTest.HpRegenAmount:0.###}"))
                 {
                     Execute(growthTest.AddHpRegen);
                 }
 
-                if (GUILayout.Button($"¹°¸® °ø°İ·Â +{growthTest.PhysicalAttackAmount:0.###}"))
+                if (GUILayout.Button($"ë¬¼ë¦¬ ê³µê²©ë ¥ +{growthTest.PhysicalAttackAmount:0.###}"))
                 {
                     Execute(growthTest.AddPhysicalAttack);
                 }
 
-                if (GUILayout.Button($"¸¶¹ı °ø°İ·Â +{growthTest.MagicalAttackAmount:0.###}"))
+                if (GUILayout.Button($"ë§ˆë²• ê³µê²©ë ¥ +{growthTest.MagicalAttackAmount:0.###}"))
                 {
                     Execute(growthTest.AddMagicalAttack);
                 }
 
-                if (GUILayout.Button($"¹°¸® ¹æ¾î·Â +{growthTest.PhysicalDefenseAmount:0.###}"))
+                if (GUILayout.Button($"ë¬¼ë¦¬ ë°©ì–´ë ¥ +{growthTest.PhysicalDefenseAmount:0.###}"))
                 {
                     Execute(growthTest.AddPhysicalDefense);
                 }
 
-                if (GUILayout.Button($"¸¶¹ı ¹æ¾î·Â +{growthTest.MagicalDefenseAmount:0.###}"))
+                if (GUILayout.Button($"ë§ˆë²• ë°©ì–´ë ¥ +{growthTest.MagicalDefenseAmount:0.###}"))
                 {
                     Execute(growthTest.AddMagicalDefense);
                 }
 
-                if (GUILayout.Button($"°ø°İ¼Óµµ +{growthTest.AttackSpeedAmount:0.###} È¸/ÃÊ"))
+                if (GUILayout.Button($"ê³µê²©ì†ë„ +{growthTest.AttackSpeedAmount:0.###} íšŒ/ì´ˆ"))
                 {
                     Execute(growthTest.AddAttackSpeed);
                 }
 
-                if (GUILayout.Button($"¸íÁß +{growthTest.AccuracyAmount:0.###}"))
+                if (GUILayout.Button($"ëª…ì¤‘ +{growthTest.AccuracyAmount:0.###}"))
                 {
                     Execute(growthTest.AddAccuracy);
                 }
 
-                if (GUILayout.Button($"È¸ÇÇ +{growthTest.EvasionAmount:0.###}"))
+                if (GUILayout.Button($"íšŒí”¼ +{growthTest.EvasionAmount:0.###}"))
                 {
                     Execute(growthTest.AddEvasion);
                 }
 
-                if (GUILayout.Button($"Ä¡¸íÅ¸ È®·ü +{growthTest.CriticalChanceAmount:0.###}%p"))
+                if (GUILayout.Button($"ì¹˜ëª…íƒ€ í™•ë¥  +{growthTest.CriticalChanceAmount:0.###}%p"))
                 {
                     Execute(growthTest.AddCriticalChance);
                 }
 
-                if (GUILayout.Button($"Ä¡¸íÅ¸ ÇÇÇØ·® +{growthTest.CriticalDamageAmount:0.###}%p"))
+                if (GUILayout.Button($"ì¹˜ëª…íƒ€ í”¼í•´ëŸ‰ +{growthTest.CriticalDamageAmount:0.###}%p"))
                 {
                     Execute(growthTest.AddCriticalDamage);
                 }
             }
 
             EditorGUILayout.Space(10f);
-            EditorGUILayout.LabelField("¸¶Áö¸· °ËÁõ °á°ú", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ë§ˆì§€ë§‰ ê²€ì¦ ê²°ê³¼", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.PropertyField(lastAppliedUnitCount, new GUIContent("Àû¿ë Ä³¸¯ÅÍ ¼ö"));
-                EditorGUILayout.PropertyField(lastMessage, new GUIContent("°á°ú"));
+                EditorGUILayout.PropertyField(lastAppliedUnitCount, new GUIContent("ì ìš© ìºë¦­í„° ìˆ˜"));
+                EditorGUILayout.PropertyField(lastMessage, new GUIContent("ê²°ê³¼"));
             }
         }
 

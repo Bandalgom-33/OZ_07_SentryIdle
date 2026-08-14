@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "SnipeBurst", menuName = "Endless Guard/Passive/Àú°İ ¿¬¼Ó °ø°İ")]
+    [CreateAssetMenu(fileName = "SnipeBurst", menuName = "Endless Guard/Passive/ì €ê²© ì—°ì† ê³µê²©")]
     public sealed class SnipeBurstSO : PassiveDataSO
     {
-        [Header("Àú°İ ¿¬¼Ó °ø°İ ±âº»°ª")]
-        [Tooltip("°ø°İ »ç°Å¸® ¾È¿¡¼­ °¡Àå ¸Õ Ä³¸¯ÅÍ¸¦ ¼±ÅÃÇÑ µÚ ¿¬¼ÓÀ¸·Î °ø°İÇÏ´Â ±âº» È½¼öÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì €ê²© ì—°ì† ê³µê²© ê¸°ë³¸ê°’")]
+        [Tooltip("ê³µê²© ì‚¬ê±°ë¦¬ ì•ˆì—ì„œ ê°€ì¥ ë¨¼ ìºë¦­í„°ë¥¼ ì„ íƒí•œ ë’¤ ì—°ì†ìœ¼ë¡œ ê³µê²©í•˜ëŠ” ê¸°ë³¸ íšŸìˆ˜ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int burstAttackCount = 3;
 
-        [Tooltip("¿¬¼Ó °ø°İÀ» ³¡³½ µÚ ´Ù½Ã °ø°İ ´ë»óÀ» Å½»öÇÏ±â Àü¿¡ °­Á¦·Î ÀÌµ¿ÇÏ´Â ½Ã°£ÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì—°ì† ê³µê²©ì„ ëë‚¸ ë’¤ ë‹¤ì‹œ ê³µê²© ëŒ€ìƒì„ íƒìƒ‰í•˜ê¸° ì „ì— ê°•ì œë¡œ ì´ë™í•˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float forcedMoveSeconds = 2f;
 

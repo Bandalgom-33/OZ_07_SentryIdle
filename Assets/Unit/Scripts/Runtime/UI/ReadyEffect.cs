@@ -90,7 +90,7 @@ namespace EndlessGuard.Unit.Runtime
 
                 activeBursts.RemoveAt(i);
 
-                if (view != null)
+                if (view != null && !view.IsDestroyed)
                 {
                     view.Hide(runner != null ? runner.transform : null);
                     burstPool.Push(view);
@@ -271,7 +271,7 @@ namespace EndlessGuard.Unit.Runtime
 
             if (shader == null)
             {
-                Debug.LogError("ReadyEffect¿¡¼­ »ç¿ëÇÒ Shader¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                Debug.LogError("ReadyEffectì—ì„œ ì‚¬ìš©í•  Shaderë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return null;
             }
 
@@ -300,6 +300,8 @@ namespace EndlessGuard.Unit.Runtime
             private readonly LineRenderer line;
 
             private float elapsed;
+
+            public bool IsDestroyed => gameObject == null;
 
             public RingView(GameObject viewObject, LineRenderer lineRenderer)
             {
@@ -338,7 +340,7 @@ namespace EndlessGuard.Unit.Runtime
 
             public bool StepBurst(float deltaTime)
             {
-                if (!gameObject.activeSelf)
+                if (gameObject == null || !gameObject.activeSelf)
                 {
                     return false;
                 }
@@ -360,6 +362,11 @@ namespace EndlessGuard.Unit.Runtime
 
             public void Hide(Transform poolRoot)
             {
+                if (this == null || gameObject == null)
+                {
+                    return;
+                }
+
                 gameObject.SetActive(false);
                 transform.SetParent(poolRoot, false);
                 transform.localPosition = Vector3.zero;

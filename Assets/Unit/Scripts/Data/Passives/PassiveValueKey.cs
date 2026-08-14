@@ -4,115 +4,115 @@ namespace EndlessGuard.Unit.Data
 {
     public enum PassiveValueKey
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("ÀÌµ¿¼Óµµ Áõ°¡À² (%)")]
+        [InspectorName("ì´ë™ì†ë„ ì¦ê°€ìœ¨ (%)")]
         BonusMoveSpeedPercent = 1,
 
-        [InspectorName("Ãß°¡ ÇÇÇØÀ² (%)")]
+        [InspectorName("ì¶”ê°€ í”¼í•´ìœ¨ (%)")]
         BonusDamagePercent = 2,
 
-        [InspectorName("¼ÒÈ¯ ÄÚ½ºÆ® È¹µæ·®")]
+        [InspectorName("ì†Œí™˜ ì½”ìŠ¤íŠ¸ íšë“ëŸ‰")]
         SummonCostGain = 3,
 
-        [InspectorName("ÀÒÀº HP 1%´ç ¹°¸® °ø°İ·Â Áõ°¡À² (%)")]
+        [InspectorName("ìƒì€ HP 1%ë‹¹ ë¬¼ë¦¬ ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)")]
         PhysicalAttackPerLostHpPercent = 4,
 
-        [InspectorName("ÃÖ´ë ¹°¸® °ø°İ·Â Áõ°¡À² (%)")]
+        [InspectorName("ìµœëŒ€ ë¬¼ë¦¬ ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)")]
         MaxPhysicalAttackBonusPercent = 5,
 
-        [InspectorName("ÃÖÁ¾ ÇÇÇØ Áõ°¡À² (%)")]
+        [InspectorName("ìµœì¢… í”¼í•´ ì¦ê°€ìœ¨ (%)")]
         FinalDamageBonusPercent = 6,
 
-        [InspectorName("Áö¼Ó½Ã°£ (ÃÊ)")]
+        [InspectorName("ì§€ì†ì‹œê°„ (ì´ˆ)")]
         DurationSeconds = 7,
 
-        [InspectorName("¹°¸® ¹æ¾î·Â Áõ°¡À² (%)")]
+        [InspectorName("ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)")]
         PhysicalDefenseBonusPercent = 8,
 
-        [InspectorName("¸¶¹ı ¹æ¾î·Â Áõ°¡À² (%)")]
+        [InspectorName("ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)")]
         MagicalDefenseBonusPercent = 9,
 
-        [InspectorName("½ºÅ³°ÔÀÌÁö È¹µæ·®")]
+        [InspectorName("ìŠ¤í‚¬ê²Œì´ì§€ íšë“ëŸ‰")]
         SkillGaugeGain = 10,
 
-        [InspectorName("¼ÒÈ¯¹° 1°³´ç ¹°¸® ¹æ¾î·Â Áõ°¡À² (%)")]
+        [InspectorName("ì†Œí™˜ë¬¼ 1ê°œë‹¹ ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)")]
         PhysicalDefensePerSummonPercent = 11,
 
-        [InspectorName("¼ÒÈ¯¹° 1°³´ç ¸¶¹ı ¹æ¾î·Â Áõ°¡À² (%)")]
+        [InspectorName("ì†Œí™˜ë¬¼ 1ê°œë‹¹ ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)")]
         MagicalDefensePerSummonPercent = 12,
 
-        [InspectorName("ÀÌµ¿¼Óµµ °¨¼ÒÀ² (%)")]
+        [InspectorName("ì´ë™ì†ë„ ê°ì†Œìœ¨ (%)")]
         MoveSpeedReductionPercent = 13,
 
-        [InspectorName("º¸È£¸··®")]
+        [InspectorName("ë³´í˜¸ë§‰ëŸ‰")]
         ShieldAmount = 14,
 
-        [InspectorName("HP È¸º¹·®")]
+        [InspectorName("HP íšŒë³µëŸ‰")]
         HealAmount = 15,
 
-        [InspectorName("¹°¸® ¹æ¾î·Â °¨¼ÒÀ² (%)")]
+        [InspectorName("ë¬¼ë¦¬ ë°©ì–´ë ¥ ê°ì†Œìœ¨ (%)")]
         PhysicalDefenseReductionPercent = 16,
 
-        [InspectorName("¸¶¹ı ¹æ¾î·Â °¨¼ÒÀ² (%)")]
+        [InspectorName("ë§ˆë²• ë°©ì–´ë ¥ ê°ì†Œìœ¨ (%)")]
         MagicalDefenseReductionPercent = 17,
 
-        [InspectorName("°ø°İ·Â Áõ°¡À² (%)")]
+        [InspectorName("ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)")]
         AttackBonusPercent = 18,
 
-        [InspectorName("°ø°İ¼Óµµ Áõ°¡À² (%)")]
+        [InspectorName("ê³µê²©ì†ë„ ì¦ê°€ìœ¨ (%)")]
         AttackSpeedBonusPercent = 19,
 
-        [InspectorName("°Å¸® 1´ç Ãß°¡ ÇÇÇØÀ² (%)")]
+        [InspectorName("ê±°ë¦¬ 1ë‹¹ ì¶”ê°€ í”¼í•´ìœ¨ (%)")]
         DamagePerDistancePercent = 20,
 
-        [InspectorName("°Å¸® Ãß°¡ ÇÇÇØ ÃÖ´ëÄ¡ (%)")]
+        [InspectorName("ê±°ë¦¬ ì¶”ê°€ í”¼í•´ ìµœëŒ€ì¹˜ (%)")]
         MaxDistanceDamagePercent = 21,
 
-        [InspectorName("ÁöÁ¤ ´É·ÂÄ¡ Áõ°¡À² (%)")]
+        [InspectorName("ì§€ì • ëŠ¥ë ¥ì¹˜ ì¦ê°€ìœ¨ (%)")]
         StatBonusPercent = 22,
 
-        [InspectorName("ÈíÇ÷ ºñÀ² (%)")]
+        [InspectorName("í¡í˜ˆ ë¹„ìœ¨ (%)")]
         LifeStealPercent = 23,
 
-        [InspectorName("Æø¹ß ÇÇÇØ·®")]
+        [InspectorName("í­ë°œ í”¼í•´ëŸ‰")]
         ExplosionDamage = 24,
 
-        [InspectorName("Æø¹ß ¹İ°æ (Å¸ÀÏ)")]
+        [InspectorName("í­ë°œ ë°˜ê²½ (íƒ€ì¼)")]
         ExplosionRadiusTiles = 25,
 
-        [InspectorName("°ø°İ¼Óµµ °¨¼ÒÀ² (%)")]
+        [InspectorName("ê³µê²©ì†ë„ ê°ì†Œìœ¨ (%)")]
         AttackSpeedReductionPercent = 26,
 
-        [InspectorName("È¸º¹ ÁÖ±â (ÃÊ)")]
+        [InspectorName("íšŒë³µ ì£¼ê¸° (ì´ˆ)")]
         HealIntervalSeconds = 27,
 
-        [InspectorName("ÀÒÀº HP 1%´ç ¸¶¹ı °ø°İ·Â Áõ°¡À² (%)")]
+        [InspectorName("ìƒì€ HP 1%ë‹¹ ë§ˆë²• ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)")]
         MagicalAttackPerLostHpPercent = 28,
 
-        [InspectorName("ÃÖ´ë ¸¶¹ı °ø°İ·Â Áõ°¡À² (%)")]
+        [InspectorName("ìµœëŒ€ ë§ˆë²• ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)")]
         MaxMagicalAttackBonusPercent = 29,
 
-        [InspectorName("ÇÇÇØ ¹İ»çÀ² (%)")]
+        [InspectorName("í”¼í•´ ë°˜ì‚¬ìœ¨ (%)")]
         DamageReflectPercent = 30,
 
-        [InspectorName("Á¤È­ ÁÖ±â (ÃÊ)")]
+        [InspectorName("ì •í™” ì£¼ê¸° (ì´ˆ)")]
         CleanseIntervalSeconds = 31,
 
-        [InspectorName("¹«ÀÛÀ§ °ø°İ ´ë»ó ¼ö")]
+        [InspectorName("ë¬´ì‘ìœ„ ê³µê²© ëŒ€ìƒ ìˆ˜")]
         RandomTargetCount = 32,
 
-        [InspectorName("¿¬¼Ó °ø°İ È½¼ö")]
+        [InspectorName("ì—°ì† ê³µê²© íšŸìˆ˜")]
         BurstAttackCount = 33,
 
-        [InspectorName("°ø°İ ÈÄ °­Á¦ ÀÌµ¿ ½Ã°£ (ÃÊ)")]
+        [InspectorName("ê³µê²© í›„ ê°•ì œ ì´ë™ ì‹œê°„ (ì´ˆ)")]
         ForcedMoveSeconds = 34,
 
-        [InspectorName("¼ÒÈ¯ ÁÖ±â (ÃÊ)")]
+        [InspectorName("ì†Œí™˜ ì£¼ê¸° (ì´ˆ)")]
         SummonIntervalSeconds = 35,
 
-        [InspectorName("ÇÑ ¹ø¿¡ ¼ÒÈ¯ÇÏ´Â ¼ö")]
+        [InspectorName("í•œ ë²ˆì— ì†Œí™˜í•˜ëŠ” ìˆ˜")]
         SummonCount = 36
     }
 }

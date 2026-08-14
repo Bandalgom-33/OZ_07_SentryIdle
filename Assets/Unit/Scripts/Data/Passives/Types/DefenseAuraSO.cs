@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "DefenseAura", menuName = "Endless Guard/Passive/¹æ¾î ¿À¶ó")]
+    [CreateAssetMenu(fileName = "DefenseAura", menuName = "Endless Guard/Passive/ë°©ì–´ ì˜¤ë¼")]
     public sealed class DefenseAuraSO : PassiveDataSO
     {
-        [Header("¹æ¾î ¿À¶ó ±âº»°ª")]
-        [Tooltip("ºñÈ£ÀÚ°¡ »ì¾ÆÀÖ´Â µ¿¾È ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â ¹°¸® ¹æ¾î·Â Áõ°¡ ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ë°©ì–´ ì˜¤ë¼ ê¸°ë³¸ê°’")]
+        [Tooltip("ë¹„í˜¸ìê°€ ì‚´ì•„ìˆëŠ” ë™ì•ˆ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalDefenseBonusPercent = 30f;
 
-        [Tooltip("ºñÈ£ÀÚ°¡ »ì¾ÆÀÖ´Â µ¿¾È ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â ¸¶¹ı ¹æ¾î·Â Áõ°¡ ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ë¹„í˜¸ìê°€ ì‚´ì•„ìˆëŠ” ë™ì•ˆ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalDefenseBonusPercent = 30f;
 

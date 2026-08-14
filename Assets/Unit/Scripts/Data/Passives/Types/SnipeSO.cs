@@ -2,23 +2,23 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Snipe", menuName = "Endless Guard/Passive/°Å¸® ºñ·Ê Ãß°¡ ÇÇÇØ")]
+    [CreateAssetMenu(fileName = "Snipe", menuName = "Endless Guard/Passive/ê±°ë¦¬ ë¹„ë¡€ ì¶”ê°€ í”¼í•´")]
     public sealed class SnipeSO : PassiveDataSO
     {
-        [Header("Àú°İ ´ë»ó Á¶°Ç")]
-        [Tooltip("Àú°İ¼ö ÆĞ½ÃºêÀÇ Ãß°¡ ÇÇÇØ¸¦ Àû¿ëÇÒ ¸ó½ºÅÍ Å©±âÀÔ´Ï´Ù.")]
+        [Header("ì €ê²© ëŒ€ìƒ ì¡°ê±´")]
+        [Tooltip("ì €ê²©ìˆ˜ íŒ¨ì‹œë¸Œì˜ ì¶”ê°€ í”¼í•´ë¥¼ ì ìš©í•  ëª¬ìŠ¤í„° í¬ê¸°ì…ë‹ˆë‹¤.")]
         [SerializeField] private EnemySize targetSize = EnemySize.Large;
 
-        [Header("Àú°İ Ãß°¡ ÇÇÇØ ±âº»°ª")]
-        [Tooltip("Á¶°Ç¿¡ ¸Â´Â ¸ó½ºÅÍ¿¡°Ô ±âº»ÀûÀ¸·Î Ãß°¡µÇ´Â ÃÖÁ¾ ÇÇÇØ ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì €ê²© ì¶”ê°€ í”¼í•´ ê¸°ë³¸ê°’")]
+        [Tooltip("ì¡°ê±´ì— ë§ëŠ” ëª¬ìŠ¤í„°ì—ê²Œ ê¸°ë³¸ì ìœ¼ë¡œ ì¶”ê°€ë˜ëŠ” ìµœì¢… í”¼í•´ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float bonusDamagePercent = 50f;
 
-        [Tooltip("°ø°İÀÚ¿Í ´ë»ó »çÀÌÀÇ °Å¸® 1´ç Ãß°¡µÇ´Â ÃÖÁ¾ ÇÇÇØ ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ê³µê²©ìì™€ ëŒ€ìƒ ì‚¬ì´ì˜ ê±°ë¦¬ 1ë‹¹ ì¶”ê°€ë˜ëŠ” ìµœì¢… í”¼í•´ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float damagePerDistancePercent = 10f;
 
-        [Tooltip("°Å¸®·Î ¾òÀ» ¼ö ÀÖ´Â Ãß°¡ ÇÇÇØ ºñÀ²ÀÇ ÃÖ´ëÄ¡ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ê±°ë¦¬ë¡œ ì–»ì„ ìˆ˜ ìˆëŠ” ì¶”ê°€ í”¼í•´ ë¹„ìœ¨ì˜ ìµœëŒ€ì¹˜ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float maxDistanceDamagePercent = 50f;
 

@@ -24,16 +24,16 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("»ç¸Á Æø¹ß ¼³Á¤", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(damageType, new GUIContent("ÇÇÇØ À¯Çü", "»ç¸Á Æø¹ßÀÌ Ä³¸¯ÅÍ¿¡°Ô Àû¿ëÇÏ´Â ÇÇÇØ À¯ÇüÀÔ´Ï´Ù."));
+            EditorGUILayout.LabelField("ì‚¬ë§ í­ë°œ ì„¤ì •", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(damageType, new GUIContent("í”¼í•´ ìœ í˜•", "ì‚¬ë§ í­ë°œì´ ìºë¦­í„°ì—ê²Œ ì ìš©í•˜ëŠ” í”¼í•´ ìœ í˜•ìž…ë‹ˆë‹¤."));
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("»ç¸Á Æø¹ß ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(explosionDamage, new GUIContent("Æø¹ß ÇÇÇØ·®", "»ç¸Á ½Ã Æø¹ß ¹üÀ§ ¾ÈÀÇ Ä³¸¯ÅÍ¿¡°Ô Àû¿ëÇÏ´Â ±âº» ÃßÃµ ÇÇÇØ·®ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(explosionRadiusTiles, new GUIContent("Æø¹ß ¹Ý°æ (Å¸ÀÏ)", "»ç¸Á À§Ä¡¸¦ ±âÁØÀ¸·Î Æø¹ß ÇÇÇØ¸¦ Àû¿ëÇÒ °ÝÀÚ ¹Ý°æÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ì‚¬ë§ í­ë°œ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(explosionDamage, new GUIContent("í­ë°œ í”¼í•´ëŸ‰", "ì‚¬ë§ ì‹œ í­ë°œ ë²”ìœ„ ì•ˆì˜ ìºë¦­í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ í”¼í•´ëŸ‰ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(explosionRadiusTiles, new GUIContent("í­ë°œ ë°˜ê²½ (íƒ€ì¼)", "ì‚¬ë§ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ í­ë°œ í”¼í•´ë¥¼ ì ìš©í•  ê²©ìž ë°˜ê²½ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("Æø¹ß ¹üÀ§´Â ¿ùµå ¹°¸® ¹Ý°æÀÌ ¾Æ´Ï¶ó ÀüÅõ °ÝÀÚ ±âÁØÀ¸·Î ÆÇÁ¤ÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("í­ë°œ ë²”ìœ„ëŠ” ì›”ë“œ ë¬¼ë¦¬ ë°˜ê²½ì´ ì•„ë‹ˆë¼ ì „íˆ¬ ê²©ìž ê¸°ì¤€ìœ¼ë¡œ íŒì •í•©ë‹ˆë‹¤.", MessageType.Info);
         }
     }
 }

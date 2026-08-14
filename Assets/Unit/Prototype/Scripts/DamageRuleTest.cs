@@ -7,11 +7,11 @@ namespace EndlessGuard.Unit.Prototype
     [DisallowMultipleComponent]
     public sealed class DamageRuleTest : MonoBehaviour
     {
-        [Header("ÇÇÇØ ±ÔÄ¢")]
-        [Tooltip("°ËÁõ¿¡ »ç¿ëÇÒ °øÅë ±âº» ÇÇÇØ °è»ê ±ÔÄ¢ÀÔ´Ï´Ù.")]
+        [Header("í”¼í•´ ê·œì¹™")]
+        [Tooltip("ê²€ì¦ì— ì‚¬ìš©í•  ê³µí†µ ê¸°ë³¸ í”¼í•´ ê³„ì‚° ê·œì¹™ì…ë‹ˆë‹¤.")]
         [SerializeField] private DamageRuleSO damageRule;
 
-        [Header("ÇöÀç ÀüÅõ ¼öÄ¡ °ËÁõ")]
+        [Header("í˜„ì¬ ì „íˆ¬ ìˆ˜ì¹˜ ê²€ì¦")]
         [SerializeField] private float unitAttack = 600f;
         [SerializeField] private float enemyDefense = 200f;
         [SerializeField] private float unitDamage;
@@ -20,12 +20,12 @@ namespace EndlessGuard.Unit.Prototype
         [SerializeField] private float unitDefense = 300f;
         [SerializeField] private float enemyDamage;
 
-        [Header("¹æ¾î·Â Áõ°¡ °ËÁõ")]
+        [Header("ë°©ì–´ë ¥ ì¦ê°€ ê²€ì¦")]
         [SerializeField] private float zeroDefenseDamage;
         [SerializeField] private float equalDefenseDamage;
         [SerializeField] private float highDefenseDamage;
 
-        [Header("ÃÖÁ¾ °ËÁõ")]
+        [Header("ìµœì¢… ê²€ì¦")]
         [SerializeField] private bool unitDamageCorrect;
         [SerializeField] private bool enemyDamageCorrect;
         [SerializeField] private bool defenseCurveCorrect;
@@ -51,7 +51,7 @@ namespace EndlessGuard.Unit.Prototype
             defenseCurveCorrect = zeroDefenseDamage > equalDefenseDamage && equalDefenseDamage > highDefenseDamage && highDefenseDamage >= damageRule.MinimumDamage;
             finalSuccess = unitDamageCorrect && enemyDamageCorrect && defenseCurveCorrect;
 
-            Debug.Log($"ÇÇÇØ °ø½Ä °ËÁõ ¿Ï·á: Ä³¸¯ÅÍ ÇÇÇØ {unitDamage:F2}, ¸ó½ºÅÍ ÇÇÇØ {enemyDamage:F2}, ¹æ¾î 0 ÇÇÇØ {zeroDefenseDamage:F2}, ¹æ¾î 600 ÇÇÇØ {equalDefenseDamage:F2}, ¹æ¾î 1200 ÇÇÇØ {highDefenseDamage:F2}, ÃÖÁ¾ ¼º°ø {finalSuccess}", this);
+            Debug.Log($"í”¼í•´ ê³µì‹ ê²€ì¦ ì™„ë£Œ: ìºë¦­í„° í”¼í•´ {unitDamage:F2}, ëª¬ìŠ¤í„° í”¼í•´ {enemyDamage:F2}, ë°©ì–´ 0 í”¼í•´ {zeroDefenseDamage:F2}, ë°©ì–´ 600 í”¼í•´ {equalDefenseDamage:F2}, ë°©ì–´ 1200 í”¼í•´ {highDefenseDamage:F2}, ìµœì¢… ì„±ê³µ {finalSuccess}", this);
         }
     }
 }

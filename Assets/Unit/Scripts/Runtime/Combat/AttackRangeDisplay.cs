@@ -206,7 +206,7 @@ namespace EndlessGuard.Unit.Runtime
 
             if (material == null)
             {
-                Debug.LogError($"°ø°İ¹üÀ§ MaterialÀ» Ã£Áö ¸øÇß½À´Ï´Ù. Assets/Unit/Resources/{MaterialResourcePath}.mat °æ·Î¸¦ È®ÀÎÇÏ¼¼¿ä.");
+                Debug.LogError($"ê³µê²©ë²”ìœ„ Materialì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. Assets/Unit/Resources/{MaterialResourcePath}.mat ê²½ë¡œë¥¼ í™•ì¸í•˜ì„¸ìš”.");
             }
 
             return material;

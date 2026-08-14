@@ -34,17 +34,17 @@ namespace EndlessGuard.Unit.Editor
         {
             serializedObject.Update();
 
-            CombatDataEditorGUI.DrawReadOnlyProperty(script, "½ºÅ©¸³Æ®", "Ä³¸¯ÅÍ ·¹º§º° ÇÊ¿ä °æÇèÄ¡ °î¼±À» Á¤ÀÇÇÏ´Â C# ½ºÅ©¸³Æ®ÀÔ´Ï´Ù.");
+            CombatDataEditorGUI.DrawReadOnlyProperty(script, "ìŠ¤í¬ë¦½íŠ¸", "ìºë¦­í„° ë ˆë²¨ë³„ í•„ìš” ê²½í—˜ì¹˜ ê³¡ì„ ì„ ì •ì˜í•˜ëŠ” C# ìŠ¤í¬ë¦½íŠ¸ì…ë‹ˆë‹¤.");
 
             EditorGUILayout.Space(6f);
-            EditorGUILayout.LabelField("ÇÊ¿ä °æÇèÄ¡ °è»ê½Ä", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("í•„ìš” ê²½í—˜ì¹˜ ê³„ì‚°ì‹", EditorStyles.boldLabel);
 
-            baseRequiredExp.longValue = Math.Max(1L, EditorGUILayout.LongField(new GUIContent("±âº» ÇÊ¿ä °æÇèÄ¡", "Lv.1¿¡¼­ Lv.2·Î ¿Ã¶ó°¥ ¶§ »ç¿ëÇÏ´Â ±âÁØ ÇÊ¿ä °æÇèÄ¡ÀÔ´Ï´Ù."), baseRequiredExp.longValue));
-            linearIncreasePerLevel.longValue = Math.Max(0L, EditorGUILayout.LongField(new GUIContent("·¹º§´ç ¼±Çü Áõ°¡·®", "ÇöÀç ·¹º§ÀÌ 1 Áõ°¡ÇÒ ¶§¸¶´Ù Ãß°¡µÇ´Â ¼±Çü °æÇèÄ¡ÀÔ´Ï´Ù."), linearIncreasePerLevel.longValue));
-            powerCoefficient.floatValue = Mathf.Max(0f, EditorGUILayout.FloatField(new GUIContent("°ÅµìÁ¦°ö Áõ°¡ °è¼ö", "³ôÀº ·¹º§¿¡¼­ ¿Ï¸¸ÇÏ°Ô Ãß°¡µÇ´Â °î¼± °æÇèÄ¡ÀÇ °è¼öÀÔ´Ï´Ù."), powerCoefficient.floatValue));
-            powerExponent.floatValue = EditorGUILayout.Slider(new GUIContent("°ÅµìÁ¦°ö Áö¼ö", "°ªÀÌ ³ôÀ»¼ö·Ï ÈÄ¹İ ÇÊ¿ä °æÇèÄ¡°¡ ºü¸£°Ô Áõ°¡ÇÕ´Ï´Ù."), powerExponent.floatValue, 1f, 3f);
+            baseRequiredExp.longValue = Math.Max(1L, EditorGUILayout.LongField(new GUIContent("ê¸°ë³¸ í•„ìš” ê²½í—˜ì¹˜", "Lv.1ì—ì„œ Lv.2ë¡œ ì˜¬ë¼ê°ˆ ë•Œ ì‚¬ìš©í•˜ëŠ” ê¸°ì¤€ í•„ìš” ê²½í—˜ì¹˜ì…ë‹ˆë‹¤."), baseRequiredExp.longValue));
+            linearIncreasePerLevel.longValue = Math.Max(0L, EditorGUILayout.LongField(new GUIContent("ë ˆë²¨ë‹¹ ì„ í˜• ì¦ê°€ëŸ‰", "í˜„ì¬ ë ˆë²¨ì´ 1 ì¦ê°€í•  ë•Œë§ˆë‹¤ ì¶”ê°€ë˜ëŠ” ì„ í˜• ê²½í—˜ì¹˜ì…ë‹ˆë‹¤."), linearIncreasePerLevel.longValue));
+            powerCoefficient.floatValue = Mathf.Max(0f, EditorGUILayout.FloatField(new GUIContent("ê±°ë“­ì œê³± ì¦ê°€ ê³„ìˆ˜", "ë†’ì€ ë ˆë²¨ì—ì„œ ì™„ë§Œí•˜ê²Œ ì¶”ê°€ë˜ëŠ” ê³¡ì„  ê²½í—˜ì¹˜ì˜ ê³„ìˆ˜ì…ë‹ˆë‹¤."), powerCoefficient.floatValue));
+            powerExponent.floatValue = EditorGUILayout.Slider(new GUIContent("ê±°ë“­ì œê³± ì§€ìˆ˜", "ê°’ì´ ë†’ì„ìˆ˜ë¡ í›„ë°˜ í•„ìš” ê²½í—˜ì¹˜ê°€ ë¹ ë¥´ê²Œ ì¦ê°€í•©ë‹ˆë‹¤."), powerExponent.floatValue, 1f, 3f);
 
-            EditorGUILayout.HelpBox("ÇÊ¿ä °æÇèÄ¡ = ±âº» ÇÊ¿ä °æÇèÄ¡ + ¼±Çü Áõ°¡·® ¡¿ (ÇöÀç ·¹º§ - 1) + °ÅµìÁ¦°ö Áõ°¡ °è¼ö ¡¿ (ÇöÀç ·¹º§ - 1)^°ÅµìÁ¦°ö Áö¼ö", MessageType.Info);
+            EditorGUILayout.HelpBox("í•„ìš” ê²½í—˜ì¹˜ = ê¸°ë³¸ í•„ìš” ê²½í—˜ì¹˜ + ì„ í˜• ì¦ê°€ëŸ‰ Ã— (í˜„ì¬ ë ˆë²¨ - 1) + ê±°ë“­ì œê³± ì¦ê°€ ê³„ìˆ˜ Ã— (í˜„ì¬ ë ˆë²¨ - 1)^ê±°ë“­ì œê³± ì§€ìˆ˜", MessageType.Info);
 
             DrawOverrides();
 
@@ -56,7 +56,7 @@ namespace EndlessGuard.Unit.Editor
         private void DrawOverrides()
         {
             EditorGUILayout.Space(8f);
-            showOverrides = EditorGUILayout.Foldout(showOverrides, "Æ¯Á¤ ·¹º§ ¿¹¿Ü", true);
+            showOverrides = EditorGUILayout.Foldout(showOverrides, "íŠ¹ì • ë ˆë²¨ ì˜ˆì™¸", true);
 
             if (!showOverrides)
             {
@@ -64,7 +64,7 @@ namespace EndlessGuard.Unit.Editor
             }
 
             EditorGUI.indentLevel++;
-            EditorGUILayout.HelpBox("ÀÚµ¿ ¼ö½ÄÀ» »ç¿ëÇÏÁö ¾ÊÀ» Æ¯Á¤ ·¹º§¸¸ µî·ÏÇÕ´Ï´Ù. ÇöÀç ·¹º§ 29´Â Lv.29¿¡¼­ Lv.30À¸·Î ¿Ã¶ó°¥ ¶§¸¦ ÀÇ¹ÌÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ìë™ ìˆ˜ì‹ì„ ì‚¬ìš©í•˜ì§€ ì•Šì„ íŠ¹ì • ë ˆë²¨ë§Œ ë“±ë¡í•©ë‹ˆë‹¤. í˜„ì¬ ë ˆë²¨ 29ëŠ” Lv.29ì—ì„œ Lv.30ìœ¼ë¡œ ì˜¬ë¼ê°ˆ ë•Œë¥¼ ì˜ë¯¸í•©ë‹ˆë‹¤.", MessageType.Info);
 
             for (int i = 0; i < levelOverrides.arraySize; i++)
             {
@@ -73,16 +73,16 @@ namespace EndlessGuard.Unit.Editor
                 SerializedProperty requiredExp = element.FindPropertyRelative("requiredExp");
 
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                EditorGUILayout.LabelField($"¿¹¿Ü {i + 1}", EditorStyles.boldLabel);
-                currentLevel.intValue = Mathf.Max(1, EditorGUILayout.IntField(new GUIContent("ÇöÀç ·¹º§", "ÀÌ ·¹º§¿¡¼­ ´ÙÀ½ ·¹º§·Î ¿Ã¶ó°¥ ¶§ ¿¹¿Ü °æÇèÄ¡¸¦ »ç¿ëÇÕ´Ï´Ù."), currentLevel.intValue));
-                requiredExp.longValue = Math.Max(1L, EditorGUILayout.LongField(new GUIContent("ÇÊ¿ä °æÇèÄ¡", "ÇØ´ç ·¹º§¿¡¼­ ´ÙÀ½ ·¹º§·Î ¿Ã¶ó°¡±â À§ÇØ ÇÊ¿äÇÑ °æÇèÄ¡ÀÔ´Ï´Ù."), requiredExp.longValue));
+                EditorGUILayout.LabelField($"ì˜ˆì™¸ {i + 1}", EditorStyles.boldLabel);
+                currentLevel.intValue = Mathf.Max(1, EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ë ˆë²¨", "ì´ ë ˆë²¨ì—ì„œ ë‹¤ìŒ ë ˆë²¨ë¡œ ì˜¬ë¼ê°ˆ ë•Œ ì˜ˆì™¸ ê²½í—˜ì¹˜ë¥¼ ì‚¬ìš©í•©ë‹ˆë‹¤."), currentLevel.intValue));
+                requiredExp.longValue = Math.Max(1L, EditorGUILayout.LongField(new GUIContent("í•„ìš” ê²½í—˜ì¹˜", "í•´ë‹¹ ë ˆë²¨ì—ì„œ ë‹¤ìŒ ë ˆë²¨ë¡œ ì˜¬ë¼ê°€ê¸° ìœ„í•´ í•„ìš”í•œ ê²½í—˜ì¹˜ì…ë‹ˆë‹¤."), requiredExp.longValue));
 
                 if (HasDuplicateLevel(i, currentLevel.intValue))
                 {
-                    EditorGUILayout.HelpBox($"ÇöÀç ·¹º§ {currentLevel.intValue}ÀÌ ´Ù¸¥ ¿¹¿Ü Ç×¸ñ°ú Áßº¹µË´Ï´Ù. ¸ÕÀú µî·ÏµÈ ¿¹¿Ü°ªÀÌ »ç¿ëµË´Ï´Ù.", MessageType.Warning);
+                    EditorGUILayout.HelpBox($"í˜„ì¬ ë ˆë²¨ {currentLevel.intValue}ì´ ë‹¤ë¥¸ ì˜ˆì™¸ í•­ëª©ê³¼ ì¤‘ë³µë©ë‹ˆë‹¤. ë¨¼ì € ë“±ë¡ëœ ì˜ˆì™¸ê°’ì´ ì‚¬ìš©ë©ë‹ˆë‹¤.", MessageType.Warning);
                 }
 
-                if (GUILayout.Button("ÀÌ ¿¹¿Ü Á¦°Å"))
+                if (GUILayout.Button("ì´ ì˜ˆì™¸ ì œê±°"))
                 {
                     levelOverrides.DeleteArrayElementAtIndex(i);
                     EditorGUILayout.EndVertical();
@@ -92,7 +92,7 @@ namespace EndlessGuard.Unit.Editor
                 EditorGUILayout.EndVertical();
             }
 
-            if (GUILayout.Button("¿¹¿Ü ·¹º§ Ãß°¡"))
+            if (GUILayout.Button("ì˜ˆì™¸ ë ˆë²¨ ì¶”ê°€"))
             {
                 int newIndex = levelOverrides.arraySize;
                 levelOverrides.InsertArrayElementAtIndex(newIndex);
@@ -107,7 +107,7 @@ namespace EndlessGuard.Unit.Editor
         private void DrawPreview(UnitLevelCurveSO curve)
         {
             EditorGUILayout.Space(8f);
-            showPreview = EditorGUILayout.Foldout(showPreview, "ÇÊ¿ä °æÇèÄ¡ ¹Ì¸®º¸±â", true);
+            showPreview = EditorGUILayout.Foldout(showPreview, "í•„ìš” ê²½í—˜ì¹˜ ë¯¸ë¦¬ë³´ê¸°", true);
 
             if (!showPreview)
             {
@@ -116,14 +116,14 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUI.indentLevel++;
 
-            previewStartLevel = Mathf.Max(1, EditorGUILayout.IntField(new GUIContent("¹Ì¸®º¸±â ½ÃÀÛ ·¹º§", "ÇÊ¿ä °æÇèÄ¡ ¹Ì¸®º¸±â¸¦ ½ÃÀÛÇÒ ÇöÀç ·¹º§ÀÔ´Ï´Ù."), previewStartLevel));
-            previewCount = EditorGUILayout.IntSlider(new GUIContent("Ç¥½Ã ·¹º§ ¼ö", "ÇÑ ¹ø¿¡ Ç¥½ÃÇÒ ·¹º§ ÇàÀÇ ¼öÀÔ´Ï´Ù."), previewCount, 1, 30);
+            previewStartLevel = Mathf.Max(1, EditorGUILayout.IntField(new GUIContent("ë¯¸ë¦¬ë³´ê¸° ì‹œì‘ ë ˆë²¨", "í•„ìš” ê²½í—˜ì¹˜ ë¯¸ë¦¬ë³´ê¸°ë¥¼ ì‹œì‘í•  í˜„ì¬ ë ˆë²¨ì…ë‹ˆë‹¤."), previewStartLevel));
+            previewCount = EditorGUILayout.IntSlider(new GUIContent("í‘œì‹œ ë ˆë²¨ ìˆ˜", "í•œ ë²ˆì— í‘œì‹œí•  ë ˆë²¨ í–‰ì˜ ìˆ˜ì…ë‹ˆë‹¤."), previewCount, 1, 30);
 
             EditorGUILayout.Space(4f);
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("ÇöÀç ·¹º§", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("´ÙÀ½ ·¹º§", EditorStyles.boldLabel);
-            EditorGUILayout.LabelField("ÇÊ¿ä °æÇèÄ¡", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("í˜„ì¬ ë ˆë²¨", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ë‹¤ìŒ ë ˆë²¨", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("í•„ìš” ê²½í—˜ì¹˜", EditorStyles.boldLabel);
             EditorGUILayout.EndHorizontal();
 
             for (int i = 0; i < previewCount; i++)
@@ -146,7 +146,7 @@ namespace EndlessGuard.Unit.Editor
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.TextField(new GUIContent("¹Ì¸®º¸±â ±¸°£ ´©Àû °æÇèÄ¡", $"Lv.{previewStartLevel}¿¡¼­ Lv.{previewTargetLevel}±îÁö ÇÊ¿äÇÑ ´©Àû °æÇèÄ¡ÀÔ´Ï´Ù."), $"{totalRequiredExp:N0}");
+                EditorGUILayout.TextField(new GUIContent("ë¯¸ë¦¬ë³´ê¸° êµ¬ê°„ ëˆ„ì  ê²½í—˜ì¹˜", $"Lv.{previewStartLevel}ì—ì„œ Lv.{previewTargetLevel}ê¹Œì§€ í•„ìš”í•œ ëˆ„ì  ê²½í—˜ì¹˜ì…ë‹ˆë‹¤."), $"{totalRequiredExp:N0}");
             }
 
             EditorGUI.indentLevel--;

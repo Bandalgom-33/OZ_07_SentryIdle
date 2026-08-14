@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Command", menuName = "Endless Guard/Passive/ÁöÈÖ ¿À¶ó")]
+    [CreateAssetMenu(fileName = "Command", menuName = "Endless Guard/Passive/ì§€íœ˜ ì˜¤ë¼")]
     public sealed class CommandSO : PassiveDataSO
     {
-        [Header("ÁöÈÖ ¿À¶ó ±âº»°ª")]
-        [Tooltip("ÁöÈÖ°üÀÌ »ì¾ÆÀÖ´Â µ¿¾È ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â °ø°İ·Â Áõ°¡ ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì§€íœ˜ ì˜¤ë¼ ê¸°ë³¸ê°’")]
+        [Tooltip("ì§€íœ˜ê´€ì´ ì‚´ì•„ìˆëŠ” ë™ì•ˆ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê³µê²©ë ¥ ì¦ê°€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackBonusPercent = 30f;
 
-        [Tooltip("ÁöÈÖ°üÀÌ »ì¾ÆÀÖ´Â µ¿¾È ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â °ø°İ¼Óµµ Áõ°¡ ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì§€íœ˜ê´€ì´ ì‚´ì•„ìˆëŠ” ë™ì•ˆ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê³µê²©ì†ë„ ì¦ê°€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackSpeedBonusPercent = 20f;
 

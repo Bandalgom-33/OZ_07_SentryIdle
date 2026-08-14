@@ -30,10 +30,10 @@ namespace EndlessGuard.Unit.Editor
 
         public static void DrawUnitRestrictions(SerializedProperty allowedClasses)
         {
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ Á÷±º ÆĞ½Ãºê Ç®", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìºë¦­í„° ì§êµ° íŒ¨ì‹œë¸Œ í’€", EditorStyles.boldLabel);
 
             EditorGUILayout.HelpBox(
-                "ÀÏ¹İ Ä³¸¯ÅÍ´Â ÀÚ½ÅÀÇ »óÀ§ Á÷±º Ç®¿¡ µî·ÏµÈ ÆĞ½Ãºê¸¸ ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù. ½ºÆä¼È¸®½ºÆ®´Â ¿¹¿Ü·Î ¸ğµç Ä³¸¯ÅÍ ÆĞ½Ãºê¸¦ ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù.",
+                "ì¼ë°˜ ìºë¦­í„°ëŠ” ìì‹ ì˜ ìƒìœ„ ì§êµ° í’€ì— ë“±ë¡ëœ íŒ¨ì‹œë¸Œë§Œ ì„ íƒí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤. ìŠ¤í˜ì…œë¦¬ìŠ¤íŠ¸ëŠ” ì˜ˆì™¸ë¡œ ëª¨ë“  ìºë¦­í„° íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
                 MessageType.Info);
 
             for (int i = 0; i < allowedClasses.arraySize; i++)
@@ -46,11 +46,11 @@ namespace EndlessGuard.Unit.Editor
 
                 if (selectedIndex < 0)
                 {
-                    EditorGUILayout.LabelField($"Á÷±º Ç® {i + 1}", $"{GetDisplayName(current)} (»ç¿ëÇÏÁö ¾Ê´Â ºĞ·ù)");
+                    EditorGUILayout.LabelField($"ì§êµ° í’€ {i + 1}", $"{GetDisplayName(current)} (ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” ë¶„ë¥˜)");
                 }
                 else
                 {
-                    int newIndex = EditorGUILayout.Popup(new GUIContent($"Á÷±º Ç® {i + 1}"), selectedIndex, UnitClassContents);
+                    int newIndex = EditorGUILayout.Popup(new GUIContent($"ì§êµ° í’€ {i + 1}"), selectedIndex, UnitClassContents);
 
                     if (newIndex != selectedIndex)
                     {
@@ -58,7 +58,7 @@ namespace EndlessGuard.Unit.Editor
                     }
                 }
 
-                if (GUILayout.Button("Á¦°Å", GUILayout.Width(48f)))
+                if (GUILayout.Button("ì œê±°", GUILayout.Width(48f)))
                 {
                     allowedClasses.DeleteArrayElementAtIndex(i);
                     EditorGUILayout.EndHorizontal();
@@ -73,7 +73,7 @@ namespace EndlessGuard.Unit.Editor
 
             using (new EditorGUI.DisabledScope(!canAdd))
             {
-                if (GUILayout.Button("Á÷±º Ç® Ãß°¡"))
+                if (GUILayout.Button("ì§êµ° í’€ ì¶”ê°€"))
                 {
                     int newIndex = allowedClasses.arraySize;
                     allowedClasses.arraySize++;
@@ -83,23 +83,23 @@ namespace EndlessGuard.Unit.Editor
 
             if (HasDuplicateValues(allowedClasses))
             {
-                EditorGUILayout.HelpBox("°°Àº Ä³¸¯ÅÍ Á÷±º Ç®ÀÌ Áßº¹ µî·ÏµÇ¾î ÀÖ½À´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox("ê°™ì€ ìºë¦­í„° ì§êµ° í’€ì´ ì¤‘ë³µ ë“±ë¡ë˜ì–´ ìˆìŠµë‹ˆë‹¤.", MessageType.Warning);
             }
 
             if (allowedClasses.arraySize == 0)
             {
                 EditorGUILayout.HelpBox(
-                    "ÀÏ¹İ Á÷±º¿¡ ¹èÁ¤µÇÁö ¾ÊÀº ÆĞ½ÃºêÀÔ´Ï´Ù. ½ºÆä¼È¸®½ºÆ®´Â ¸ğµç Ä³¸¯ÅÍ ÆĞ½Ãºê¸¦ »ç¿ëÇÒ ¼ö ÀÖÀ¸¹Ç·Î ÀÌ ÆĞ½Ãºêµµ ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù.",
+                    "ì¼ë°˜ ì§êµ°ì— ë°°ì •ë˜ì§€ ì•Šì€ íŒ¨ì‹œë¸Œì…ë‹ˆë‹¤. ìŠ¤í˜ì…œë¦¬ìŠ¤íŠ¸ëŠ” ëª¨ë“  ìºë¦­í„° íŒ¨ì‹œë¸Œë¥¼ ì‚¬ìš©í•  ìˆ˜ ìˆìœ¼ë¯€ë¡œ ì´ íŒ¨ì‹œë¸Œë„ ì„ íƒí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
                     MessageType.Info);
             }
         }
 
         public static void DrawEnemyRestrictions(SerializedProperty allowedSizes)
         {
-            EditorGUILayout.LabelField("¸ó½ºÅÍ Å©±â ÆĞ½Ãºê Ç®", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ëª¬ìŠ¤í„° í¬ê¸° íŒ¨ì‹œë¸Œ í’€", EditorStyles.boldLabel);
 
             EditorGUILayout.HelpBox(
-                "¸ó½ºÅÍ´Â ÀÚ½ÅÀÇ Å©±â¿Í ÀÏÄ¡ÇÏ´Â ÆĞ½Ãºê Ç®¿¡¼­¸¸ ÆĞ½Ãºê¸¦ ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù.",
+                "ëª¬ìŠ¤í„°ëŠ” ìì‹ ì˜ í¬ê¸°ì™€ ì¼ì¹˜í•˜ëŠ” íŒ¨ì‹œë¸Œ í’€ì—ì„œë§Œ íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
                 MessageType.Info);
 
             for (int i = 0; i < allowedSizes.arraySize; i++)
@@ -112,11 +112,11 @@ namespace EndlessGuard.Unit.Editor
 
                 if (selectedIndex < 0)
                 {
-                    EditorGUILayout.LabelField($"Å©±â Ç® {i + 1}", $"{GetDisplayName(current)} (»ç¿ëÇÏÁö ¾Ê´Â Å©±â)");
+                    EditorGUILayout.LabelField($"í¬ê¸° í’€ {i + 1}", $"{GetDisplayName(current)} (ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” í¬ê¸°)");
                 }
                 else
                 {
-                    int newIndex = EditorGUILayout.Popup(new GUIContent($"Å©±â Ç® {i + 1}"), selectedIndex, EnemySizeContents);
+                    int newIndex = EditorGUILayout.Popup(new GUIContent($"í¬ê¸° í’€ {i + 1}"), selectedIndex, EnemySizeContents);
 
                     if (newIndex != selectedIndex)
                     {
@@ -124,7 +124,7 @@ namespace EndlessGuard.Unit.Editor
                     }
                 }
 
-                if (GUILayout.Button("Á¦°Å", GUILayout.Width(48f)))
+                if (GUILayout.Button("ì œê±°", GUILayout.Width(48f)))
                 {
                     allowedSizes.DeleteArrayElementAtIndex(i);
                     EditorGUILayout.EndHorizontal();
@@ -139,7 +139,7 @@ namespace EndlessGuard.Unit.Editor
 
             using (new EditorGUI.DisabledScope(!canAdd))
             {
-                if (GUILayout.Button("Å©±â Ç® Ãß°¡"))
+                if (GUILayout.Button("í¬ê¸° í’€ ì¶”ê°€"))
                 {
                     int newIndex = allowedSizes.arraySize;
                     allowedSizes.arraySize++;
@@ -149,13 +149,13 @@ namespace EndlessGuard.Unit.Editor
 
             if (HasDuplicateValues(allowedSizes))
             {
-                EditorGUILayout.HelpBox("°°Àº ¸ó½ºÅÍ Å©±â Ç®ÀÌ Áßº¹ µî·ÏµÇ¾î ÀÖ½À´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox("ê°™ì€ ëª¬ìŠ¤í„° í¬ê¸° í’€ì´ ì¤‘ë³µ ë“±ë¡ë˜ì–´ ìˆìŠµë‹ˆë‹¤.", MessageType.Warning);
             }
 
             if (allowedSizes.arraySize == 0)
             {
                 EditorGUILayout.HelpBox(
-                    "¸ó½ºÅÍ Å©±â Ç®ÀÌ ÁöÁ¤µÇÁö ¾Ê¾Æ ÇöÀç ¾î¶² ¸ó½ºÅÍµµ ÀÌ ÆĞ½Ãºê¸¦ ¼±ÅÃÇÒ ¼ö ¾ø½À´Ï´Ù.",
+                    "ëª¬ìŠ¤í„° í¬ê¸° í’€ì´ ì§€ì •ë˜ì§€ ì•Šì•„ í˜„ì¬ ì–´ë–¤ ëª¬ìŠ¤í„°ë„ ì´ íŒ¨ì‹œë¸Œë¥¼ ì„ íƒí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.",
                     MessageType.Warning);
             }
         }

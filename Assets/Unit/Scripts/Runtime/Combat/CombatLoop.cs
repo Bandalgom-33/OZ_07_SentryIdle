@@ -8,8 +8,8 @@ namespace EndlessGuard.Unit.Runtime
     {
         private static CombatLoop activeLoop;
 
-        [Header("ÀüÅõ °»½Å")]
-        [Tooltip("µî·ÏµÈ Ä³¸¯ÅÍ¿Í ¸ó½ºÅÍÀÇ ÀüÅõ ±â´ÉÀ» ¸Å ÇÁ·¹ÀÓ °»½ÅÇÒÁö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Header("ì „íˆ¬ ê°±ì‹ ")]
+        [Tooltip("ë“±ë¡ëœ ìºë¦­í„°ì™€ ëª¬ìŠ¤í„°ì˜ ì „íˆ¬ ê¸°ëŠ¥ì„ ë§¤ í”„ë ˆì„ ê°±ì‹ í• ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private bool isRunning = true;
 
         private readonly List<UnitRuntimeState> unitBuffer = new List<UnitRuntimeState>();
@@ -29,7 +29,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (activeLoop != null && activeLoop != this)
             {
-                Debug.LogError("È°¼º CombatLoop°¡ ÀÌ¹Ì Á¸ÀçÇÕ´Ï´Ù. ÀüÅõ °»½Å Áßº¹À» ¸·±â À§ÇØ ÀÌ CombatLoop¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù.", this);
+                Debug.LogError("í™œì„± CombatLoopê°€ ì´ë¯¸ ì¡´ì¬í•©ë‹ˆë‹¤. ì „íˆ¬ ê°±ì‹  ì¤‘ë³µì„ ë§‰ê¸° ìœ„í•´ ì´ CombatLoopë¥¼ ë¹„í™œì„±í™”í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }

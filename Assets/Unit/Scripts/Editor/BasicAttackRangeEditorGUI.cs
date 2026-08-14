@@ -24,17 +24,17 @@ namespace EndlessGuard.Unit.Editor
 
             if (property == null)
             {
-                EditorGUILayout.HelpBox("±âº» °ø°İ Å¸ÀÏ ¹üÀ§ µ¥ÀÌÅÍ¸¦ Ã£Áö ¸øÇß½À´Ï´Ù. AttackSettingsÀÇ basicAttackRange ÇÊµå¸¦ È®ÀÎÇÏ¼¼¿ä.", MessageType.Error);
+                EditorGUILayout.HelpBox("ê¸°ë³¸ ê³µê²© íƒ€ì¼ ë²”ìœ„ ë°ì´í„°ë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. AttackSettingsì˜ basicAttackRange í•„ë“œë¥¼ í™•ì¸í•˜ì„¸ìš”.", MessageType.Error);
                 return;
             }
 
             if (attackRange == null)
             {
-                EditorGUILayout.HelpBox("°ø°İ »ç°Å¸® µ¥ÀÌÅÍ¸¦ Ã£Áö ¸øÇß½À´Ï´Ù. AttackSettingsÀÇ attackRange ÇÊµå¸¦ È®ÀÎÇÏ¼¼¿ä.", MessageType.Error);
+                EditorGUILayout.HelpBox("ê³µê²© ì‚¬ê±°ë¦¬ ë°ì´í„°ë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. AttackSettingsì˜ attackRange í•„ë“œë¥¼ í™•ì¸í•˜ì„¸ìš”.", MessageType.Error);
                 return;
             }
 
-            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "±âº» °ø°İ Å¸ÀÏ ¹üÀ§", true);
+            property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, "ê¸°ë³¸ ê³µê²© íƒ€ì¼ ë²”ìœ„", true);
 
             if (!property.isExpanded)
             {
@@ -48,30 +48,30 @@ namespace EndlessGuard.Unit.Editor
 
             if (horizontalRadius == null || forwardDistance == null || backwardDistance == null || attackTiles == null)
             {
-                EditorGUILayout.HelpBox("±âº» °ø°İ Å¸ÀÏ ¹üÀ§ÀÇ Á÷·ÄÈ­ ÇÊµå¸¦ Ã£Áö ¸øÇß½À´Ï´Ù. BasicAttackRangeDataÀÇ ÇÊµå ÀÌ¸§À» È®ÀÎÇÏ¼¼¿ä.", MessageType.Error);
+                EditorGUILayout.HelpBox("ê¸°ë³¸ ê³µê²© íƒ€ì¼ ë²”ìœ„ì˜ ì§ë ¬í™” í•„ë“œë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. BasicAttackRangeDataì˜ í•„ë“œ ì´ë¦„ì„ í™•ì¸í•˜ì„¸ìš”.", MessageType.Error);
                 return;
             }
 
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.IntSlider(horizontalRadius, 0, 6, new GUIContent("ÁÂ¿ì Ç¥½Ã ¹üÀ§", "°ø°İ ÁÖÃ¼ÀÇ ¿ŞÂÊ°ú ¿À¸¥ÂÊ¿¡ Ç¥½ÃÇÒ Å¸ÀÏ ¼öÀÔ´Ï´Ù."));
-            EditorGUILayout.IntSlider(forwardDistance, 0, 10, new GUIContent("Á¤¸é Ç¥½Ã ¹üÀ§", "±âÁØ ¹æÇâÀÇ Á¤¸é¿¡ Ç¥½ÃÇÒ Å¸ÀÏ ¼öÀÔ´Ï´Ù. ¾çÀÇ Y ÁÂÇ¥°¡ Á¤¸éÀÔ´Ï´Ù."));
-            EditorGUILayout.IntSlider(backwardDistance, 0, 10, new GUIContent("ÈÄ¹æ Ç¥½Ã ¹üÀ§", "±âÁØ ¹æÇâÀÇ ÈÄ¹æ¿¡ Ç¥½ÃÇÒ Å¸ÀÏ ¼öÀÔ´Ï´Ù. À½ÀÇ Y ÁÂÇ¥°¡ ÈÄ¹æÀÔ´Ï´Ù."));
+            EditorGUILayout.IntSlider(horizontalRadius, 0, 6, new GUIContent("ì¢Œìš° í‘œì‹œ ë²”ìœ„", "ê³µê²© ì£¼ì²´ì˜ ì™¼ìª½ê³¼ ì˜¤ë¥¸ìª½ì— í‘œì‹œí•  íƒ€ì¼ ìˆ˜ì…ë‹ˆë‹¤."));
+            EditorGUILayout.IntSlider(forwardDistance, 0, 10, new GUIContent("ì •ë©´ í‘œì‹œ ë²”ìœ„", "ê¸°ì¤€ ë°©í–¥ì˜ ì •ë©´ì— í‘œì‹œí•  íƒ€ì¼ ìˆ˜ì…ë‹ˆë‹¤. ì–‘ì˜ Y ì¢Œí‘œê°€ ì •ë©´ì…ë‹ˆë‹¤."));
+            EditorGUILayout.IntSlider(backwardDistance, 0, 10, new GUIContent("í›„ë°© í‘œì‹œ ë²”ìœ„", "ê¸°ì¤€ ë°©í–¥ì˜ í›„ë°©ì— í‘œì‹œí•  íƒ€ì¼ ìˆ˜ì…ë‹ˆë‹¤. ìŒì˜ Y ì¢Œí‘œê°€ í›„ë°©ì…ë‹ˆë‹¤."));
 
             bool canEvaluateRange = !attackRange.hasMultipleDifferentValues;
             float attackRangeValue = canEvaluateRange ? Mathf.Max(0f, attackRange.floatValue) : 0f;
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("À§ÂÊÀÌ ±âÁØ Á¤¸é(+Y)ÀÔ´Ï´Ù. ÆÄ¶õ»ö ¿øÀº °ø°İ »ç°Å¸®ÀÌ¸ç ÇöÀç ¹Ì¸®º¸±â´Â 1Å¸ÀÏ = 1¿ùµå À¯´ÖÀ» ±âÁØÀ¸·Î ÇÕ´Ï´Ù.", MessageType.Info);
-            EditorGUILayout.HelpBox("¿¶Àº ÆÄ¶õ»öÀº »ç°Å¸® ¾È, ÁøÇÑ ÆÄ¶õ»öÀº ¼±ÅÃµÈ Å¸ÀÏ, »¡°£»öÀº ¼±ÅÃµÆÁö¸¸ »ç°Å¸® ¹ÛÀÎ Å¸ÀÏÀÔ´Ï´Ù.", MessageType.None);
+            EditorGUILayout.HelpBox("ìœ„ìª½ì´ ê¸°ì¤€ ì •ë©´(+Y)ì…ë‹ˆë‹¤. íŒŒë€ìƒ‰ ì›ì€ ê³µê²© ì‚¬ê±°ë¦¬ì´ë©° í˜„ì¬ ë¯¸ë¦¬ë³´ê¸°ëŠ” 1íƒ€ì¼ = 1ì›”ë“œ ìœ ë‹›ì„ ê¸°ì¤€ìœ¼ë¡œ í•©ë‹ˆë‹¤.", MessageType.Info);
+            EditorGUILayout.HelpBox("ì˜…ì€ íŒŒë€ìƒ‰ì€ ì‚¬ê±°ë¦¬ ì•ˆ, ì§„í•œ íŒŒë€ìƒ‰ì€ ì„ íƒëœ íƒ€ì¼, ë¹¨ê°„ìƒ‰ì€ ì„ íƒëì§€ë§Œ ì‚¬ê±°ë¦¬ ë°–ì¸ íƒ€ì¼ì…ë‹ˆë‹¤.", MessageType.None);
 
             if (!canEvaluateRange)
             {
-                EditorGUILayout.HelpBox("¿©·¯ ¿¡¼ÂÀÇ °ø°İ »ç°Å¸®°¡ ¼­·Î ´Ş¶ó »ç°Å¸® °¡ÀÌµå¸¦ Ç¥½ÃÇÒ ¼ö ¾ø½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ì—¬ëŸ¬ ì—ì…‹ì˜ ê³µê²© ì‚¬ê±°ë¦¬ê°€ ì„œë¡œ ë‹¬ë¼ ì‚¬ê±°ë¦¬ ê°€ì´ë“œë¥¼ í‘œì‹œí•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", MessageType.Info);
             }
             else if (IsGuideClipped(horizontalRadius.intValue, forwardDistance.intValue, backwardDistance.intValue, attackRangeValue))
             {
-                EditorGUILayout.HelpBox("ÇöÀç °ø°İ »ç°Å¸® ¿øÀÌ Ç¥½Ã °İÀÚº¸´Ù Å®´Ï´Ù. ÁÂ¿ì¡¤Á¤¸é¡¤ÈÄ¹æ Ç¥½Ã ¹üÀ§¸¦ ´Ã¸®¸é ÀüÃ¼ »ç°Å¸® ¿øÀ» È®ÀÎÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox("í˜„ì¬ ê³µê²© ì‚¬ê±°ë¦¬ ì›ì´ í‘œì‹œ ê²©ìë³´ë‹¤ í½ë‹ˆë‹¤. ì¢Œìš°Â·ì •ë©´Â·í›„ë°© í‘œì‹œ ë²”ìœ„ë¥¼ ëŠ˜ë¦¬ë©´ ì „ì²´ ì‚¬ê±°ë¦¬ ì›ì„ í™•ì¸í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Warning);
             }
 
             DrawGrid(horizontalRadius.intValue, forwardDistance.intValue, backwardDistance.intValue, attackTiles, attackRangeValue, canEvaluateRange);
@@ -79,15 +79,15 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.Space(4f);
 
             int outOfRangeCount = canEvaluateRange ? CountOutOfAttackRangeTiles(attackTiles, attackRangeValue) : 0;
-            EditorGUILayout.LabelField($"¼±ÅÃµÈ °ø°İ Å¸ÀÏ: {attackTiles.arraySize}°³", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField($"ì„ íƒëœ ê³µê²© íƒ€ì¼: {attackTiles.arraySize}ê°œ", EditorStyles.miniLabel);
 
             int invalidTileCount = CountInvalidTiles(horizontalRadius.intValue, forwardDistance.intValue, backwardDistance.intValue, attackTiles);
 
             if (invalidTileCount > 0)
             {
-                EditorGUILayout.HelpBox($"Áßº¹µÇ¾ú°Å³ª ÇöÀç Ç¥½Ã °İÀÚ ¹Û¿¡ ÀÖ´Â °ø°İ Å¸ÀÏÀÌ {invalidTileCount}°³ ÀÖ½À´Ï´Ù. ÀÚµ¿À¸·Î »èÁ¦ÇÏÁö ¾ÊÀ¸¸ç ¾Æ·¡ ¹öÆ°À¸·Î Á÷Á¢ Á¤¸®ÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox($"ì¤‘ë³µë˜ì—ˆê±°ë‚˜ í˜„ì¬ í‘œì‹œ ê²©ì ë°–ì— ìˆëŠ” ê³µê²© íƒ€ì¼ì´ {invalidTileCount}ê°œ ìˆìŠµë‹ˆë‹¤. ìë™ìœ¼ë¡œ ì‚­ì œí•˜ì§€ ì•Šìœ¼ë©° ì•„ë˜ ë²„íŠ¼ìœ¼ë¡œ ì§ì ‘ ì •ë¦¬í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Warning);
 
-                if (GUILayout.Button("Àß¸øµÈ °ø°İ Å¸ÀÏ Á¤¸®"))
+                if (GUILayout.Button("ì˜ëª»ëœ ê³µê²© íƒ€ì¼ ì •ë¦¬"))
                 {
                     RemoveInvalidTiles(horizontalRadius.intValue, forwardDistance.intValue, backwardDistance.intValue, attackTiles);
                 }
@@ -95,9 +95,9 @@ namespace EndlessGuard.Unit.Editor
 
             if (outOfRangeCount > 0)
             {
-                EditorGUILayout.HelpBox($"¼±ÅÃµÈ °ø°İ Å¸ÀÏ Áß {outOfRangeCount}°³°¡ ÇöÀç °ø°İ »ç°Å¸® ¹Û¿¡ ÀÖ½À´Ï´Ù. »¡°£»ö Å¸ÀÏÀ» Á÷Á¢ ÇØÁ¦ÇÏ°Å³ª ¾Æ·¡ ¹öÆ°À¸·Î Á¦°ÅÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox($"ì„ íƒëœ ê³µê²© íƒ€ì¼ ì¤‘ {outOfRangeCount}ê°œê°€ í˜„ì¬ ê³µê²© ì‚¬ê±°ë¦¬ ë°–ì— ìˆìŠµë‹ˆë‹¤. ë¹¨ê°„ìƒ‰ íƒ€ì¼ì„ ì§ì ‘ í•´ì œí•˜ê±°ë‚˜ ì•„ë˜ ë²„íŠ¼ìœ¼ë¡œ ì œê±°í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Warning);
 
-                if (GUILayout.Button("»ç°Å¸® ¹Û °ø°İ Å¸ÀÏ Á¦°Å"))
+                if (GUILayout.Button("ì‚¬ê±°ë¦¬ ë°– ê³µê²© íƒ€ì¼ ì œê±°"))
                 {
                     RemoveOutOfAttackRangeTiles(attackTiles, attackRangeValue);
                 }
@@ -105,13 +105,13 @@ namespace EndlessGuard.Unit.Editor
 
             using (new EditorGUI.DisabledScope(!canEvaluateRange || attackRangeValue <= 0f))
             {
-                if (GUILayout.Button("»ç°Å¸® ¾È Å¸ÀÏ ÀüÃ¼ ¼±ÅÃ"))
+                if (GUILayout.Button("ì‚¬ê±°ë¦¬ ì•ˆ íƒ€ì¼ ì „ì²´ ì„ íƒ"))
                 {
                     SelectAllInsideAttackRange(horizontalRadius.intValue, forwardDistance.intValue, backwardDistance.intValue, attackTiles, attackRangeValue);
                 }
             }
 
-            if (attackTiles.arraySize > 0 && GUILayout.Button("°ø°İ Å¸ÀÏ ÀüÃ¼ ÇØÁ¦"))
+            if (attackTiles.arraySize > 0 && GUILayout.Button("ê³µê²© íƒ€ì¼ ì „ì²´ í•´ì œ"))
             {
                 attackTiles.ClearArray();
             }
@@ -149,10 +149,10 @@ namespace EndlessGuard.Unit.Editor
 
                     GUI.backgroundColor = GetCellColor(isBody, isSelected, isInsideRange, canEvaluateRange);
 
-                    string symbol = isBody ? "º»" : isSelected ? "¡á" : "¡à";
+                    string symbol = isBody ? "ë³¸" : isSelected ? "â– " : "â–¡";
                     float worldDistance = GetWorldDistance(coordinate);
-                    string rangeDescription = !canEvaluateRange ? "¿©·¯ °ø°İ »ç°Å¸® °ª" : isInsideRange ? "°ø°İ »ç°Å¸® ¾È" : "°ø°İ »ç°Å¸® ¹Û";
-                    GUIContent content = new GUIContent(symbol, $"»ó´ë Å¸ÀÏ ÁÂÇ¥ ({coordinate.x}, {coordinate.y}) / Áß½É °Å¸® {worldDistance:0.###} / {rangeDescription}");
+                    string rangeDescription = !canEvaluateRange ? "ì—¬ëŸ¬ ê³µê²© ì‚¬ê±°ë¦¬ ê°’" : isInsideRange ? "ê³µê²© ì‚¬ê±°ë¦¬ ì•ˆ" : "ê³µê²© ì‚¬ê±°ë¦¬ ë°–";
+                    GUIContent content = new GUIContent(symbol, $"ìƒëŒ€ íƒ€ì¼ ì¢Œí‘œ ({coordinate.x}, {coordinate.y}) / ì¤‘ì‹¬ ê±°ë¦¬ {worldDistance:0.###} / {rangeDescription}");
 
                     using (new EditorGUI.DisabledScope(!canClick))
                     {

@@ -15,32 +15,32 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         private const float PlacementDragDeadZone = 0.35f;
         private const int CritSummonNeighborRadius = 1;
 
-        [Header("Á¤½Ä µ¥ÀÌÅÍ")]
+        [Header("ì •ì‹ ë°ì´í„°")]
         [SerializeField] private UnitCatalog unitCatalog;
         [SerializeField] private EnemyCatalog enemyCatalog;
 
-        [Header("Ä³¸¯ÅÍ ¹èÄ¡")]
+        [Header("ìºë¦­í„° ë°°ì¹˜")]
         [Range(1, 8)]
         [SerializeField] private int initialUnitCount = 8;
         [Range(0, 3)]
         [SerializeField] private int initialHighGroundUnitCount = 3;
 
-        [Tooltip("´Ù¸¥ ´ã´çÀÇ ÀÚµ¿¹èÄ¡¸¦ Èä³» ³»´Â ¿É¼ÇÀÔ´Ï´Ù. ±âº»Àº ¼öµ¿ ¹èÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ë‹¤ë¥¸ ë‹´ë‹¹ì˜ ìë™ë°°ì¹˜ë¥¼ í‰ë‚´ ë‚´ëŠ” ì˜µì…˜ì…ë‹ˆë‹¤. ê¸°ë³¸ì€ ìˆ˜ë™ ë°°ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private bool autoDeployEnabled;
 
-        [Header("Prototype ¹èÄ¡ ÄÚ½ºÆ®")]
-        [Tooltip("´Ù¸¥ ´ã´çÀÇ ÄÚ½ºÆ® ½Ã½ºÅÛÀ» Èä³» ³»´Â °ËÁõ¿ë ½ÃÀÛ ÄÚ½ºÆ®ÀÔ´Ï´Ù.")]
+        [Header("Prototype ë°°ì¹˜ ì½”ìŠ¤íŠ¸")]
+        [Tooltip("ë‹¤ë¥¸ ë‹´ë‹¹ì˜ ì½”ìŠ¤íŠ¸ ì‹œìŠ¤í…œì„ í‰ë‚´ ë‚´ëŠ” ê²€ì¦ìš© ì‹œì‘ ì½”ìŠ¤íŠ¸ì…ë‹ˆë‹¤.")]
         [Min(0)]
         [SerializeField] private int startingCost = 25;
-        [Tooltip("´Ù¸¥ ´ã´çÀÇ ÄÚ½ºÆ® ½Ã½ºÅÛÀ» Èä³» ³»´Â °ËÁõ¿ë ÃÖ´ë ÄÚ½ºÆ®ÀÔ´Ï´Ù.")]
+        [Tooltip("ë‹¤ë¥¸ ë‹´ë‹¹ì˜ ì½”ìŠ¤íŠ¸ ì‹œìŠ¤í…œì„ í‰ë‚´ ë‚´ëŠ” ê²€ì¦ìš© ìµœëŒ€ ì½”ìŠ¤íŠ¸ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int maxCost = 99;
-        [Tooltip("½Ã°£ °æ°ú·Î ÀÚµ¿ È¹µæÇÏ´Â ÃÊ´ç ÄÚ½ºÆ®ÀÔ´Ï´Ù.")]
+        [Tooltip("ì‹œê°„ ê²½ê³¼ë¡œ ìë™ íšë“í•˜ëŠ” ì´ˆë‹¹ ì½”ìŠ¤íŠ¸ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float costRegenPerSecond = 1f;
 
-        [Header("Prototype °ñµå °­È­")]
-        [Tooltip("´Ù¸¥ ´ã´çÀÇ °ñµå ½Ã½ºÅÛÀ» Èä³» ³»´Â °ËÁõ¿ë ½ÃÀÛ °ñµåÀÔ´Ï´Ù.")]
+        [Header("Prototype ê³¨ë“œ ê°•í™”")]
+        [Tooltip("ë‹¤ë¥¸ ë‹´ë‹¹ì˜ ê³¨ë“œ ì‹œìŠ¤í…œì„ í‰ë‚´ ë‚´ëŠ” ê²€ì¦ìš© ì‹œì‘ ê³¨ë“œì…ë‹ˆë‹¤.")]
         [Min(0)]
         [SerializeField] private int startingGold;
         [Min(1)]
@@ -48,7 +48,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         [Min(0)]
         [SerializeField] private int upgradeCostIncrease = 25;
 
-        [Header("°øÅë °­È­ 1È¸ Áõ°¡·®")]
+        [Header("ê³µí†µ ê°•í™” 1íšŒ ì¦ê°€ëŸ‰")]
         [Min(0f)][SerializeField] private float maxHpUpgradeAmount = 1000f;
         [Min(0f)][SerializeField] private float hpRegenUpgradeAmount = 25f;
         [Min(0f)][SerializeField] private float physicalAttackUpgradeAmount = 100f;
@@ -61,21 +61,21 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         [Min(0f)][SerializeField] private float criticalChanceUpgradeAmount = 10f;
         [Min(0f)][SerializeField] private float criticalDamageUpgradeAmount = 25f;
 
-        [Header("¸ó½ºÅÍ »ı¼º")]
-        [Tooltip("´Ù¸¥ ´ã´çÀÇ ¿şÀÌºê¸¦ Èä³» ³»´Â ¿É¼ÇÀÔ´Ï´Ù. ±âº»Àº ¿øÇÏ´Â ¸ó½ºÅÍ¸¦ Á÷Á¢ ¼ÒÈ¯ÇÕ´Ï´Ù.")]
+        [Header("ëª¬ìŠ¤í„° ìƒì„±")]
+        [Tooltip("ë‹¤ë¥¸ ë‹´ë‹¹ì˜ ì›¨ì´ë¸Œë¥¼ í‰ë‚´ ë‚´ëŠ” ì˜µì…˜ì…ë‹ˆë‹¤. ê¸°ë³¸ì€ ì›í•˜ëŠ” ëª¬ìŠ¤í„°ë¥¼ ì§ì ‘ ì†Œí™˜í•©ë‹ˆë‹¤.")]
         [SerializeField] private bool autoEnemySpawnEnabled;
         [Min(0.1f)]
         [SerializeField] private float enemySpawnInterval = 2f;
 
-        [Header("Ä³¸¯ÅÍ ±³Ã¼")]
+        [Header("ìºë¦­í„° êµì²´")]
         [Min(0f)]
         [SerializeField] private float replacementDelay = 0.5f;
 
-        [Header("Ãâ±¸")]
+        [Header("ì¶œêµ¬")]
         [Min(1)]
         [SerializeField] private int maxExitHp = 10;
 
-        [Header("°øÁß ¸ó½ºÅÍ")]
+        [Header("ê³µì¤‘ ëª¬ìŠ¤í„°")]
         [Min(0.1f)]
         [SerializeField] private float airHeight = 2f;
 
@@ -213,7 +213,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (!PrepareRoster())
             {
-                Fail("¹èÄ¡ °¡´ÉÇÑ Á¤½Ä Ä³¸¯ÅÍ°¡ ¾ø½À´Ï´Ù.");
+                Fail("ë°°ì¹˜ ê°€ëŠ¥í•œ ì •ì‹ ìºë¦­í„°ê°€ ì—†ìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -230,7 +230,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                 StartAutoEnemySpawn();
             }
 
-            lastMessage = $"Ground ÅëÇÕ ÀüÅõ ½ÃÀÛ: ¹èÄ¡ {activeUnits.Count}¸í / ´ë±â {reserveUnits.Count}¸í / Cost {currentCost}/{MaxCost} / Gold {currentGold} / ÀÚµ¿¹èÄ¡ {(autoDeployEnabled ? "ON" : "OFF")} / ÀÚµ¿¸ó½ºÅÍ {(autoEnemySpawnEnabled ? "ON" : "OFF")}";
+            lastMessage = $"Ground í†µí•© ì „íˆ¬ ì‹œì‘: ë°°ì¹˜ {activeUnits.Count}ëª… / ëŒ€ê¸° {reserveUnits.Count}ëª… / Cost {currentCost}/{MaxCost} / Gold {currentGold} / ìë™ë°°ì¹˜ {(autoDeployEnabled ? "ON" : "OFF")} / ìë™ëª¬ìŠ¤í„° {(autoEnemySpawnEnabled ? "ON" : "OFF")}";
             Debug.Log(lastMessage, this);
         }
 
@@ -238,13 +238,13 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         {
             if (!battleRunning)
             {
-                Fail("¸ÕÀú Ground ÀüÅõ¸¦ ½ÃÀÛÇÏ¼¼¿ä.");
+                Fail("ë¨¼ì € Ground ì „íˆ¬ë¥¼ ì‹œì‘í•˜ì„¸ìš”.");
                 return;
             }
 
             if (reserveUnits.Count <= 0)
             {
-                Fail("±³Ã¼ÇÒ ´ë±â Ä³¸¯ÅÍ°¡ ¾ø½À´Ï´Ù.");
+                Fail("êµì²´í•  ëŒ€ê¸° ìºë¦­í„°ê°€ ì—†ìŠµë‹ˆë‹¤.");
                 return;
             }
 
@@ -261,12 +261,12 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                 RemoveUnit(current);
                 replacementCount++;
                 autoDeployRequested = autoDeployEnabled;
-                lastMessage = autoDeployEnabled ? $"{previousName} ÀüÅõ ÀÌÅ». ÀÚµ¿¹èÄ¡°¡ ÇöÀç Cost·Î ´ë±â Ä³¸¯ÅÍ¸¦ È®ÀÎÇÕ´Ï´Ù." : $"{previousName} ÀüÅõ ÀÌÅ». ¿øÇÏ´Â ´ë±â Ä³¸¯ÅÍ¸¦ Á÷Á¢ ¼±ÅÃÇØ ´Ù½Ã ¹èÄ¡ÇÏ¼¼¿ä.";
+                lastMessage = autoDeployEnabled ? $"{previousName} ì „íˆ¬ ì´íƒˆ. ìë™ë°°ì¹˜ê°€ í˜„ì¬ Costë¡œ ëŒ€ê¸° ìºë¦­í„°ë¥¼ í™•ì¸í•©ë‹ˆë‹¤." : $"{previousName} ì „íˆ¬ ì´íƒˆ. ì›í•˜ëŠ” ëŒ€ê¸° ìºë¦­í„°ë¥¼ ì§ì ‘ ì„ íƒí•´ ë‹¤ì‹œ ë°°ì¹˜í•˜ì„¸ìš”.";
                 Debug.Log(lastMessage, this);
                 return;
             }
 
-            Fail("±³Ã¼ °¡´ÉÇÑ Ä³¸¯ÅÍ°¡ ¾ø½À´Ï´Ù.");
+            Fail("êµì²´ ê°€ëŠ¥í•œ ìºë¦­í„°ê°€ ì—†ìŠµë‹ˆë‹¤.");
         }
 
         public void ResetBattle()
@@ -330,7 +330,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             totalGoldSpent = 0;
             lastCostMessage = string.Empty;
             lastProgressMessage = string.Empty;
-            lastMessage = "Ground Prototype ´ë±â.";
+            lastMessage = "Ground Prototype ëŒ€ê¸°.";
         }
 
         private void ResetBattleEconomy()
@@ -345,20 +345,20 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             totalGoldEarned = 0;
             totalGoldSpent = 0;
             costRegenAccumulator = 0f;
-            lastCostMessage = $"½ÃÀÛ Cost {currentCost}/{MaxCost} / ÀÚµ¿ È¸º¹ {costRegenPerSecond:0.##}/ÃÊ";
+            lastCostMessage = $"ì‹œì‘ Cost {currentCost}/{MaxCost} / ìë™ íšŒë³µ {costRegenPerSecond:0.##}/ì´ˆ";
         }
 
         private bool PrepareBattle()
         {
             if (unitCatalog == null)
             {
-                Fail("UnitCatalogÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+                Fail("UnitCatalogì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
                 return false;
             }
 
             if (enemyCatalog == null)
             {
-                Fail("EnemyCatalogÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+                Fail("EnemyCatalogì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
                 return false;
             }
 
@@ -366,13 +366,13 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (enemyRoute == null)
             {
-                Fail("EnemyRoute¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.");
+                Fail("EnemyRouteë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
                 return false;
             }
 
             if (!enemyRoute.ValidateGroundRoute(out string routeMessage))
             {
-                Fail($"EnemyRoute°¡ ¿Ã¹Ù¸£Áö ¾Ê½À´Ï´Ù. {routeMessage}");
+                Fail($"EnemyRouteê°€ ì˜¬ë°”ë¥´ì§€ ì•ŠìŠµë‹ˆë‹¤. {routeMessage}");
                 return false;
             }
 
@@ -410,7 +410,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (groundTiles.Count == 0 || highGroundTiles.Count == 0)
             {
-                Fail("Ground ¶Ç´Â HighGround Å¸ÀÏÀÌ ¾ø½À´Ï´Ù.");
+                Fail("Ground ë˜ëŠ” HighGround íƒ€ì¼ì´ ì—†ìŠµë‹ˆë‹¤.");
                 return false;
             }
 
@@ -558,7 +558,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             if (applied > 0)
             {
                 totalCostRegenerated += applied;
-                lastCostMessage = $"ÀÚµ¿ Cost +{applied} / ÇöÀç {currentCost}/{MaxCost}";
+                lastCostMessage = $"ìë™ Cost +{applied} / í˜„ì¬ {currentCost}/{MaxCost}";
             }
         }
 
@@ -572,8 +572,8 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             passiveCostRequestCount++;
             int applied = AddCost(amount);
             totalPassiveCostGained += applied;
-            string passiveName = passive != null ? passive.DisplayName : "¹ÌÁöÁ¤ ÆĞ½Ãºê";
-            lastCostMessage = $"ÆĞ½Ãºê Cost #{passiveCostRequestCount}: {GetUnitDisplayName(source)} / {passiveName} / ¿äÃ» +{amount} / ½ÇÁ¦ +{applied} / ÇöÀç {currentCost}/{MaxCost}";
+            string passiveName = passive != null ? passive.DisplayName : "ë¯¸ì§€ì • íŒ¨ì‹œë¸Œ";
+            lastCostMessage = $"íŒ¨ì‹œë¸Œ Cost #{passiveCostRequestCount}: {GetUnitDisplayName(source)} / {passiveName} / ìš”ì²­ +{amount} / ì‹¤ì œ +{applied} / í˜„ì¬ {currentCost}/{MaxCost}";
             Debug.Log(lastCostMessage, source);
         }
 
@@ -791,13 +791,13 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (activeUnits.Count >= initialUnitCount)
             {
-                lastMessage = $"µ¿½Ã ¹èÄ¡ ÇÑµµ {initialUnitCount}¸íÀÔ´Ï´Ù.";
+                lastMessage = $"ë™ì‹œ ë°°ì¹˜ í•œë„ {initialUnitCount}ëª…ì…ë‹ˆë‹¤.";
                 return;
             }
 
             if (currentCost < selectedReserveUnit.SummonCost)
             {
-                lastCostMessage = $"{selectedReserveUnit.DisplayName} ¹èÄ¡ Cost ºÎÁ·: {currentCost}/{selectedReserveUnit.SummonCost}";
+                lastCostMessage = $"{selectedReserveUnit.DisplayName} ë°°ì¹˜ Cost ë¶€ì¡±: {currentCost}/{selectedReserveUnit.SummonCost}";
                 return;
             }
 
@@ -810,7 +810,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             selectedPlacementFacing = GetAutoFacingToRoute(tile.Coordinate);
             placementDragging = true;
             AttackRangeDisplay.ShowPlacement(selectedReserveUnit, pendingPlacementTile.Coordinate, selectedPlacementFacing);
-            lastMessage = $"{selectedReserveUnit.DisplayName} ¹èÄ¡ ¹æÇâ ¼±ÅÃ Áß: {selectedPlacementFacing}. µå·¡±×ÇÏÁö ¾Ê°í ³õÀ¸¸é °æ·Î ¹æÇâÀ¸·Î ÀÚµ¿ ¹èÄ¡ÇÕ´Ï´Ù.";
+            lastMessage = $"{selectedReserveUnit.DisplayName} ë°°ì¹˜ ë°©í–¥ ì„ íƒ ì¤‘: {selectedPlacementFacing}. ë“œë˜ê·¸í•˜ì§€ ì•Šê³  ë†“ìœ¼ë©´ ê²½ë¡œ ë°©í–¥ìœ¼ë¡œ ìë™ ë°°ì¹˜í•©ë‹ˆë‹¤.";
         }
 
         private void UpdatePlacementDrag()
@@ -837,7 +837,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             selectedPlacementFacing = newFacing;
             AttackRangeDisplay.ShowPlacement(selectedReserveUnit, pendingPlacementTile.Coordinate, selectedPlacementFacing);
-            lastMessage = $"{selectedReserveUnit.DisplayName} ¹èÄ¡ ¹æÇâ: {selectedPlacementFacing}";
+            lastMessage = $"{selectedReserveUnit.DisplayName} ë°°ì¹˜ ë°©í–¥: {selectedPlacementFacing}";
         }
 
         private void ConfirmPlacementDrag()
@@ -883,19 +883,19 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (occupiedTiles.Contains(tile.Coordinate))
             {
-                lastMessage = $"¹èÄ¡ ½ÇÆĞ: {tile.Coordinate} Å¸ÀÏÀº ÀÌ¹Ì »ç¿ë ÁßÀÔ´Ï´Ù.";
+                lastMessage = $"ë°°ì¹˜ ì‹¤íŒ¨: {tile.Coordinate} íƒ€ì¼ì€ ì´ë¯¸ ì‚¬ìš© ì¤‘ì…ë‹ˆë‹¤.";
                 return false;
             }
 
             if (IsRouteEndpoint(tile.Coordinate))
             {
-                lastMessage = "¹èÄ¡ ½ÇÆĞ: ÀÔ±¸/Ãâ±¸ Å¸ÀÏ¿¡´Â ¹èÄ¡ÇÒ ¼ö ¾ø½À´Ï´Ù.";
+                lastMessage = "ë°°ì¹˜ ì‹¤íŒ¨: ì…êµ¬/ì¶œêµ¬ íƒ€ì¼ì—ëŠ” ë°°ì¹˜í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.";
                 return false;
             }
 
             if (!IsPlacementAllowed(selectedReserveUnit.Placement, tile.Surface))
             {
-                lastMessage = $"¹èÄ¡ ½ÇÆĞ: {selectedReserveUnit.DisplayName}Àº {selectedReserveUnit.Placement} ¹èÄ¡ÀÌ¸ç ¼±ÅÃ Å¸ÀÏÀº {tile.Surface}ÀÔ´Ï´Ù.";
+                lastMessage = $"ë°°ì¹˜ ì‹¤íŒ¨: {selectedReserveUnit.DisplayName}ì€ {selectedReserveUnit.Placement} ë°°ì¹˜ì´ë©° ì„ íƒ íƒ€ì¼ì€ {tile.Surface}ì…ë‹ˆë‹¤.";
                 return false;
             }
 
@@ -944,31 +944,31 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (activeUnits.Count >= initialUnitCount)
             {
-                lastMessage = $"µ¿½Ã ¹èÄ¡ ÇÑµµ {initialUnitCount}¸íÀÔ´Ï´Ù.";
+                lastMessage = $"ë™ì‹œ ë°°ì¹˜ í•œë„ {initialUnitCount}ëª…ì…ë‹ˆë‹¤.";
                 return false;
             }
 
             if (occupiedTiles.Contains(tile.Coordinate))
             {
-                lastMessage = $"¹èÄ¡ ½ÇÆĞ: {tile.Coordinate} Å¸ÀÏÀº ÀÌ¹Ì »ç¿ë ÁßÀÔ´Ï´Ù.";
+                lastMessage = $"ë°°ì¹˜ ì‹¤íŒ¨: {tile.Coordinate} íƒ€ì¼ì€ ì´ë¯¸ ì‚¬ìš© ì¤‘ì…ë‹ˆë‹¤.";
                 return false;
             }
 
             if (IsRouteEndpoint(tile.Coordinate))
             {
-                lastMessage = $"¹èÄ¡ ½ÇÆĞ: ÀÔ±¸/Ãâ±¸ Å¸ÀÏ {tile.Coordinate}¿¡´Â ¹èÄ¡ÇÒ ¼ö ¾ø½À´Ï´Ù.";
+                lastMessage = $"ë°°ì¹˜ ì‹¤íŒ¨: ì…êµ¬/ì¶œêµ¬ íƒ€ì¼ {tile.Coordinate}ì—ëŠ” ë°°ì¹˜í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.";
                 return false;
             }
 
             if (!IsPlacementAllowed(data.Placement, tile.Surface))
             {
-                lastMessage = $"¹èÄ¡ ½ÇÆĞ: {data.DisplayName}Àº {data.Placement} Àü¿ëÀÌ¸ç ¼±ÅÃ Å¸ÀÏÀº {tile.Surface}ÀÔ´Ï´Ù.";
+                lastMessage = $"ë°°ì¹˜ ì‹¤íŒ¨: {data.DisplayName}ì€ {data.Placement} ì „ìš©ì´ë©° ì„ íƒ íƒ€ì¼ì€ {tile.Surface}ì…ë‹ˆë‹¤.";
                 return false;
             }
 
             if (!TrySpendDeploymentCost(data, out int spentCost))
             {
-                lastCostMessage = $"{data.DisplayName} ¹èÄ¡ Cost ºÎÁ·: {currentCost}/{data.SummonCost}";
+                lastCostMessage = $"{data.DisplayName} ë°°ì¹˜ Cost ë¶€ì¡±: {currentCost}/{data.SummonCost}";
                 return false;
             }
 
@@ -988,7 +988,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             activeUnitTiles[state] = tile.Coordinate;
             spawnedObjects.Add(instance);
 
-            lastCostMessage = $"{data.DisplayName} ¹èÄ¡ -{spentCost} Cost / ÇöÀç {currentCost}/{MaxCost} / {tile.Surface} {tile.Coordinate} / Facing {facing}";
+            lastCostMessage = $"{data.DisplayName} ë°°ì¹˜ -{spentCost} Cost / í˜„ì¬ {currentCost}/{MaxCost} / {tile.Surface} {tile.Coordinate} / Facing {facing}";
             Debug.Log(lastCostMessage, state);
             return true;
         }
@@ -1031,13 +1031,13 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (summonTileCandidates.Count == 0)
             {
-                lastMessage = request.Source is CritSummonSO ? $"{request.SummonData.DisplayName} ¼ÒÈ¯ ½ÇÆĞ: ¼ÒÈ¯ÀÚ ÁÖº¯¿¡ ¹èÄ¡ °¡´ÉÇÑ Å¸ÀÏÀÌ ¾ø½À´Ï´Ù." : $"{request.SummonData.DisplayName} ¼ÒÈ¯ ½ÇÆĞ: ¹èÄ¡ °¡´ÉÇÑ Å¸ÀÏÀÌ ¾ø½À´Ï´Ù.";
+                lastMessage = request.Source is CritSummonSO ? $"{request.SummonData.DisplayName} ì†Œí™˜ ì‹¤íŒ¨: ì†Œí™˜ì ì£¼ë³€ì— ë°°ì¹˜ ê°€ëŠ¥í•œ íƒ€ì¼ì´ ì—†ìŠµë‹ˆë‹¤." : $"{request.SummonData.DisplayName} ì†Œí™˜ ì‹¤íŒ¨: ë°°ì¹˜ ê°€ëŠ¥í•œ íƒ€ì¼ì´ ì—†ìŠµë‹ˆë‹¤.";
                 return false;
             }
 
             Phase2GroundTile selectedTile = summonTileCandidates[Random.Range(0, summonTileCandidates.Count)];
             tile = new SummonTile(selectedTile.WorldPosition, selectedTile.Coordinate);
-            lastMessage = request.Source is CritSummonSO ? $"{request.SummonData.DisplayName} ÁÖº¯ ¼ÒÈ¯ À§Ä¡: {selectedTile.Surface} {selectedTile.Coordinate}" : $"{request.SummonData.DisplayName} ·£´ı ¼ÒÈ¯ À§Ä¡: {selectedTile.Surface} {selectedTile.Coordinate}";
+            lastMessage = request.Source is CritSummonSO ? $"{request.SummonData.DisplayName} ì£¼ë³€ ì†Œí™˜ ìœ„ì¹˜: {selectedTile.Surface} {selectedTile.Coordinate}" : $"{request.SummonData.DisplayName} ëœë¤ ì†Œí™˜ ìœ„ì¹˜: {selectedTile.Surface} {selectedTile.Coordinate}";
             return true;
         }
 
@@ -1276,7 +1276,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             }
 
             waveRoutine = null;
-            lastMessage = $"Á¤½Ä ¸ó½ºÅÍ {enemySpawnCount}¸¶¸® »ı¼º ¿Ï·á. ³²Àº ÀüÅõ¸¦ °è¼ÓÇÕ´Ï´Ù.";
+            lastMessage = $"ì •ì‹ ëª¬ìŠ¤í„° {enemySpawnCount}ë§ˆë¦¬ ìƒì„± ì™„ë£Œ. ë‚¨ì€ ì „íˆ¬ë¥¼ ê³„ì†í•©ë‹ˆë‹¤.";
             Debug.Log(lastMessage, this);
         }
 
@@ -1292,7 +1292,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (!pathReady || path == null || path.Length == 0)
             {
-                Fail($"{data.DisplayName} °æ·Î »ı¼º¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+                Fail($"{data.DisplayName} ê²½ë¡œ ìƒì„±ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
                 return false;
             }
 
@@ -1302,13 +1302,13 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             if (state == null || state.DataLink == null || !state.DataLink.HasData || state.DataLink.EnemyData != data || state.Move == null || !state.Move.SetPath(path))
             {
                 Destroy(instance);
-                Fail($"{data.DisplayName} »ı¼º ¶Ç´Â °æ·Î ¿¬°á¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
+                Fail($"{data.DisplayName} ìƒì„± ë˜ëŠ” ê²½ë¡œ ì—°ê²°ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
                 return false;
             }
 
             spawnedObjects.Add(instance);
             enemySpawnCount++;
-            Debug.Log($"¸ó½ºÅÍ µîÀå #{enemySpawnCount}: {data.EnemyId} {data.DisplayName} / EXP {data.RewardExp} / Gold {data.RewardGold}", state);
+            Debug.Log($"ëª¬ìŠ¤í„° ë“±ì¥ #{enemySpawnCount}: {data.EnemyId} {data.DisplayName} / EXP {data.RewardExp} / Gold {data.RewardGold}", state);
             return true;
         }
 
@@ -1323,7 +1323,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             string unitName = GetUnitDisplayName(unit);
             RemoveUnit(unit);
-            lastMessage = $"{unitName} ÀüÅõ ÀÌÅ». {replacementDelay:0.##}ÃÊ ÈÄ ÇöÀç Cost·Î ¹èÄ¡ °¡´ÉÇÑ ´ë±â Ä³¸¯ÅÍ¸¦ ´Ù½Ã È®ÀÎÇÕ´Ï´Ù.";
+            lastMessage = $"{unitName} ì „íˆ¬ ì´íƒˆ. {replacementDelay:0.##}ì´ˆ í›„ í˜„ì¬ Costë¡œ ë°°ì¹˜ ê°€ëŠ¥í•œ ëŒ€ê¸° ìºë¦­í„°ë¥¼ ë‹¤ì‹œ í™•ì¸í•©ë‹ˆë‹¤.";
             Debug.Log(lastMessage, this);
             StartCoroutine(DeployReplacementAfterDelay());
         }
@@ -1388,7 +1388,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                 int rewardGold = Mathf.Max(0, enemy.DataLink.EnemyData.RewardGold);
                 currentGold += rewardGold;
                 totalGoldEarned += rewardGold;
-                lastMessage = $"{enemy.DataLink.EnemyData.DisplayName} Ã³Ä¡: EXP {enemy.DataLink.EnemyData.RewardExp} / Gold +{rewardGold} / º¸À¯ Gold {currentGold}";
+                lastMessage = $"{enemy.DataLink.EnemyData.DisplayName} ì²˜ì¹˜: EXP {enemy.DataLink.EnemyData.RewardExp} / Gold +{rewardGold} / ë³´ìœ  Gold {currentGold}";
             }
 
             StartCoroutine(RemoveEnemyNextFrame(enemy));
@@ -1405,7 +1405,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             enemyReachedGoalCount++;
             currentExitHp = Mathf.Max(0, currentExitHp - 1);
-            Debug.Log($"¸ó½ºÅÍ Ãâ±¸ µµ´Ş: {info.EnemyId} / Ãâ±¸ HP {currentExitHp}/{maxExitHp}", enemy);
+            Debug.Log($"ëª¬ìŠ¤í„° ì¶œêµ¬ ë„ë‹¬: {info.EnemyId} / ì¶œêµ¬ HP {currentExitHp}/{maxExitHp}", enemy);
             StartCoroutine(RemoveEnemyNextFrame(enemy));
 
             if (currentExitHp <= 0)
@@ -1419,7 +1419,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                 }
 
                 combatLoop.StopLoop();
-                lastMessage = "Ãâ±¸ HP°¡ 0ÀÌ µÇ¾î Ground ÀüÅõ°¡ Á¾·áµÇ¾ú½À´Ï´Ù.";
+                lastMessage = "ì¶œêµ¬ HPê°€ 0ì´ ë˜ì–´ Ground ì „íˆ¬ê°€ ì¢…ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.";
                 Debug.LogWarning(lastMessage, this);
             }
         }
@@ -1463,7 +1463,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if ((info.ChangeType & UnitProgressChangeType.Promotion) != 0)
             {
-                lastProgressMessage = $"{GetUnitDisplayName(target)} ½Â±Ş: Stage {info.PreviousPromotionStage} -> {info.CurrentPromotionStage} / MaxLv {info.PreviousMaxLevel} -> {info.CurrentMaxLevel}";
+                lastProgressMessage = $"{GetUnitDisplayName(target)} ìŠ¹ê¸‰: Stage {info.PreviousPromotionStage} -> {info.CurrentPromotionStage} / MaxLv {info.PreviousMaxLevel} -> {info.CurrentMaxLevel}";
                 return;
             }
 
@@ -1536,7 +1536,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (currentGold < cost)
             {
-                lastMessage = $"{GetGrowthStatName(statIndex)} °­È­ ½ÇÆĞ: Gold {currentGold}/{cost}";
+                lastMessage = $"{GetGrowthStatName(statIndex)} ê°•í™” ì‹¤íŒ¨: Gold {currentGold}/{cost}";
                 return;
             }
 
@@ -1548,7 +1548,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             float totalBonus = GetGrowthAmount(statIndex) * goldUpgradeLevels[statIndex];
             CommonGrowthService.Set(stat, totalBonus);
 
-            lastMessage = $"{GetGrowthStatName(statIndex)} °øÅë °­È­ Lv.{goldUpgradeLevels[statIndex]} / Gold -{cost} / ÇöÀç {currentGold}";
+            lastMessage = $"{GetGrowthStatName(statIndex)} ê³µí†µ ê°•í™” Lv.{goldUpgradeLevels[statIndex]} / Gold -{cost} / í˜„ì¬ {currentGold}";
         }
 
         private int GetUpgradeCost(int statIndex)
@@ -1598,18 +1598,18 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         {
             switch (statIndex)
             {
-                case 0: return "ÃÖ´ë HP";
-                case 1: return "ÃÊ´ç HP Àç»ı";
-                case 2: return "¹°¸® °ø°İ";
-                case 3: return "¸¶¹ı °ø°İ";
-                case 4: return "¹°¸® ¹æ¾î";
-                case 5: return "¸¶¹ı ¹æ¾î";
-                case 6: return "°ø°İ¼Óµµ";
-                case 7: return "¸íÁß";
-                case 8: return "È¸ÇÇ";
-                case 9: return "Ä¡¸íÅ¸ È®·ü";
-                case 10: return "Ä¡¸íÅ¸ ÇÇÇØ";
-                default: return "¹ÌÁöÁ¤";
+                case 0: return "ìµœëŒ€ HP";
+                case 1: return "ì´ˆë‹¹ HP ì¬ìƒ";
+                case 2: return "ë¬¼ë¦¬ ê³µê²©";
+                case 3: return "ë§ˆë²• ê³µê²©";
+                case 4: return "ë¬¼ë¦¬ ë°©ì–´";
+                case 5: return "ë§ˆë²• ë°©ì–´";
+                case 6: return "ê³µê²©ì†ë„";
+                case 7: return "ëª…ì¤‘";
+                case 8: return "íšŒí”¼";
+                case 9: return "ì¹˜ëª…íƒ€ í™•ë¥ ";
+                case 10: return "ì¹˜ëª…íƒ€ í”¼í•´";
+                default: return "ë¯¸ì§€ì •";
             }
         }
 
@@ -1641,7 +1641,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         {
             if (!CanUseUnit(selectedUnit))
             {
-                lastMessage = "½Â±Ş °ËÁõÇÒ Ä³¸¯ÅÍ¸¦ ¼±ÅÃÇÏ¼¼¿ä.";
+                lastMessage = "ìŠ¹ê¸‰ ê²€ì¦í•  ìºë¦­í„°ë¥¼ ì„ íƒí•˜ì„¸ìš”.";
                 return;
             }
 
@@ -1651,11 +1651,11 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (success)
             {
-                lastMessage = $"{GetUnitDisplayName(selectedUnit)} ½Â±Ş ½ÂÀÎ °á°ú Àû¿ë: Stage {previousStage}->{selectedUnit.PromotionStage}, MaxLv {previousMaxLevel}->{selectedUnit.MaxLevel}";
+                lastMessage = $"{GetUnitDisplayName(selectedUnit)} ìŠ¹ê¸‰ ìŠ¹ì¸ ê²°ê³¼ ì ìš©: Stage {previousStage}->{selectedUnit.PromotionStage}, MaxLv {previousMaxLevel}->{selectedUnit.MaxLevel}";
             }
             else
             {
-                lastMessage = $"{GetUnitDisplayName(selectedUnit)} ½Â±Ş ½ÇÆĞ: ÇöÀç Stage {previousStage}, MaxLv {previousMaxLevel}";
+                lastMessage = $"{GetUnitDisplayName(selectedUnit)} ìŠ¹ê¸‰ ì‹¤íŒ¨: í˜„ì¬ Stage {previousStage}, MaxLv {previousMaxLevel}";
             }
         }
 
@@ -1763,7 +1763,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
         private static string GetUnitDisplayName(UnitRuntimeState unit)
         {
-            return unit != null && unit.DataLink != null && unit.DataLink.HasData ? unit.DataLink.UnitData.DisplayName : "¹ÌÁöÁ¤";
+            return unit != null && unit.DataLink != null && unit.DataLink.HasData ? unit.DataLink.UnitData.DisplayName : "ë¯¸ì§€ì •";
         }
 
         private void Fail(string message)
@@ -1785,12 +1785,12 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             {
                 GUILayout.BeginArea(new Rect(10f, 60f, 300f, 110f), GUI.skin.box);
 
-                if (GUILayout.Button("Ground ÀüÅõ ÁØºñ ½ÃÀÛ", GUILayout.Height(32f)))
+                if (GUILayout.Button("Ground ì „íˆ¬ ì¤€ë¹„ ì‹œì‘", GUILayout.Height(32f)))
                 {
                     StartBattle();
                 }
 
-                GUILayout.Label("ÀüÅõ ½ÃÀÛ ÈÄ Ä³¸¯ÅÍ¿Í ¸ó½ºÅÍ¸¦ Á÷Á¢ ¼±ÅÃÇÒ ¼ö ÀÖ½À´Ï´Ù.");
+                GUILayout.Label("ì „íˆ¬ ì‹œì‘ í›„ ìºë¦­í„°ì™€ ëª¬ìŠ¤í„°ë¥¼ ì§ì ‘ ì„ íƒí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
                 GUILayout.Label(lastMessage);
                 GUILayout.EndArea();
                 return;
@@ -1808,13 +1808,13 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             GUILayout.BeginArea(new Rect(10f, 10f, width, 44f), GUI.skin.box);
             GUILayout.BeginHorizontal();
             GUILayout.Label($"COST {currentCost}/{MaxCost}", GUILayout.Width(105f));
-            GUILayout.Label($"ÀÚµ¿ +{costRegenPerSecond:0.##}/ÃÊ", GUILayout.Width(95f));
-            GUILayout.Label($"ÆĞ½Ãºê +{totalPassiveCostGained} ({passiveCostRequestCount}È¸)", GUILayout.Width(145f));
+            GUILayout.Label($"ìë™ +{costRegenPerSecond:0.##}/ì´ˆ", GUILayout.Width(95f));
+            GUILayout.Label($"íŒ¨ì‹œë¸Œ +{totalPassiveCostGained} ({passiveCostRequestCount}íšŒ)", GUILayout.Width(145f));
             GUILayout.Label($"GOLD {currentGold}", GUILayout.Width(95f));
-            GUILayout.Label($"Ãâ±¸ HP {currentExitHp}/{maxExitHp}", GUILayout.Width(115f));
-            GUILayout.Label($"¹èÄ¡ {activeUnits.Count} / ´ë±â {reserveUnits.Count}", GUILayout.Width(115f));
+            GUILayout.Label($"ì¶œêµ¬ HP {currentExitHp}/{maxExitHp}", GUILayout.Width(115f));
+            GUILayout.Label($"ë°°ì¹˜ {activeUnits.Count} / ëŒ€ê¸° {reserveUnits.Count}", GUILayout.Width(115f));
 
-            bool newAutoDeploy = GUILayout.Toggle(autoDeployEnabled, "ÀÚµ¿¹èÄ¡", GUILayout.Width(85f));
+            bool newAutoDeploy = GUILayout.Toggle(autoDeployEnabled, "ìë™ë°°ì¹˜", GUILayout.Width(85f));
 
             if (newAutoDeploy != autoDeployEnabled)
             {
@@ -1822,14 +1822,14 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                 autoDeployRequested = autoDeployEnabled;
             }
 
-            bool newAutoEnemySpawn = GUILayout.Toggle(autoEnemySpawnEnabled, "ÀÚµ¿¸ó½ºÅÍ", GUILayout.Width(95f));
+            bool newAutoEnemySpawn = GUILayout.Toggle(autoEnemySpawnEnabled, "ìë™ëª¬ìŠ¤í„°", GUILayout.Width(95f));
 
             if (newAutoEnemySpawn != autoEnemySpawnEnabled)
             {
                 SetAutoEnemySpawn(newAutoEnemySpawn);
             }
 
-            GUILayout.Label($"Àû »ç¸Á {enemyDeathCount}/{enemySpawnCount}");
+            GUILayout.Label($"ì  ì‚¬ë§ {enemyDeathCount}/{enemySpawnCount}");
             GUILayout.EndHorizontal();
             GUILayout.EndArea();
         }
@@ -1838,7 +1838,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
         {
             float height = Mathf.Max(220f, Screen.height - 280f);
             GUILayout.BeginArea(new Rect(10f, 60f, 330f, height), GUI.skin.box);
-            GUILayout.Label("ÀüÅõ Ä³¸¯ÅÍ / Lv / EXP");
+            GUILayout.Label("ì „íˆ¬ ìºë¦­í„° / Lv / EXP");
             unitScroll = GUILayout.BeginScrollView(unitScroll, GUILayout.Height(Mathf.Min(180f, height * 0.38f)));
 
             for (int i = 0; i < activeUnits.Count; i++)
@@ -1850,7 +1850,7 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                     continue;
                 }
 
-                string mark = unit == selectedUnit ? "¢º " : string.Empty;
+                string mark = unit == selectedUnit ? "â–¶ " : string.Empty;
                 string label = $"{mark}{GetUnitDisplayName(unit)}  Lv.{unit.CurrentLevel}/{unit.MaxLevel}  {GetExperienceText(unit)}";
 
                 if (GUILayout.Button(label, GUILayout.Height(26f)))
@@ -1871,43 +1871,43 @@ namespace EndlessGuard.Unit.Prototype.Phase2
 
             if (!CanUseUnit(selectedUnit))
             {
-                GUILayout.Label("¼±ÅÃ Ä³¸¯ÅÍ ¾øÀ½");
+                GUILayout.Label("ì„ íƒ ìºë¦­í„° ì—†ìŒ");
                 return;
             }
 
             RuntimeStats stats = selectedUnit.Stats;
             GUILayout.Label($"{GetUnitDisplayName(selectedUnit)} ({selectedUnit.UnitId})");
-            GUILayout.Label($"¹èÄ¡: {selectedUnit.DataLink.UnitData.Placement} / Cost {selectedUnit.DataLink.UnitData.SummonCost}");
+            GUILayout.Label($"ë°°ì¹˜: {selectedUnit.DataLink.UnitData.Placement} / Cost {selectedUnit.DataLink.UnitData.SummonCost}");
 
             if (selectedUnit.GridPosition != null)
             {
                 AttackRangeRotationMode rotationMode = selectedUnit.DataLink.UnitData.AttackSettings != null ? selectedUnit.DataLink.UnitData.AttackSettings.RangeRotationMode : AttackRangeRotationMode.Fixed;
-                string rotationLabel = rotationMode == AttackRangeRotationMode.FollowFacing ? "Facing ¿¬µ¿" : "¹æÇâ °íÁ¤";
-                GUILayout.Label($"Facing {selectedUnit.GridPosition.FacingDirection} / °ø°İ¹üÀ§ {rotationLabel}");
+                string rotationLabel = rotationMode == AttackRangeRotationMode.FollowFacing ? "Facing ì—°ë™" : "ë°©í–¥ ê³ ì •";
+                GUILayout.Label($"Facing {selectedUnit.GridPosition.FacingDirection} / ê³µê²©ë²”ìœ„ {rotationLabel}");
             }
 
             GUILayout.Label($"Lv.{selectedUnit.CurrentLevel}/{selectedUnit.MaxLevel}  {GetExperienceText(selectedUnit)}");
             GUILayout.Label($"Promotion Stage {selectedUnit.PromotionStage}");
-            GUILayout.Label($"·¹º§ ¼ºÀå +{selectedUnit.Growth.AppliedLevelGrowthPercent:0.##}% / ½Â±Ş ¼ºÀå +{selectedUnit.Growth.AppliedPromotionGrowthPercent:0.##}%");
+            GUILayout.Label($"ë ˆë²¨ ì„±ì¥ +{selectedUnit.Growth.AppliedLevelGrowthPercent:0.##}% / ìŠ¹ê¸‰ ì„±ì¥ +{selectedUnit.Growth.AppliedPromotionGrowthPercent:0.##}%");
             GUILayout.Space(4f);
-            GUILayout.Label($"HP {selectedUnit.Health.CurrentHp:0}/{stats.MaxHp:0} | HPÀç»ı {stats.HpRegenPerSecond:0.##}");
-            GUILayout.Label($"¹°°ø {stats.PhysicalAttack:0.##} | ¸¶°ø {stats.MagicalAttack:0.##} | °ø¼Ó {stats.AttacksPerSecond:0.###}");
-            GUILayout.Label($"¹°¹æ {stats.PhysicalDefense:0.##} | ¸¶¹æ {stats.MagicalDefense:0.##}");
-            GUILayout.Label($"¸íÁß {stats.Accuracy:0.##} | È¸ÇÇ {stats.Evasion:0.##}");
-            GUILayout.Label($"Ä¡È® {stats.CriticalChancePercent:0.##}% | Ä¡ÇÇ +{stats.CriticalDamageBonusPercent:0.##}%");
+            GUILayout.Label($"HP {selectedUnit.Health.CurrentHp:0}/{stats.MaxHp:0} | HPì¬ìƒ {stats.HpRegenPerSecond:0.##}");
+            GUILayout.Label($"ë¬¼ê³µ {stats.PhysicalAttack:0.##} | ë§ˆê³µ {stats.MagicalAttack:0.##} | ê³µì† {stats.AttacksPerSecond:0.###}");
+            GUILayout.Label($"ë¬¼ë°© {stats.PhysicalDefense:0.##} | ë§ˆë°© {stats.MagicalDefense:0.##}");
+            GUILayout.Label($"ëª…ì¤‘ {stats.Accuracy:0.##} | íšŒí”¼ {stats.Evasion:0.##}");
+            GUILayout.Label($"ì¹˜í™• {stats.CriticalChancePercent:0.##}% | ì¹˜í”¼ +{stats.CriticalDamageBonusPercent:0.##}%");
             GUILayout.Space(5f);
 
-            if (GUILayout.Button($"½Â±Ş ½ÂÀÎ Å×½ºÆ® Stage {selectedUnit.PromotionStage} -> {selectedUnit.PromotionStage + 1}", GUILayout.Height(28f)))
+            if (GUILayout.Button($"ìŠ¹ê¸‰ ìŠ¹ì¸ í…ŒìŠ¤íŠ¸ Stage {selectedUnit.PromotionStage} -> {selectedUnit.PromotionStage + 1}", GUILayout.Height(28f)))
             {
                 ApplyPromotionToSelectedUnit();
             }
 
-            if (GUILayout.Button("ÇöÀç ¼±ÅÃ Ä³¸¯ÅÍ ÅğÀå"))
+            if (GUILayout.Button("í˜„ì¬ ì„ íƒ ìºë¦­í„° í‡´ì¥"))
             {
                 string unitName = GetUnitDisplayName(selectedUnit);
                 RemoveUnit(selectedUnit);
                 replacementCount++;
-                lastMessage = $"{unitName}À» Prototype¿¡¼­ ¼öµ¿ ÅğÀå½ÃÄ×½À´Ï´Ù.";
+                lastMessage = $"{unitName}ì„ Prototypeì—ì„œ ìˆ˜ë™ í‡´ì¥ì‹œì¼°ìŠµë‹ˆë‹¤.";
             }
 
             GUILayout.Label(lastProgressMessage);
@@ -1920,17 +1920,17 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             float height = Mathf.Max(220f, Screen.height - 280f);
             float x = Mathf.Max(350f, Screen.width - width - 10f);
             GUILayout.BeginArea(new Rect(x, 60f, width, height), GUI.skin.box);
-            GUILayout.Label($"°øÅë Gold °­È­ / º¸À¯ {currentGold}");
-            GUILayout.Label($"È¹µæ {totalGoldEarned} / ¼Òºñ {totalGoldSpent}");
+            GUILayout.Label($"ê³µí†µ Gold ê°•í™” / ë³´ìœ  {currentGold}");
+            GUILayout.Label($"íšë“ {totalGoldEarned} / ì†Œë¹„ {totalGoldSpent}");
             growthScroll = GUILayout.BeginScrollView(growthScroll);
 
             for (int i = 0; i < GrowthStatCount; i++)
             {
                 int cost = GetUpgradeCost(i);
                 float amount = GetGrowthAmount(i);
-                string suffix = i == 6 ? "È¸/ÃÊ" : i == 9 || i == 10 ? "%p" : string.Empty;
+                string suffix = i == 6 ? "íšŒ/ì´ˆ" : i == 9 || i == 10 ? "%p" : string.Empty;
                 GUILayout.BeginVertical(GUI.skin.box);
-                GUILayout.Label($"{GetGrowthStatName(i)} Lv.{goldUpgradeLevels[i]} / ´©Àû +{amount * goldUpgradeLevels[i]:0.###}{suffix}");
+                GUILayout.Label($"{GetGrowthStatName(i)} Lv.{goldUpgradeLevels[i]} / ëˆ„ì  +{amount * goldUpgradeLevels[i]:0.###}{suffix}");
 
                 if (GUILayout.Button($"+{amount:0.###}{suffix} / {cost} Gold"))
                 {
@@ -1949,8 +1949,8 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             float y = Mathf.Max(270f, Screen.height - 205f);
             GUILayout.BeginArea(new Rect(10f, y, Screen.width - 20f, 85f), GUI.skin.box);
             GUILayout.BeginHorizontal();
-            GUILayout.Label("¸ó½ºÅÍ Á÷Á¢ ¼ÒÈ¯", GUILayout.Width(110f));
-            GUILayout.Label("¿øÇÏ´Â ¸ó½ºÅÍ¸¦ ¹İº¹ÇØ¼­ ´­·¯ °°Àº Á¾·ù¸¸ Å×½ºÆ®ÇÒ ¼ö ÀÖ½À´Ï´Ù.");
+            GUILayout.Label("ëª¬ìŠ¤í„° ì§ì ‘ ì†Œí™˜", GUILayout.Width(110f));
+            GUILayout.Label("ì›í•˜ëŠ” ëª¬ìŠ¤í„°ë¥¼ ë°˜ë³µí•´ì„œ ëˆŒëŸ¬ ê°™ì€ ì¢…ë¥˜ë§Œ í…ŒìŠ¤íŠ¸í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
             GUILayout.EndHorizontal();
             enemyScroll = GUILayout.BeginScrollView(enemyScroll, true, false, GUILayout.Height(55f));
             GUILayout.BeginHorizontal();
@@ -1985,9 +1985,9 @@ namespace EndlessGuard.Unit.Prototype.Phase2
             float y = Mathf.Max(360f, Screen.height - 115f);
             GUILayout.BeginArea(new Rect(10f, y, Screen.width - 20f, 105f), GUI.skin.box);
             GUILayout.BeginHorizontal();
-            string selectedName = selectedReserveUnit != null ? selectedReserveUnit.DisplayName : "¾øÀ½";
-            GUILayout.Label($"¹èÄ¡ ¼±ÅÃ: {selectedName}", GUILayout.Width(145f));
-            GUILayout.Label("Ä³¸¯ÅÍ ¼±ÅÃ ¡æ Å¸ÀÏ¿¡¼­ ¸¶¿ì½º¸¦ ´©¸¥ Ã¤ ¹æÇâÀ¸·Î µå·¡±× ¡æ ³õÀ¸¸é ¹èÄ¡. µå·¡±×ÇÏÁö ¾ÊÀ¸¸é °æ·Î ¹æÇâ ÀÚµ¿ ¼³Á¤.", GUILayout.Width(720f));
+            string selectedName = selectedReserveUnit != null ? selectedReserveUnit.DisplayName : "ì—†ìŒ";
+            GUILayout.Label($"ë°°ì¹˜ ì„ íƒ: {selectedName}", GUILayout.Width(145f));
+            GUILayout.Label("ìºë¦­í„° ì„ íƒ â†’ íƒ€ì¼ì—ì„œ ë§ˆìš°ìŠ¤ë¥¼ ëˆ„ë¥¸ ì±„ ë°©í–¥ìœ¼ë¡œ ë“œë˜ê·¸ â†’ ë†“ìœ¼ë©´ ë°°ì¹˜. ë“œë˜ê·¸í•˜ì§€ ì•Šìœ¼ë©´ ê²½ë¡œ ë°©í–¥ ìë™ ì„¤ì •.", GUILayout.Width(720f));
             GUILayout.EndHorizontal();
             reserveScroll = GUILayout.BeginScrollView(reserveScroll, true, false, GUILayout.Height(60f));
             GUILayout.BeginHorizontal();
@@ -2001,15 +2001,15 @@ namespace EndlessGuard.Unit.Prototype.Phase2
                     continue;
                 }
 
-                string mark = data == selectedReserveUnit ? "¢º " : string.Empty;
-                string affordable = currentCost >= data.SummonCost ? "°¡´É" : "ºÎÁ·";
+                string mark = data == selectedReserveUnit ? "â–¶ " : string.Empty;
+                string affordable = currentCost >= data.SummonCost ? "ê°€ëŠ¥" : "ë¶€ì¡±";
 
                 if (GUILayout.Button($"{mark}{data.DisplayName}\nCost {data.SummonCost} / {data.Placement} / {affordable}", GUILayout.Width(145f), GUILayout.Height(48f)))
                 {
                     CancelPlacementDrag();
                     ClearSelectedUnit();
                     selectedReserveUnit = data;
-                    lastMessage = $"{data.DisplayName} ¼±ÅÃ. {data.Placement} Å¸ÀÏ¿¡¼­ ´©¸¥ Ã¤ ¹æÇâÀ¸·Î µå·¡±×ÇÏ¼¼¿ä. Cost {currentCost}/{data.SummonCost}";
+                    lastMessage = $"{data.DisplayName} ì„ íƒ. {data.Placement} íƒ€ì¼ì—ì„œ ëˆ„ë¥¸ ì±„ ë°©í–¥ìœ¼ë¡œ ë“œë˜ê·¸í•˜ì„¸ìš”. Cost {currentCost}/{data.SummonCost}";
                 }
             }
 
