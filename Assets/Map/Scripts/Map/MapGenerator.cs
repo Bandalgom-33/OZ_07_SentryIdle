@@ -8,35 +8,35 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 {
     private const int CritSummonNeighborRadius = 1;
 
-    [Header("Grid Å©±â")]
+    [Header("Grid í¬ê¸°")]
     [SerializeField, Min(1)] private int width = 12;
     [SerializeField, Min(1)] private int height = 8;
 
-    [Header("¸Ê")]
+    [Header("ë§µ")]
     [SerializeField] private GridMapRenderer mapRenderer;
 
-    [Header("Á¤½Ä ¸ó½ºÅÍ Å×½ºÆ®")]
-    [Tooltip("MAP ¿¬µ¿ Å×½ºÆ®¿¡¼­ »ı¼ºÇÒ Á¤½Ä EnemyDataSOÀÔ´Ï´Ù.")]
+    [Header("ì •ì‹ ëª¬ìŠ¤í„° í…ŒìŠ¤íŠ¸")]
+    [Tooltip("MAP ì—°ë™ í…ŒìŠ¤íŠ¸ì—ì„œ ìƒì„±í•  ì •ì‹ EnemyDataSOì…ë‹ˆë‹¤.")]
     [SerializeField] private EnemyDataSO enemyData;
 
-    [Tooltip("°øÁß ¸ó½ºÅÍÀÇ ¿ùµå Y ³ôÀÌÀÔ´Ï´Ù.")]
+    [Tooltip("ê³µì¤‘ ëª¬ìŠ¤í„°ì˜ ì›”ë“œ Y ë†’ì´ì…ë‹ˆë‹¤.")]
     [Min(0f)]
     [SerializeField] private float airHeight = 2f;
 
-    [Header("ÀÚµ¿ ¹èÄ¡ Å×½ºÆ®")]
-    [Tooltip("Á¤½Ä Ground Ä³¸¯ÅÍ PrefabÀ» ¿¬°áÇÕ´Ï´Ù.")]
+    [Header("ìë™ ë°°ì¹˜ í…ŒìŠ¤íŠ¸")]
+    [Tooltip("ì •ì‹ Ground ìºë¦­í„° Prefabì„ ì—°ê²°í•©ë‹ˆë‹¤.")]
     [SerializeField] private GameObject meleeUnitPrefab;
 
-    [Tooltip("Á¤½Ä HighGround Ä³¸¯ÅÍ PrefabÀ» ¿¬°áÇÕ´Ï´Ù.")]
+    [Tooltip("ì •ì‹ HighGround ìºë¦­í„° Prefabì„ ì—°ê²°í•©ë‹ˆë‹¤.")]
     [SerializeField] private GameObject rangedUnitPrefab;
 
-    [Tooltip("Ground Ä³¸¯ÅÍ RootÀÇ Ãß°¡ Y ³ôÀÌÀÔ´Ï´Ù.")]
+    [Tooltip("Ground ìºë¦­í„° Rootì˜ ì¶”ê°€ Y ë†’ì´ì…ë‹ˆë‹¤.")]
     [SerializeField] private float meleeUnitHeight;
 
-    [Tooltip("HighGround Ä³¸¯ÅÍ RootÀÇ Ãß°¡ Y ³ôÀÌÀÔ´Ï´Ù. ¸ÊÀÇ ½ÇÁ¦ ¾ğ´ö ³ôÀÌ¿¡ ¸ÂÃç ¼³Á¤ÇÕ´Ï´Ù.")]
+    [Tooltip("HighGround ìºë¦­í„° Rootì˜ ì¶”ê°€ Y ë†’ì´ì…ë‹ˆë‹¤. ë§µì˜ ì‹¤ì œ ì–¸ë• ë†’ì´ì— ë§ì¶° ì„¤ì •í•©ë‹ˆë‹¤.")]
     [SerializeField] private float rangedUnitHeight = 0.25f;
 
-    [Header("MAP Å×½ºÆ® ¿şÀÌºê")]
+    [Header("MAP í…ŒìŠ¤íŠ¸ ì›¨ì´ë¸Œ")]
     [Min(1)]
     [SerializeField] private int enemyCountPerPath = 3;
 
@@ -56,13 +56,16 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
     public int Width => width;
     public int Height => height;
 
+    // ì™¸ë¶€ ì†Œí™˜ ë§¤ë‹ˆì €(MapUnitSummonManager)ì—ì„œ ì›”ë“œ ì¢Œí‘œ ë³€í™˜ ì‹œ ì°¸ì¡°í•˜ê¸° ìœ„í•œ í”„ë¡œí¼í‹°
+    public GridMapRenderer MapRenderer => mapRenderer;
+
     private void Awake()
     {
         combatLoop = FindFirstObjectByType<CombatLoop>();
 
         if (combatLoop == null)
         {
-            Debug.LogError("¾À¿¡ CombatLoop°¡ ¾ø½À´Ï´Ù. ºó GameObject ÇÏ³ª¸¦ ¸¸µé°í CombatLoop ÄÄÆ÷³ÍÆ®¸¦ 1°³ Ãß°¡ÇÏ¼¼¿ä.", this);
+            Debug.LogError("ì”¬ì— CombatLoopê°€ ì—†ìŠµë‹ˆë‹¤. ë¹ˆ GameObject í•˜ë‚˜ë¥¼ ë§Œë“¤ê³  CombatLoop ì»´í¬ë„ŒíŠ¸ë¥¼ 1ê°œ ì¶”ê°€í•˜ì„¸ìš”.", this);
         }
     }
 
@@ -81,6 +84,10 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         GenerateMap();
     }
 
+    // ë§µ ìƒì„± ì™„ë£Œ ì—¬ë¶€ ë° ì´ë²¤íŠ¸ (ì™¸ë¶€ MapUnitSummonManager ì—°ë™ìš©)
+    public bool IsMapGenerated { get; private set; }
+    public event System.Action OnMapGenerated;
+
     public void GenerateMap()
     {
         InitializeGrid();
@@ -88,24 +95,28 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         if (mapRenderer == null)
         {
-            Debug.LogError("MapGenerator¿¡ GridMapRenderer°¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.", this);
+            Debug.LogError("MapGeneratorì— GridMapRendererê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", this);
             return;
         }
 
         mapRenderer.RenderMap(grid);
 
-        SpawnMeleeUnit();
-        SpawnMeleeUnit();
-
-        SpawnRangedUnit();
-        SpawnRangedUnit();
+        // ë§µ ìƒì„± ì™„ë£Œ ìƒíƒœ ì²˜ë¦¬ ë° ì´ë²¤íŠ¸ ì•Œë¦¼
+        IsMapGenerated = true;
+        OnMapGenerated?.Invoke();
 
         if (combatLoop == null)
         {
-            Debug.LogError("CombatLoop°¡ ¾ø¾î¼­ Á¤½Ä ¸ó½ºÅÍ ÀüÅõ Å×½ºÆ®¸¦ ½ÃÀÛÇÏÁö ¾Ê½À´Ï´Ù.", this);
+            Debug.LogError("CombatLoopê°€ ì—†ì–´ì„œ ì •ì‹ ëª¬ìŠ¤í„° ì „íˆ¬ í…ŒìŠ¤íŠ¸ë¥¼ ì‹œì‘í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", this);
             return;
         }
 
+        StartCoroutine(SpawnWave(pathPosition, enemyCountPerPath, enemySpawnInterval));
+        StartCoroutine(SpawnWave(pathPositionB, enemyCountPerPath, enemySpawnInterval));
+    }
+
+    public void MobSpawnWave()
+    {
         StartCoroutine(SpawnWave(pathPosition, enemyCountPerPath, enemySpawnInterval));
         StartCoroutine(SpawnWave(pathPositionB, enemyCountPerPath, enemySpawnInterval));
     }
@@ -173,7 +184,7 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         if (!isValidA || !isValidB)
         {
-            Debug.LogError("»ı¼ºµÈ MAP °æ·Î°¡ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.", this);
+            Debug.LogError("ìƒì„±ëœ MAP ê²½ë¡œê°€ ìœ íš¨í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.", this);
             return;
         }
 
@@ -443,13 +454,13 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
     {
         if (enemyData == null)
         {
-            Debug.LogError("MapGeneratorÀÇ Enemy Data°¡ ºñ¾î ÀÖ½À´Ï´Ù.", this);
+            Debug.LogError("MapGeneratorì˜ Enemy Dataê°€ ë¹„ì–´ ìˆìŠµë‹ˆë‹¤.", this);
             return;
         }
 
         if (enemyData.EnemyPrefab == null)
         {
-            Debug.LogError($"{enemyData.DisplayName} EnemyDataSO¿¡ Á¤½Ä EnemyPrefabÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.", enemyData);
+            Debug.LogError($"{enemyData.DisplayName} EnemyDataSOì— ì •ì‹ EnemyPrefabì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", enemyData);
             return;
         }
 
@@ -462,7 +473,7 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         if (path == null || path.Length < 2)
         {
-            Debug.LogError($"{enemyData.DisplayName} PathNode º¯È¯¿¡ ½ÇÆĞÇß½À´Ï´Ù.", this);
+            Debug.LogError($"{enemyData.DisplayName} PathNode ë³€í™˜ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.", this);
             return;
         }
 
@@ -471,31 +482,33 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         if (state == null)
         {
-            Debug.LogError($"{enemyData.EnemyPrefab.name}¿¡ EnemyRuntimeState°¡ ¾ø½À´Ï´Ù.", instance);
+            Debug.LogError($"{enemyData.EnemyPrefab.name}ì— EnemyRuntimeStateê°€ ì—†ìŠµë‹ˆë‹¤.", instance);
             Destroy(instance);
             return;
         }
 
         if (!state.IsInitialized || state.DataLink == null || !state.DataLink.HasData)
         {
-            Debug.LogError($"{enemyData.EnemyPrefab.name}ÀÇ Á¤½Ä Enemy Runtime ÃÊ±âÈ­¿¡ ½ÇÆĞÇß½À´Ï´Ù.", instance);
+            Debug.LogError($"{enemyData.EnemyPrefab.name}ì˜ ì •ì‹ Enemy Runtime ì´ˆê¸°í™”ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.", instance);
             Destroy(instance);
             return;
         }
 
         if (state.DataLink.EnemyData != enemyData)
         {
-            Debug.LogError($"EnemyDataSO¿Í PrefabÀÇ EnemyDataLink°¡ ´Ù¸¨´Ï´Ù. ¿äÃ»={enemyData.DisplayName}, Prefab={state.DataLink.EnemyData.DisplayName}", instance);
+            Debug.LogError($"EnemyDataSOì™€ Prefabì˜ EnemyDataLinkê°€ ë‹¤ë¦…ë‹ˆë‹¤. ìš”ì²­={enemyData.DisplayName}, Prefab={state.DataLink.EnemyData.DisplayName}", instance);
             Destroy(instance);
             return;
         }
 
         if (state.Move == null || !state.Move.SetPath(path))
         {
-            Debug.LogError($"{enemyData.DisplayName}ÀÇ EnemyMove.SetPath()¿¡ ½ÇÆĞÇß½À´Ï´Ù.", instance);
+            Debug.LogError($"{enemyData.DisplayName}ì˜ EnemyMove.SetPath()ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.", instance);
             Destroy(instance);
             return;
         }
+
+        SpawnedEnemyManager.Instance.RegisterEnemy(state);
     }
 
     private PathNode[] BuildPathNodes(IReadOnlyList<Vector2Int> mapPath, EnemyMovementType movementType)
@@ -598,7 +611,8 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         }
     }
 
-    private TileNode FindRandomDeployableTile(TileType targetTileType)
+    // ì™¸ë¶€ ì†Œí™˜ ë§¤ë‹ˆì €ì—ì„œ ë°°ì¹˜ ê°€ëŠ¥ íƒ€ì¼ì„ íƒìƒ‰í•  ìˆ˜ ìˆë„ë¡ publicìœ¼ë¡œ ê³µê°œ
+    public TileNode FindRandomDeployableTile(TileType targetTileType)
     {
         List<TileNode> candidates = new List<TileNode>();
 
@@ -652,7 +666,7 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         if (state == null || !state.IsInitialized || state.GridPosition == null)
         {
-            Debug.LogError($"{meleeUnitPrefab.name}¿¡ Á¤»óÀûÀÎ UnitRuntimeState°¡ ¾ø½À´Ï´Ù.", instance);
+            Debug.LogError($"{meleeUnitPrefab.name}ì— ì •ìƒì ì¸ UnitRuntimeStateê°€ ì—†ìŠµë‹ˆë‹¤.", instance);
             Destroy(instance);
             return;
         }
@@ -683,7 +697,7 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
 
         if (state == null || !state.IsInitialized || state.GridPosition == null)
         {
-            Debug.LogError($"{rangedUnitPrefab.name}¿¡ Á¤»óÀûÀÎ UnitRuntimeState°¡ ¾ø½À´Ï´Ù.", instance);
+            Debug.LogError($"{rangedUnitPrefab.name}ì— ì •ìƒì ì¸ UnitRuntimeStateê°€ ì—†ìŠµë‹ˆë‹¤.", instance);
             Destroy(instance);
             return;
         }
@@ -692,7 +706,8 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         rangedTile.SetOccupied(true);
     }
 
-    private bool IsNearPath(Vector2Int position, int maxDistance)
+    // ì™¸ë¶€ íƒ€ì¼ ê²€ì‚¬ ë¡œì§ì—ì„œ ì´ë™ ê²½ë¡œ ì¸ì ‘ ì—¬ë¶€ë¥¼ í™•ì¸í•  ìˆ˜ ìˆë„ë¡ publicìœ¼ë¡œ ê³µê°œ
+    public bool IsNearPath(Vector2Int position, int maxDistance)
     {
         for (int x = 0; x < width; x++)
         {

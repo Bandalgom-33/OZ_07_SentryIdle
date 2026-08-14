@@ -76,6 +76,25 @@
         }
     }
 
+    // 적 사망 이벤트 (재화, 경험치 보상 및 오브젝트 처리를 위한 이벤트)
+    public readonly struct EnemyDiedEvent
+    {
+        public readonly UnityEngine.GameObject enemyGameObject;
+        public readonly string enemyId;
+        public readonly int rewardGold;
+        public readonly int rewardExp;
+        public readonly UnityEngine.Vector3 position;
+
+        public EnemyDiedEvent(UnityEngine.GameObject enemyGameObject, string enemyId, int rewardGold, int rewardExp, UnityEngine.Vector3 position)
+        {
+            this.enemyGameObject = enemyGameObject;
+            this.enemyId = enemyId ?? string.Empty;
+            this.rewardGold = rewardGold;
+            this.rewardExp = rewardExp;
+            this.position = position;
+        }
+    }
+
 #endregion
 
 #region 저장 이벤트

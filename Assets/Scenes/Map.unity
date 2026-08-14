@@ -168,14 +168,9 @@ MonoBehaviour:
   width: 12
   height: 8
   mapRenderer: {fileID: 206666535}
-  enemyData: {fileID: 11400000, guid: 2b7e23d199b4acd4e818bb566798e3b0, type: 2}
-  airHeight: 2
-  meleeUnitPrefab: {fileID: 6371960850893609525, guid: 679e1e002bbd8f34290915e2b074d52b, type: 3}
-  rangedUnitPrefab: {fileID: 7913468090534655991, guid: 75a2362910ca3fc44b37e49a686ec880, type: 3}
-  meleeUnitHeight: 0
-  rangedUnitHeight: 0.25
-  enemyCountPerPath: 3
-  enemySpawnInterval: 1
+  enemyPrefab: {fileID: 4458884028838379206, guid: 39ed200ea9a470949ab34412016849b2, type: 3}
+  meleeUnitPrefab: {fileID: 540724104247911764, guid: ef97240e602e9c74dad557e2322156ac, type: 3}
+  rangedUnitPrefab: {fileID: 4128163135516489488, guid: 8b65f60e2f10b394a998b4dd327b893e, type: 3}
 --- !u!4 &206666537
 Transform:
   m_ObjectHideFlags: 0

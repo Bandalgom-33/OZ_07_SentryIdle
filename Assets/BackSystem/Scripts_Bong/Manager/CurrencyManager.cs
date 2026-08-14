@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 // 게임 내 3대 핵심 재화(Gold, Diamond, DpCost) 통합 관리 및 트랜잭션 전담 싱글톤
 public enum CurrencyType
@@ -18,13 +19,12 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     [Header("재화 베이스 정보")]
     [SerializeField] private int baseGold = 10;
     [SerializeField] private int baseDiamond = 3;
-    [SerializeField] private int baseDpCost = 1;
+    [SerializeField] private int baseDpCost = 0;
     [SerializeField] private long goldBonus ;
     [SerializeField] private int diamondBonus ;
     [SerializeField] private int dpCostBonus ;
     [SerializeField] private float goldMagnification = 1.0f;
     [SerializeField] private float diamondMagnification = 1.0f;
-    [SerializeField] private float dpCostMagnification = 1.0f;
     [SerializeField] private float dpCostRegenTime = 1.0f;
     [Space(5f), Header("업그레이드 세팅 값")]
     [SerializeField] private int goldBonusIncrease = 10;
@@ -32,7 +32,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     [SerializeField] private int diamondBonusIncrease = 3;
     [SerializeField] private float diamondMagnificationIncrease = 0.1f;
     [SerializeField] private int dpCostBonusIncrease = 1;
-    [SerializeField] private float dpCostMagnificationIncrease = 1f;
+    [SerializeField] private int maxDpCostIncrease = 10;
     
 #endregion
 
@@ -41,6 +41,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public long Gold { get; private set; }
     public int Diamond { get; private set; }
     public int DpCost { get; private set; }
+    public int MaxDpCost { get; private set; } = 100;
 
     // 재화 잔액 보유 여부 검증 프로퍼티
     public bool HasGold(long inputGold) => Gold >= inputGold;
@@ -61,6 +62,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public static event Action<long> OnGoldChange;
     public static event Action<int> OnDiamondChange;
     public static event Action<int> OnDpCostChange;
+    public static event Action<float> OnDpCostSliderChange; 
 
 #endregion
 
@@ -73,6 +75,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<DataSaveEvent>(OnSave);
         EventBus.Subscribe<DataLoadEvent>(OnLoad);
         EventBus.Subscribe<DataResetEvent>(OnReset);
+        EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
     }
 
     // 비동기 DP 회복 루프 시작 및 기본 리젠 시간 초기화 연산
@@ -89,6 +92,16 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Unsubscribe<DataSaveEvent>(OnSave);
         EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
         EventBus.Unsubscribe<DataResetEvent>(OnReset);
+        EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
+    }
+
+    // 적 처치 시 보상 골드 획득 핸들러
+    private void OnEnemyDied(EnemyDiedEvent eventMessage)
+    {
+        if (eventMessage.rewardGold > 0)
+        {
+            GetGold(eventMessage.rewardGold);
+        }
     }
 
 #endregion
@@ -104,6 +117,12 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public void GetGold(long gold)
     {
         Gold += gold;
+        OnGoldChange?.Invoke(Gold);
+    }
+
+    public void TestGetGold()
+    {
+        Gold += 1000000;
         OnGoldChange?.Invoke(Gold);
     }
 
@@ -132,19 +151,33 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         return true;
     }
 
-    // 소환 코스트(DP) 수급 및 변경 이벤트 발행 처리
+    // 소환 코스트(DP) 수급 및 변경 이벤트 발행 처리 (MaxDpCost 상한 제한 처리)
+    // 이유: DpCost가 MaxDpCost를 초과하지 않도록 Clamp 처리하고 꽉 차면 리젠을 정지함
     public void GetDpCost(int dpCost)
     {
-        DpCost += dpCost;
+        DpCost = Mathf.Min(DpCost + dpCost, MaxDpCost);
         OnDpCostChange?.Invoke(DpCost);
+
+        if (DpCost >= MaxDpCost)
+        {
+            _isPaused = true;
+        }
     }
 
     // 소환 코스트(DP) 소모 검증 및 안전 차감 처리
+    // 이유: DP 소모 시 MaxDpCost 미만이 되므로 _isPaused = false로 설정하여 자동 리젠을 재개함
     public bool TrySpendDpCost(int dpCost)
     {
         if (DpCost < dpCost) return false;
+
         DpCost -= dpCost;
         OnDpCostChange?.Invoke(DpCost);
+
+        if (DpCost < MaxDpCost)
+        {
+            _isPaused = false;
+        }
+
         return true;
     }
     
@@ -197,12 +230,18 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         }
     }
 
-    // 소환 코스트(DP) 수급 배율 업그레이드 연산
-    public void DpCostMagnificationUpgrade(int level)
+    // 소환 코스트(DP) 수급 배율 업그레이드 연산 (MaxDpCost 증가)
+    // 이유: 최대 코스트가 확장되었으므로 DpCost < MaxDpCost일 때 리젠을 즉시 재개함
+    public void MaxDpCostUpgrade(int level)
     {
         for (int i = 0; i < level; i++)
         {
-            dpCostMagnification += dpCostMagnificationIncrease;
+            MaxDpCost += maxDpCostIncrease;
+        }
+
+        if (DpCost < MaxDpCost)
+        {
+            _isPaused = false;
         }
     }
 
@@ -241,14 +280,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             {
                 timer += Time.deltaTime;
                 float sliderValue = Mathf.Lerp(0, 1, timer / _currentRegenTime);
+                OnDpCostSliderChange?.Invoke(sliderValue);
                 if (sliderValue >= 1)
                 {
-                    int dpCost = (int)((baseDpCost + dpCostBonus) * dpCostMagnification);
+                    int dpCost = baseDpCost + dpCostBonus;
                     GetDpCost(dpCost);
-                    long gold = (long)((baseGold + goldBonus) * goldMagnification);
-                    GetGold(gold);
-                    int diamond = (int)((baseDiamond + diamondBonus) * diamondMagnification);
-                    GetDiamond(diamond);
                     timer = 0;
                 }
             }
@@ -281,9 +317,9 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 재화 데이터 초기화 및 UI 갱신 이벤트 발행 처리
     private void OnReset(DataResetEvent evt)
     {
-        Gold    = 0;
-        Diamond = 0;
-        DpCost  = 5;
+        Gold    = baseGold;
+        Diamond = baseDiamond;
+        DpCost  = baseDpCost;
         OnGoldChange?.Invoke(Gold);
         OnDiamondChange?.Invoke(Diamond);
         OnDpCostChange?.Invoke(DpCost);

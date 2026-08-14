@@ -1,14 +1,14 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class GridMapRenderer : MonoBehaviour
 {
-    [Header("Å¸ÀÏ ¼³Á¤")]
+    [Header("íƒ€ì¼ ì„¤ì •")]
     [SerializeField] private TileView tilePrefab;
 
     [SerializeField, Min(0.1f)]
     private float tileSize = 1.0f;
 
-    [Header("»ı¼º Å¸ÀÏ ºÎ¸ğ")]
+    [Header("ìƒì„± íƒ€ì¼ ë¶€ëª¨")]
     [SerializeField] private Transform tileRoot;
 
     public void RenderMap(TileNode[,] grid)
