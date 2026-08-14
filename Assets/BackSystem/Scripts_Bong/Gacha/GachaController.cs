@@ -2,16 +2,20 @@ using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
-// 가챠 추첨 프로세스, 다이아 차감, 6단계 등급 추첨 및 유저 캐릭터 보유(IsOwned) 여부 업데이트 총괄 컨트롤러
 [RequireComponent(typeof(GachaDataProvider))]
 public class GachaController : SingletonBase<GachaController>
 {
     #region 직렬화 필드 (인스펙터 바인딩)
 
     [Header("가챠 비용 및 천장 설정")]
-    [SerializeField] private int singleDrawCost = 300;   // 1회 가챠 소모 다이아 수량
-    [SerializeField] private int tenDrawCost = 3000;     // 10회 가챠 소모 다이아 수량
-    [SerializeField] private int pityThreshold = 100;    // 6성 확정 천장 횟수 (100회)
+    [Tooltip("1회 가챠 소모 다이아 수량")]
+    [SerializeField] private int singleDrawCost = 300;
+
+    [Tooltip("10회 가챠 소모 다이아 수량")]
+    [SerializeField] private int tenDrawCost = 3000;
+
+    [Tooltip("6성 확정 천장 횟수 (100회)")]
+    [SerializeField] private int pityThreshold = 100;
 
     #endregion
 
@@ -29,12 +33,14 @@ public class GachaController : SingletonBase<GachaController>
 
     #region 라이프 사이클
 
+    // 인스턴스 초기화 및 컴포넌트 참조 연산
     protected override void Awake()
     {
         base.Awake();
         _dataProvider = GetComponent<GachaDataProvider>();
     }
 
+    // 이벤트 버스 구독 연산
     private void OnEnable()
     {
         EventBus.Subscribe<DataSaveEvent>(OnSave);
@@ -42,6 +48,7 @@ public class GachaController : SingletonBase<GachaController>
         EventBus.Subscribe<DataResetEvent>(OnReset);
     }
 
+    // 이벤트 버스 구독 해제 연산
     private void OnDisable()
     {
         EventBus.Unsubscribe<DataSaveEvent>(OnSave);
@@ -53,12 +60,11 @@ public class GachaController : SingletonBase<GachaController>
 
     #region 가챠 실행 핵심 메서드
 
-    // 가챠 횟수별 추첨 실행 및 보유 처리
+    // 가챠 뽑기 실행 및 결과 반환 연산
     public List<IGachaRewardItem> ExecuteGacha(int drawCount)
     {
         int requiredCost = (drawCount >= 10) ? tenDrawCost : singleDrawCost * drawCount;
 
-        // 재화(다이아) 차감 검증
         if (!CurrencyManager.Instance.TrySpendDiamond(requiredCost))
         {
             Debug.LogWarning("[GachaController] 다이아가 부족하여 가챠를 실행할 수 없습니다.");
@@ -72,13 +78,10 @@ public class GachaController : SingletonBase<GachaController>
             CurrentPityStack++;
             bool isPity = (CurrentPityStack >= pityThreshold);
 
-            // 1. 6단계 등급(OneStar~SixStar) 추첨
             UnitGrade rolledGrade = _dataProvider.RollGrade(isPity);
 
-            // 2. 등급 풀에서 무작위 유닛 1종 획득
             IGachaRewardItem rewardItem = _dataProvider.GetRandomItemByGrade(rolledGrade);
 
-            // 3. 천장 달성 시 스택 초기화
             if (isPity || rolledGrade == UnitGrade.SixStar)
             {
                 CurrentPityStack = 0;
@@ -86,13 +89,11 @@ public class GachaController : SingletonBase<GachaController>
 
             if (rewardItem != null)
             {
-                // 4. 유저 보유 여부(IsOwned) 판별 및 갱신
                 bool alreadyOwned = _ownedUnitIds.Contains(rewardItem.RewardId);
                 rewardItem.IsOwned = alreadyOwned;
 
                 if (!alreadyOwned)
                 {
-                    // 최초 획득 시 보유 목록에 등록
                     _ownedUnitIds.Add(rewardItem.RewardId);
                 }
 
@@ -100,7 +101,6 @@ public class GachaController : SingletonBase<GachaController>
             }
         }
 
-        // 가챠 뽑기 완료 이벤트 전파 (UI 연동)
         EventBus.Publish(new GachaDrawCompletedEvent(results, CurrentPityStack));
 
         return results;
@@ -110,22 +110,36 @@ public class GachaController : SingletonBase<GachaController>
 
     #region 데이터 세이브/로드 연동
 
+    // 가챠 관련 세이브 데이터 저장 연산
     private void OnSave(DataSaveEvent evt)
     {
         evt.saveData.gacha.pityStackCount = CurrentPityStack;
-
-        // 보유 유닛 목록 보존
         evt.saveData.unitDeck.ownedUnits.Clear();
+
         foreach (string unitId in _ownedUnitIds)
         {
-            evt.saveData.unitDeck.ownedUnits.Add(new UnitSaveData
+            if (int.TryParse(unitId.Replace("UNIT_", ""), out int parsedId))
             {
-                unitId = unitId.GetHashCode(), // 임시 해시 매핑 또는 String ID 저장 지원
-                level = 1
-            });
+                evt.saveData.unitDeck.ownedUnits.Add(new UnitSaveData
+                {
+                    unitId = parsedId,
+                    level = 1,
+                    breakThroughStep = 0
+                });
+            }
+            else
+            {
+                evt.saveData.unitDeck.ownedUnits.Add(new UnitSaveData
+                {
+                    unitId = unitId.GetHashCode(),
+                    level = 1,
+                    breakThroughStep = 0
+                });
+            }
         }
     }
 
+    // 가챠 관련 세이브 데이터 로드 연산
     private void OnLoad(DataLoadEvent evt)
     {
         CurrentPityStack = evt.saveData.gacha.pityStackCount;
@@ -135,12 +149,15 @@ public class GachaController : SingletonBase<GachaController>
         {
             foreach (var unitSave in evt.saveData.unitDeck.ownedUnits)
             {
-                // 보유 세이브 데이터를 기반으로 습득 유닛 ID 복원
+                if (unitSave == null) continue;
+                string formattedId = $"UNIT_{unitSave.unitId:D4}";
+                _ownedUnitIds.Add(formattedId);
                 _ownedUnitIds.Add(unitSave.unitId.ToString());
             }
         }
     }
 
+    // 가챠 진행 데이터 초기화 연산
     private void OnReset(DataResetEvent evt)
     {
         CurrentPityStack = 0;

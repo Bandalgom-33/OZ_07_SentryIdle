@@ -2,25 +2,24 @@
 using System;
 using UnityEngine;
 
-// 게임 내 6대 재화 종류 정의
 public enum CurrencyType
 {
     Gold,
     Diamond,
     DpCost,
-    WaveStone,   // 보스 라운드(5라운드) 클리어 마석
-    StageStone,  // 원정 방치 던전 클리어 마석
-    RaidStone    // 보스 레이드 클리어 마석
+    WaveStone,
+    StageStone,
+    RaidStone
 }
 
 #region 게임 상태 및 세팅 이벤트
     
-    //게임 상태 변경
     public readonly struct GameStateChangedEvent
     {
         public readonly GameState previousState;
         public readonly GameState newState;
 
+        // 게임 상태 변경 이벤트 생성자
         public GameStateChangedEvent(GameState previousState, GameState newState)
         {
             this.previousState = previousState;
@@ -28,12 +27,12 @@ public enum CurrencyType
         }
     }
 
-    //게임 속도 변경
     public readonly struct GameSpeedChangedEvent
     {
         public readonly int speedIndex;
         public readonly float timeScale;
 
+        // 게임 속도 변경 이벤트 생성자
         public GameSpeedChangedEvent(int speedIndex, float timeScale)
         {
             this.speedIndex = speedIndex;
@@ -45,13 +44,13 @@ public enum CurrencyType
 
 #region 재화 및 스탯 이벤트
     
-    // 재화 변경 이벤트
     public readonly struct CurrencyChangedEvent
     {
         public readonly CurrencyType currencyType; 
         public readonly long currentAmount;
         public readonly long changeAmount; 
 
+        // 재화 변경 이벤트 생성자
         public CurrencyChangedEvent(CurrencyType currencyType, long currentAmount, long changeAmount)
         {
             this.currencyType = currencyType;
@@ -60,12 +59,12 @@ public enum CurrencyType
         }
     }
 
-    // 스텟 변경 이벤트
     public readonly struct StatUpgradedEvent
     {
         public readonly string statType; 
         public readonly int newLevel;    
 
+        // 스탯 업그레이드 이벤트 생성자
         public StatUpgradedEvent(string statType, int newLevel)
         {
             this.statType = statType;
@@ -77,12 +76,12 @@ public enum CurrencyType
 
 #region 스테이지 및 디펜스 전투 이벤트
 
-    // 스테이지/ 웨이브 변경 이벤트
     public readonly struct StageWaveChangedEvent
     {
         public readonly int stageNumber;
         public readonly int waveNumber;
 
+        // 스테이지 및 웨이브 변경 이벤트 생성자
         public StageWaveChangedEvent(int stageNumber, int waveNumber)
         {
             this.stageNumber = stageNumber;
@@ -90,7 +89,6 @@ public enum CurrencyType
         }
     }
 
-    // 적 사망 이벤트 (재화, 경험치 보상 및 오브젝트 처리를 위한 이벤트)
     public readonly struct EnemyDiedEvent
     {
         public readonly UnityEngine.GameObject enemyGameObject;
@@ -99,6 +97,7 @@ public enum CurrencyType
         public readonly int rewardExp;
         public readonly UnityEngine.Vector3 position;
 
+        // 적 사망 이벤트 생성자
         public EnemyDiedEvent(UnityEngine.GameObject enemyGameObject, string enemyId, int rewardGold, int rewardExp, UnityEngine.Vector3 position)
         {
             this.enemyGameObject = enemyGameObject;
@@ -117,6 +116,7 @@ public readonly struct DataSaveEvent
 {
     public readonly SaveData saveData;
 
+    // 데이터 저장 이벤트 생성자
     public DataSaveEvent(SaveData saveData)
     {
         this.saveData = saveData;
@@ -126,6 +126,8 @@ public readonly struct DataSaveEvent
 public readonly struct DataLoadEvent
 {
     public readonly SaveData saveData;
+
+    // 데이터 로드 이벤트 생성자
     public DataLoadEvent(SaveData saveData)
     {
         this.saveData = saveData;
@@ -146,10 +148,28 @@ public readonly struct GachaDrawCompletedEvent
     public readonly System.Collections.Generic.List<IGachaRewardItem> resultItems;
     public readonly int currentPityStack;
 
+    // 가챠 완료 이벤트 생성자
     public GachaDrawCompletedEvent(System.Collections.Generic.List<IGachaRewardItem> resultItems, int currentPityStack)
     {
         this.resultItems = resultItems;
         this.currentPityStack = currentPityStack;
+    }
+}
+
+#endregion
+
+#region 덱 이벤트
+
+// 덱 슬롯 편성 데이터 변경 이벤트
+public readonly struct DeckChangedEvent
+{
+    // 변경된 10개 덱 슬롯 유닛 ID 배열 (크기 10, 미편성 시 -1)
+    public readonly int[] deckSlots;
+
+    // 덱 변경 이벤트 생성자
+    public DeckChangedEvent(int[] deckSlots)
+    {
+        this.deckSlots = deckSlots != null ? (int[])deckSlots.Clone() : new int[10] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
     }
 }
 

@@ -2,16 +2,19 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 업그레이드 UI 전체 패널 제어 매니저
 public class UpgradeUi : MonoBehaviour
 {
     #region 직렬화 변수 (인스펙터 바인딩)
 
     [Header("--- 상단 UI 요소 ---")]
+    [Tooltip("상단 보유 골드 표시 텍스트")]
     [SerializeField] private Text availableGoldText;
+
+    [Tooltip("업그레이드 패널 닫기 버튼")]
     [SerializeField] private Button exitButton;
 
     [Header("--- 업그레이드 슬롯 리스트 ---")]
+    [Tooltip("화면에 노출할 업그레이드 슬롯 컴포넌트 배열")]
     [SerializeField] private UIUpgradeItemSlot[] upgradeSlots;
 
     #endregion
@@ -24,7 +27,7 @@ public class UpgradeUi : MonoBehaviour
 
     #region 라이프 사이클
 
-    // 닫기 버튼 및 슬롯 인덱스 초기화
+    // 버튼 및 슬롯 초기화 연산
     private void Awake()
     {
         if (exitButton != null)
@@ -44,7 +47,7 @@ public class UpgradeUi : MonoBehaviour
         }
     }
 
-    // 재화 변경 및 업그레이드 이벤트 구독 등록
+    // 이벤트 액션 구독 및 슬롯 갱신
     private void OnEnable()
     {
         CurrencyManager.OnGoldChange += OnGoldAmountChanged;
@@ -55,7 +58,7 @@ public class UpgradeUi : MonoBehaviour
         RefreshAllSlots();
     }
 
-    // 이벤트 구독 해제
+    // 이벤트 구독 해제 연산
     private void OnDisable()
     {
         CurrencyManager.OnGoldChange -= OnGoldAmountChanged;
@@ -64,13 +67,13 @@ public class UpgradeUi : MonoBehaviour
         UpgradeManager.OnUpgradeCompleted -= RefreshAllSlots;
     }
 
-    // 다이아 변경시 슬롯 UI 갱신 처리
+    // 다이아 변경 시 슬롯 UI 갱신
     private void OnOtherCurrencyChanged(long amount)
     {
         RefreshAllSlots();
     }
 
-    // DP 코스트 변경시 슬롯 UI 갱신 처리
+    // DP 코스트 변경 시 슬롯 UI 갱신
     private void OnDpCostAmountChanged(int amount)
     {
         RefreshAllSlots();
@@ -80,7 +83,7 @@ public class UpgradeUi : MonoBehaviour
 
     #region 슬롯 강화 요청 중계
 
-    // 슬롯 클릭 강화 요청 정적 중계
+    // 슬롯 강화 요청 중계
     public static void TriggerUpgradeRequest(int typeIndex, int count)
     {
         OnCurrencyUpgrade?.Invoke(typeIndex, count);
@@ -90,14 +93,14 @@ public class UpgradeUi : MonoBehaviour
 
     #region UI 갱신 로직
 
-    // 보유 골드 변경시 리스너 처리
+    // 골드 잔액 변경 시 UI 갱신
     private void OnGoldAmountChanged(long gold)
     {
         UpdateAvailableGoldText(gold);
         RefreshAllSlots();
     }
 
-    // 상단 보유 골드 텍스트 표기
+    // 보유 골드 텍스트 갱신
     private void UpdateAvailableGoldText(long gold)
     {
         if (availableGoldText != null)
@@ -106,7 +109,7 @@ public class UpgradeUi : MonoBehaviour
         }
     }
 
-    // 전체 슬롯 UI 피드백 갱신
+    // 전체 슬롯 UI 갱신 연산
     public void RefreshAllSlots()
     {
         long currentGold = CurrencyManager.Instance != null ? CurrencyManager.Instance.Gold : 0;
@@ -165,13 +168,13 @@ public class UpgradeUi : MonoBehaviour
         }
     }
 
-    // 패널 닫기 처리
+    // 패널 닫기 연산
     public void ClosePanel()
     {
         gameObject.SetActive(false);
     }
 
-    // 대용량 숫자 단위 포맷팅 유틸리티
+    // 숫자 축약 포맷팅 처리
     private string FormatNumber(double value)
     {
         if (value < 1000) return value.ToString("N0");

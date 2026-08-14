@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-// 시스템 간 직접 참조(의존성) 방지를 위한 제네릭 기반 중앙 이벤트 발행/구독 버스
 public static class EventBus
 {
-    // 이벤트 타입별 구독자 대리자(Delegate) 사전 매핑 레지스터
     private static readonly Dictionary<Type, Delegate> EventListeners = new Dictionary<Type, Delegate>();
 
-    // 특정 이벤트 메시지 중앙 발행 연산 (구독 중인 수신자들에게 일괄 메시지 전달)
+    // 이벤트 발행 연산
     public static void Publish<T>(T eventMessage) where T : struct
     {
         Type eventType = typeof(T);
@@ -19,7 +17,7 @@ public static class EventBus
         }
     }
 
-    // 특정 이벤트 타입의 메시지 수신 구독 등록 처리
+    // 이벤트 구독 등록 처리
     public static void Subscribe<T>(Action<T> listener) where T : struct
     {
         Type eventType = typeof(T);
@@ -34,7 +32,7 @@ public static class EventBus
         }
     }
 
-    // 등록된 이벤트 수신 레지스터 구독 해제 처리 (메모리 누수 방지)
+    // 이벤트 구독 해제 처리
     public static void Unsubscribe<T>(Action<T> listener) where T : struct
     {
         Type eventType = typeof(T);
@@ -54,7 +52,7 @@ public static class EventBus
         }
     }
 
-    // 전체 등록 이벤트 리스너 레지스터 클리어 처리
+    // 전체 이벤트 리스너 초기화
     public static void ClearAllListeners()
     {
         EventListeners.Clear();
