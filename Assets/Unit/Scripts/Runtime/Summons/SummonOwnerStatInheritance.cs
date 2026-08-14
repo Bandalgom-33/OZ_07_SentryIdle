@@ -7,10 +7,10 @@ namespace EndlessGuard.Unit.Runtime
     [Serializable]
     public sealed class SummonOwnerStatInheritance
     {
-        [Tooltip("¼ÒÈ¯ÀÚ·ÎºÎÅÍ ¹°·Á¹ŞÀ» ÇöÀç ÀüÅõ ´É·ÂÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ì†Œí™˜ìë¡œë¶€í„° ë¬¼ë ¤ë°›ì„ í˜„ì¬ ì „íˆ¬ ëŠ¥ë ¥ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private PassiveStatType statType = PassiveStatType.None;
 
-        [Tooltip("¼ÒÈ¯ ½ÃÁ¡ÀÇ ¼ÒÈ¯ÀÚ ÇöÀç ´É·ÂÄ¡¿¡¼­ ¹°·Á¹ŞÀ» ºñÀ²(%)ÀÔ´Ï´Ù. ¿¹: 50ÀÌ¸é ÇöÀç ´É·ÂÄ¡ÀÇ 50%¸¦ ¼ÒÈ¯¹°¿¡ Àû¿ëÇÕ´Ï´Ù.")]
+        [Tooltip("ì†Œí™˜ ì‹œì ì˜ ì†Œí™˜ì í˜„ì¬ ëŠ¥ë ¥ì¹˜ì—ì„œ ë¬¼ë ¤ë°›ì„ ë¹„ìœ¨(%)ì…ë‹ˆë‹¤. ì˜ˆ: 50ì´ë©´ í˜„ì¬ ëŠ¥ë ¥ì¹˜ì˜ 50%ë¥¼ ì†Œí™˜ë¬¼ì— ì ìš©í•©ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float inheritPercent;
 

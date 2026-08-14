@@ -22,13 +22,13 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("¹æ¾î ¿À¶ó ±âº»°ª", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ë°©ì–´ ì˜¤ë¼ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(physicalDefenseBonusPercent, new GUIContent("¹°¸® ¹æ¾î·Â Áõ°¡À² (%)", "ºñÈ£ÀÚ°¡ »ì¾ÆÀÖ´Â µ¿¾È ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â ±âº» ÃßÃµ ¹°¸® ¹æ¾î·Â Áõ°¡À²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(magicalDefenseBonusPercent, new GUIContent("¸¶¹ý ¹æ¾î·Â Áõ°¡À² (%)", "ºñÈ£ÀÚ°¡ »ì¾ÆÀÖ´Â µ¿¾È ¾Æ±º ¸ó½ºÅÍ¿¡°Ô Àû¿ëÇÏ´Â ±âº» ÃßÃµ ¸¶¹ý ¹æ¾î·Â Áõ°¡À²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.PropertyField(physicalDefenseBonusPercent, new GUIContent("ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)", "ë¹„í˜¸ìžê°€ ì‚´ì•„ìžˆëŠ” ë™ì•ˆ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë¬¼ë¦¬ ë°©ì–´ë ¥ ì¦ê°€ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(magicalDefenseBonusPercent, new GUIContent("ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ìœ¨ (%)", "ë¹„í˜¸ìžê°€ ì‚´ì•„ìžˆëŠ” ë™ì•ˆ ì•„êµ° ëª¬ìŠ¤í„°ì—ê²Œ ì ìš©í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë§ˆë²• ë°©ì–´ë ¥ ì¦ê°€ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("¹æ¾î ¿À¶ó´Â ºñÈ£ÀÚ°¡ ÇÊµå¿¡ »ì¾ÆÀÖ´Â µ¿¾È ¸ðµç »ì¾ÆÀÖ´Â ¾Æ±º ¸ó½ºÅÍ¿Í ºñÈ£ÀÚ ÀÚ½Å¿¡°Ô Àû¿ëµË´Ï´Ù. ½ÇÁ¦ ·±Å¸ÀÓ¿¡¼­´Â µîÀå¡¤»ç¸Á µîÀÇ »óÅÂ º¯È­ ½Ã °»½ÅÇÏ´Â ¹æ½ÄÀ¸·Î ±¸ÇöÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ë°©ì–´ ì˜¤ë¼ëŠ” ë¹„í˜¸ìžê°€ í•„ë“œì— ì‚´ì•„ìžˆëŠ” ë™ì•ˆ ëª¨ë“  ì‚´ì•„ìžˆëŠ” ì•„êµ° ëª¬ìŠ¤í„°ì™€ ë¹„í˜¸ìž ìžì‹ ì—ê²Œ ì ìš©ë©ë‹ˆë‹¤. ì‹¤ì œ ëŸ°íƒ€ìž„ì—ì„œëŠ” ë“±ìž¥Â·ì‚¬ë§ ë“±ì˜ ìƒíƒœ ë³€í™” ì‹œ ê°±ì‹ í•˜ëŠ” ë°©ì‹ìœ¼ë¡œ êµ¬í˜„í•©ë‹ˆë‹¤.", MessageType.Info);
         }
     }
 }

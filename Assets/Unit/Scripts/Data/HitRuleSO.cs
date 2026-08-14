@@ -5,20 +5,20 @@ namespace EndlessGuard.Unit.Data
     [CreateAssetMenu(fileName = "HitRule", menuName = "Endless Guard/Combat/Hit Rule")]
     public sealed class HitRuleSO : ScriptableObject
     {
-        [Header("¸íÁß¡¤È¸ÇÇ °è»ê ±ÔÄ¢")]
-        [Tooltip("È¸ÇÇ·ÂÀ» ¸íÁß È®·ü °è»ê½Ä¿¡ ¹İ¿µÇÒ ¶§ °öÇÏ´Â °¡ÁßÄ¡ÀÔ´Ï´Ù. ±âº»°ª 0.25¿¡¼­´Â ¸íÁß·Â°ú È¸ÇÇ·ÂÀÌ °°À» ¶§ ¸íÁß·üÀÌ 80%ÀÔ´Ï´Ù.")]
+        [Header("ëª…ì¤‘Â·íšŒí”¼ ê³„ì‚° ê·œì¹™")]
+        [Tooltip("íšŒí”¼ë ¥ì„ ëª…ì¤‘ í™•ë¥  ê³„ì‚°ì‹ì— ë°˜ì˜í•  ë•Œ ê³±í•˜ëŠ” ê°€ì¤‘ì¹˜ì…ë‹ˆë‹¤. ê¸°ë³¸ê°’ 0.25ì—ì„œëŠ” ëª…ì¤‘ë ¥ê³¼ íšŒí”¼ë ¥ì´ ê°™ì„ ë•Œ ëª…ì¤‘ë¥ ì´ 80%ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float evasionWeight = 0.25f;
 
-        [Tooltip("¸íÁß·Â°ú È¸ÇÇ·ÂÀÌ ¸ğµÎ 0ÀÏ ¶§ »ç¿ëÇÒ ¸íÁß·üÀÔ´Ï´Ù.")]
+        [Tooltip("ëª…ì¤‘ë ¥ê³¼ íšŒí”¼ë ¥ì´ ëª¨ë‘ 0ì¼ ë•Œ ì‚¬ìš©í•  ëª…ì¤‘ë¥ ì…ë‹ˆë‹¤.")]
         [Range(0f, 100f)]
         [SerializeField] private float zeroStatHitChancePercent = 100f;
 
-        [Tooltip("ÀÏ¹İ °ø°İ ¸íÁß ÆÇÁ¤¿¡¼­ Çã¿ëÇÒ ÃÖ¼Ò ¸íÁß·üÀÔ´Ï´Ù.")]
+        [Tooltip("ì¼ë°˜ ê³µê²© ëª…ì¤‘ íŒì •ì—ì„œ í—ˆìš©í•  ìµœì†Œ ëª…ì¤‘ë¥ ì…ë‹ˆë‹¤.")]
         [Range(0f, 100f)]
         [SerializeField] private float minimumHitChancePercent = 5f;
 
-        [Tooltip("ÀÏ¹İ °ø°İ ¸íÁß ÆÇÁ¤¿¡¼­ Çã¿ëÇÒ ÃÖ´ë ¸íÁß·üÀÔ´Ï´Ù.")]
+        [Tooltip("ì¼ë°˜ ê³µê²© ëª…ì¤‘ íŒì •ì—ì„œ í—ˆìš©í•  ìµœëŒ€ ëª…ì¤‘ë¥ ì…ë‹ˆë‹¤.")]
         [Range(0f, 100f)]
         [SerializeField] private float maximumHitChancePercent = 100f;
 

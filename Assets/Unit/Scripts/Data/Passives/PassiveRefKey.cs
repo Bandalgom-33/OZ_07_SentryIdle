@@ -4,10 +4,10 @@ namespace EndlessGuard.Unit.Data
 {
     public enum PassiveRefKey
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("¼ÒÈ¯¹° ÇÁ¸®ÆÕ")]
+        [InspectorName("ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹")]
         SummonPrefab = 1
     }
 }

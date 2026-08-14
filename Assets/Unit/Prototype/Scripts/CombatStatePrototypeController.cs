@@ -8,69 +8,69 @@ namespace EndlessGuard.Unit.Prototype
     [RequireComponent(typeof(CombatLoop))]
     public sealed class CombatStatePrototypeController : MonoBehaviour
     {
-        [Header("°ËÁõ ´ë»ó ÇÁ¸®ÆÕ")]
-        [Tooltip("·±Å¸ÀÓ Ã¼·Â°ú SP¸¦ °ËÁõÇÒ °ø½Ä Ä³¸¯ÅÍ ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ëŒ€ìƒ í”„ë¦¬íŒ¹")]
+        [Tooltip("ëŸ°íƒ€ì„ ì²´ë ¥ê³¼ SPë¥¼ ê²€ì¦í•  ê³µì‹ ìºë¦­í„° í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private GameObject unitPrefab;
 
-        [Tooltip("·±Å¸ÀÓ Ã¼·Â°ú »ç¸Á ÀÌº¥Æ®¸¦ °ËÁõÇÒ °ø½Ä ¸ó½ºÅÍ ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Tooltip("ëŸ°íƒ€ì„ ì²´ë ¥ê³¼ ì‚¬ë§ ì´ë²¤íŠ¸ë¥¼ ê²€ì¦í•  ê³µì‹ ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private GameObject enemyPrefab;
 
-        [Header("°İÀÚ »ı¼º ¼³Á¤")]
-        [Tooltip("°İÀÚ ÁÂÇ¥ (0, 0)ÀÌ ¹èÄ¡µÉ ±âÁØ ¿ùµå À§Ä¡ÀÔ´Ï´Ù.")]
+        [Header("ê²©ì ìƒì„± ì„¤ì •")]
+        [Tooltip("ê²©ì ì¢Œí‘œ (0, 0)ì´ ë°°ì¹˜ë  ê¸°ì¤€ ì›”ë“œ ìœ„ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector3 gridWorldOrigin;
 
-        [Tooltip("°İÀÚ ÇÑ Ä­ÀÇ ¿ùµå Å©±âÀÔ´Ï´Ù. ÇöÀç ÇÁ·ÎÅäÅ¸ÀÔÀº 1À» »ç¿ëÇÕ´Ï´Ù.")]
+        [Tooltip("ê²©ì í•œ ì¹¸ì˜ ì›”ë“œ í¬ê¸°ì…ë‹ˆë‹¤. í˜„ì¬ í”„ë¡œí† íƒ€ì…ì€ 1ì„ ì‚¬ìš©í•©ë‹ˆë‹¤.")]
         [Min(0.01f)]
         [SerializeField] private float tileWorldSize = 1f;
 
-        [Tooltip("Ä³¸¯ÅÍ°¡ »ı¼ºµÉ °İÀÚ Å¸ÀÏ ÁÂÇ¥ÀÔ´Ï´Ù.")]
+        [Tooltip("ìºë¦­í„°ê°€ ìƒì„±ë  ê²©ì íƒ€ì¼ ì¢Œí‘œì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector2Int unitTileCoordinate = Vector2Int.zero;
 
-        [Tooltip("¸ó½ºÅÍ°¡ »ı¼ºµÉ °İÀÚ Å¸ÀÏ ÁÂÇ¥ÀÔ´Ï´Ù.")]
+        [Tooltip("ëª¬ìŠ¤í„°ê°€ ìƒì„±ë  ê²©ì íƒ€ì¼ ì¢Œí‘œì…ë‹ˆë‹¤.")]
         [SerializeField] private Vector2Int enemyTileCoordinate = new Vector2Int(1, 0);
 
-        [Tooltip("Ä³¸¯ÅÍÀÇ ¿ùµå Y À§Ä¡ÀÔ´Ï´Ù. ¾ğ´ö ¹èÄ¡ °ËÁõÀÌ ÇÊ¿äÇÏ¸é ÀÌ °ª¸¸ º¯°æÇÕ´Ï´Ù.")]
+        [Tooltip("ìºë¦­í„°ì˜ ì›”ë“œ Y ìœ„ì¹˜ì…ë‹ˆë‹¤. ì–¸ë• ë°°ì¹˜ ê²€ì¦ì´ í•„ìš”í•˜ë©´ ì´ ê°’ë§Œ ë³€ê²½í•©ë‹ˆë‹¤.")]
         [SerializeField] private float unitSpawnHeight;
 
-        [Tooltip("¸ó½ºÅÍÀÇ ¿ùµå Y À§Ä¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ëª¬ìŠ¤í„°ì˜ ì›”ë“œ Y ìœ„ì¹˜ì…ë‹ˆë‹¤.")]
         [SerializeField] private float enemySpawnHeight;
 
-        [Tooltip("Ä³¸¯ÅÍ°¡ »ı¼ºµÉ ¶§ ¹Ù¶óº¸´Â °İÀÚ ¹æÇâÀÔ´Ï´Ù.")]
+        [Tooltip("ìºë¦­í„°ê°€ ìƒì„±ë  ë•Œ ë°”ë¼ë³´ëŠ” ê²©ì ë°©í–¥ì…ë‹ˆë‹¤.")]
         [SerializeField] private GridFacingDirection unitFacingDirection = GridFacingDirection.East;
 
-        [Tooltip("¸ó½ºÅÍ°¡ »ı¼ºµÉ ¶§ ¹Ù¶óº¸´Â °İÀÚ ¹æÇâÀÔ´Ï´Ù.")]
+        [Tooltip("ëª¬ìŠ¤í„°ê°€ ìƒì„±ë  ë•Œ ë°”ë¼ë³´ëŠ” ê²©ì ë°©í–¥ì…ë‹ˆë‹¤.")]
         [SerializeField] private GridFacingDirection enemyFacingDirection = GridFacingDirection.West;
 
-        [Tooltip("Play ½ÃÀÛ ½Ã Ä³¸¯ÅÍ¿Í ¸ó½ºÅÍ¸¦ ÀÚµ¿À¸·Î »ı¼ºÇÕ´Ï´Ù.")]
+        [Tooltip("Play ì‹œì‘ ì‹œ ìºë¦­í„°ì™€ ëª¬ìŠ¤í„°ë¥¼ ìë™ìœ¼ë¡œ ìƒì„±í•©ë‹ˆë‹¤.")]
         [SerializeField] private bool autoSpawnOnStart = true;
 
-        [Header("°ËÁõ ¼öÄ¡")]
-        [Tooltip("Ä³¸¯ÅÍ ÇÇÇØ ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ Àû¿ëÇÒ ÇÇÇØÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ìˆ˜ì¹˜")]
+        [Tooltip("ìºë¦­í„° í”¼í•´ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ì ìš©í•  í”¼í•´ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float unitDamageAmount = 1000f;
 
-        [Tooltip("Ä³¸¯ÅÍ È¸º¹ ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ Àû¿ëÇÒ È¸º¹·®ÀÔ´Ï´Ù.")]
+        [Tooltip("ìºë¦­í„° íšŒë³µ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ì ìš©í•  íšŒë³µëŸ‰ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float unitHealAmount = 500f;
 
-        [Tooltip("¸ó½ºÅÍ ÇÇÇØ ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ Àû¿ëÇÒ ÇÇÇØÀÔ´Ï´Ù.")]
+        [Tooltip("ëª¬ìŠ¤í„° í”¼í•´ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ì ìš©í•  í”¼í•´ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float enemyDamageAmount = 1000f;
 
-        [Tooltip("¸ó½ºÅÍ È¸º¹ ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ Àû¿ëÇÒ È¸º¹·®ÀÔ´Ï´Ù.")]
+        [Tooltip("ëª¬ìŠ¤í„° íšŒë³µ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ ì ìš©í•  íšŒë³µëŸ‰ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float enemyHealAmount = 500f;
 
-        [Tooltip("Ä³¸¯ÅÍ SP Áõ°¡¡¤¼Ò¸ğ ¹öÆ°¿¡¼­ »ç¿ëÇÒ ¼öÄ¡ÀÔ´Ï´Ù.")]
+        [Tooltip("ìºë¦­í„° SP ì¦ê°€Â·ì†Œëª¨ ë²„íŠ¼ì—ì„œ ì‚¬ìš©í•  ìˆ˜ì¹˜ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float skillGaugeAmount = 10f;
 
-        [Header("°ø°İ ÁøÇàµµ °ËÁõ")]
-        [Tooltip("°ø°İ ÁøÇàµµ Áõ°¡ ¹öÆ°À» ÇÑ ¹ø ´©¸¦ ¶§ Èå¸¥ °ÍÀ¸·Î °è»êÇÒ ½Ã°£ÀÔ´Ï´Ù.")]
+        [Header("ê³µê²© ì§„í–‰ë„ ê²€ì¦")]
+        [Tooltip("ê³µê²© ì§„í–‰ë„ ì¦ê°€ ë²„íŠ¼ì„ í•œ ë²ˆ ëˆ„ë¥¼ ë•Œ íë¥¸ ê²ƒìœ¼ë¡œ ê³„ì‚°í•  ì‹œê°„ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackProgressStepSeconds = 0.3f;
 
-        [Tooltip("ÁØºñµÈ °ø°İÀ» ÇÑ ¹ø¿¡ ¼ÒºñÇÒ ¼ö ÀÖ´Â ÃÖ´ë È½¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ì¤€ë¹„ëœ ê³µê²©ì„ í•œ ë²ˆì— ì†Œë¹„í•  ìˆ˜ ìˆëŠ” ìµœëŒ€ íšŸìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int maxAttackConsumeCount = 10;
 
@@ -156,7 +156,7 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (unitPrefab == null || enemyPrefab == null)
             {
-                lastEventMessage = "Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ ÇÁ¸®ÆÕÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.";
+                lastEventMessage = "ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastEventMessage, this);
                 return;
             }
@@ -174,7 +174,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (spawnedUnit == null || spawnedEnemy == null)
             {
-                lastEventMessage = "»ı¼ºµÈ ÇÁ¸®ÆÕ¿¡¼­ UnitRuntimeState ¶Ç´Â EnemyRuntimeState¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.";
+                lastEventMessage = "ìƒì„±ëœ í”„ë¦¬íŒ¹ì—ì„œ UnitRuntimeState ë˜ëŠ” EnemyRuntimeStateë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastEventMessage, this);
                 DespawnActors();
                 return;
@@ -189,7 +189,7 @@ namespace EndlessGuard.Unit.Prototype
             SubscribeInstanceEvents();
 
             float worldDistance = Vector3.Distance(unitSpawnPosition, enemySpawnPosition);
-            lastEventMessage = $"°ËÁõ ´ë»ó »ı¼º ¿Ï·á: {spawnedUnit.UnitId} Å¸ÀÏ {unitTileCoordinate}, {spawnedEnemy.EnemyId} Å¸ÀÏ {enemyTileCoordinate}, ¿ùµå °Å¸® {worldDistance:0.###}";
+            lastEventMessage = $"ê²€ì¦ ëŒ€ìƒ ìƒì„± ì™„ë£Œ: {spawnedUnit.UnitId} íƒ€ì¼ {unitTileCoordinate}, {spawnedEnemy.EnemyId} íƒ€ì¼ {enemyTileCoordinate}, ì›”ë“œ ê±°ë¦¬ {worldDistance:0.###}";
             Debug.Log(lastEventMessage, this);
         }
 
@@ -264,7 +264,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (!consumed)
             {
-                lastEventMessage = $"Ä³¸¯ÅÍ SP°¡ ºÎÁ·ÇØ {skillGaugeAmount:0.##}À» ¼Ò¸ğÇÏÁö ¸øÇß½À´Ï´Ù.";
+                lastEventMessage = $"ìºë¦­í„° SPê°€ ë¶€ì¡±í•´ {skillGaugeAmount:0.##}ì„ ì†Œëª¨í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.Log(lastEventMessage, this);
             }
         }
@@ -279,7 +279,7 @@ namespace EndlessGuard.Unit.Prototype
             float attacksPerSecond = spawnedUnit.Stats.AttacksPerSecond;
             spawnedUnit.AdvanceAttackProgress(attacksPerSecond, attackProgressStepSeconds);
 
-            lastEventMessage = $"Ä³¸¯ÅÍ °ø°İ ÁøÇà: {attackProgressStepSeconds:0.###}ÃÊ, ºóµµ {attacksPerSecond:0.###}È¸/ÃÊ, ÁøÇàµµ {spawnedUnit.AttackProgress:0.###}, ÁØºñ °ø°İ {spawnedUnit.ReadyAttackCount}È¸";
+            lastEventMessage = $"ìºë¦­í„° ê³µê²© ì§„í–‰: {attackProgressStepSeconds:0.###}ì´ˆ, ë¹ˆë„ {attacksPerSecond:0.###}íšŒ/ì´ˆ, ì§„í–‰ë„ {spawnedUnit.AttackProgress:0.###}, ì¤€ë¹„ ê³µê²© {spawnedUnit.ReadyAttackCount}íšŒ";
             Debug.Log(lastEventMessage, spawnedUnit);
         }
 
@@ -293,7 +293,7 @@ namespace EndlessGuard.Unit.Prototype
             int consumedCount = spawnedUnit.ConsumeReadyAttacks(maxAttackConsumeCount);
             unitConsumedAttackCount += consumedCount;
 
-            lastEventMessage = $"Ä³¸¯ÅÍ ÁØºñ °ø°İ {consumedCount}È¸ ¼Òºñ, ³²Àº ÁøÇàµµ {spawnedUnit.AttackProgress:0.###}, ´©Àû ¼Òºñ {unitConsumedAttackCount}È¸";
+            lastEventMessage = $"ìºë¦­í„° ì¤€ë¹„ ê³µê²© {consumedCount}íšŒ ì†Œë¹„, ë‚¨ì€ ì§„í–‰ë„ {spawnedUnit.AttackProgress:0.###}, ëˆ„ì  ì†Œë¹„ {unitConsumedAttackCount}íšŒ";
             Debug.Log(lastEventMessage, spawnedUnit);
         }
 
@@ -337,7 +337,7 @@ namespace EndlessGuard.Unit.Prototype
             float attacksPerSecond = spawnedEnemy.Stats.AttacksPerSecond;
             spawnedEnemy.AdvanceAttackProgress(attacksPerSecond, attackProgressStepSeconds);
 
-            lastEventMessage = $"¸ó½ºÅÍ °ø°İ ÁøÇà: {attackProgressStepSeconds:0.###}ÃÊ, ºóµµ {attacksPerSecond:0.###}È¸/ÃÊ, ÁøÇàµµ {spawnedEnemy.AttackProgress:0.###}, ÁØºñ °ø°İ {spawnedEnemy.ReadyAttackCount}È¸";
+            lastEventMessage = $"ëª¬ìŠ¤í„° ê³µê²© ì§„í–‰: {attackProgressStepSeconds:0.###}ì´ˆ, ë¹ˆë„ {attacksPerSecond:0.###}íšŒ/ì´ˆ, ì§„í–‰ë„ {spawnedEnemy.AttackProgress:0.###}, ì¤€ë¹„ ê³µê²© {spawnedEnemy.ReadyAttackCount}íšŒ";
             Debug.Log(lastEventMessage, spawnedEnemy);
         }
 
@@ -351,7 +351,7 @@ namespace EndlessGuard.Unit.Prototype
             int consumedCount = spawnedEnemy.ConsumeReadyAttacks(maxAttackConsumeCount);
             enemyConsumedAttackCount += consumedCount;
 
-            lastEventMessage = $"¸ó½ºÅÍ ÁØºñ °ø°İ {consumedCount}È¸ ¼Òºñ, ³²Àº ÁøÇàµµ {spawnedEnemy.AttackProgress:0.###}, ´©Àû ¼Òºñ {enemyConsumedAttackCount}È¸";
+            lastEventMessage = $"ëª¬ìŠ¤í„° ì¤€ë¹„ ê³µê²© {consumedCount}íšŒ ì†Œë¹„, ë‚¨ì€ ì§„í–‰ë„ {spawnedEnemy.AttackProgress:0.###}, ëˆ„ì  ì†Œë¹„ {enemyConsumedAttackCount}íšŒ";
             Debug.Log(lastEventMessage, spawnedEnemy);
         }
 
@@ -359,7 +359,7 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (spawnedUnit.GridPosition == null || spawnedEnemy.GridPosition == null)
             {
-                lastEventMessage = "»ı¼ºµÈ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ¿¡¼­ CombatGridPositionÀ» Ã£Áö ¸øÇß½À´Ï´Ù.";
+                lastEventMessage = "ìƒì„±ëœ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ì—ì„œ CombatGridPositionì„ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastEventMessage, this);
                 return false;
             }
@@ -427,21 +427,21 @@ namespace EndlessGuard.Unit.Prototype
         private void HandleUnitHealthChanged(CombatHealth health)
         {
             unitHealthChangedCount++;
-            lastEventMessage = $"Ä³¸¯ÅÍ HP º¯°æ: {health.CurrentHp:0.##} / {health.MaxHp:0.##}";
+            lastEventMessage = $"ìºë¦­í„° HP ë³€ê²½: {health.CurrentHp:0.##} / {health.MaxHp:0.##}";
             Debug.Log(lastEventMessage, health);
         }
 
         private void HandleEnemyHealthChanged(CombatHealth health)
         {
             enemyHealthChangedCount++;
-            lastEventMessage = $"¸ó½ºÅÍ HP º¯°æ: {health.CurrentHp:0.##} / {health.MaxHp:0.##}";
+            lastEventMessage = $"ëª¬ìŠ¤í„° HP ë³€ê²½: {health.CurrentHp:0.##} / {health.MaxHp:0.##}";
             Debug.Log(lastEventMessage, health);
         }
 
         private void HandleUnitSkillGaugeChanged(UnitRuntimeState unit)
         {
             unitSkillGaugeChangedCount++;
-            lastEventMessage = $"Ä³¸¯ÅÍ SP º¯°æ: {unit.CurrentSkillGauge:0.##} / {unit.MaxSkillGauge:0.##}";
+            lastEventMessage = $"ìºë¦­í„° SP ë³€ê²½: {unit.CurrentSkillGauge:0.##} / {unit.MaxSkillGauge:0.##}";
             Debug.Log(lastEventMessage, unit);
         }
 
@@ -453,7 +453,7 @@ namespace EndlessGuard.Unit.Prototype
             }
 
             unitDeathEventCount++;
-            lastEventMessage = $"{info.UnitId} OnUnitDied ¹ß»ı / Runtime {info.RuntimeId}";
+            lastEventMessage = $"{info.UnitId} OnUnitDied ë°œìƒ / Runtime {info.RuntimeId}";
             Debug.Log(lastEventMessage, spawnedUnit);
         }
 
@@ -465,7 +465,7 @@ namespace EndlessGuard.Unit.Prototype
             }
 
             enemyDeathEventCount++;
-            lastEventMessage = $"{info.EnemyId} OnEnemyDied ¹ß»ı / Runtime {info.RuntimeId}";
+            lastEventMessage = $"{info.EnemyId} OnEnemyDied ë°œìƒ / Runtime {info.RuntimeId}";
             Debug.Log(lastEventMessage, spawnedEnemy);
         }
     }

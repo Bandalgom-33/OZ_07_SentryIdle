@@ -14,64 +14,64 @@ namespace EndlessGuard.Unit.Editor.Phase2
             GroundBattlePrototypeController controller = (GroundBattlePrototypeController)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Ground ÅëÇÕ Prototype »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Ground í†µí•© Prototype ìƒíƒœ", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.Toggle("ÀüÅõ ÁøÇà Áß", controller.BattleRunning);
-                EditorGUILayout.IntField("ÇöÀç ¹èÄ¡ Ä³¸¯ÅÍ", controller.ActiveUnitCount);
-                EditorGUILayout.IntField("´ë±â Ä³¸¯ÅÍ", controller.ReserveUnitCount);
-                EditorGUILayout.IntField("Ãâ±¸ HP", controller.CurrentExitHp);
+                EditorGUILayout.Toggle("ì „íˆ¬ ì§„í–‰ ì¤‘", controller.BattleRunning);
+                EditorGUILayout.IntField("í˜„ì¬ ë°°ì¹˜ ìºë¦­í„°", controller.ActiveUnitCount);
+                EditorGUILayout.IntField("ëŒ€ê¸° ìºë¦­í„°", controller.ReserveUnitCount);
+                EditorGUILayout.IntField("ì¶œêµ¬ HP", controller.CurrentExitHp);
 
                 EditorGUILayout.Space(5f);
-                EditorGUILayout.LabelField("¹èÄ¡ ÄÚ½ºÆ®", EditorStyles.miniBoldLabel);
-                EditorGUILayout.IntField("ÇöÀç ÄÚ½ºÆ®", controller.CurrentCost);
-                EditorGUILayout.IntField("ÃÖ´ë ÄÚ½ºÆ®", controller.MaxCost);
-                EditorGUILayout.IntField("´©Àû ¼Òºñ ÄÚ½ºÆ®", controller.TotalCostSpent);
-                EditorGUILayout.IntField("ÃÊ´ç ÀÚµ¿ È¹µæ", controller.TotalCostRegenerated);
-                EditorGUILayout.IntField("ÆĞ½Ãºê È¹µæ ÄÚ½ºÆ®", controller.TotalPassiveCostGained);
-                EditorGUILayout.IntField("ÆĞ½Ãºê È¹µæ ¿äÃ» È½¼ö", controller.PassiveCostRequestCount);
+                EditorGUILayout.LabelField("ë°°ì¹˜ ì½”ìŠ¤íŠ¸", EditorStyles.miniBoldLabel);
+                EditorGUILayout.IntField("í˜„ì¬ ì½”ìŠ¤íŠ¸", controller.CurrentCost);
+                EditorGUILayout.IntField("ìµœëŒ€ ì½”ìŠ¤íŠ¸", controller.MaxCost);
+                EditorGUILayout.IntField("ëˆ„ì  ì†Œë¹„ ì½”ìŠ¤íŠ¸", controller.TotalCostSpent);
+                EditorGUILayout.IntField("ì´ˆë‹¹ ìë™ íšë“", controller.TotalCostRegenerated);
+                EditorGUILayout.IntField("íŒ¨ì‹œë¸Œ íšë“ ì½”ìŠ¤íŠ¸", controller.TotalPassiveCostGained);
+                EditorGUILayout.IntField("íŒ¨ì‹œë¸Œ íšë“ ìš”ì²­ íšŸìˆ˜", controller.PassiveCostRequestCount);
                 EditorGUILayout.TextArea(controller.LastCostMessage ?? string.Empty);
 
                 EditorGUILayout.Space(5f);
-                EditorGUILayout.LabelField("°ñµå", EditorStyles.miniBoldLabel);
-                EditorGUILayout.IntField("ÇöÀç °ñµå", controller.CurrentGold);
-                EditorGUILayout.IntField("´©Àû È¹µæ °ñµå", controller.TotalGoldEarned);
-                EditorGUILayout.IntField("´©Àû ¼Òºñ °ñµå", controller.TotalGoldSpent);
+                EditorGUILayout.LabelField("ê³¨ë“œ", EditorStyles.miniBoldLabel);
+                EditorGUILayout.IntField("í˜„ì¬ ê³¨ë“œ", controller.CurrentGold);
+                EditorGUILayout.IntField("ëˆ„ì  íšë“ ê³¨ë“œ", controller.TotalGoldEarned);
+                EditorGUILayout.IntField("ëˆ„ì  ì†Œë¹„ ê³¨ë“œ", controller.TotalGoldSpent);
 
                 EditorGUILayout.Space(5f);
-                EditorGUILayout.LabelField("·¹º§ / °æÇèÄ¡ / ½Â±Ş", EditorStyles.miniBoldLabel);
-                EditorGUILayout.IntField("ÁøÇà º¯°æ ÀÌº¥Æ®", controller.ProgressEventCount);
+                EditorGUILayout.LabelField("ë ˆë²¨ / ê²½í—˜ì¹˜ / ìŠ¹ê¸‰", EditorStyles.miniBoldLabel);
+                EditorGUILayout.IntField("ì§„í–‰ ë³€ê²½ ì´ë²¤íŠ¸", controller.ProgressEventCount);
                 EditorGUILayout.TextArea(controller.LastProgressMessage ?? string.Empty);
 
                 EditorGUILayout.Space(5f);
-                EditorGUILayout.LabelField("ÀüÅõ °á°ú", EditorStyles.miniBoldLabel);
-                EditorGUILayout.IntField("¸ó½ºÅÍ »ı¼º", controller.EnemySpawnCount);
-                EditorGUILayout.IntField("¸ó½ºÅÍ »ç¸Á", controller.EnemyDeathCount);
-                EditorGUILayout.IntField("Ãâ±¸ µµ´Ş", controller.EnemyReachedGoalCount);
-                EditorGUILayout.IntField("Ä³¸¯ÅÍ ±³Ã¼", controller.ReplacementCount);
+                EditorGUILayout.LabelField("ì „íˆ¬ ê²°ê³¼", EditorStyles.miniBoldLabel);
+                EditorGUILayout.IntField("ëª¬ìŠ¤í„° ìƒì„±", controller.EnemySpawnCount);
+                EditorGUILayout.IntField("ëª¬ìŠ¤í„° ì‚¬ë§", controller.EnemyDeathCount);
+                EditorGUILayout.IntField("ì¶œêµ¬ ë„ë‹¬", controller.EnemyReachedGoalCount);
+                EditorGUILayout.IntField("ìºë¦­í„° êµì²´", controller.ReplacementCount);
                 EditorGUILayout.TextArea(controller.LastMessage ?? string.Empty);
             }
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("Ground Prototype °ËÁõ ¹öÆ°Àº Play Mode¿¡¼­ »ç¿ëÇÕ´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("Ground Prototype ê²€ì¦ ë²„íŠ¼ì€ Play Modeì—ì„œ ì‚¬ìš©í•©ë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(6f);
 
-            if (GUILayout.Button("Ground ÀüÅõ ½ÃÀÛ", GUILayout.Height(30f)))
+            if (GUILayout.Button("Ground ì „íˆ¬ ì‹œì‘", GUILayout.Height(30f)))
             {
                 controller.StartBattle();
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ 1¸í ±³Ã¼"))
+            if (GUILayout.Button("ìºë¦­í„° 1ëª… êµì²´"))
             {
                 controller.ReplaceOneUnit();
             }
 
-            if (GUILayout.Button("ÀüÅõ ÃÊ±âÈ­"))
+            if (GUILayout.Button("ì „íˆ¬ ì´ˆê¸°í™”"))
             {
                 controller.ResetBattle();
             }

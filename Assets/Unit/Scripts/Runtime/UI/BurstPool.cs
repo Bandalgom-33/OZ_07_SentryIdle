@@ -7,11 +7,11 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(Canvas))]
     public sealed class BurstPool : MonoBehaviour
     {
-        [Header("Ä¡¸íÅ¸ VFX Ç®")]
-        [Tooltip("Ç®¿¡¼­ Àç»ç¿ëÇÒ Ä¡¸íÅ¸ Æø¹ß VFX ÇÁ¸®ÆÕÀÔ´Ï´Ù.")]
+        [Header("ì¹˜ëª…íƒ€ VFX í’€")]
+        [Tooltip("í’€ì—ì„œ ì¬ì‚¬ìš©í•  ì¹˜ëª…íƒ€ í­ë°œ VFX í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤.")]
         [SerializeField] private CriticalBurst burstPrefab;
 
-        [Tooltip("ÀüÅõ ½ÃÀÛ ½Ã ¹Ì¸® »ı¼ºÇÒ Ä¡¸íÅ¸ VFX °³¼öÀÔ´Ï´Ù.")]
+        [Tooltip("ì „íˆ¬ ì‹œì‘ ì‹œ ë¯¸ë¦¬ ìƒì„±í•  ì¹˜ëª…íƒ€ VFX ê°œìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int initialCapacity = 16;
 
@@ -31,7 +31,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (instance != null && instance != this)
             {
-                Debug.LogError("BurstPoolÀÌ ¾À¿¡ µÑ ÀÌ»ó Á¸ÀçÇÕ´Ï´Ù.", this);
+                Debug.LogError("BurstPoolì´ ì”¬ì— ë‘˜ ì´ìƒ ì¡´ì¬í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }
@@ -41,7 +41,7 @@ namespace EndlessGuard.Unit.Runtime
 
             if (canvasRect == null)
             {
-                Debug.LogError("BurstPoolÀº RectTransformÀÌ ÀÖ´Â Canvas¿¡ ¹èÄ¡ÇØ¾ß ÇÕ´Ï´Ù.", this);
+                Debug.LogError("BurstPoolì€ RectTransformì´ ìˆëŠ” Canvasì— ë°°ì¹˜í•´ì•¼ í•©ë‹ˆë‹¤.", this);
                 enabled = false;
                 return;
             }
@@ -96,7 +96,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             if (burstPrefab == null)
             {
-                Debug.LogError("BurstPool¿¡ CriticalBurst ÇÁ¸®ÆÕÀÌ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.", this);
+                Debug.LogError("BurstPoolì— CriticalBurst í”„ë¦¬íŒ¹ì´ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", this);
                 return;
             }
 

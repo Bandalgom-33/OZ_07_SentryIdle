@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "CritBuff", menuName = "Endless Guard/Passive/Ä¡¸íÅ¸ ÈÄ ÇÇÇØ Áõ°¡")]
+    [CreateAssetMenu(fileName = "CritBuff", menuName = "Endless Guard/Passive/ì¹˜ëª…íƒ€ í›„ í”¼í•´ ì¦ê°€")]
     public sealed class CritBuffSO : PassiveDataSO
     {
-        [Header("Ä¡¸íÅ¸ ÈÄ ÇÇÇØ Áõ°¡ ±âº»°ª")]
-        [Tooltip("Ä¡¸íÅ¸ ÀûÁß ÈÄ Áö¼Ó½Ã°£ µ¿¾È Áõ°¡ÇÏ´Â ÃÖÁ¾ ÇÇÇØ ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ º°µµ·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì¹˜ëª…íƒ€ í›„ í”¼í•´ ì¦ê°€ ê¸°ë³¸ê°’")]
+        [Tooltip("ì¹˜ëª…íƒ€ ì ì¤‘ í›„ ì§€ì†ì‹œê°„ ë™ì•ˆ ì¦ê°€í•˜ëŠ” ìµœì¢… í”¼í•´ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë³„ë„ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float finalDamageBonusPercent = 30f;
 
-        [Tooltip("Ä¡¸íÅ¸ ÀûÁß ÈÄ ÃÖÁ¾ ÇÇÇØ Áõ°¡ È¿°ú°¡ À¯ÁöµÇ´Â ½Ã°£ÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ º°µµ·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ì¹˜ëª…íƒ€ ì ì¤‘ í›„ ìµœì¢… í”¼í•´ ì¦ê°€ íš¨ê³¼ê°€ ìœ ì§€ë˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë³„ë„ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float durationSeconds = 3f;
 

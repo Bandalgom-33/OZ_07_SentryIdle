@@ -2,24 +2,24 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Berserk", menuName = "Endless Guard/Passive/±¤Àü")]
+    [CreateAssetMenu(fileName = "Berserk", menuName = "Endless Guard/Passive/ê´‘ì „")]
     public sealed class BerserkSO : PassiveDataSO
     {
-        [Header("±¤Àü ¹°¸® °ø°İ·Â ±âº»°ª")]
-        [Tooltip("ÀÒÀº HP 1%¸¶´Ù Áõ°¡ÇÏ´Â ¹°¸® °ø°İ·Â ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ê´‘ì „ ë¬¼ë¦¬ ê³µê²©ë ¥ ê¸°ë³¸ê°’")]
+        [Tooltip("ìƒì€ HP 1%ë§ˆë‹¤ ì¦ê°€í•˜ëŠ” ë¬¼ë¦¬ ê³µê²©ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float physicalAttackPerLostHpPercent = 1f;
 
-        [Tooltip("±¤Àü ÆĞ½Ãºê·Î Áõ°¡ÇÒ ¼ö ÀÖ´Â ¹°¸® °ø°İ·ÂÀÇ ÃÖ´ë ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ê´‘ì „ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•  ìˆ˜ ìˆëŠ” ë¬¼ë¦¬ ê³µê²©ë ¥ì˜ ìµœëŒ€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float maxPhysicalAttackBonusPercent = 100f;
 
-        [Header("±¤Àü ¸¶¹ı °ø°İ·Â ±âº»°ª")]
-        [Tooltip("ÀÒÀº HP 1%¸¶´Ù Áõ°¡ÇÏ´Â ¸¶¹ı °ø°İ·Â ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ê´‘ì „ ë§ˆë²• ê³µê²©ë ¥ ê¸°ë³¸ê°’")]
+        [Tooltip("ìƒì€ HP 1%ë§ˆë‹¤ ì¦ê°€í•˜ëŠ” ë§ˆë²• ê³µê²©ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float magicalAttackPerLostHpPercent = 1f;
 
-        [Tooltip("±¤Àü ÆĞ½Ãºê·Î Áõ°¡ÇÒ ¼ö ÀÖ´Â ¸¶¹ı °ø°İ·ÂÀÇ ÃÖ´ë ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ê´‘ì „ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•  ìˆ˜ ìˆëŠ” ë§ˆë²• ê³µê²©ë ¥ì˜ ìµœëŒ€ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float maxMagicalAttackBonusPercent = 100f;
 

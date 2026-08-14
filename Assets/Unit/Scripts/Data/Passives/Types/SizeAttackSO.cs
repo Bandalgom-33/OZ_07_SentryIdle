@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "SizeAttack", menuName = "Endless Guard/Passive/Å©±â ´ë»ó °ø°İ·Â Áõ°¡")]
+    [CreateAssetMenu(fileName = "SizeAttack", menuName = "Endless Guard/Passive/í¬ê¸° ëŒ€ìƒ ê³µê²©ë ¥ ì¦ê°€")]
     public sealed class SizeAttackSO : PassiveDataSO
     {
-        [Header("Å©±â ´ë»ó °ø°İ·Â Áõ°¡ ¼³Á¤")]
-        [Tooltip("°ø°İ·Â Áõ°¡ È¿°ú¸¦ Àû¿ëÇÒ ¸ó½ºÅÍ Å©±âÀÔ´Ï´Ù.")]
+        [Header("í¬ê¸° ëŒ€ìƒ ê³µê²©ë ¥ ì¦ê°€ ì„¤ì •")]
+        [Tooltip("ê³µê²©ë ¥ ì¦ê°€ íš¨ê³¼ë¥¼ ì ìš©í•  ëª¬ìŠ¤í„° í¬ê¸°ì…ë‹ˆë‹¤.")]
         [SerializeField] private EnemySize targetSize = EnemySize.None;
 
-        [Tooltip("ÇØ´ç Å©±âÀÇ ¸ó½ºÅÍ¸¦ °ø°İÇÒ ¶§ Áõ°¡ÇÏ´Â °ø°İ·Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("í•´ë‹¹ í¬ê¸°ì˜ ëª¬ìŠ¤í„°ë¥¼ ê³µê²©í•  ë•Œ ì¦ê°€í•˜ëŠ” ê³µê²©ë ¥ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackBonusPercent = 100f;
 

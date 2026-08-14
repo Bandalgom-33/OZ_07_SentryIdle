@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "BlockGauge", menuName = "Endless Guard/Passive/ÀúÁö ½Ã ½ºÅ³°ÔÀÌÁö È¹µæ")]
+    [CreateAssetMenu(fileName = "BlockGauge", menuName = "Endless Guard/Passive/ì €ì§€ ì‹œ ìŠ¤í‚¬ê²Œì´ì§€ íšë“")]
     public sealed class BlockGaugeSO : PassiveDataSO
     {
-        [Header("ÀúÁö ½ºÅ³°ÔÀÌÁö ±âº»°ª")]
-        [Tooltip("»õ·Î¿î ¸ó½ºÅÍ¸¦ ÀúÁöÇÏ´Â µ¥ ¼º°øÇÒ ¶§ È¹µæÇÏ´Â ½ºÅ³°ÔÀÌÁöÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì €ì§€ ìŠ¤í‚¬ê²Œì´ì§€ ê¸°ë³¸ê°’")]
+        [Tooltip("ìƒˆë¡œìš´ ëª¬ìŠ¤í„°ë¥¼ ì €ì§€í•˜ëŠ” ë° ì„±ê³µí•  ë•Œ íšë“í•˜ëŠ” ìŠ¤í‚¬ê²Œì´ì§€ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float skillGaugeGain = 10f;
 

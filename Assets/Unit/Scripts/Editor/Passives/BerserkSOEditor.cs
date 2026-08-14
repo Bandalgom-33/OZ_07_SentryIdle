@@ -26,14 +26,14 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("±¤Àü ¹°¸® °ø°Ý·Â ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(physicalAttackPerLostHpPercent, new GUIContent("ÀÒÀº HP 1%´ç ¹°¸® °ø°Ý·Â Áõ°¡À² (%)", "ÀÒÀº HP 1%¸¶´Ù Áõ°¡ÇÏ´Â ±âº» ÃßÃµ ¹°¸® °ø°Ý·Â ºñÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(maxPhysicalAttackBonusPercent, new GUIContent("ÃÖ´ë ¹°¸® °ø°Ý·Â Áõ°¡À² (%)", "±¤Àü ÆÐ½Ãºê·Î Áõ°¡ÇÒ ¼ö ÀÖ´Â ±âº» ÃßÃµ ¹°¸® °ø°Ý·Â ÃÖ´ëÄ¡ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ê´‘ì „ ë¬¼ë¦¬ ê³µê²©ë ¥ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(physicalAttackPerLostHpPercent, new GUIContent("ìžƒì€ HP 1%ë‹¹ ë¬¼ë¦¬ ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)", "ìžƒì€ HP 1%ë§ˆë‹¤ ì¦ê°€í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë¬¼ë¦¬ ê³µê²©ë ¥ ë¹„ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(maxPhysicalAttackBonusPercent, new GUIContent("ìµœëŒ€ ë¬¼ë¦¬ ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)", "ê´‘ì „ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•  ìˆ˜ ìžˆëŠ” ê¸°ë³¸ ì¶”ì²œ ë¬¼ë¦¬ ê³µê²©ë ¥ ìµœëŒ€ì¹˜ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("±¤Àü ¸¶¹ý °ø°Ý·Â ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(magicalAttackPerLostHpPercent, new GUIContent("ÀÒÀº HP 1%´ç ¸¶¹ý °ø°Ý·Â Áõ°¡À² (%)", "ÀÒÀº HP 1%¸¶´Ù Áõ°¡ÇÏ´Â ±âº» ÃßÃµ ¸¶¹ý °ø°Ý·Â ºñÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(maxMagicalAttackBonusPercent, new GUIContent("ÃÖ´ë ¸¶¹ý °ø°Ý·Â Áõ°¡À² (%)", "±¤Àü ÆÐ½Ãºê·Î Áõ°¡ÇÒ ¼ö ÀÖ´Â ±âº» ÃßÃµ ¸¶¹ý °ø°Ý·Â ÃÖ´ëÄ¡ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â ¸ó½ºÅÍ µ¥ÀÌÅÍÀÇ ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ê´‘ì „ ë§ˆë²• ê³µê²©ë ¥ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(magicalAttackPerLostHpPercent, new GUIContent("ìžƒì€ HP 1%ë‹¹ ë§ˆë²• ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)", "ìžƒì€ HP 1%ë§ˆë‹¤ ì¦ê°€í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë§ˆë²• ê³µê²©ë ¥ ë¹„ìœ¨ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(maxMagicalAttackBonusPercent, new GUIContent("ìµœëŒ€ ë§ˆë²• ê³µê²©ë ¥ ì¦ê°€ìœ¨ (%)", "ê´‘ì „ íŒ¨ì‹œë¸Œë¡œ ì¦ê°€í•  ìˆ˜ ìžˆëŠ” ê¸°ë³¸ ì¶”ì²œ ë§ˆë²• ê³µê²©ë ¥ ìµœëŒ€ì¹˜ìž…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ëª¬ìŠ¤í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤."));
         }
     }
 }

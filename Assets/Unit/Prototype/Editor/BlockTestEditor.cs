@@ -15,42 +15,42 @@ namespace EndlessGuard.Unit.Editor
             BlockTest test = (BlockTest)target;
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("¼öµ¿ ÀúÁö °ËÁõ »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìˆ˜ë™ ì €ì§€ ê²€ì¦ ìƒíƒœ", EditorStyles.boldLabel);
             DrawState(test);
 
             EditorGUILayout.Space(10f);
-            EditorGUILayout.LabelField("ÀÚµ¿ ÀÌµ¿ ÀúÁö °ËÁõ »óÅÂ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìë™ ì´ë™ ì €ì§€ ê²€ì¦ ìƒíƒœ", EditorStyles.boldLabel);
             DrawAutoMoveState(test);
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("°ËÁõ ¹öÆ°Àº Play »óÅÂ¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ê²€ì¦ ë²„íŠ¼ì€ Play ìƒíƒœì—ì„œ ì‚¬ìš©í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.", MessageType.Info);
                 return;
             }
 
             EditorGUILayout.Space(8f);
 
-            if (GUILayout.Button("ÀúÁö °ËÁõ ÁØºñ"))
+            if (GUILayout.Button("ì €ì§€ ê²€ì¦ ì¤€ë¹„"))
             {
                 Execute(test.Setup);
             }
 
             EditorGUILayout.Space(5f);
-            EditorGUILayout.LabelField("ÀúÁö ¿¬°á", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ì €ì§€ ì—°ê²°", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ã¹ ¹øÂ° ÀúÁö"))
+            if (GUILayout.Button("ì²« ë²ˆì§¸ ì €ì§€"))
             {
                 Execute(test.BindFirst);
             }
 
-            if (GUILayout.Button("µÎ ¹øÂ° ÀúÁö"))
+            if (GUILayout.Button("ë‘ ë²ˆì§¸ ì €ì§€"))
             {
                 Execute(test.BindSecond);
             }
 
-            if (GUILayout.Button("¼¼ ¹øÂ° ÀúÁö"))
+            if (GUILayout.Button("ì„¸ ë²ˆì§¸ ì €ì§€"))
             {
                 Execute(test.BindThird);
             }
@@ -58,48 +58,48 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space(5f);
-            EditorGUILayout.LabelField("ÀúÁö ÇØÁ¦", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ì €ì§€ í•´ì œ", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ã¹ ¹øÂ° ÇØÁ¦"))
+            if (GUILayout.Button("ì²« ë²ˆì§¸ í•´ì œ"))
             {
                 Execute(test.ReleaseFirst);
             }
 
-            if (GUILayout.Button("µÎ ¹øÂ° ÇØÁ¦"))
+            if (GUILayout.Button("ë‘ ë²ˆì§¸ í•´ì œ"))
             {
                 Execute(test.ReleaseSecond);
             }
 
-            if (GUILayout.Button("¼¼ ¹øÂ° ÇØÁ¦"))
+            if (GUILayout.Button("ì„¸ ë²ˆì§¸ í•´ì œ"))
             {
                 Execute(test.ReleaseThird);
             }
 
             EditorGUILayout.EndHorizontal();
 
-            if (GUILayout.Button("ÀüÃ¼ ÀúÁö ÇØÁ¦"))
+            if (GUILayout.Button("ì „ì²´ ì €ì§€ í•´ì œ"))
             {
                 Execute(test.ReleaseAll);
             }
 
             EditorGUILayout.Space(5f);
-            EditorGUILayout.LabelField("»ç¸Á ÀÚµ¿ ÇØÁ¦", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ì‚¬ë§ ìë™ í•´ì œ", EditorStyles.boldLabel);
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Ã¹ ¹øÂ° ¸ó½ºÅÍ »ç¸Á"))
+            if (GUILayout.Button("ì²« ë²ˆì§¸ ëª¬ìŠ¤í„° ì‚¬ë§"))
             {
                 Execute(test.KillFirst);
             }
 
-            if (GUILayout.Button("µÎ ¹øÂ° ¸ó½ºÅÍ »ç¸Á"))
+            if (GUILayout.Button("ë‘ ë²ˆì§¸ ëª¬ìŠ¤í„° ì‚¬ë§"))
             {
                 Execute(test.KillSecond);
             }
 
-            if (GUILayout.Button("Ä³¸¯ÅÍ »ç¸Á"))
+            if (GUILayout.Button("ìºë¦­í„° ì‚¬ë§"))
             {
                 Execute(test.KillUnit);
             }
@@ -107,21 +107,21 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ÀÚµ¿ ÀÌµ¿ ÀúÁö °ËÁõ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìë™ ì´ë™ ì €ì§€ ê²€ì¦", EditorStyles.boldLabel);
 
-            if (GUILayout.Button("ÀÚµ¿ ÀÌµ¿ °ËÁõ ÁØºñ"))
+            if (GUILayout.Button("ìë™ ì´ë™ ê²€ì¦ ì¤€ë¹„"))
             {
                 Execute(test.SetupAutoMove);
             }
 
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("ÀÚµ¿ ÀÌµ¿ ½ÃÀÛ"))
+            if (GUILayout.Button("ìë™ ì´ë™ ì‹œì‘"))
             {
                 Execute(test.StartAutoMove);
             }
 
-            if (GUILayout.Button("ÀÚµ¿ ÀÌµ¿ Á¤Áö"))
+            if (GUILayout.Button("ìë™ ì´ë™ ì •ì§€"))
             {
                 Execute(test.StopAutoMove);
             }
@@ -134,14 +134,14 @@ namespace EndlessGuard.Unit.Editor
             using (new EditorGUI.DisabledScope(true))
             {
                 UnitBlock unitBlock = test.UnitBlock;
-                EditorGUILayout.IntField(new GUIContent("ÃÖ´ë ÀúÁö ¼ö"), unitBlock == null ? 0 : unitBlock.MaxCount);
-                EditorGUILayout.IntField(new GUIContent("ÇöÀç ÀúÁö ¼ö"), unitBlock == null ? 0 : unitBlock.Count);
-                EditorGUILayout.Toggle(new GUIContent("ÀúÁö ÇÑµµ µµ´Ş"), unitBlock != null && unitBlock.IsFull);
-                DrawEnemy("Ã¹ ¹øÂ° ¸ó½ºÅÍ", test.FirstBlock);
-                DrawEnemy("µÎ ¹øÂ° ¸ó½ºÅÍ", test.SecondBlock);
-                DrawEnemy("¼¼ ¹øÂ° ¸ó½ºÅÍ", test.ThirdBlock);
-                EditorGUILayout.Toggle(new GUIContent("ÃÖ±Ù ½ÇÇà °á°ú"), test.LastResult);
-                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.LastMessage) ? "ÀúÁö °ËÁõ °á°ú°¡ ¾ø½À´Ï´Ù." : test.LastMessage);
+                EditorGUILayout.IntField(new GUIContent("ìµœëŒ€ ì €ì§€ ìˆ˜"), unitBlock == null ? 0 : unitBlock.MaxCount);
+                EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ì €ì§€ ìˆ˜"), unitBlock == null ? 0 : unitBlock.Count);
+                EditorGUILayout.Toggle(new GUIContent("ì €ì§€ í•œë„ ë„ë‹¬"), unitBlock != null && unitBlock.IsFull);
+                DrawEnemy("ì²« ë²ˆì§¸ ëª¬ìŠ¤í„°", test.FirstBlock);
+                DrawEnemy("ë‘ ë²ˆì§¸ ëª¬ìŠ¤í„°", test.SecondBlock);
+                DrawEnemy("ì„¸ ë²ˆì§¸ ëª¬ìŠ¤í„°", test.ThirdBlock);
+                EditorGUILayout.Toggle(new GUIContent("ìµœê·¼ ì‹¤í–‰ ê²°ê³¼"), test.LastResult);
+                EditorGUILayout.TextArea(string.IsNullOrWhiteSpace(test.LastMessage) ? "ì €ì§€ ê²€ì¦ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤." : test.LastMessage);
             }
         }
 
@@ -149,12 +149,12 @@ namespace EndlessGuard.Unit.Editor
         {
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.Toggle(new GUIContent("ÀÚµ¿ ÀÌµ¿ ½ÇÇà Áß"), test.IsAutoMoveRunning);
-                EditorGUILayout.IntField(new GUIContent("ÇöÀç ÀúÁö ¼ö"), test.AutoBlockedCount);
-                EditorGUILayout.IntField(new GUIContent("¿¹»ó ÀúÁö ¼ö"), test.ExpectedAutoBlockedCount);
-                EditorGUILayout.IntField(new GUIContent("Ãâ±¸ µµ´Ş ¼ö"), test.AutoGoalReachedCount);
-                EditorGUILayout.IntField(new GUIContent("¿¹»ó Ãâ±¸ µµ´Ş ¼ö"), test.ExpectedAutoGoalCount);
-                EditorGUILayout.Toggle(new GUIContent("ÃÖÁ¾ °ËÁõ ¼º°ø"), test.AutoMovePassed);
+                EditorGUILayout.Toggle(new GUIContent("ìë™ ì´ë™ ì‹¤í–‰ ì¤‘"), test.IsAutoMoveRunning);
+                EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ì €ì§€ ìˆ˜"), test.AutoBlockedCount);
+                EditorGUILayout.IntField(new GUIContent("ì˜ˆìƒ ì €ì§€ ìˆ˜"), test.ExpectedAutoBlockedCount);
+                EditorGUILayout.IntField(new GUIContent("ì¶œêµ¬ ë„ë‹¬ ìˆ˜"), test.AutoGoalReachedCount);
+                EditorGUILayout.IntField(new GUIContent("ì˜ˆìƒ ì¶œêµ¬ ë„ë‹¬ ìˆ˜"), test.ExpectedAutoGoalCount);
+                EditorGUILayout.Toggle(new GUIContent("ìµœì¢… ê²€ì¦ ì„±ê³µ"), test.AutoMovePassed);
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -163,7 +163,7 @@ namespace EndlessGuard.Unit.Editor
 
                 EditorGUILayout.TextArea(
                     string.IsNullOrWhiteSpace(test.AutoMoveMessage)
-                        ? "ÀÚµ¿ ÀÌµ¿ °ËÁõ °á°ú°¡ ¾ø½À´Ï´Ù."
+                        ? "ìë™ ì´ë™ ê²€ì¦ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤."
                         : test.AutoMoveMessage);
             }
         }
@@ -171,24 +171,24 @@ namespace EndlessGuard.Unit.Editor
         private static void DrawEnemy(string label, EnemyBlock enemy)
         {
             EditorGUILayout.ObjectField(new GUIContent(label), enemy == null ? null : enemy.gameObject, typeof(GameObject), true);
-            EditorGUILayout.Toggle(new GUIContent($"{label} ÀúÁöµÊ"), enemy != null && enemy.IsBlocked);
-            EditorGUILayout.ObjectField(new GUIContent($"{label} ÀúÁö Ä³¸¯ÅÍ"), enemy == null || enemy.Blocker == null ? null : enemy.Blocker.gameObject, typeof(GameObject), true);
+            EditorGUILayout.Toggle(new GUIContent($"{label} ì €ì§€ë¨"), enemy != null && enemy.IsBlocked);
+            EditorGUILayout.ObjectField(new GUIContent($"{label} ì €ì§€ ìºë¦­í„°"), enemy == null || enemy.Blocker == null ? null : enemy.Blocker.gameObject, typeof(GameObject), true);
         }
 
         private static void DrawAutoEnemy(BlockTest test, int index)
         {
             EnemyMove move = test.GetAutoMove(index);
-            string label = index == 0 ? "Ã¹ ¹øÂ°" : index == 1 ? "µÎ ¹øÂ°" : "¼¼ ¹øÂ°";
+            string label = index == 0 ? "ì²« ë²ˆì§¸" : index == 1 ? "ë‘ ë²ˆì§¸" : "ì„¸ ë²ˆì§¸";
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.LabelField($"{label} ¸ó½ºÅÍ", EditorStyles.miniBoldLabel);
-            EditorGUILayout.ObjectField(new GUIContent("´ë»ó"), move == null ? null : move.gameObject, typeof(GameObject), true);
-            EditorGUILayout.Toggle(new GUIContent("ÀúÁöµÊ"), move != null && move.IsBlocked);
-            EditorGUILayout.Toggle(new GUIContent("Ãâ±¸ µµ´Ş"), test.HasAutoReachedGoal(index));
-            EditorGUILayout.Vector3Field(new GUIContent("¿ùµå À§Ä¡"), move == null ? Vector3.zero : move.transform.position);
+            EditorGUILayout.LabelField($"{label} ëª¬ìŠ¤í„°", EditorStyles.miniBoldLabel);
+            EditorGUILayout.ObjectField(new GUIContent("ëŒ€ìƒ"), move == null ? null : move.gameObject, typeof(GameObject), true);
+            EditorGUILayout.Toggle(new GUIContent("ì €ì§€ë¨"), move != null && move.IsBlocked);
+            EditorGUILayout.Toggle(new GUIContent("ì¶œêµ¬ ë„ë‹¬"), test.HasAutoReachedGoal(index));
+            EditorGUILayout.Vector3Field(new GUIContent("ì›”ë“œ ìœ„ì¹˜"), move == null ? Vector3.zero : move.transform.position);
 
             CombatGridPosition grid = move == null ? null : move.GetComponent<CombatGridPosition>();
-            EditorGUILayout.Vector2IntField(new GUIContent("³í¸® Å¸ÀÏ"), grid == null ? Vector2Int.zero : grid.TileCoordinate);
+            EditorGUILayout.Vector2IntField(new GUIContent("ë…¼ë¦¬ íƒ€ì¼"), grid == null ? Vector2Int.zero : grid.TileCoordinate);
         }
 
         private void Execute(System.Action action)

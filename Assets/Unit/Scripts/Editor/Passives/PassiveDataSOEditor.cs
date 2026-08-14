@@ -34,26 +34,26 @@ namespace EndlessGuard.Unit.Editor
 
             CombatDataEditorGUI.DrawReadOnlyProperty(
                 script,
-                "½ºÅ©¸³Æ®",
-                "ÀÌ ÆĞ½Ãºê µ¥ÀÌÅÍ ¿¡¼ÂÀ» Á¤ÀÇÇÏ´Â C# ½ºÅ©¸³Æ®ÀÔ´Ï´Ù.");
+                "ìŠ¤í¬ë¦½íŠ¸",
+                "ì´ íŒ¨ì‹œë¸Œ ë°ì´í„° ì—ì…‹ì„ ì •ì˜í•˜ëŠ” C# ìŠ¤í¬ë¦½íŠ¸ì…ë‹ˆë‹¤.");
 
             EditorGUILayout.PropertyField(
                 displayName,
                 new GUIContent(
-                    "Ç¥½Ã ÀÌ¸§",
-                    "Ä³¸¯ÅÍ¡¤¸ó½ºÅÍ µ¥ÀÌÅÍ¿Í Á¦ÀÛ µµ±¸¿¡ Ç¥½ÃµÇ´Â ÆĞ½Ãºê ÀÌ¸§ÀÔ´Ï´Ù."));
+                    "í‘œì‹œ ì´ë¦„",
+                    "ìºë¦­í„°Â·ëª¬ìŠ¤í„° ë°ì´í„°ì™€ ì œì‘ ë„êµ¬ì— í‘œì‹œë˜ëŠ” íŒ¨ì‹œë¸Œ ì´ë¦„ì…ë‹ˆë‹¤."));
 
             EditorGUILayout.PropertyField(
                 description,
                 new GUIContent(
-                    "¼³¸í",
-                    "ÆĞ½ÃºêÀÇ ¹ßµ¿ Á¶°Ç°ú È¿°ú¸¦ ¼³¸íÇÕ´Ï´Ù."));
+                    "ì„¤ëª…",
+                    "íŒ¨ì‹œë¸Œì˜ ë°œë™ ì¡°ê±´ê³¼ íš¨ê³¼ë¥¼ ì„¤ëª…í•©ë‹ˆë‹¤."));
 
             EditorGUILayout.PropertyField(
                 usableBy,
                 new GUIContent(
-                    "»ç¿ë °¡´É ´ë»ó",
-                    "Ä³¸¯ÅÍ, ¸ó½ºÅÍ ¶Ç´Â ¾çÂÊ ¸ğµÎ°¡ »ç¿ëÇÒ ¼ö ÀÖ´ÂÁö ¼³Á¤ÇÕ´Ï´Ù."));
+                    "ì‚¬ìš© ê°€ëŠ¥ ëŒ€ìƒ",
+                    "ìºë¦­í„°, ëª¬ìŠ¤í„° ë˜ëŠ” ì–‘ìª½ ëª¨ë‘ê°€ ì‚¬ìš©í•  ìˆ˜ ìˆëŠ”ì§€ ì„¤ì •í•©ë‹ˆë‹¤."));
 
             DrawCompatibility();
 
@@ -72,7 +72,7 @@ namespace EndlessGuard.Unit.Editor
 
             compatibility.isExpanded = EditorGUILayout.Foldout(
                 compatibility.isExpanded,
-                "ÆĞ½Ãºê ¼±ÅÃ Ç®",
+                "íŒ¨ì‹œë¸Œ ì„ íƒ í’€",
                 true);
 
             if (!compatibility.isExpanded)
@@ -85,7 +85,7 @@ namespace EndlessGuard.Unit.Editor
             if (usableBy.hasMultipleDifferentValues)
             {
                 EditorGUILayout.HelpBox(
-                    "¼±ÅÃÇÑ ÆĞ½Ãºê ¿¡¼ÂµéÀÇ »ç¿ë °¡´É ´ë»óÀÌ ¼­·Î ´Ş¶ó ¼±ÅÃ Ç®À» ÇÔ²² ÆíÁıÇÒ ¼ö ¾ø½À´Ï´Ù.",
+                    "ì„ íƒí•œ íŒ¨ì‹œë¸Œ ì—ì…‹ë“¤ì˜ ì‚¬ìš© ê°€ëŠ¥ ëŒ€ìƒì´ ì„œë¡œ ë‹¬ë¼ ì„ íƒ í’€ì„ í•¨ê»˜ í¸ì§‘í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.",
                     MessageType.Info);
 
                 EditorGUI.indentLevel--;
@@ -97,7 +97,7 @@ namespace EndlessGuard.Unit.Editor
             if (selectedUserType == PassiveUserType.None)
             {
                 EditorGUILayout.HelpBox(
-                    "»ç¿ë °¡´É ´ë»óÀ» ¸ÕÀú ¼±ÅÃÇÏ¼¼¿ä.",
+                    "ì‚¬ìš© ê°€ëŠ¥ ëŒ€ìƒì„ ë¨¼ì € ì„ íƒí•˜ì„¸ìš”.",
                     MessageType.Warning);
 
                 EditorGUI.indentLevel--;

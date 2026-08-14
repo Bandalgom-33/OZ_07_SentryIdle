@@ -12,7 +12,7 @@ namespace EndlessGuard.Unit.Editor
         private readonly List<PassiveDataSO> allPassiveAssets = new List<PassiveDataSO>();
         private readonly List<PassiveDataSO> compatiblePassiveAssets = new List<PassiveDataSO>();
 
-        private GUIContent[] passiveOptions = { new GUIContent("¹Ì¼³Á¤") };
+        private GUIContent[] passiveOptions = { new GUIContent("ë¯¸ì„¤ì •") };
         private EnemySize cachedPassiveSize = EnemySize.None;
         private string passiveMessage;
         private MessageType passiveMessageType = MessageType.None;
@@ -64,21 +64,21 @@ namespace EndlessGuard.Unit.Editor
         {
             serializedObject.Update();
 
-            CombatDataEditorGUI.DrawReadOnlyProperty(script, "½ºÅ©¸³Æ®", "ÀÌ µ¥ÀÌÅÍ ¿¡¼ÂÀ» Á¤ÀÇÇÏ´Â C# ½ºÅ©¸³Æ®ÀÔ´Ï´Ù.");
-            CombatDataEditorGUI.DrawReadOnlyProperty(enemyId, "¸ó½ºÅÍ µ¥ÀÌÅÍ ID", "Á¦ÀÛ µµ±¸¿¡¼­ ENEMY_0001 Çü½ÄÀ¸·Î ÀÚµ¿ ¹ß±ŞµÇ¸ç Á÷Á¢ ¼öÁ¤ÇÏÁö ¾Ê½À´Ï´Ù.");
+            CombatDataEditorGUI.DrawReadOnlyProperty(script, "ìŠ¤í¬ë¦½íŠ¸", "ì´ ë°ì´í„° ì—ì…‹ì„ ì •ì˜í•˜ëŠ” C# ìŠ¤í¬ë¦½íŠ¸ì…ë‹ˆë‹¤.");
+            CombatDataEditorGUI.DrawReadOnlyProperty(enemyId, "ëª¬ìŠ¤í„° ë°ì´í„° ID", "ì œì‘ ë„êµ¬ì—ì„œ ENEMY_0001 í˜•ì‹ìœ¼ë¡œ ìë™ ë°œê¸‰ë˜ë©° ì§ì ‘ ìˆ˜ì •í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 
             if (!enemyId.hasMultipleDifferentValues && string.IsNullOrWhiteSpace(enemyId.stringValue))
             {
-                EditorGUILayout.HelpBox("¸ó½ºÅÍ µ¥ÀÌÅÍ ID´Â ÇâÈÄ Á¦ÀÛ µµ±¸¿¡¼­ ÀÚµ¿ ¹ß±ŞÇÕ´Ï´Ù. ÇöÀç ºñ¾î ÀÖ´Â °ÍÀÌ Á¤»óÀÔ´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ëª¬ìŠ¤í„° ë°ì´í„° IDëŠ” í–¥í›„ ì œì‘ ë„êµ¬ì—ì„œ ìë™ ë°œê¸‰í•©ë‹ˆë‹¤. í˜„ì¬ ë¹„ì–´ ìˆëŠ” ê²ƒì´ ì •ìƒì…ë‹ˆë‹¤.", MessageType.Info);
             }
 
-            EditorGUILayout.PropertyField(displayName, new GUIContent("Ç¥½Ã ÀÌ¸§", "°ÔÀÓ È­¸é°ú Á¦ÀÛ µµ±¸¿¡ Ç¥½ÃµÇ´Â ¸ó½ºÅÍ ÀÌ¸§ÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(description, new GUIContent("¼³¸í", "¸ó½ºÅÍÀÇ Æ¯Â¡°ú ÀüÅõ ¿ªÇÒÀ» ¼³¸íÇÕ´Ï´Ù."));
+            EditorGUILayout.PropertyField(displayName, new GUIContent("í‘œì‹œ ì´ë¦„", "ê²Œì„ í™”ë©´ê³¼ ì œì‘ ë„êµ¬ì— í‘œì‹œë˜ëŠ” ëª¬ìŠ¤í„° ì´ë¦„ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(description, new GUIContent("ì„¤ëª…", "ëª¬ìŠ¤í„°ì˜ íŠ¹ì§•ê³¼ ì „íˆ¬ ì—­í• ì„ ì„¤ëª…í•©ë‹ˆë‹¤."));
 
-            EditorGUILayout.PropertyField(category, new GUIContent("¸ó½ºÅÍ ºĞ·ù", "ÀÏ¹İ, ¿¤¸®Æ® ¶Ç´Â º¸½º Áß ÇÏ³ª¸¦ ¼³Á¤ÇÕ´Ï´Ù. ÆĞ½Ãºê ¼±ÅÃ Ç®À» Á¦ÇÑÇÏÁö ¾Ê½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(movementType, new GUIContent("ÀÌµ¿ À¯Çü", "Áö»ó ¶Ç´Â °øÁß ÀÌµ¿ À¯ÇüÀ» ¼³Á¤ÇÕ´Ï´Ù. ÆĞ½Ãºê ¼±ÅÃ Ç®À» Á¦ÇÑÇÏÁö ¾Ê½À´Ï´Ù."));
-            EditorGUILayout.PropertyField(size, new GUIContent("¸ó½ºÅÍ Å©±â", "¼ÒÇü, ÁßÇü, ´ëÇü Áß ÇÏ³ª¸¦ ¼³Á¤ÇÕ´Ï´Ù. ¸ó½ºÅÍ ÆĞ½Ãºê ¼±ÅÃ Ç®Àº ÀÌ Å©±â¸¦ ±âÁØÀ¸·Î °áÁ¤ÇÕ´Ï´Ù."));
-            EditorGUILayout.PropertyField(role, new GUIContent("ÀüÅõ ¿ªÇÒ", "¸ó½ºÅÍÀÇ ÀüÅõ ¿ªÇÒ Á¤º¸ÀÔ´Ï´Ù. ÆĞ½Ãºê ¼±ÅÃ Ç®À» Á¦ÇÑÇÏÁö ¾Ê½À´Ï´Ù."));
+            EditorGUILayout.PropertyField(category, new GUIContent("ëª¬ìŠ¤í„° ë¶„ë¥˜", "ì¼ë°˜, ì—˜ë¦¬íŠ¸ ë˜ëŠ” ë³´ìŠ¤ ì¤‘ í•˜ë‚˜ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. íŒ¨ì‹œë¸Œ ì„ íƒ í’€ì„ ì œí•œí•˜ì§€ ì•ŠìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(movementType, new GUIContent("ì´ë™ ìœ í˜•", "ì§€ìƒ ë˜ëŠ” ê³µì¤‘ ì´ë™ ìœ í˜•ì„ ì„¤ì •í•©ë‹ˆë‹¤. íŒ¨ì‹œë¸Œ ì„ íƒ í’€ì„ ì œí•œí•˜ì§€ ì•ŠìŠµë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(size, new GUIContent("ëª¬ìŠ¤í„° í¬ê¸°", "ì†Œí˜•, ì¤‘í˜•, ëŒ€í˜• ì¤‘ í•˜ë‚˜ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤. ëª¬ìŠ¤í„° íŒ¨ì‹œë¸Œ ì„ íƒ í’€ì€ ì´ í¬ê¸°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ê²°ì •í•©ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(role, new GUIContent("ì „íˆ¬ ì—­í• ", "ëª¬ìŠ¤í„°ì˜ ì „íˆ¬ ì—­í•  ì •ë³´ì…ë‹ˆë‹¤. íŒ¨ì‹œë¸Œ ì„ íƒ í’€ì„ ì œí•œí•˜ì§€ ì•ŠìŠµë‹ˆë‹¤."));
 
             DrawAttackRule();
             DrawInRangeAttackCycle();
@@ -87,13 +87,13 @@ namespace EndlessGuard.Unit.Editor
             CombatDataEditorGUI.DrawCombatStats(baseStats);
             CombatDataEditorGUI.DrawAttackSettings(attackSettings);
 
-            EditorGUILayout.PropertyField(rewardExp, new GUIContent("Ã³Ä¡ °æÇèÄ¡", "¸ó½ºÅÍ »ç¸Á ½Ã °æÇèÄ¡ ´ã´ç ½Ã½ºÅÛÀÌ Áö±ŞÇÒ ±âÁØ °æÇèÄ¡ÀÔ´Ï´Ù."));
-            EditorGUILayout.PropertyField(rewardGold, new GUIContent("Ã³Ä¡ °ñµå", "¸ó½ºÅÍ »ç¸Á ½Ã ÀçÈ­ ´ã´ç ½Ã½ºÅÛÀÌ Áö±ŞÇÒ ±âÁØ °ñµåÀÔ´Ï´Ù."));
+            EditorGUILayout.PropertyField(rewardExp, new GUIContent("ì²˜ì¹˜ ê²½í—˜ì¹˜", "ëª¬ìŠ¤í„° ì‚¬ë§ ì‹œ ê²½í—˜ì¹˜ ë‹´ë‹¹ ì‹œìŠ¤í…œì´ ì§€ê¸‰í•  ê¸°ì¤€ ê²½í—˜ì¹˜ì…ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(rewardGold, new GUIContent("ì²˜ì¹˜ ê³¨ë“œ", "ëª¬ìŠ¤í„° ì‚¬ë§ ì‹œ ì¬í™” ë‹´ë‹¹ ì‹œìŠ¤í…œì´ ì§€ê¸‰í•  ê¸°ì¤€ ê³¨ë“œì…ë‹ˆë‹¤."));
 
             DrawFilteredPassiveList();
-            PassiveTuningEditorGUI.Draw(passives, passiveTunings, targets.Length > 1, "¸ó½ºÅÍ");
+            PassiveTuningEditorGUI.Draw(passives, passiveTunings, targets.Length > 1, "ëª¬ìŠ¤í„°");
 
-            EditorGUILayout.PropertyField(enemyPrefab, new GUIContent("¿¬°á ÇÁ¸®ÆÕ", "ÀÌ µ¥ÀÌÅÍ¸¦ ±âÁØÀ¸·Î »ı¼ºµÇ°Å³ª ¿¬°áµÈ ¸ó½ºÅÍ ÇÁ¸®ÆÕÀÔ´Ï´Ù."));
+            EditorGUILayout.PropertyField(enemyPrefab, new GUIContent("ì—°ê²° í”„ë¦¬íŒ¹", "ì´ ë°ì´í„°ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ìƒì„±ë˜ê±°ë‚˜ ì—°ê²°ëœ ëª¬ìŠ¤í„° í”„ë¦¬íŒ¹ì…ë‹ˆë‹¤."));
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -101,7 +101,7 @@ namespace EndlessGuard.Unit.Editor
         private void DrawAttackRule()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.PropertyField(attackRule, new GUIContent("°ø°İ ½ÃÀÛ ±ÔÄ¢", "ÀúÁöµÈ Ä³¸¯ÅÍ¸¸ °ø°İÇÒÁö, ÀúÁöµÇÁö ¾Ê¾Æµµ ¹üÀ§ ¾È Ä³¸¯ÅÍ¸¦ °ø°İÇÒÁö ¼³Á¤ÇÕ´Ï´Ù."));
+            EditorGUILayout.PropertyField(attackRule, new GUIContent("ê³µê²© ì‹œì‘ ê·œì¹™", "ì €ì§€ëœ ìºë¦­í„°ë§Œ ê³µê²©í• ì§€, ì €ì§€ë˜ì§€ ì•Šì•„ë„ ë²”ìœ„ ì•ˆ ìºë¦­í„°ë¥¼ ê³µê²©í• ì§€ ì„¤ì •í•©ë‹ˆë‹¤."));
 
             if (attackRule.hasMultipleDifferentValues)
             {
@@ -113,15 +113,15 @@ namespace EndlessGuard.Unit.Editor
             switch (selectedRule)
             {
                 case EnemyAttackRule.BlockedOnly:
-                    EditorGUILayout.HelpBox("ÀúÁöµÈ ´ë»ó¸¸ °ø°İ: Ãâ±¸·Î ÀÌµ¿ÇÏ´Ù°¡ Ä³¸¯ÅÍ¿¡°Ô ÀúÁöµÇ¸é ÀÌµ¿À» ¸ØÃß°í ÀÚ½ÅÀ» ÀúÁöÇÑ Ä³¸¯ÅÍ¸¸ °ø°İÇÕ´Ï´Ù.", MessageType.Info);
+                    EditorGUILayout.HelpBox("ì €ì§€ëœ ëŒ€ìƒë§Œ ê³µê²©: ì¶œêµ¬ë¡œ ì´ë™í•˜ë‹¤ê°€ ìºë¦­í„°ì—ê²Œ ì €ì§€ë˜ë©´ ì´ë™ì„ ë©ˆì¶”ê³  ìì‹ ì„ ì €ì§€í•œ ìºë¦­í„°ë§Œ ê³µê²©í•©ë‹ˆë‹¤.", MessageType.Info);
                     break;
 
                 case EnemyAttackRule.InRange:
-                    EditorGUILayout.HelpBox("¹üÀ§ ³» ´ë»ó °ø°İ: Áö»ó ¸ó½ºÅÍ´Â »ç°Å¸® ¾ÈÀÇ À¯È¿ÇÑ Ä³¸¯ÅÍ¸¦ Ã£À¸¸é °ø°İ Áß ÀÌµ¿À» ¸ØÃß°í, °øÁß ¸ó½ºÅÍ´Â ÀÌµ¿À» °è¼ÓÇÏ¸é¼­ °ø°İÇÕ´Ï´Ù. À¯È¿ÇÑ ´ë»óÀÌ ¾ø¾îÁö¸é Áö»ó ¸ó½ºÅÍ´Â Ãâ±¸ ÀÌµ¿À» Àç°³ÇÕ´Ï´Ù.", MessageType.Info);
+                    EditorGUILayout.HelpBox("ë²”ìœ„ ë‚´ ëŒ€ìƒ ê³µê²©: ì§€ìƒ ëª¬ìŠ¤í„°ëŠ” ì‚¬ê±°ë¦¬ ì•ˆì˜ ìœ íš¨í•œ ìºë¦­í„°ë¥¼ ì°¾ìœ¼ë©´ ê³µê²© ì¤‘ ì´ë™ì„ ë©ˆì¶”ê³ , ê³µì¤‘ ëª¬ìŠ¤í„°ëŠ” ì´ë™ì„ ê³„ì†í•˜ë©´ì„œ ê³µê²©í•©ë‹ˆë‹¤. ìœ íš¨í•œ ëŒ€ìƒì´ ì—†ì–´ì§€ë©´ ì§€ìƒ ëª¬ìŠ¤í„°ëŠ” ì¶œêµ¬ ì´ë™ì„ ì¬ê°œí•©ë‹ˆë‹¤.", MessageType.Info);
                     break;
 
                 default:
-                    EditorGUILayout.HelpBox("¸ó½ºÅÍÀÇ °ø°İ ½ÃÀÛ ±ÔÄ¢ÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.", MessageType.Warning);
+                    EditorGUILayout.HelpBox("ëª¬ìŠ¤í„°ì˜ ê³µê²© ì‹œì‘ ê·œì¹™ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.", MessageType.Warning);
                     break;
             }
         }
@@ -142,9 +142,9 @@ namespace EndlessGuard.Unit.Editor
             }
 
             EditorGUILayout.Space(4f);
-            EditorGUILayout.LabelField("¹üÀ§ °ø°İ ¹İº¹", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(inRangeFireDuration, new GUIContent("ÁıÁß °ø°İ ½Ã°£ (ÃÊ)", "»ç°Å¸® ¾ÈÀÇ ´ë»óÀ» ¹ß°ßÇØ ¸ØÃá µÚ °ø°İÀ» À¯ÁöÇÏ´Â ½Ã°£ÀÔ´Ï´Ù. °ø°İ È½¼ö´Â ÇöÀç °ø°İ¼Óµµ¿¡ µû¶ó °áÁ¤µË´Ï´Ù."));
-            EditorGUILayout.PropertyField(inRangeAdvanceDuration, new GUIContent("°­Á¦ ÀüÁø ½Ã°£ (ÃÊ)", "ÁıÁß °ø°İÀÌ ³¡³­ µÚ ´ë»óÀÌ ¿©ÀüÈ÷ »ç°Å¸® ¾È¿¡ ÀÖ¾îµµ °ø°İÇÏÁö ¾Ê°í ÀÌµ¿ÇÏ´Â ½Ã°£ÀÔ´Ï´Ù."));
+            EditorGUILayout.LabelField("ë²”ìœ„ ê³µê²© ë°˜ë³µ", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(inRangeFireDuration, new GUIContent("ì§‘ì¤‘ ê³µê²© ì‹œê°„ (ì´ˆ)", "ì‚¬ê±°ë¦¬ ì•ˆì˜ ëŒ€ìƒì„ ë°œê²¬í•´ ë©ˆì¶˜ ë’¤ ê³µê²©ì„ ìœ ì§€í•˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤. ê³µê²© íšŸìˆ˜ëŠ” í˜„ì¬ ê³µê²©ì†ë„ì— ë”°ë¼ ê²°ì •ë©ë‹ˆë‹¤."));
+            EditorGUILayout.PropertyField(inRangeAdvanceDuration, new GUIContent("ê°•ì œ ì „ì§„ ì‹œê°„ (ì´ˆ)", "ì§‘ì¤‘ ê³µê²©ì´ ëë‚œ ë’¤ ëŒ€ìƒì´ ì—¬ì „íˆ ì‚¬ê±°ë¦¬ ì•ˆì— ìˆì–´ë„ ê³µê²©í•˜ì§€ ì•Šê³  ì´ë™í•˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤."));
 
             if (inRangeFireDuration.hasMultipleDifferentValues || inRangeAdvanceDuration.hasMultipleDifferentValues)
             {
@@ -156,22 +156,22 @@ namespace EndlessGuard.Unit.Editor
 
             if (fireDuration > 0f && advanceDuration > 0f)
             {
-                EditorGUILayout.HelpBox($"¹İº¹ µ¿ÀÛ: ÀÌµ¿ ¡æ »ç°Å¸® ÁøÀÔ ¡æ {fireDuration:0.##}ÃÊ ÁıÁß °ø°İ ¡æ {advanceDuration:0.##}ÃÊ °­Á¦ ÀüÁø ¡æ ´Ù½Ã Å½»öÇÕ´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox($"ë°˜ë³µ ë™ì‘: ì´ë™ â†’ ì‚¬ê±°ë¦¬ ì§„ì… â†’ {fireDuration:0.##}ì´ˆ ì§‘ì¤‘ ê³µê²© â†’ {advanceDuration:0.##}ì´ˆ ê°•ì œ ì „ì§„ â†’ ë‹¤ì‹œ íƒìƒ‰í•©ë‹ˆë‹¤.", MessageType.Info);
             }
             else if (fireDuration > 0f || advanceDuration > 0f)
             {
-                EditorGUILayout.HelpBox("ÁıÁß °ø°İ ½Ã°£°ú °­Á¦ ÀüÁø ½Ã°£À» µÑ ´Ù 0º¸´Ù Å©°Ô ¼³Á¤ÇØ¾ß ¹İº¹ µ¿ÀÛÀÌ È°¼ºÈ­µË´Ï´Ù.", MessageType.Warning);
+                EditorGUILayout.HelpBox("ì§‘ì¤‘ ê³µê²© ì‹œê°„ê³¼ ê°•ì œ ì „ì§„ ì‹œê°„ì„ ë‘˜ ë‹¤ 0ë³´ë‹¤ í¬ê²Œ ì„¤ì •í•´ì•¼ ë°˜ë³µ ë™ì‘ì´ í™œì„±í™”ë©ë‹ˆë‹¤.", MessageType.Warning);
             }
             else
             {
-                EditorGUILayout.HelpBox("µÎ °ªÀÌ 0ÀÌ¸é ±âÁ¸ InRange ±ÔÄ¢À» »ç¿ëÇÏ¿© ´ë»óÀÌ ¹üÀ§ ¾È¿¡ ÀÖ´Â µ¿¾È °è¼Ó ¸ØÃç °ø°İÇÕ´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ë‘ ê°’ì´ 0ì´ë©´ ê¸°ì¡´ InRange ê·œì¹™ì„ ì‚¬ìš©í•˜ì—¬ ëŒ€ìƒì´ ë²”ìœ„ ì•ˆì— ìˆëŠ” ë™ì•ˆ ê³„ì† ë©ˆì¶° ê³µê²©í•©ë‹ˆë‹¤.", MessageType.Info);
             }
         }
 
         private void DrawFilteredPassiveList()
         {
             EditorGUILayout.Space(8f);
-            passives.isExpanded = EditorGUILayout.Foldout(passives.isExpanded, "ÆĞ½Ãºê ´É·Â", true);
+            passives.isExpanded = EditorGUILayout.Foldout(passives.isExpanded, "íŒ¨ì‹œë¸Œ ëŠ¥ë ¥", true);
 
             if (!passives.isExpanded)
             {
@@ -180,20 +180,20 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUI.indentLevel++;
 
-            if (GUILayout.Button("ÆĞ½Ãºê ÈÄº¸ »õ·Î°íÄ§"))
+            if (GUILayout.Button("íŒ¨ì‹œë¸Œ í›„ë³´ ìƒˆë¡œê³ ì¹¨"))
             {
                 ReloadPassiveAssets();
-                passiveMessage = $"ÆĞ½Ãºê ¿¡¼Â {allPassiveAssets.Count}°³¸¦ ´Ù½Ã °Ë»öÇß½À´Ï´Ù.";
+                passiveMessage = $"íŒ¨ì‹œë¸Œ ì—ì…‹ {allPassiveAssets.Count}ê°œë¥¼ ë‹¤ì‹œ ê²€ìƒ‰í–ˆìŠµë‹ˆë‹¤.";
                 passiveMessageType = MessageType.Info;
             }
 
             if (size.hasMultipleDifferentValues)
             {
-                EditorGUILayout.HelpBox("¼±ÅÃÇÑ ¸ó½ºÅÍ µ¥ÀÌÅÍµéÀÇ Å©±â°¡ ¼­·Î ´Ş¶ó ÆĞ½Ãºê¸¦ ÇÔ²² ÆíÁıÇÒ ¼ö ¾ø½À´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ì„ íƒí•œ ëª¬ìŠ¤í„° ë°ì´í„°ë“¤ì˜ í¬ê¸°ê°€ ì„œë¡œ ë‹¬ë¼ íŒ¨ì‹œë¸Œë¥¼ í•¨ê»˜ í¸ì§‘í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.", MessageType.Info);
 
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUILayout.PropertyField(passives, new GUIContent("ÇöÀç ÆĞ½Ãºê ¸ñ·Ï"), true);
+                    EditorGUILayout.PropertyField(passives, new GUIContent("í˜„ì¬ íŒ¨ì‹œë¸Œ ëª©ë¡"), true);
                 }
 
                 EditorGUI.indentLevel--;
@@ -204,21 +204,21 @@ namespace EndlessGuard.Unit.Editor
 
             if (selectedSize == EnemySize.None)
             {
-                EditorGUILayout.HelpBox("¸ó½ºÅÍ Å©±â¸¦ ¸ÕÀú ¼±ÅÃÇÏ¸é ¼ÒÇü¡¤ÁßÇü¡¤´ëÇü ÆĞ½Ãºê Ç® Áß ÇØ´ç Å©±âÀÇ ÈÄº¸°¡ Ç¥½ÃµË´Ï´Ù.", MessageType.Info);
+                EditorGUILayout.HelpBox("ëª¬ìŠ¤í„° í¬ê¸°ë¥¼ ë¨¼ì € ì„ íƒí•˜ë©´ ì†Œí˜•Â·ì¤‘í˜•Â·ëŒ€í˜• íŒ¨ì‹œë¸Œ í’€ ì¤‘ í•´ë‹¹ í¬ê¸°ì˜ í›„ë³´ê°€ í‘œì‹œë©ë‹ˆë‹¤.", MessageType.Info);
 
                 using (new EditorGUI.DisabledScope(true))
                 {
-                    EditorGUILayout.PropertyField(passives, new GUIContent("ÇöÀç ÆĞ½Ãºê ¸ñ·Ï"), true);
+                    EditorGUILayout.PropertyField(passives, new GUIContent("í˜„ì¬ íŒ¨ì‹œë¸Œ ëª©ë¡"), true);
                 }
 
                 EditorGUI.indentLevel--;
                 return;
             }
 
-            EditorGUILayout.LabelField($"ÇöÀç ¸ó½ºÅÍ Å©±â¿Í È£È¯µÇ´Â ÆĞ½Ãºê ÈÄº¸: {compatiblePassiveAssets.Count}°³", EditorStyles.miniLabel);
+            EditorGUILayout.LabelField($"í˜„ì¬ ëª¬ìŠ¤í„° í¬ê¸°ì™€ í˜¸í™˜ë˜ëŠ” íŒ¨ì‹œë¸Œ í›„ë³´: {compatiblePassiveAssets.Count}ê°œ", EditorStyles.miniLabel);
 
             int previousSize = passives.arraySize;
-            int newSize = Mathf.Max(0, EditorGUILayout.IntField(new GUIContent("ÆĞ½Ãºê °³¼ö", "ÀÌ ¸ó½ºÅÍ°¡ »ç¿ëÇÏ´Â ÆĞ½ÃºêÀÇ °³¼öÀÔ´Ï´Ù."), previousSize));
+            int newSize = Mathf.Max(0, EditorGUILayout.IntField(new GUIContent("íŒ¨ì‹œë¸Œ ê°œìˆ˜", "ì´ ëª¬ìŠ¤í„°ê°€ ì‚¬ìš©í•˜ëŠ” íŒ¨ì‹œë¸Œì˜ ê°œìˆ˜ì…ë‹ˆë‹¤."), previousSize));
 
             if (newSize != previousSize)
             {
@@ -244,16 +244,16 @@ namespace EndlessGuard.Unit.Editor
                 {
                     using (new EditorGUI.DisabledScope(true))
                     {
-                        EditorGUILayout.ObjectField(new GUIContent($"ÆĞ½Ãºê {i + 1}"), current, typeof(PassiveDataSO), false);
+                        EditorGUILayout.ObjectField(new GUIContent($"íŒ¨ì‹œë¸Œ {i + 1}"), current, typeof(PassiveDataSO), false);
                     }
 
                     string reason = !isCompatible
-                        ? "ÇöÀç ¸ó½ºÅÍ Å©±â ÆĞ½Ãºê Ç®°ú È£È¯µÇÁö ¾Ê´Â ÆĞ½ÃºêÀÔ´Ï´Ù."
-                        : "°°Àº ÆĞ½Ãºê ¿¡¼ÂÀÌ ¸ñ·Ï¿¡ Áßº¹ µî·ÏµÇ¾î ÀÖ½À´Ï´Ù.";
+                        ? "í˜„ì¬ ëª¬ìŠ¤í„° í¬ê¸° íŒ¨ì‹œë¸Œ í’€ê³¼ í˜¸í™˜ë˜ì§€ ì•ŠëŠ” íŒ¨ì‹œë¸Œì…ë‹ˆë‹¤."
+                        : "ê°™ì€ íŒ¨ì‹œë¸Œ ì—ì…‹ì´ ëª©ë¡ì— ì¤‘ë³µ ë“±ë¡ë˜ì–´ ìˆìŠµë‹ˆë‹¤.";
 
                     EditorGUILayout.HelpBox(reason, MessageType.Warning);
 
-                    if (GUILayout.Button($"ÆĞ½Ãºê {i + 1} ÂüÁ¶ Á¦°Å"))
+                    if (GUILayout.Button($"íŒ¨ì‹œë¸Œ {i + 1} ì°¸ì¡° ì œê±°"))
                     {
                         element.objectReferenceValue = null;
                     }
@@ -262,7 +262,7 @@ namespace EndlessGuard.Unit.Editor
                 }
 
                 int selectedIndex = PassiveCandidateEditorUtility.FindCandidateIndex(compatiblePassiveAssets, current);
-                int newIndex = EditorGUILayout.Popup(new GUIContent($"ÆĞ½Ãºê {i + 1}"), selectedIndex, passiveOptions);
+                int newIndex = EditorGUILayout.Popup(new GUIContent($"íŒ¨ì‹œë¸Œ {i + 1}"), selectedIndex, passiveOptions);
 
                 if (newIndex != selectedIndex)
                 {
@@ -270,7 +270,7 @@ namespace EndlessGuard.Unit.Editor
 
                     if (PassiveCandidateEditorUtility.IsAlreadyAssigned(passives, candidate, i))
                     {
-                        passiveMessage = $"{candidate.DisplayName} ÆĞ½Ãºê´Â ÀÌ¹Ì ÀÌ ¸ó½ºÅÍ¿¡ µî·ÏµÇ¾î ÀÖ½À´Ï´Ù.";
+                        passiveMessage = $"{candidate.DisplayName} íŒ¨ì‹œë¸ŒëŠ” ì´ë¯¸ ì´ ëª¬ìŠ¤í„°ì— ë“±ë¡ë˜ì–´ ìˆìŠµë‹ˆë‹¤.";
                         passiveMessageType = MessageType.Warning;
                     }
                     else

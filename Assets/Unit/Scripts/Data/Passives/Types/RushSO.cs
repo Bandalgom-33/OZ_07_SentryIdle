@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Rush", menuName = "Endless Guard/Passive/Ã¹ ÀúÁö Àü ÀÌµ¿¼Óµµ Áõ°¡")]
+    [CreateAssetMenu(fileName = "Rush", menuName = "Endless Guard/Passive/ì²« ì €ì§€ ì „ ì´ë™ì†ë„ ì¦ê°€")]
     public sealed class RushSO : PassiveDataSO
     {
-        [Header("µ¹°İ ÀÌµ¿¼Óµµ ±âº»°ª")]
-        [Tooltip("¸ó½ºÅÍ°¡ Ã³À½À¸·Î ÀúÁöµÇ±â Àü±îÁö Áõ°¡ÇÏ´Â ÀÌµ¿¼Óµµ ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ëŒê²© ì´ë™ì†ë„ ê¸°ë³¸ê°’")]
+        [Tooltip("ëª¬ìŠ¤í„°ê°€ ì²˜ìŒìœ¼ë¡œ ì €ì§€ë˜ê¸° ì „ê¹Œì§€ ì¦ê°€í•˜ëŠ” ì´ë™ì†ë„ ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float bonusMoveSpeedPercent = 40f;
 

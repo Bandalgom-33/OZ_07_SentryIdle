@@ -4,25 +4,25 @@ namespace EndlessGuard.Unit.Data
 {
     public enum CostGainTrigger
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("±âº» °ø°İ ÀûÁß")]
+        [InspectorName("ê¸°ë³¸ ê³µê²© ì ì¤‘")]
         BasicAttackHit = 1,
 
-        [InspectorName("°ø°İ È¸ÇÇ ¼º°ø")]
+        [InspectorName("ê³µê²© íšŒí”¼ ì„±ê³µ")]
         EvadeSuccess = 2,
 
-        [InspectorName("Ä¡¸íÅ¸ ÀûÁß")]
+        [InspectorName("ì¹˜ëª…íƒ€ ì ì¤‘")]
         CriticalHit = 3,
 
-        [InspectorName("¾Æ±º ¼ÒÈ¯¹° »ı¼º")]
+        [InspectorName("ì•„êµ° ì†Œí™˜ë¬¼ ìƒì„±")]
         AllySummonCreated = 4,
 
-        [InspectorName("ÀÚ½ÅÀÇ ½ºÅ³ »ç¿ë ¼º°ø")]
+        [InspectorName("ìì‹ ì˜ ìŠ¤í‚¬ ì‚¬ìš© ì„±ê³µ")]
         OwnSkillSucceeded = 5,
 
-        [InspectorName("¾Æ±º ¼ÒÈ¯¹° ¼Ò¸ê")]
+        [InspectorName("ì•„êµ° ì†Œí™˜ë¬¼ ì†Œë©¸")]
         AllySummonDestroyed = 6
     }
 }

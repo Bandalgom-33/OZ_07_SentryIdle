@@ -15,26 +15,26 @@ namespace EndlessGuard.Unit.Editor
         private long expToAdd = 1000L;
         private bool hasResult;
 
-        [MenuItem("Tools/Endless Guard/·¹º§¾÷ °è»ê °ËÁõ")]
+        [MenuItem("Tools/Endless Guard/ë ˆë²¨ì—… ê³„ì‚° ê²€ì¦")]
         public static void Open()
         {
-            UnitLevelTestWindow window = GetWindow<UnitLevelTestWindow>("·¹º§¾÷ °è»ê °ËÁõ");
+            UnitLevelTestWindow window = GetWindow<UnitLevelTestWindow>("ë ˆë²¨ì—… ê³„ì‚° ê²€ì¦");
             window.minSize = new Vector2(430f, 430f);
         }
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("Ä³¸¯ÅÍ ·¹º§¾÷ °è»ê °ËÁõ", EditorStyles.boldLabel);
-            EditorGUILayout.HelpBox("½ÇÁ¦ ÀúÀå µ¥ÀÌÅÍ¸¦ º¯°æÇÏÁö ¾Ê°í ÀÓ½Ã ÁøÇàµµ¸¦ »ı¼ºÇÏ¿© °æÇèÄ¡¿Í ¿¬¼Ó ·¹º§¾÷ °è»êÀ» °ËÁõÇÕ´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.LabelField("ìºë¦­í„° ë ˆë²¨ì—… ê³„ì‚° ê²€ì¦", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox("ì‹¤ì œ ì €ì¥ ë°ì´í„°ë¥¼ ë³€ê²½í•˜ì§€ ì•Šê³  ì„ì‹œ ì§„í–‰ë„ë¥¼ ìƒì„±í•˜ì—¬ ê²½í—˜ì¹˜ì™€ ì—°ì† ë ˆë²¨ì—… ê³„ì‚°ì„ ê²€ì¦í•©ë‹ˆë‹¤.", MessageType.Info);
 
             EditorGUILayout.Space(6f);
-            unitData = (UnitDataSO)EditorGUILayout.ObjectField(new GUIContent("Ä³¸¯ÅÍ µ¥ÀÌÅÍ", "ÃÊ±â ·¹º§°ú Ä³¸¯ÅÍ ID¸¦ °¡Á®¿Ã UnitDataSOÀÔ´Ï´Ù."), unitData, typeof(UnitDataSO), false);
-            levelCurve = (UnitLevelCurveSO)EditorGUILayout.ObjectField(new GUIContent("°æÇèÄ¡ °î¼±", "·¹º§º° ÇÊ¿ä °æÇèÄ¡¸¦ °è»êÇÒ UnitLevelCurveSOÀÔ´Ï´Ù."), levelCurve, typeof(UnitLevelCurveSO), false);
-            maxLevel = Mathf.Max(1, EditorGUILayout.IntField(new GUIContent("ÇöÀç ÃÖ´ë ·¹º§", "½Â±Ş »óÅÂ¿¡ µû¶ó Çã¿ëµÇ´Â ÇöÀç ÃÖ´ë ·¹º§ÀÔ´Ï´Ù."), maxLevel));
+            unitData = (UnitDataSO)EditorGUILayout.ObjectField(new GUIContent("ìºë¦­í„° ë°ì´í„°", "ì´ˆê¸° ë ˆë²¨ê³¼ ìºë¦­í„° IDë¥¼ ê°€ì ¸ì˜¬ UnitDataSOì…ë‹ˆë‹¤."), unitData, typeof(UnitDataSO), false);
+            levelCurve = (UnitLevelCurveSO)EditorGUILayout.ObjectField(new GUIContent("ê²½í—˜ì¹˜ ê³¡ì„ ", "ë ˆë²¨ë³„ í•„ìš” ê²½í—˜ì¹˜ë¥¼ ê³„ì‚°í•  UnitLevelCurveSOì…ë‹ˆë‹¤."), levelCurve, typeof(UnitLevelCurveSO), false);
+            maxLevel = Mathf.Max(1, EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ìµœëŒ€ ë ˆë²¨", "ìŠ¹ê¸‰ ìƒíƒœì— ë”°ë¼ í—ˆìš©ë˜ëŠ” í˜„ì¬ ìµœëŒ€ ë ˆë²¨ì…ë‹ˆë‹¤."), maxLevel));
 
             using (new EditorGUI.DisabledScope(unitData == null))
             {
-                if (GUILayout.Button("Å×½ºÆ® ÁøÇàµµ ÃÊ±âÈ­"))
+                if (GUILayout.Button("í…ŒìŠ¤íŠ¸ ì§„í–‰ë„ ì´ˆê¸°í™”"))
                 {
                     testProgress = UnitProgressData.Create(unitData);
                     hasResult = false;
@@ -45,11 +45,11 @@ namespace EndlessGuard.Unit.Editor
             DrawCurrentProgress();
 
             EditorGUILayout.Space(8f);
-            expToAdd = Math.Max(0L, EditorGUILayout.LongField(new GUIContent("Áö±ŞÇÒ °æÇèÄ¡", "ÇöÀç Å×½ºÆ® ÁøÇàµµ¿¡ Ãß°¡ÇÒ °æÇèÄ¡ÀÔ´Ï´Ù."), expToAdd));
+            expToAdd = Math.Max(0L, EditorGUILayout.LongField(new GUIContent("ì§€ê¸‰í•  ê²½í—˜ì¹˜", "í˜„ì¬ í…ŒìŠ¤íŠ¸ ì§„í–‰ë„ì— ì¶”ê°€í•  ê²½í—˜ì¹˜ì…ë‹ˆë‹¤."), expToAdd));
 
             using (new EditorGUI.DisabledScope(testProgress == null || levelCurve == null))
             {
-                if (GUILayout.Button("°æÇèÄ¡ Áö±Ş"))
+                if (GUILayout.Button("ê²½í—˜ì¹˜ ì§€ê¸‰"))
                 {
                     lastResult = UnitLevelCalculator.AddExperience(testProgress, levelCurve, maxLevel, expToAdd);
                     hasResult = true;
@@ -61,14 +61,14 @@ namespace EndlessGuard.Unit.Editor
 
         private void DrawCurrentProgress()
         {
-            EditorGUILayout.LabelField("ÇöÀç Å×½ºÆ® ÁøÇàµµ", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("í˜„ì¬ í…ŒìŠ¤íŠ¸ ì§„í–‰ë„", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.TextField(new GUIContent("Ä³¸¯ÅÍ ID"), testProgress == null ? "ÁøÇàµµ ¾øÀ½" : testProgress.UnitId);
-                EditorGUILayout.IntField(new GUIContent("ÇöÀç ·¹º§"), testProgress == null ? 0 : testProgress.CurrentLevel);
-                EditorGUILayout.TextField(new GUIContent("ÇöÀç °æÇèÄ¡"), testProgress == null ? "0" : $"{testProgress.CurrentExp:N0}");
-                EditorGUILayout.TextField(new GUIContent("´ÙÀ½ ·¹º§ ÇÊ¿ä °æÇèÄ¡"), GetNextRequiredExpText());
+                EditorGUILayout.TextField(new GUIContent("ìºë¦­í„° ID"), testProgress == null ? "ì§„í–‰ë„ ì—†ìŒ" : testProgress.UnitId);
+                EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ë ˆë²¨"), testProgress == null ? 0 : testProgress.CurrentLevel);
+                EditorGUILayout.TextField(new GUIContent("í˜„ì¬ ê²½í—˜ì¹˜"), testProgress == null ? "0" : $"{testProgress.CurrentExp:N0}");
+                EditorGUILayout.TextField(new GUIContent("ë‹¤ìŒ ë ˆë²¨ í•„ìš” ê²½í—˜ì¹˜"), GetNextRequiredExpText());
             }
         }
 
@@ -76,12 +76,12 @@ namespace EndlessGuard.Unit.Editor
         {
             if (testProgress == null || levelCurve == null)
             {
-                return "È®ÀÎ ºÒ°¡";
+                return "í™•ì¸ ë¶ˆê°€";
             }
 
             if (testProgress.CurrentLevel >= maxLevel)
             {
-                return "ÃÖ´ë ·¹º§";
+                return "ìµœëŒ€ ë ˆë²¨";
             }
 
             return $"{levelCurve.GetRequiredExp(testProgress.CurrentLevel):N0}";
@@ -95,18 +95,18 @@ namespace EndlessGuard.Unit.Editor
             }
 
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("ÃÖ±Ù °è»ê °á°ú", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("ìµœê·¼ ê³„ì‚° ê²°ê³¼", EditorStyles.boldLabel);
 
             using (new EditorGUI.DisabledScope(true))
             {
-                EditorGUILayout.IntField(new GUIContent("ÀÌÀü ·¹º§"), lastResult.PreviousLevel);
-                EditorGUILayout.IntField(new GUIContent("ÇöÀç ·¹º§"), lastResult.CurrentLevel);
-                EditorGUILayout.IntField(new GUIContent("»ó½ÂÇÑ ·¹º§ ¼ö"), lastResult.LevelsGained);
-                EditorGUILayout.TextField(new GUIContent("Áö±Ş °æÇèÄ¡"), $"{lastResult.GainedExp:N0}");
-                EditorGUILayout.TextField(new GUIContent("¼Òºñ °æÇèÄ¡"), $"{lastResult.ConsumedExp:N0}");
-                EditorGUILayout.TextField(new GUIContent("³²Àº °æÇèÄ¡"), $"{lastResult.CurrentExp:N0}");
-                EditorGUILayout.TextField(new GUIContent("Æó±â °æÇèÄ¡"), $"{lastResult.DiscardedExp:N0}");
-                EditorGUILayout.Toggle(new GUIContent("ÃÖ´ë ·¹º§ µµ´Ş"), lastResult.ReachedMaxLevel);
+                EditorGUILayout.IntField(new GUIContent("ì´ì „ ë ˆë²¨"), lastResult.PreviousLevel);
+                EditorGUILayout.IntField(new GUIContent("í˜„ì¬ ë ˆë²¨"), lastResult.CurrentLevel);
+                EditorGUILayout.IntField(new GUIContent("ìƒìŠ¹í•œ ë ˆë²¨ ìˆ˜"), lastResult.LevelsGained);
+                EditorGUILayout.TextField(new GUIContent("ì§€ê¸‰ ê²½í—˜ì¹˜"), $"{lastResult.GainedExp:N0}");
+                EditorGUILayout.TextField(new GUIContent("ì†Œë¹„ ê²½í—˜ì¹˜"), $"{lastResult.ConsumedExp:N0}");
+                EditorGUILayout.TextField(new GUIContent("ë‚¨ì€ ê²½í—˜ì¹˜"), $"{lastResult.CurrentExp:N0}");
+                EditorGUILayout.TextField(new GUIContent("íê¸° ê²½í—˜ì¹˜"), $"{lastResult.DiscardedExp:N0}");
+                EditorGUILayout.Toggle(new GUIContent("ìµœëŒ€ ë ˆë²¨ ë„ë‹¬"), lastResult.ReachedMaxLevel);
             }
         }
     }

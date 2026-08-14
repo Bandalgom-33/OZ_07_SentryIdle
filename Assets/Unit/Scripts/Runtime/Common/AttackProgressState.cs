@@ -6,7 +6,7 @@ namespace EndlessGuard.Unit.Runtime
     [Serializable]
     public sealed class AttackProgressState
     {
-        [Tooltip("´ÙÀ½ ±âº» °ø°İÀ» À§ÇØ ´©ÀûµÈ °ø°İ ÁøÇàµµÀÔ´Ï´Ù. 1 ÀÌ»óÀÌ¸é °ø°İ ½ÇÇà °¡´É È½¼ö°¡ Á¸ÀçÇÕ´Ï´Ù.")]
+        [Tooltip("ë‹¤ìŒ ê¸°ë³¸ ê³µê²©ì„ ìœ„í•´ ëˆ„ì ëœ ê³µê²© ì§„í–‰ë„ì…ë‹ˆë‹¤. 1 ì´ìƒì´ë©´ ê³µê²© ì‹¤í–‰ ê°€ëŠ¥ íšŸìˆ˜ê°€ ì¡´ì¬í•©ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float progress;
 

@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "AttackSpeed", menuName = "Endless Guard/Passive/°ø°İ¼Óµµ Áõ°¡")]
+    [CreateAssetMenu(fileName = "AttackSpeed", menuName = "Endless Guard/Passive/ê³µê²©ì†ë„ ì¦ê°€")]
     public sealed class AttackSpeedSO : PassiveDataSO
     {
-        [Header("°ø°İ¼Óµµ Áõ°¡ Á¶°Ç")]
-        [Tooltip("°ø°İ¼Óµµ Áõ°¡ È¿°ú¸¦ ¹ßµ¿½ÃÅ°´Â ¸ó½ºÅÍ Å©±âÀÔ´Ï´Ù.")]
+        [Header("ê³µê²©ì†ë„ ì¦ê°€ ì¡°ê±´")]
+        [Tooltip("ê³µê²©ì†ë„ ì¦ê°€ íš¨ê³¼ë¥¼ ë°œë™ì‹œí‚¤ëŠ” ëª¬ìŠ¤í„° í¬ê¸°ì…ë‹ˆë‹¤.")]
         [SerializeField] private EnemySize targetSize = EnemySize.None;
 
-        [Header("°ø°İ¼Óµµ Áõ°¡ ±âº»°ª")]
-        [Tooltip("Á¶°Ç¿¡ ¸Â´Â ¸ó½ºÅÍ¿¡°Ô ±âº» °ø°İÀÌ ÀûÁßÇßÀ» ¶§ Áõ°¡ÇÏ´Â °ø°İ¼Óµµ ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ê³µê²©ì†ë„ ì¦ê°€ ê¸°ë³¸ê°’")]
+        [Tooltip("ì¡°ê±´ì— ë§ëŠ” ëª¬ìŠ¤í„°ì—ê²Œ ê¸°ë³¸ ê³µê²©ì´ ì ì¤‘í–ˆì„ ë•Œ ì¦ê°€í•˜ëŠ” ê³µê²©ì†ë„ ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackSpeedBonusPercent = 50f;
 
-        [Tooltip("°ø°İ¼Óµµ Áõ°¡ È¿°ú°¡ À¯ÁöµÇ´Â ½Ã°£ÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("ê³µê²©ì†ë„ ì¦ê°€ íš¨ê³¼ê°€ ìœ ì§€ë˜ëŠ” ì‹œê°„ì…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float durationSeconds = 3f;
 

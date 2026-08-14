@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Summon", menuName = "Endless Guard/Passive/ÁÖ±âÀû ¼ÒÈ¯")]
+    [CreateAssetMenu(fileName = "Summon", menuName = "Endless Guard/Passive/ì£¼ê¸°ì  ì†Œí™˜")]
     public sealed class SummonSO : PassiveDataSO
     {
-        [Header("ÁÖ±âÀû ¼ÒÈ¯ ±âº»°ª")]
-        [Tooltip("¼ÒÈ¯ È¿°ú°¡ ¹Ýº¹ÇØ¼­ ¹ßµ¿ÇÏ´Â ÁÖ±âÀÔ´Ï´Ù. ´ÜÀ§´Â ÃÊÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì£¼ê¸°ì  ì†Œí™˜ ê¸°ë³¸ê°’")]
+        [Tooltip("ì†Œí™˜ íš¨ê³¼ê°€ ë°˜ë³µí•´ì„œ ë°œë™í•˜ëŠ” ì£¼ê¸°ìž…ë‹ˆë‹¤. ë‹¨ìœ„ëŠ” ì´ˆìž…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.")]
         [Min(0.1f)]
         [SerializeField] private float summonIntervalSeconds = 10f;
 
-        [Tooltip("ÇÑ ¹øÀÇ ¼ÒÈ¯ È¿°ú°¡ ¹ßµ¿ÇÒ ¶§ »ý¼ºÇÏ´Â ±âº» ¼ÒÈ¯¹° ¼öÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆÐ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Tooltip("í•œ ë²ˆì˜ ì†Œí™˜ íš¨ê³¼ê°€ ë°œë™í•  ë•Œ ìƒì„±í•˜ëŠ” ê¸°ë³¸ ì†Œí™˜ë¬¼ ìˆ˜ìž…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int summonCount = 1;
 
-        [Tooltip("¸ó½ºÅÍº° ¼ÒÈ¯¹° ÇÁ¸®ÆÕÀÌ µû·Î ¼³Á¤µÇÁö ¾Ê¾ÒÀ» ¶§ »ç¿ëÇÒ ±âº» ¼ÒÈ¯¹° ÇÁ¸®ÆÕÀÔ´Ï´Ù. ½ÇÁ¦ ¼ÒÈ¯¹° Á¦ÀÛ ÈÄ ¿¬°áÇÏ¸ç ÇöÀç´Â ºñ¾î ÀÖ¾îµµ Á¤»óÀÔ´Ï´Ù.")]
+        [Tooltip("ëª¬ìŠ¤í„°ë³„ ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹ì´ ë”°ë¡œ ì„¤ì •ë˜ì§€ ì•Šì•˜ì„ ë•Œ ì‚¬ìš©í•  ê¸°ë³¸ ì†Œí™˜ë¬¼ í”„ë¦¬íŒ¹ìž…ë‹ˆë‹¤. ì‹¤ì œ ì†Œí™˜ë¬¼ ì œìž‘ í›„ ì—°ê²°í•˜ë©° í˜„ìž¬ëŠ” ë¹„ì–´ ìžˆì–´ë„ ì •ìƒìž…ë‹ˆë‹¤.")]
         [SerializeField] private GameObject summonPrefab;
 
         public float SummonIntervalSeconds => summonIntervalSeconds;

@@ -6,28 +6,28 @@ namespace EndlessGuard.Unit.Data
     [Serializable]
     public sealed class AttackSettings
     {
-        [Header("±âº» °ø°Ý ±ÔÄ¢")]
-        [Tooltip("±âº» °ø°ÝÀ» ÇÏÁö ¾Ê´ÂÁö, ±Ù°Å¸® ¶Ç´Â ¿ø°Å¸® ¹æ½ÄÀÎÁö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Header("ê¸°ë³¸ ê³µê²© ê·œì¹™")]
+        [Tooltip("ê¸°ë³¸ ê³µê²©ì„ í•˜ì§€ ì•ŠëŠ”ì§€, ê·¼ê±°ë¦¬ ë˜ëŠ” ì›ê±°ë¦¬ ë°©ì‹ì¸ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private AttackMode attackMode = AttackMode.None;
 
-        [Tooltip("±âº» °ø°ÝÀÌ ¹°¸® ÇÇÇØÀÎÁö ¸¶¹ý ÇÇÇØÀÎÁö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Tooltip("ê¸°ë³¸ ê³µê²©ì´ ë¬¼ë¦¬ í”¼í•´ì¸ì§€ ë§ˆë²• í”¼í•´ì¸ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private DamageType damageType = DamageType.None;
 
-        [Tooltip("±âº» °ø°ÝÀÌ Áö»ó, °øÁß ¶Ç´Â ¾çÂÊ ¸ðµÎ¸¦ ´ë»óÀ¸·Î ÇÒ ¼ö ÀÖ´ÂÁö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Tooltip("ê¸°ë³¸ ê³µê²©ì´ ì§€ìƒ, ê³µì¤‘ ë˜ëŠ” ì–‘ìª½ ëª¨ë‘ë¥¼ ëŒ€ìƒìœ¼ë¡œ í•  ìˆ˜ ìžˆëŠ”ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private AttackTarget attackTarget = AttackTarget.None;
 
-        [Tooltip("±âº» °ø°ÝÀ¸·Î ´ë»óÀ» Å½»öÇÏ°í °ø°ÝÇÒ ¼ö ÀÖ´Â ±âÁØ ¿ùµå °Å¸®ÀÔ´Ï´Ù.")]
+        [Tooltip("ê¸°ë³¸ ê³µê²©ìœ¼ë¡œ ëŒ€ìƒì„ íƒìƒ‰í•˜ê³  ê³µê²©í•  ìˆ˜ ìžˆëŠ” ê¸°ì¤€ ì›”ë“œ ê±°ë¦¬ìž…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackRange;
 
-        [Tooltip("ÇÑ ¹øÀÇ ±âº» °ø°ÝÀ¸·Î µ¿½Ã¿¡ °ø°ÝÇÒ ¼ö ÀÖ´Â ÃÖ´ë ´ë»ó ¼öÀÔ´Ï´Ù.")]
+        [Tooltip("í•œ ë²ˆì˜ ê¸°ë³¸ ê³µê²©ìœ¼ë¡œ ë™ì‹œì— ê³µê²©í•  ìˆ˜ ìžˆëŠ” ìµœëŒ€ ëŒ€ìƒ ìˆ˜ìž…ë‹ˆë‹¤.")]
         [Min(0)]
         [SerializeField] private int targetCount;
 
-        [Tooltip("±âº» °ø°Ý Å¸ÀÏ ¹üÀ§´Â ÇöÀç Facing ¹æÇâ¿¡ ¸ÂÃç »ç¿ëÇÏ¸ç, ÀüÅõ Áß FacingÀ» °íÁ¤ÇÒÁö À¯È¿ÇÑ ´ë»ó ¹æÇâ¿¡ µû¶ó ÀÚµ¿ º¯°æÇÒÁö ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Tooltip("ê¸°ë³¸ ê³µê²© íƒ€ì¼ ë²”ìœ„ëŠ” í˜„ìž¬ Facing ë°©í–¥ì— ë§žì¶° ì‚¬ìš©í•˜ë©°, ì „íˆ¬ ì¤‘ Facingì„ ê³ ì •í• ì§€ ìœ íš¨í•œ ëŒ€ìƒ ë°©í–¥ì— ë”°ë¼ ìžë™ ë³€ê²½í• ì§€ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private AttackRangeRotationMode rangeRotationMode = AttackRangeRotationMode.Fixed;
 
-        [Tooltip("°ø°Ý ÁÖÃ¼ÀÇ À§Ä¡¸¦ ±âÁØÀ¸·Î ±âº» °ø°ÝÀÌ °¡´ÉÇÑ »ó´ë Å¸ÀÏ ÁÂÇ¥¸¦ ¼³Á¤ÇÕ´Ï´Ù.")]
+        [Tooltip("ê³µê²© ì£¼ì²´ì˜ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ê¸°ë³¸ ê³µê²©ì´ ê°€ëŠ¥í•œ ìƒëŒ€ íƒ€ì¼ ì¢Œí‘œë¥¼ ì„¤ì •í•©ë‹ˆë‹¤.")]
         [SerializeField] private BasicAttackRangeData basicAttackRange = new BasicAttackRangeData();
 
         public AttackMode AttackMode => attackMode;

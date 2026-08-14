@@ -4,16 +4,16 @@ namespace EndlessGuard.Unit.Data
 {
     public enum PassiveUserType
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("Ä³¸¯ÅÍ Àü¿ë")]
+        [InspectorName("ìºë¦­í„° ì „ìš©")]
         Unit = 1,
 
-        [InspectorName("¸ó½ºÅÍ Àü¿ë")]
+        [InspectorName("ëª¬ìŠ¤í„° ì „ìš©")]
         Enemy = 2,
 
-        [InspectorName("Ä³¸¯ÅÍ¡¤¸ó½ºÅÍ °ø¿ë")]
+        [InspectorName("ìºë¦­í„°Â·ëª¬ìŠ¤í„° ê³µìš©")]
         Both = 3
     }
 }

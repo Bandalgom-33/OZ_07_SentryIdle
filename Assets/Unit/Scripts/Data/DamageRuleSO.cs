@@ -5,12 +5,12 @@ namespace EndlessGuard.Unit.Data
     [CreateAssetMenu(fileName = "DamageRule", menuName = "Endless Guard/Combat/Damage Rule")]
     public sealed class DamageRuleSO : ScriptableObject
     {
-        [Header("±âº» ÇÇÇØ °è»ê ±ÔÄ¢")]
-        [Tooltip("¹æ¾î·ÂÀ» ±âº» ÇÇÇØ °è»ê½Ä¿¡ ¹İ¿µÇÒ ¶§ °öÇÏ´Â °¡ÁßÄ¡ÀÔ´Ï´Ù.")]
+        [Header("ê¸°ë³¸ í”¼í•´ ê³„ì‚° ê·œì¹™")]
+        [Tooltip("ë°©ì–´ë ¥ì„ ê¸°ë³¸ í”¼í•´ ê³„ì‚°ì‹ì— ë°˜ì˜í•  ë•Œ ê³±í•˜ëŠ” ê°€ì¤‘ì¹˜ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float defenseWeight = 1.5f;
 
-        [Tooltip("°ø°İ·ÂÀÌ 0º¸´Ù Å« °ø°İÀÌ ¸íÁßÇßÀ» ¶§ º¸ÀåÇÒ ÃÖ¼Ò ÇÇÇØ·®ÀÔ´Ï´Ù.")]
+        [Tooltip("ê³µê²©ë ¥ì´ 0ë³´ë‹¤ í° ê³µê²©ì´ ëª…ì¤‘í–ˆì„ ë•Œ ë³´ì¥í•  ìµœì†Œ í”¼í•´ëŸ‰ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float minimumDamage = 1f;
 

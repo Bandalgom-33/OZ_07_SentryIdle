@@ -4,19 +4,19 @@ namespace EndlessGuard.Unit.Data
 {
     public enum DefenseBuffTrigger
     {
-        [InspectorName("¹Ì¼³Á¤")]
+        [InspectorName("ë¯¸ì„¤ì •")]
         None = 0,
 
-        [InspectorName("È¸ÇÇ ¼º°ø")]
+        [InspectorName("íšŒí”¼ ì„±ê³µ")]
         EvadeSuccess = 1,
 
-        [InspectorName("¼ÒÇü ¸ó½ºÅÍ ÀúÁö Áß")]
+        [InspectorName("ì†Œí˜• ëª¬ìŠ¤í„° ì €ì§€ ì¤‘")]
         BlockingSmall = 2,
 
-        [InspectorName("ÁßÇü ¸ó½ºÅÍ ÀúÁö Áß")]
+        [InspectorName("ì¤‘í˜• ëª¬ìŠ¤í„° ì €ì§€ ì¤‘")]
         BlockingMedium = 3,
 
-        [InspectorName("´ëÇü ¸ó½ºÅÍ ÀúÁö Áß")]
+        [InspectorName("ëŒ€í˜• ëª¬ìŠ¤í„° ì €ì§€ ì¤‘")]
         BlockingLarge = 4
     }
 }

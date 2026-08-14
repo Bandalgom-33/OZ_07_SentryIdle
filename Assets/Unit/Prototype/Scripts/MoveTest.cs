@@ -8,10 +8,10 @@ namespace EndlessGuard.Unit.Prototype
     [RequireComponent(typeof(CombatStatePrototypeController))]
     public sealed class MoveTest : MonoBehaviour
     {
-        [Header("°ËÁõ ´ë»ó ¿¬°á")]
+        [Header("ê²€ì¦ ëŒ€ìƒ ì—°ê²°")]
         [SerializeField] private CombatStatePrototypeController state;
 
-        [Header("Á÷¼± °æ·Î")]
+        [Header("ì§ì„  ê²½ë¡œ")]
         [SerializeField] private Vector3 worldOrigin;
         [Min(0.01f)]
         [SerializeField] private float tileWorldSize = 1f;
@@ -69,7 +69,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (state == null)
             {
-                lastMessage = "CombatStatePrototypeController°¡ ¿¬°áµÇÁö ¾Ê¾Ò½À´Ï´Ù.";
+                lastMessage = "CombatStatePrototypeControllerê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastMessage, this);
                 return;
             }
@@ -78,7 +78,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (state.SpawnedEnemy == null)
             {
-                lastMessage = "°ËÁõÇÒ ¸ó½ºÅÍ°¡ »ı¼ºµÇÁö ¾Ê¾Ò½À´Ï´Ù.";
+                lastMessage = "ê²€ì¦í•  ëª¬ìŠ¤í„°ê°€ ìƒì„±ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastMessage, this);
                 return;
             }
@@ -87,7 +87,7 @@ namespace EndlessGuard.Unit.Prototype
 
             if (enemyMove == null)
             {
-                lastMessage = "»ı¼ºµÈ ¸ó½ºÅÍ¿¡¼­ EnemyMove¸¦ Ã£Áö ¸øÇß½À´Ï´Ù.";
+                lastMessage = "ìƒì„±ëœ ëª¬ìŠ¤í„°ì—ì„œ EnemyMoveë¥¼ ì°¾ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastMessage, state.SpawnedEnemy);
                 return;
             }
@@ -99,12 +99,12 @@ namespace EndlessGuard.Unit.Prototype
 
             if (!enemyMove.SetPath(path))
             {
-                lastMessage = "°ËÁõ °æ·Î¸¦ ¼³Á¤ÇÏÁö ¸øÇß½À´Ï´Ù.";
+                lastMessage = "ê²€ì¦ ê²½ë¡œë¥¼ ì„¤ì •í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.";
                 Debug.LogError(lastMessage, enemyMove);
                 return;
             }
 
-            lastMessage = $"ÀÌµ¿ °ËÁõ ÁØºñ ¿Ï·á: ½ÃÀÛ {startTile}, Ãâ±¸ {goalTile}, °æ·Î {path.Length}°³";
+            lastMessage = $"ì´ë™ ê²€ì¦ ì¤€ë¹„ ì™„ë£Œ: ì‹œì‘ {startTile}, ì¶œêµ¬ {goalTile}, ê²½ë¡œ {path.Length}ê°œ";
             Debug.Log(lastMessage, this);
         }
 
@@ -112,13 +112,13 @@ namespace EndlessGuard.Unit.Prototype
         {
             if (enemyMove == null || !enemyMove.HasPath)
             {
-                lastMessage = "¸ÕÀú ÀÌµ¿ °ËÁõ ÁØºñ¸¦ ½ÇÇàÇÏ¼¼¿ä.";
+                lastMessage = "ë¨¼ì € ì´ë™ ê²€ì¦ ì¤€ë¹„ë¥¼ ì‹¤í–‰í•˜ì„¸ìš”.";
                 return;
             }
 
             enemyMove.SetPaused(false);
             isRunning = true;
-            lastMessage = "¸ó½ºÅÍ ÀÌµ¿ ½ÃÀÛ";
+            lastMessage = "ëª¬ìŠ¤í„° ì´ë™ ì‹œì‘";
             Debug.Log(lastMessage, enemyMove);
         }
 
@@ -131,7 +131,7 @@ namespace EndlessGuard.Unit.Prototype
                 enemyMove.SetPaused(true);
             }
 
-            lastMessage = "¸ó½ºÅÍ ÀÌµ¿ Á¤Áö";
+            lastMessage = "ëª¬ìŠ¤í„° ì´ë™ ì •ì§€";
             Debug.Log(lastMessage, this);
         }
 
@@ -197,7 +197,7 @@ namespace EndlessGuard.Unit.Prototype
 
             isRunning = false;
             reachedGoal = true;
-            lastMessage = $"¸ó½ºÅÍ Ãâ±¸ µµ´Ş: {info.EnemyId} / À§Ä¡ {info.Position}";
+            lastMessage = $"ëª¬ìŠ¤í„° ì¶œêµ¬ ë„ë‹¬: {info.EnemyId} / ìœ„ì¹˜ {info.Position}";
             Debug.Log(lastMessage, this);
         }
 

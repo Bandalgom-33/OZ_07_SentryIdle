@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "Reflect", menuName = "Endless Guard/Passive/ÇÇÇØ ¹İ»ç")]
+    [CreateAssetMenu(fileName = "Reflect", menuName = "Endless Guard/Passive/í”¼í•´ ë°˜ì‚¬")]
     public sealed class ReflectSO : PassiveDataSO
     {
-        [Header("ÇÇÇØ ¹İ»ç ±âº»°ª")]
-        [Tooltip("Ä³¸¯ÅÍ¿¡°Ô ½ÇÁ¦·Î ¹ŞÀº ÇÇÇØ·® Áß °ø°İÀÚ¿¡°Ô µÇµ¹·Á ÁÖ´Â ºñÀ²ÀÔ´Ï´Ù. ¸ó½ºÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("í”¼í•´ ë°˜ì‚¬ ê¸°ë³¸ê°’")]
+        [Tooltip("ìºë¦­í„°ì—ê²Œ ì‹¤ì œë¡œ ë°›ì€ í”¼í•´ëŸ‰ ì¤‘ ê³µê²©ìì—ê²Œ ë˜ëŒë ¤ ì£¼ëŠ” ë¹„ìœ¨ì…ë‹ˆë‹¤. ëª¬ìŠ¤í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float damageReflectPercent = 30f;
 

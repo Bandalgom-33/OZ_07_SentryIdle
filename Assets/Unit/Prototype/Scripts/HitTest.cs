@@ -7,28 +7,28 @@ namespace EndlessGuard.Unit.Prototype
     [DisallowMultipleComponent]
     public sealed class HitTest : MonoBehaviour
     {
-        [Header("¸íÁß ±ÔÄ¢")]
-        [Tooltip("°ËÁõ¿¡ »ç¿ëÇÒ °øÅë ¸íÁß¡¤È¸ÇÇ ±ÔÄ¢ÀÔ´Ï´Ù.")]
+        [Header("ëª…ì¤‘ ê·œì¹™")]
+        [Tooltip("ê²€ì¦ì— ì‚¬ìš©í•  ê³µí†µ ëª…ì¤‘Â·íšŒí”¼ ê·œì¹™ì…ë‹ˆë‹¤.")]
         [SerializeField] private HitRuleSO hitRule;
 
-        [Header("°ËÁõ ´É·ÂÄ¡")]
-        [Tooltip("°ø°İÀÚÀÇ ¸íÁß·ÂÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ëŠ¥ë ¥ì¹˜")]
+        [Tooltip("ê³µê²©ìì˜ ëª…ì¤‘ë ¥ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float accuracy = 100f;
 
-        [Tooltip("´ë»óÀÇ È¸ÇÇ·ÂÀÔ´Ï´Ù.")]
+        [Tooltip("ëŒ€ìƒì˜ íšŒí”¼ë ¥ì…ë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float evasion = 100f;
 
-        [Header("°ËÁõ ¼³Á¤")]
-        [Tooltip("¸íÁß ÆÇÁ¤À» ¹İº¹ÇÒ È½¼öÀÔ´Ï´Ù.")]
+        [Header("ê²€ì¦ ì„¤ì •")]
+        [Tooltip("ëª…ì¤‘ íŒì •ì„ ë°˜ë³µí•  íšŸìˆ˜ì…ë‹ˆë‹¤.")]
         [Min(1)]
         [SerializeField] private int trialCount = 10000;
 
-        [Tooltip("°°Àº Á¶°Ç¿¡¼­ µ¿ÀÏÇÑ °á°ú¸¦ ÀçÇöÇÏ±â À§ÇÑ ·£´ı ½ÃµåÀÔ´Ï´Ù.")]
+        [Tooltip("ê°™ì€ ì¡°ê±´ì—ì„œ ë™ì¼í•œ ê²°ê³¼ë¥¼ ì¬í˜„í•˜ê¸° ìœ„í•œ ëœë¤ ì‹œë“œì…ë‹ˆë‹¤.")]
         [SerializeField] private int randomSeed = 12345;
 
-        [Header("°ËÁõ °á°ú")]
+        [Header("ê²€ì¦ ê²°ê³¼")]
         [SerializeField] private float calculatedHitChance;
         [SerializeField] private int hitCount;
         [SerializeField] private int missCount;
@@ -66,7 +66,7 @@ namespace EndlessGuard.Unit.Prototype
             actualHitRate = hitCount / (float)trialCount * 100f;
             difference = actualHitRate - calculatedHitChance;
 
-            Debug.Log($"¸íÁß·ü °ËÁõ ¿Ï·á: °è»ê {calculatedHitChance:F2}%, ½ÇÁ¦ {actualHitRate:F2}%, ¸íÁß {hitCount}, MISS {missCount}, Â÷ÀÌ {difference:F2}%p", this);
+            Debug.Log($"ëª…ì¤‘ë¥  ê²€ì¦ ì™„ë£Œ: ê³„ì‚° {calculatedHitChance:F2}%, ì‹¤ì œ {actualHitRate:F2}%, ëª…ì¤‘ {hitCount}, MISS {missCount}, ì°¨ì´ {difference:F2}%p", this);
         }
     }
 }

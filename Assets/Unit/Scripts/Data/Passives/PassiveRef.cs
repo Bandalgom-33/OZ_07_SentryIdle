@@ -6,10 +6,10 @@ namespace EndlessGuard.Unit.Data
     [Serializable]
     public sealed class PassiveRef
     {
-        [Tooltip("ÀÌ ÂüÁ¶°¡ ÆĞ½Ãºê¿¡¼­ ¾î¶² ¿ëµµ·Î »ç¿ëµÇ´ÂÁö ³ªÅ¸³À´Ï´Ù.")]
+        [Tooltip("ì´ ì°¸ì¡°ê°€ íŒ¨ì‹œë¸Œì—ì„œ ì–´ë–¤ ìš©ë„ë¡œ ì‚¬ìš©ë˜ëŠ”ì§€ ë‚˜íƒ€ëƒ…ë‹ˆë‹¤.")]
         [SerializeField] private PassiveRefKey key = PassiveRefKey.None;
 
-        [Tooltip("ÀÌ Ä³¸¯ÅÍ ¶Ç´Â ¸ó½ºÅÍ°¡ ÇØ´ç ÆĞ½Ãºê¿¡¼­ ½ÇÁ¦·Î »ç¿ëÇÒ ¿¡¼Â ÂüÁ¶ÀÔ´Ï´Ù.")]
+        [Tooltip("ì´ ìºë¦­í„° ë˜ëŠ” ëª¬ìŠ¤í„°ê°€ í•´ë‹¹ íŒ¨ì‹œë¸Œì—ì„œ ì‹¤ì œë¡œ ì‚¬ìš©í•  ì—ì…‹ ì°¸ì¡°ì…ë‹ˆë‹¤.")]
         [SerializeField] private UnityEngine.Object reference;
 
         public PassiveRefKey Key => key;
