@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc27bd1a3fa82b745894798187f8ce11, type: 3}
+  m_Name: RaidTileVisualSet
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidTileVisualSetSO
+  groundPrefabs:
+  - {fileID: 112002922629254673, guid: 042886bf938bb724ab44ad561ffc1310, type: 3}
+  highGroundPrefabs:
+  - {fileID: 973374580115397455, guid: d1070f530492437ab16e2bc758289f65, type: 3}
+  rubblePrefabs:
+  - {fileID: 3950577767283965755, guid: e843b14d1fa34657bc98a2dca689196e, type: 3}
+  - {fileID: 3950577767283965755, guid: 7acd273c0ec3406daf3289510c4998e7, type: 3}
+  lowWallPrefabs:
+  - {fileID: 3950577767283965755, guid: 22b0e6bd7e6a48b48a869a60465fe4d5, type: 3}
+  columnPrefabs:
+  - {fileID: 3950577767283965755, guid: 10702d44b90c45b781c18fe20ff7a3fa, type: 3}
+  boundaryBasePrefab: {fileID: 973374580115397455, guid: bfd4073ec050de340b2d9283daa9de8a, type: 3}
+  boundaryWallPrefab: {fileID: 3950577767283965755, guid: 0028dd660806b4e44949dc744df7b012, type: 3}
+  boundaryBrokenPrefab: {fileID: 3797835333019482868, guid: 20c271c090ab08e41818416edcd9b9de, type: 3}
+  outerRuinFloorPrefabs:
+  - {fileID: 112002922629254673, guid: 042886bf938bb724ab44ad561ffc1310, type: 3}
+  - {fileID: 7734241019564397009, guid: 47af606231e6959498be1168f55dfd7c, type: 3}
+  - {fileID: 3998551588500210963, guid: 2f387028f21ddb64a86f77c2097ec2cd, type: 3}
+  outerRuinBasePrefab: {fileID: 973374580115397455, guid: bfd4073ec050de340b2d9283daa9de8a, type: 3}
+  outerRuinCutFloorPrefab: {fileID: 112002922629254673, guid: 12ff2f7be52086d488ab21bb7d28f24a, type: 3}
+  outerRuinCutBasePrefab: {fileID: 973374580115397455, guid: b55f80f336a0aef4080edb3dd8add326, type: 3}
+  outerRuinChance: 0.55
+  outerRuinWallChance: 0.55
+  outerRuinBrokenChance: 0.35
+  outerRuinRailHalfPrefab: {fileID: 3950577767283965755, guid: 22b0e6bd7e6a48b48a869a60465fe4d5, type: 3}
+  outerRuinRailLongPrefab: {fileID: 3950577767283965755, guid: fff0be425d7e45eba3c053017e160cd3, type: 3}
+  outerRuinRailEndPrefab: {fileID: 3950577767283965755, guid: 10702d44b90c45b781c18fe20ff7a3fa, type: 3}
+  outerRuinRailChance: 1
+  bridgePrefab: {fileID: 919132149155446097, guid: d980a3a628a329ae445515601f0fa8b2, type: 3}
+  pathPrefabs:
+  - {fileID: 6497307103071672319, guid: b42c45dbf1098794d9047f559fa35cc8, type: 3}
+  entryPrefabs:
+  - {fileID: 750504062644263683, guid: b354fc791adc22a4da62a82ad5c3616b, type: 3}
+  goalPrefabs:
+  - {fileID: 5473388072170689413, guid: 9975fc65a9d7c1c408b3a25b48c022f9, type: 3}

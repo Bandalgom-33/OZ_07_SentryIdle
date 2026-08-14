@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb559248c4596cd458de9c284bd5014a, type: 3}
+  m_Name: "\uC544\uD0C8\uB780\uD14C"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitDataSO
+  unitId: UNIT_0026
+  displayName: "\uC544\uD0C8\uB780\uD14C"
+  description: "\uBA3C \uAC70\uB9AC\uC5D0\uC11C \uB300\uD615 \uD45C\uC801\uC744 \uC81C\uAC70\uD558\uB294
+    \uC800\uACA9\uC218\uD615 \uC2A4\uB098\uC774\uD37C. \uACF5\uACA9 \uAC70\uB9AC\uAC00
+    \uBA40\uC218\uB85D \uB300\uD615 \uBAAC\uC2A4\uD130\uC5D0\uAC8C \uB354 \uAC15\uD55C
+    \uD53C\uD574\uB97C \uC8FC\uBA70 \uAE34 \uC0AC\uAC70\uB9AC\uC640 \uB192\uC740
+    \uACF5\uACA9\uB825\uC73C\uB85C \uC8FC\uC694 \uC801\uC744 \uC800\uACA9\uD55C\uB2E4."
+  grade: 5
+  initialLevel: 1
+  growthTable: {fileID: 11400000, guid: e353654c25a0e5e803046d4d2f592cea, type: 2}
+  unitClass: 5
+  subclass: 502
+  placement: 2
+  summonCost: 22
+  redeployTime: 60
+  blockCount: 0
+  baseStats:
+    maxHp: 2200
+    physicalAttack: 760
+    magicalAttack: 0
+    baseAttacksPerSecond: 0.65
+    physicalDefense: 80
+    magicalDefense: 120
+    accuracy: 145
+    evasion: 8
+    moveSpeed: 0
+  attackSettings:
+    attackMode: 2
+    damageType: 1
+    attackTarget: 3
+    attackRange: 6
+    targetCount: 1
+    rangeRotationMode: 1
+    basicAttackRange:
+      horizontalRadius: 6
+      forwardDistance: 6
+      backwardDistance: 6
+      attackTiles:
+      - {x: 0, y: 1}
+      - {x: -1, y: 2}
+      - {x: 0, y: 2}
+      - {x: 1, y: 2}
+      - {x: 1, y: 3}
+      - {x: 0, y: 3}
+      - {x: -1, y: 3}
+      - {x: 0, y: 4}
+      - {x: 0, y: 5}
+      - {x: 0, y: 6}
+  hpRegenPerSecond: 0.3
+  criticalChancePercent: 18
+  criticalDamageBonusPercent: 75
+  maxSkillGauge: 100
+  skillGaugeRegenPerSecond: 1
+  skillGaugePerAttack: 5
+  passives:
+  - {fileID: 11400000, guid: e65a810669c84f448aca9fd343047de0, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: e65a810669c84f448aca9fd343047de0, type: 2}
+    values:
+    - key: 2
+      value: 50
+    - key: 20
+      value: 10
+    - key: 21
+      value: 50
+    refs: []
+  unitPrefab: {fileID: 8227218023256200175, guid: e5f14325838e4df4cb7585c57b72add5, type: 3}

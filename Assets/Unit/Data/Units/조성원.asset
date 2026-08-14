@@ -73,6 +73,7 @@ MonoBehaviour:
       - {x: 0, y: -1}
       - {x: 1, y: -1}
       - {x: 1, y: 0}
+      - {x: 0, y: 5}
   hpRegenPerSecond: 25
   criticalChancePercent: 10
   criticalDamageBonusPercent: 77
@@ -81,10 +82,24 @@ MonoBehaviour:
   skillGaugePerAttack: 10
   passives:
   - {fileID: 11400000, guid: d7a758216f1ae8343ba6826202817551, type: 2}
+  - {fileID: 11400000, guid: e71da3175eb2ada41a2e0f3e0b1c3bf8, type: 2}
+  - {fileID: 11400000, guid: b34f4ee66b7a8ea479008229d0b3f39c, type: 2}
   passiveTunings:
   - passive: {fileID: 11400000, guid: d7a758216f1ae8343ba6826202817551, type: 2}
     values:
     - key: 22
       value: 100
+    refs: []
+  - passive: {fileID: 11400000, guid: e71da3175eb2ada41a2e0f3e0b1c3bf8, type: 2}
+    values:
+    - key: 6
+      value: 700
+    - key: 7
+      value: 10
+    refs: []
+  - passive: {fileID: 11400000, guid: b34f4ee66b7a8ea479008229d0b3f39c, type: 2}
+    values:
+    - key: 2
+      value: 1000
     refs: []
   unitPrefab: {fileID: 6371960850893609525, guid: 679e1e002bbd8f34290915e2b074d52b, type: 3}

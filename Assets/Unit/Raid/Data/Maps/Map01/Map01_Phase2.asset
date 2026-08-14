@@ -1,0 +1,2319 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0801ad7320774e5192b5aae6d38f8a4f, type: 3}
+  m_Name: Map01_Phase2
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidMapSO
+  mapId: RAID_MAP_01_P2
+  phase: 1
+  visualKey: 10101
+  width: 25
+  height: 12
+  tiles:
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 1
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 1
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 1
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 2
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 1
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 2
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 2
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 2
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 2
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 2
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 1
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 1
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 1
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 1
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 3
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 2
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 2
+    route: 0
+    deploy: 2
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 1
+    deploy: 0
+    marker: 1
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 1
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 1
+    blockRotation: 0
+  - surface: 1
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  - surface: 4
+    route: 0
+    deploy: 0
+    marker: 0
+    bridge: 0
+    block: 0
+    blockRotation: 0
+  nodes:
+  - coordinate: {x: 2, y: 4}
+    type: 0
+  - coordinate: {x: 2, y: 6}
+    type: 0
+  - coordinate: {x: 8, y: 9}
+    type: 0
+  - coordinate: {x: 5, y: 5}
+    type: 1
+  - coordinate: {x: 8, y: 5}
+    type: 1
+  - coordinate: {x: 10, y: 3}
+    type: 1
+  - coordinate: {x: 14, y: 3}
+    type: 1
+  - coordinate: {x: 18, y: 3}
+    type: 1
+  - coordinate: {x: 23, y: 3}
+    type: 2
+  - coordinate: {x: 10, y: 6}
+    type: 1
+  - coordinate: {x: 14, y: 6}
+    type: 1
+  - coordinate: {x: 18, y: 6}
+    type: 1
+  - coordinate: {x: 23, y: 7}
+    type: 2
+  edges:
+  - fromNode: 0
+    toNode: 3
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 2, y: 4}
+    - {x: 3, y: 4}
+    - {x: 4, y: 4}
+    - {x: 5, y: 4}
+    - {x: 5, y: 5}
+  - fromNode: 1
+    toNode: 3
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 2, y: 6}
+    - {x: 3, y: 6}
+    - {x: 4, y: 6}
+    - {x: 5, y: 6}
+    - {x: 5, y: 5}
+  - fromNode: 3
+    toNode: 4
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 5, y: 5}
+    - {x: 6, y: 5}
+    - {x: 7, y: 5}
+    - {x: 8, y: 5}
+  - fromNode: 4
+    toNode: 5
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 8, y: 5}
+    - {x: 9, y: 5}
+    - {x: 10, y: 5}
+    - {x: 10, y: 4}
+    - {x: 10, y: 3}
+  - fromNode: 5
+    toNode: 6
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 10, y: 3}
+    - {x: 11, y: 3}
+    - {x: 12, y: 3}
+    - {x: 13, y: 3}
+    - {x: 14, y: 3}
+  - fromNode: 6
+    toNode: 7
+    width: 1
+    kind: 1
+    centerLine:
+    - {x: 14, y: 3}
+    - {x: 15, y: 3}
+    - {x: 16, y: 3}
+    - {x: 17, y: 3}
+    - {x: 18, y: 3}
+  - fromNode: 7
+    toNode: 8
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 18, y: 3}
+    - {x: 19, y: 3}
+    - {x: 20, y: 3}
+    - {x: 21, y: 3}
+    - {x: 22, y: 3}
+    - {x: 23, y: 3}
+  - fromNode: 4
+    toNode: 9
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 8, y: 5}
+    - {x: 9, y: 5}
+    - {x: 9, y: 6}
+    - {x: 10, y: 6}
+  - fromNode: 2
+    toNode: 9
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 8, y: 9}
+    - {x: 8, y: 8}
+    - {x: 8, y: 7}
+    - {x: 8, y: 6}
+    - {x: 9, y: 6}
+    - {x: 10, y: 6}
+  - fromNode: 9
+    toNode: 10
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 10, y: 6}
+    - {x: 11, y: 6}
+    - {x: 12, y: 6}
+    - {x: 13, y: 6}
+    - {x: 14, y: 6}
+  - fromNode: 10
+    toNode: 11
+    width: 1
+    kind: 1
+    centerLine:
+    - {x: 14, y: 6}
+    - {x: 15, y: 6}
+    - {x: 16, y: 6}
+    - {x: 17, y: 6}
+    - {x: 18, y: 6}
+  - fromNode: 11
+    toNode: 12
+    width: 1
+    kind: 0
+    centerLine:
+    - {x: 18, y: 6}
+    - {x: 19, y: 6}
+    - {x: 20, y: 6}
+    - {x: 21, y: 6}
+    - {x: 22, y: 6}
+    - {x: 23, y: 6}
+    - {x: 23, y: 7}
+  routes:
+  - entryNodeId: 0
+    goalNodeId: 8
+    stepCount: 24
+    edgeIndices:
+    - 0
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+  - entryNodeId: 0
+    goalNodeId: 12
+    stepCount: 24
+    edgeIndices:
+    - 0
+    - 2
+    - 7
+    - 9
+    - 10
+    - 11
+  - entryNodeId: 1
+    goalNodeId: 8
+    stepCount: 24
+    edgeIndices:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+  - entryNodeId: 1
+    goalNodeId: 12
+    stepCount: 24
+    edgeIndices:
+    - 1
+    - 2
+    - 7
+    - 9
+    - 10
+    - 11
+  - entryNodeId: 2
+    goalNodeId: 12
+    stepCount: 19
+    edgeIndices:
+    - 8
+    - 9
+    - 10
+    - 11
