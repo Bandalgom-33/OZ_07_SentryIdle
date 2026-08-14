@@ -48,6 +48,16 @@ public class MapGenerator : MonoBehaviour
         //고정 경로 생성은 주석처리
         // GenerateFixedPath();
         GenerateRandomPath();
+        
+        //원거리 배치 타일이 충분하지 않으면 맵 재생성 시키기
+        bool hasEnoughHighGround = HasEnoughHighGroundNearPath(4);
+        if (!hasEnoughHighGround)
+        {
+            //다른건 다좋은데 이거 조건이 안나와서 계속 재생성되면 게임 박살날지도..? 추후 수정 예정
+            GenerateMap();
+            return;
+        }
+        
 
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
@@ -64,13 +74,7 @@ public class MapGenerator : MonoBehaviour
             waveManager.StartWave();
         }
         
-        //기존 적 생성방식 주석 처리
-        //SpawnEnemy(pathPosition);
-        //SpawnEnemy(pathPositionB);
-
-        //코루틴으로 Wave 마다 적 생성 구현
-        //StartCoroutine(spawnWave(PathPosition, 3, 1.0f));
-        //StartCoroutine(spawnWave(pathPositionB, 3, 1.0f));
+     
     }
 
 
@@ -190,21 +194,7 @@ public class MapGenerator : MonoBehaviour
         SetPathTileTypes();
         GenerateTerrain();
     }
-
-    //고정 경로 주석처리
-    //private void GenerateFixedPath()
-    //{
-    //    pathPosition.Clear();
-
-    //    AddHorizontalPath(0, 4, 3);
-    //    AddVerticalPath(3, 5, 4);
-    //    AddHorizontalPath(4, 8, 5);
-    //    AddVerticalPath(5, 2, 8);
-    //    AddHorizontalPath(8, 11, 2);
-
-    //    SetPathTileTypes();
-    //}
-
+    
     //가로 연결 메서드
     private void AddHorizontalPath(int startX,int endX, int y, List<Vector2Int> targetPath)
     {
@@ -319,7 +309,7 @@ public class MapGenerator : MonoBehaviour
         spawnWorldPosition.y = 1.0f;
         //생성 시키기
         EnemyMover spawnEnemy = Instantiate(enemyPrefab,spawnWorldPosition,Quaternion.identity);
-        spawnEnemy.Initialize(path, mapRenderer);
+        spawnEnemy.Initialize(path, mapRenderer,waveManager);
     }
 
     //pathPosition의 유효성을 검사하는 메서드
@@ -364,40 +354,11 @@ public class MapGenerator : MonoBehaviour
                 {
                     node.SetTileType(TileType.Ground);
                 }
-
-                    //50:50 고정 생성
-                    int terrainType = Random.Range(0, 2);
-
-                if(terrainType == 0)
-                {
-                    node.SetTileType(TileType.Ground);
-                }
-                else
-                {
-                    node.SetTileType(TileType.HighGround);
-                }
             }
         }
     }
 
-    //배치 가능한 첫 번째 타일 찾기
-    //private TileNode FindFirstDeployableTile(TileType targetTileType)
-    //{
-    //    for (int x = 0; x < width; x++)
-    //    {
-    //        for (int y = 0; y < height; y++)
-    //        {
-    //            TileNode node = grid[x, y];
-
-    //            if (node.IsDeployable && !node.IsOccupied  &&node.TileType == targetTileType) 
-    //            {
-    //                return node;
-    //            }
-    //        }
-    //    }
-    //    return null;
-    //}
-
+  
     //배치 가능한 타일에 랜덤 배치 하기
     private TileNode FindRandomDeployableTile(TileType targetTileType)
     {
@@ -424,45 +385,6 @@ public class MapGenerator : MonoBehaviour
 
         return candidates[randomIndex];  
     }
-
-    //유닛 배치 테스트
-    //private void SpawnTestUnits()
-    //{
-    //    if (meleeUnitPrefab != null)
-    //    {
-    //        //해당 타일 좌표 받기
-    //        TileNode meleeTile = FindFirstDeployableTile(TileType.Path);
-
-    //        if(meleeTile != null)
-    //        {
-    //            //월드 위치로 전환 시키기
-    //            Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
-
-    //            meleePosition.y = 0.5f;
-
-    //            //생성
-    //            Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
-    //            //타일 사용중 true 로 전환
-    //            meleeTile.SetOCcupied(true);
-    //        }
-    //    }
-
-    //    if(RangeUnitPrefab != null)
-    //    {
-    //        TileNode rangeTile = FindFirstDeployableTile(TileType.HighGround);
-
-    //        if(rangeTile != null)
-    //        {
-    //            Vector3 rangedPosition = mapRenderer.GridToWorld(rangeTile.GridPosition);
-
-    //            rangedPosition.y = 1.0f;
-
-    //            Instantiate(RangeUnitPrefab, rangedPosition, Quaternion.identity);
-
-    //            rangeTile.SetOCcupied(true);
-    //        }
-    //    }
-    //}
 
 
     //근거리 유닛 배치
@@ -522,5 +444,36 @@ public class MapGenerator : MonoBehaviour
         return false;
     }
 
+    public void RegenerateMap()
+    {
+        if (mapRenderer == null) return;
+        //맵 삭제
+        mapRenderer.ClearMap();
+        //맵 생성
+        GenerateMap();
+    }
+
+    private bool HasEnoughHighGroundNearPath(int minimumCount)
+    {
+        int count = 0;
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                TileNode node = grid[x, y];
+                //맵의 HighGround 찾고
+                if(node.TileType != TileType.HighGround)continue;
+                //경로 2칸 내에 위치 하는지 탐색
+                if(IsNearPath(node.GridPosition, 2))
+                {
+                    //조건이 부합하면 count++
+                    count++;
+                }
+            }
+        }
+        //최소 갯수 이상이면 ㄱㄱ
+        return count >= minimumCount;
+    }
 
 }
