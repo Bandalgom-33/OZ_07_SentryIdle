@@ -1,44 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
-using EndlessGuard.Unit.Data;
-using EndlessGuard.Unit.Runtime;
 using UnityEngine;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using System.Collections;
+using UnityEngine.InputSystem.iOS;
 
-public class MapGenerator : MonoBehaviour, ISummonTileProvider
+public class MapGenerator : MonoBehaviour
 {
-    private const int CritSummonNeighborRadius = 1;
-
     [Header("Grid 크기")]
     [SerializeField, Min(1)] private int width = 12;
     [SerializeField, Min(1)] private int height = 8;
 
-    [Header("맵")]
+    [Header("맵 크기")]
     [SerializeField] private GridMapRenderer mapRenderer;
 
-    [Header("정식 몬스터 테스트")]
-    [Tooltip("MAP 연동 테스트에서 생성할 정식 EnemyDataSO입니다.")]
-    [SerializeField] private EnemyDataSO enemyData;
-
-    [Tooltip("공중 몬스터의 월드 Y 높이입니다.")]
-    [Min(0f)]
-    [SerializeField] private float airHeight = 2f;
+    [Header("적 생성 설정")]
+    [SerializeField] private EnemyMover enemyPrefab;
 
     [Header("자동 배치 테스트")]
-    [Tooltip("정식 Ground 캐릭터 Prefab을 연결합니다.")]
     [SerializeField] private GameObject meleeUnitPrefab;
-
-    [Tooltip("정식 HighGround 캐릭터 Prefab을 연결합니다.")]
     [SerializeField] private GameObject rangedUnitPrefab;
 
     [Header("Wave 참조")]
     [SerializeField] private WaveManager waveManager;
 
     private TileNode[,] grid;
-    private readonly List<Vector2Int> pathPosition = new List<Vector2Int>();
-    private readonly List<Vector2Int> pathPositionB = new List<Vector2Int>();
-    private readonly List<Vector2Int> summonTileCandidates = new List<Vector2Int>();
-
-    private CombatLoop combatLoop;
+    //첫 번째 spawn 경로
+    private List<Vector2Int> pathPosition = new List<Vector2Int>();
+    //두 번째 spawn 경로
+    private List<Vector2Int> pathPositionB = new List<Vector2Int>();
+   
 
     public TileNode[,] Grid => grid;
     public IReadOnlyList<Vector2Int> PathPosition => pathPosition;
@@ -46,41 +36,17 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
     public int Width => width;
     public int Height => height;
 
-    // 외부 소환 매니저(MapUnitSummonManager)에서 월드 좌표 변환 시 참조하기 위한 프로퍼티
-    public GridMapRenderer MapRenderer => mapRenderer;
-
-    private void Awake()
-    {
-        combatLoop = FindFirstObjectByType<CombatLoop>();
-
-        if (combatLoop == null)
-        {
-            Debug.LogError("씬에 CombatLoop가 없습니다. 빈 GameObject 하나를 만들고 CombatLoop 컴포넌트를 1개 추가하세요.", this);
-        }
-    }
-
-    private void OnEnable()
-    {
-        SummonTileService.Register(this);
-    }
-
-    private void OnDisable()
-    {
-        SummonTileService.Unregister(this);
-    }
-
-    private void Start()
+    void Start()
     {
         GenerateMap();
     }
 
-    // 맵 생성 완료 여부 및 이벤트 (외부 MapUnitSummonManager 연동용)
-    public bool IsMapGenerated { get; private set; }
-    public event System.Action OnMapGenerated;
 
     public void GenerateMap()
     {
-        InitializeGrid();
+        InitializedGrid();
+        //고정 경로 생성은 주석처리
+        // GenerateFixedPath();
         GenerateRandomPath();
         
         //원거리 배치 타일이 충분하지 않으면 맵 재생성 시키기
@@ -93,23 +59,15 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         }
         
 
-        if (mapRenderer == null)
-        {
-            Debug.LogError("MapGenerator에 GridMapRenderer가 연결되지 않았습니다.", this);
-            return;
-        }
-
+        if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
 
-        // 맵 생성 완료 상태 처리 및 이벤트 알림
-        IsMapGenerated = true;
-        OnMapGenerated?.Invoke();
+        //SpawnTestUnits();
+        SpawnMeleeUnit();
+        SpawnMeleeUnit();
 
-        if (combatLoop == null)
-        {
-            Debug.LogError("CombatLoop가 없어서 정식 몬스터 전투 테스트를 시작하지 않습니다.", this);
-            return;
-        }
+        SpawnRangedUnit();
+        SpawnRangedUnit();
 
         if (waveManager != null)
         {
@@ -119,13 +77,8 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
      
     }
 
-    public void MobSpawnWave()
-    {
-        StartCoroutine(SpawnWave(pathPosition, enemyCountPerPath, enemySpawnInterval));
-        StartCoroutine(SpawnWave(pathPositionB, enemyCountPerPath, enemySpawnInterval));
-    }
 
-    public void InitializeGrid()
+    public void InitializedGrid()
     {
         grid = new TileNode[width, height];
 
@@ -139,58 +92,104 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         }
     }
 
+
     private void GenerateRandomPath()
     {
+        ////좌표 초기화
         pathPosition.Clear();
         pathPositionB.Clear();
 
+        //첫 번째 spawnY 지점
         int spawnY = Random.Range(0, height);
+        //두 번째 spawnBY 지점
         int spawnBY = Random.Range(0, height);
+
+        //두 spawn이 만나는 MergePointY 좌표
         int mergeY = Random.Range(0, height);
+        //X 좌표  -> 첫 번째 경유지와 겹치지 않게 수정 했음
         int mergeX = Random.Range(1, 4);
+
+        //goalY 지점
         int goalY = Random.Range(0, height);
+
+
+
+        //첫 번째 경우지
+        //첫 번째 경우지의 X 는 4, 5 로 고정 -> 머지 포인트를 위해 수정 했음 
         int wayPoint1X = Random.Range(4, 6);
         int wayPoint1Y = Random.Range(0, height);
+
+        ////두 번째 경유지
+        //// 두번재 경우지는 Goal.x인 11을 피하고 바로 앞인 10도 피해야 하기 때문에
+        ////7,8,9 중에 하나
         int waypoint2X = Random.Range(width / 2 + 1, width - 2);
         int wayPoint2Y = Random.Range(0, height);
 
-        while (spawnBY == spawnY)
+        while(spawnBY == spawnY)
         {
             spawnBY = Random.Range(0, height);
         }
 
+        ////첫 번째 랜덤 입구 좌표
         Vector2Int spawnPosition = new Vector2Int(0, spawnY);
+        //두 번째 랜덤 입구 좌표
         Vector2Int spawnPositionB = new Vector2Int(0, spawnBY);
+        //두 입구가 만나는 지점
         Vector2Int mergePoint = new Vector2Int(mergeX, mergeY);
+        //랜덤 출구 좌표
         Vector2Int goalPosition = new Vector2Int(width - 1, goalY);
+        //첫 번째 경유지 좌표
         Vector2Int wayPoint1 = new Vector2Int(wayPoint1X, wayPoint1Y);
+        //두 번째 경우지 자표
         Vector2Int wayPoint2 = new Vector2Int(waypoint2X, wayPoint2Y);
 
+
+        //// Spawn → Waypoint1 경로 이어주기 
+        //AddHorizontalPath(spawnPosition.x,wayPoint1.x,spawnPosition.y );
+        //AddVerticalPath( spawnPosition.y, wayPoint1.y, wayPoint1.x);
+
+        //// Waypoint1 → Waypoint2
+        //AddHorizontalPath(wayPoint1.x, wayPoint2.x,wayPoint1.y);
+        //AddVerticalPath( wayPoint1.y, wayPoint2.y,wayPoint2.x);
+
+        //// Waypoint2 → Goal
+        //AddHorizontalPath(wayPoint2.x, goalPosition.x, wayPoint2.y );
+        //AddVerticalPath( wayPoint2.y, goalPosition.y, goalPosition.x);
+
+        //SpawnA -> mergePoint
+        //이게 머지 포인트를 랜덤으로 잡으니까 경로가 이상해져서 일단 스폰 -> 머지포인트 까진 고정 경로로 해봄
+        // ConnectPoints(spawnPosition,mergePoint, pathPosition);
         AddHorizontalPath(spawnPosition.x, mergePoint.x, spawnPosition.y, pathPosition);
-        AddVerticalPath(spawnPosition.y, mergePoint.y, mergePoint.x, pathPosition);
+         AddVerticalPath(spawnPosition.y, mergePoint.y, mergePoint.x, pathPosition);
 
-        AddHorizontalPath(spawnPositionB.x, mergePoint.x, spawnPositionB.y, pathPositionB);
-        AddVerticalPath(spawnPositionB.y, mergePoint.y, mergePoint.x, pathPositionB);
+        //spawnB -> mergePoint
+        //위와 동일
+        // ConnectPoints(spawnPositionB, mergePoint, pathPositionB);
+        AddHorizontalPath( spawnPositionB.x,mergePoint.x,spawnPositionB.y,pathPositionB);
+        AddVerticalPath(spawnPositionB.y, mergePoint.y,mergePoint.x, pathPositionB);
 
+
+        //mergePoint -> wayPoint1
         ConnectPoints(mergePoint, wayPoint1, pathPosition);
-        ConnectPoints(wayPoint1, wayPoint2, pathPosition);
+        //WayPoint1 -> 2
+        ConnectPoints(wayPoint1,wayPoint2, pathPosition);
+        //Waypoint2 -> Goal
         ConnectPoints(wayPoint2, goalPosition, pathPosition);
 
+        //A 경로에서 Merge 위치 찾기
         int mergeIndex = pathPosition.IndexOf(mergePoint);
-
+        //Merge 이후에 공통 경로를 B에 복사하기
         for (int i = mergeIndex + 1; i < pathPosition.Count; i++)
         {
             AddPathPosition(pathPosition[i], pathPositionB);
         }
 
-        bool isValidA = ValidatePath(pathPosition, spawnPosition, goalPosition);
-        bool isValidB = ValidatePath(pathPositionB, spawnPositionB, goalPosition);
 
-        if (!isValidA || !isValidB)
-        {
-            Debug.LogError("생성된 MAP 경로가 유효하지 않습니다.", this);
-            return;
-        }
+        bool isValid = ValidatePath(PathPosition,spawnPosition,goalPosition);
+        bool isValidB = ValidatePath(PathPositionB, spawnPositionB, goalPosition);
+        if (!isValid || !isValidB)return;
+
+
 
         SetPathTileTypes();
         GenerateTerrain();
@@ -199,49 +198,57 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
     //가로 연결 메서드
     private void AddHorizontalPath(int startX,int endX, int y, List<Vector2Int> targetPath)
     {
+        //이동 방향이 왼쪽 오른쪽 모두 가능하기 때문에 방향이 필요함
+        //시작 X가 끝X 보다 작거나 같으면? -> 1씩 증가
+        //시작X가 끝 X보다 크면? -> -1씩 감소
         int direction = startX <= endX ? 1 : -1;
 
-        for (int x = startX; x != endX + direction; x += direction)
+        for(int x=  startX; x < endX + direction;x += direction)
         {
             AddPathPosition(new Vector2Int(x, y), targetPath);
         }
     }
-
-    private void AddVerticalPath(int startY, int endY, int x, List<Vector2Int> targetPath)
+    //세로 연결 메서드 
+    private void AddVerticalPath (int startY, int endY, int x, List<Vector2Int> targetPath)
     {
         int direction = startY <= endY ? 1 : -1;
 
-        for (int y = startY; y != endY + direction; y += direction)
+        for(int y= startY; y != endY + direction; y += direction)
         {
-            AddPathPosition(new Vector2Int(x, y), targetPath);
+            AddPathPosition(new Vector2Int(x, y),targetPath);
         }
     }
 
-    private void ConnectPoints(Vector2Int start, Vector2Int end, List<Vector2Int> targetPath)
+    //두 점을 연결하는 공통 메서드 만들기
+    private void ConnectPoints(Vector2Int start,  Vector2Int end,List<Vector2Int> targetPath)
     {
+        //0이 나오면 세로부터 1이 나오면 가로부터
         int connectType = Random.Range(0, 2);
+     
 
-        if (connectType == 0)
+        if(connectType == 0 )
         {
+            //가로 -> 세로
             AddHorizontalPath(start.x, end.x, start.y, targetPath);
-            AddVerticalPath(start.y, end.y, end.x, targetPath);
+            AddVerticalPath(start.y,end.y, end.x, targetPath);
         }
-        else
+        else if(connectType == 1 )
         {
-            AddVerticalPath(start.y, end.y, start.x, targetPath);
-            AddHorizontalPath(start.x, end.x, end.y, targetPath);
+            //세로 -> 가로
+            AddVerticalPath(start.y,end.y, start.x, targetPath);
+            AddHorizontalPath(start.x,end.x, end.y, targetPath);  
         }
     }
+
 
     private void AddPathPosition(Vector2Int position, List<Vector2Int> targetPath)
     {
-        if (targetPath.Count > 0 && targetPath[targetPath.Count - 1] == position)
-        {
-            return;
-        }
+        //만약 리스트에 마지막 좌표와 새로 넣으려는 좌표가 같으면 추가 ㄴㄴ
+        if (targetPath.Count > 0 && targetPath[targetPath.Count - 1] == position) return;
 
         targetPath.Add(position);
     }
+  
 
     private void SetPathTileTypes()
     {
@@ -249,45 +256,51 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         SetSinglePathTileTypes(pathPositionB);
     }
 
+    //타일을 색으로 구분하기
     private void SetSinglePathTileTypes(IReadOnlyList<Vector2Int> path)
     {
-        if (path == null || path.Count < 2)
-        {
-            return;
-        }
+        if (path.Count < 2) return;
 
         for (int i = 0; i < path.Count; i++)
         {
             Vector2Int position = path[i];
 
-            if (!IsInsideGrid(position))
-            {
-                continue;
-            }
+            if (!IsInsideGrid(position)) continue;
 
             if (i == 0)
             {
+                //첫 번째 좌표는 Start
                 grid[position.x, position.y].SetTileType(TileType.Spawn);
             }
             else if (i == path.Count - 1)
             {
+                //마지막 좌표는 Goal
                 grid[position.x, position.y].SetTileType(TileType.Goal);
             }
             else
             {
+                //나머지 좌표는 path
                 grid[position.x, position.y].SetTileType(TileType.Path);
             }
         }
     }
 
+    //Grid 범위 확인 메서드
+    //우리가 만들 12x8 맵이면 
+    //x -> 0~11 / y -> 0~7 구간을 확인
     private bool IsInsideGrid(Vector2Int position)
     {
-        return position.x >= 0 && position.x < width && position.y >= 0 && position.y < height;
+        return position.x >= 0&&
+            position.x < width &&
+            position.y >= 0 &&
+            position.y < height;
     }
 
-    public bool TryGetTile(SummonTileRequest request, out SummonTile tile)
+    
+    private void SpawnEnemy(IReadOnlyList<Vector2Int> path)
     {
-        tile = default;
+        if (enemyPrefab == null) return;
+        if(path == null || path.Count == 0) return;
 
         //스폰 포지션 좌표 받기
         Vector2Int spawnGridPosition = path[0];
@@ -299,41 +312,47 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         spawnEnemy.Initialize(path, mapRenderer,waveManager);
     }
 
-        summonTileCandidates.Clear();
+    //pathPosition의 유효성을 검사하는 메서드
+    private bool ValidatePath(IReadOnlyList<Vector2Int>path,Vector2Int spawnPosition, Vector2Int goalPosition)
+    {
+        if (path.Count < 2) return false;
+        if (path[0] != spawnPosition) return false;
+        if (path[path.Count - 1] != goalPosition) return false;
 
-        if (request.Source is CritSummonSO)
-        {
-            AddNearbySummonTiles(request.Owner.GridPosition.TileCoordinate, request.SummonData.Placement, CritSummonNeighborRadius);
-        }
-        else
-        {
-            AddAllSummonTiles(request.SummonData.Placement);
-        }
-
-        if (summonTileCandidates.Count == 0)
-        {
-            return false;
-        }
-
-        Vector2Int selectedCoordinate = summonTileCandidates[Random.Range(0, summonTileCandidates.Count)];
-        TileNode selectedNode = grid[selectedCoordinate.x, selectedCoordinate.y];
-        Vector3 worldPosition = GetSummonWorldPosition(selectedNode);
-
-        tile = new SummonTile(worldPosition, selectedCoordinate);
         return true;
+
     }
 
-    private void AddNearbySummonTiles(Vector2Int ownerTile, UnitPlacement placement, int radius)
+    //어느 경로에 몇 마리가 몇 초간격으로 나올지에 대한 Wave 메서드 만들기
+    private IEnumerator spawnWave(IReadOnlyList<Vector2Int> path, int enemyCount,float spawnInterval)
     {
-        int safeRadius = Mathf.Max(1, radius);
-
-        for (int x = -safeRadius; x <= safeRadius; x++)
+        for(int i = 0; i < enemyCount; i++)
         {
-            for (int y = -safeRadius; y <= safeRadius; y++)
+            SpawnEnemy(path);
+
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    private void GenerateTerrain()
+    {
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
             {
-                if (x == 0 && y == 0)
+                TileNode node = grid[x, y];
+                //Empty 타일 찾기
+                if (node.TileType != TileType.Empty) continue;
+
+                //25 : 75 비율 생성
+                float terrainRoll = Random.value;
+                if (terrainRoll < 0.25)
                 {
-                    continue;
+                    node.SetTileType(TileType.HighGround);
+                }
+                else
+                {
+                    node.SetTileType(TileType.Ground);
                 }
             }
         }
@@ -343,102 +362,82 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
     //배치 가능한 타일에 랜덤 배치 하기
     private TileNode FindRandomDeployableTile(TileType targetTileType)
     {
-        for (int x = 0; x < width; x++)
+        List<TileNode> candidates = new List<TileNode>();
+
+        for(int x = 0; x < width;x++)
         {
-            for (int y = 0; y < height; y++)
+            for(int y = 0; y < height;y++)
             {
-                TryAddSummonTile(new Vector2Int(x, y), placement);
+                TileNode node = grid[x, y];
+
+                if(node.IsDeployable && !node.IsOccupied &&node.TileType == targetTileType)
+                {
+                    //path에서 2칸 이내인지를 확인하기 아니면 제외
+                    if (targetTileType == TileType.HighGround && !IsNearPath(node.GridPosition, 2)) continue;
+
+                    candidates.Add(node);
+                }
             }
         }
+        if(candidates.Count == 0) return null;
+
+        int randomIndex = Random.Range(0, candidates.Count);
+
+        return candidates[randomIndex];  
     }
 
 
     //근거리 유닛 배치
     private void SpawnMeleeUnit()
     {
-        if (!IsInsideGrid(coordinate))
-        {
-            return;
-        }
+        if (meleeUnitPrefab == null) return;
 
-        TileNode node = grid[coordinate.x, coordinate.y];
+        //랜덤 좌표 받기
+        TileNode meleeTile = FindRandomDeployableTile(TileType.Path);
 
-        if (!CanUseSummonTile(node, placement))
-        {
-            return;
-        }
-
-        if (IsCombatTileOccupied(coordinate))
-        {
-            return;
-        }
-
-        summonTileCandidates.Add(coordinate);
+        if (meleeTile == null) return;
+        //월드 좌표로 변환 해주기
+        Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
+        
+        meleePosition.y = 0.5f;
+        //생성
+        Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
+        //현재 타일 사용중으로 바꾸기
+        meleeTile.SetOccupied(true);
     }
 
-    private bool CanUseSummonTile(TileNode node, UnitPlacement placement)
+    //원거리 유닛 배치
+    private void SpawnRangedUnit()
     {
-        if (node == null || !node.IsDeployable || node.IsOccupied)
-        {
-            return false;
-        }
+        if (rangedUnitPrefab == null) return;
 
-        if (node.TileType == TileType.Empty || node.TileType == TileType.Spawn || node.TileType == TileType.Goal)
-        {
-            return false;
-        }
+        TileNode rangedTile = FindRandomDeployableTile(TileType.HighGround);
 
-        return IsPlacementAllowed(placement, node.TileType);
+        if (rangedTile == null) return;
+
+        Vector3 rangedPosition = mapRenderer.GridToWorld(rangedTile.GridPosition);
+
+        rangedPosition.y = 0.8f;
+
+        Instantiate(rangedUnitPrefab, rangedPosition, Quaternion.identity);
+
+        rangedTile.SetOccupied(true);
     }
 
-    private static bool IsPlacementAllowed(UnitPlacement placement, TileType tileType)
+    //적 경로와의 거리 계산
+    private bool IsNearPath(Vector2Int position, int maxDistance)
     {
-        bool ground = tileType == TileType.Ground || tileType == TileType.Path;
-        bool highGround = tileType == TileType.HighGround;
-
-        if (placement == UnitPlacement.Ground)
+        for(int x= 0;x < width; x++)
         {
-            return ground;
-        }
-
-        if (placement == UnitPlacement.HighGround)
-        {
-            return highGround;
-        }
-
-        if (placement == UnitPlacement.GroundAndHighGround)
-        {
-            return ground || highGround;
-        }
-
-        return false;
-    }
-
-    private static bool IsCombatTileOccupied(Vector2Int coordinate)
-    {
-        foreach (UnitRuntimeState unit in CombatRegistry.Units)
-        {
-            if (unit == null || !unit.gameObject.activeInHierarchy || !unit.IsInitialized || unit.Health == null || unit.Health.IsDead || unit.GridPosition == null || !unit.GridPosition.IsInitialized)
+            for(int y= 0;y < height; y++)
             {
-                continue;
-            }
+                TileNode node = grid[x, y];
 
-            if (unit.GridPosition.TileCoordinate == coordinate)
-            {
-                return true;
-            }
-        }
+                if(node.TileType != TileType.Path) continue;
+                //x와 y 거리 계산하기
+                int distance = Mathf.Abs(position.x - x) + Mathf.Abs(position.y - y);
 
-        foreach (EnemyRuntimeState enemy in CombatRegistry.Enemies)
-        {
-            if (enemy == null || !enemy.gameObject.activeInHierarchy || !enemy.IsInitialized || enemy.Health == null || enemy.Health.IsDead || enemy.GridPosition == null || !enemy.GridPosition.IsInitialized)
-            {
-                continue;
-            }
-
-            if (enemy.GridPosition.TileCoordinate == coordinate)
-            {
-                return true;
+                if(distance <= maxDistance) return true;
             }
         }
 
@@ -477,297 +476,4 @@ public class MapGenerator : MonoBehaviour, ISummonTileProvider
         return count >= minimumCount;
     }
 
-        if (node.TileType == TileType.HighGround)
-        {
-            position.y += rangedUnitHeight;
-        }
-        else
-        {
-            position.y += meleeUnitHeight;
-        }
-
-        return position;
-    }
-
-    private void SpawnEnemy(IReadOnlyList<Vector2Int> mapPath)
-    {
-        if (enemyData == null)
-        {
-            Debug.LogError("MapGenerator의 Enemy Data가 비어 있습니다.", this);
-            return;
-        }
-
-        if (enemyData.EnemyPrefab == null)
-        {
-            Debug.LogError($"{enemyData.DisplayName} EnemyDataSO에 정식 EnemyPrefab이 연결되지 않았습니다.", enemyData);
-            return;
-        }
-
-        if (mapRenderer == null || mapPath == null || mapPath.Count < 2)
-        {
-            return;
-        }
-
-        PathNode[] path = BuildPathNodes(mapPath, enemyData.MovementType);
-
-        if (path == null || path.Length < 2)
-        {
-            Debug.LogError($"{enemyData.DisplayName} PathNode 변환에 실패했습니다.", this);
-            return;
-        }
-
-        GameObject instance = Instantiate(enemyData.EnemyPrefab, path[0].Position, enemyData.EnemyPrefab.transform.rotation);
-        EnemyRuntimeState state = instance.GetComponent<EnemyRuntimeState>();
-
-        if (state == null)
-        {
-            Debug.LogError($"{enemyData.EnemyPrefab.name}에 EnemyRuntimeState가 없습니다.", instance);
-            Destroy(instance);
-            return;
-        }
-
-        if (!state.IsInitialized || state.DataLink == null || !state.DataLink.HasData)
-        {
-            Debug.LogError($"{enemyData.EnemyPrefab.name}의 정식 Enemy Runtime 초기화에 실패했습니다.", instance);
-            Destroy(instance);
-            return;
-        }
-
-        if (state.DataLink.EnemyData != enemyData)
-        {
-            Debug.LogError($"EnemyDataSO와 Prefab의 EnemyDataLink가 다릅니다. 요청={enemyData.DisplayName}, Prefab={state.DataLink.EnemyData.DisplayName}", instance);
-            Destroy(instance);
-            return;
-        }
-
-        if (state.Move == null || !state.Move.SetPath(path))
-        {
-            Debug.LogError($"{enemyData.DisplayName}의 EnemyMove.SetPath()에 실패했습니다.", instance);
-            Destroy(instance);
-            return;
-        }
-
-        SpawnedEnemyManager.Instance.RegisterEnemy(state);
-    }
-
-    private PathNode[] BuildPathNodes(IReadOnlyList<Vector2Int> mapPath, EnemyMovementType movementType)
-    {
-        if (mapPath == null || mapPath.Count < 2 || mapRenderer == null)
-        {
-            return null;
-        }
-
-        if (movementType == EnemyMovementType.Air)
-        {
-            Vector2Int startTile = mapPath[0];
-            Vector2Int goalTile = mapPath[mapPath.Count - 1];
-            GridFacingDirection facing = ResolveFacing(startTile, goalTile);
-            Vector3 startPosition = mapRenderer.GridToWorld(startTile) + Vector3.up * airHeight;
-            Vector3 goalPosition = mapRenderer.GridToWorld(goalTile) + Vector3.up * airHeight;
-
-            return new[]
-            {
-                new PathNode(startPosition, startTile, facing),
-                new PathNode(goalPosition, goalTile, facing)
-            };
-        }
-
-        PathNode[] nodes = new PathNode[mapPath.Count];
-
-        for (int i = 0; i < mapPath.Count; i++)
-        {
-            Vector2Int tile = mapPath[i];
-            GridFacingDirection facing;
-
-            if (i < mapPath.Count - 1)
-            {
-                facing = ResolveFacing(tile, mapPath[i + 1]);
-            }
-            else
-            {
-                facing = ResolveFacing(mapPath[i - 1], tile);
-            }
-
-            Vector3 worldPosition = mapRenderer.GridToWorld(tile);
-            nodes[i] = new PathNode(worldPosition, tile, facing);
-        }
-
-        return nodes;
-    }
-
-    private static GridFacingDirection ResolveFacing(Vector2Int from, Vector2Int to)
-    {
-        Vector2Int delta = to - from;
-
-        if (Mathf.Abs(delta.x) >= Mathf.Abs(delta.y))
-        {
-            return delta.x >= 0 ? GridFacingDirection.East : GridFacingDirection.West;
-        }
-
-        return delta.y >= 0 ? GridFacingDirection.North : GridFacingDirection.South;
-    }
-
-    private bool ValidatePath(IReadOnlyList<Vector2Int> path, Vector2Int spawnPosition, Vector2Int goalPosition)
-    {
-        if (path == null || path.Count < 2)
-        {
-            return false;
-        }
-
-        if (path[0] != spawnPosition)
-        {
-            return false;
-        }
-
-        return path[path.Count - 1] == goalPosition;
-    }
-
-    private IEnumerator SpawnWave(IReadOnlyList<Vector2Int> path, int enemyCount, float spawnInterval)
-    {
-        for (int i = 0; i < enemyCount; i++)
-        {
-            SpawnEnemy(path);
-            yield return new WaitForSeconds(spawnInterval);
-        }
-    }
-
-    private void GenerateTerrain()
-    {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                TileNode node = grid[x, y];
-
-                if (node.TileType != TileType.Empty)
-                {
-                    continue;
-                }
-
-                int terrainType = Random.Range(0, 2);
-                node.SetTileType(terrainType == 0 ? TileType.Ground : TileType.HighGround);
-            }
-        }
-    }
-
-    // 외부 소환 매니저에서 배치 가능 타일을 탐색할 수 있도록 public으로 공개
-    public TileNode FindRandomDeployableTile(TileType targetTileType)
-    {
-        List<TileNode> candidates = new List<TileNode>();
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                TileNode node = grid[x, y];
-
-                if (!node.IsDeployable || node.IsOccupied || node.TileType != targetTileType)
-                {
-                    continue;
-                }
-
-                if (targetTileType == TileType.HighGround && !IsNearPath(node.GridPosition, 2))
-                {
-                    continue;
-                }
-
-                candidates.Add(node);
-            }
-        }
-
-        if (candidates.Count == 0)
-        {
-            return null;
-        }
-
-        return candidates[Random.Range(0, candidates.Count)];
-    }
-
-    private void SpawnMeleeUnit()
-    {
-        if (meleeUnitPrefab == null || mapRenderer == null)
-        {
-            return;
-        }
-
-        TileNode meleeTile = FindRandomDeployableTile(TileType.Path);
-
-        if (meleeTile == null)
-        {
-            return;
-        }
-
-        Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
-        meleePosition.y += meleeUnitHeight;
-
-        GameObject instance = Instantiate(meleeUnitPrefab, meleePosition, meleeUnitPrefab.transform.rotation);
-        UnitRuntimeState state = instance.GetComponent<UnitRuntimeState>();
-
-        if (state == null || !state.IsInitialized || state.GridPosition == null)
-        {
-            Debug.LogError($"{meleeUnitPrefab.name}에 정상적인 UnitRuntimeState가 없습니다.", instance);
-            Destroy(instance);
-            return;
-        }
-
-        state.GridPosition.Initialize(meleeTile.GridPosition, GridFacingDirection.East, CombatTargetLayer.Ground);
-        meleeTile.SetOccupied(true);
-    }
-
-    private void SpawnRangedUnit()
-    {
-        if (rangedUnitPrefab == null || mapRenderer == null)
-        {
-            return;
-        }
-
-        TileNode rangedTile = FindRandomDeployableTile(TileType.HighGround);
-
-        if (rangedTile == null)
-        {
-            return;
-        }
-
-        Vector3 rangedPosition = mapRenderer.GridToWorld(rangedTile.GridPosition);
-        rangedPosition.y += rangedUnitHeight;
-
-        GameObject instance = Instantiate(rangedUnitPrefab, rangedPosition, rangedUnitPrefab.transform.rotation);
-        UnitRuntimeState state = instance.GetComponent<UnitRuntimeState>();
-
-        if (state == null || !state.IsInitialized || state.GridPosition == null)
-        {
-            Debug.LogError($"{rangedUnitPrefab.name}에 정상적인 UnitRuntimeState가 없습니다.", instance);
-            Destroy(instance);
-            return;
-        }
-
-        state.GridPosition.Initialize(rangedTile.GridPosition, GridFacingDirection.East, CombatTargetLayer.Ground);
-        rangedTile.SetOccupied(true);
-    }
-
-    // 외부 타일 검사 로직에서 이동 경로 인접 여부를 확인할 수 있도록 public으로 공개
-    public bool IsNearPath(Vector2Int position, int maxDistance)
-    {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                TileNode node = grid[x, y];
-
-                if (node.TileType != TileType.Path)
-                {
-                    continue;
-                }
-
-                int distance = Mathf.Abs(position.x - x) + Mathf.Abs(position.y - y);
-
-                if (distance <= maxDistance)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 }
