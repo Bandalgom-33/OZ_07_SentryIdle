@@ -9,17 +9,18 @@ public class InventorySlotUI : MonoBehaviour
 
     public void SetSlot(InventorySlotData slotData)
     {
-        if(slotData == null)
+        if (slotData == null)
         {
             itemIcon.enabled = false;
             quantityText.text = "";
             return;
-
-            itemIcon.enabled = true;
-            itemIcon.sprite = slotData.itemData.ItemIcon;
-            quantityText.text = slotData.quantity.ToString();
         }
+
+        itemIcon.enabled = true;
+        itemIcon.sprite = slotData.itemData.ItemIcon;
+        quantityText.text = slotData.quantity.ToString();
+
     }
-    
+
 
 }
