@@ -15,8 +15,10 @@ public class SaveData
     public UnitDeckData unitDeck = new UnitDeckData();
     // 가챠 천장 및 뽑기 진행 데이터
     public GachaData gacha = new GachaData();
-    // 게임 시스템 설정 데이터
-    public SettingsData settings = new SettingsData();
+    // 보유 소모품 아이템 수량 데이터 (체력포션 3종, 경험치책 3종)
+    public ConsumableSaveData consumable = new ConsumableSaveData();
+    // 아이템 조합 공방 상태 데이터 (공장 레벨, 토글 상태, 진행도)
+    public CraftingSaveData crafting = new CraftingSaveData();
     // 마지막 저장 일시 타임스탬프 (오프라인 보상 계산용)
     public string lastSaveTimestamp = string.Empty;
 }
@@ -140,4 +142,39 @@ public class SettingsData
     // 효과음(SFX) 음량 (0.0 ~ 1.0)
     public float sfxVolume = 1.0f;
 }
+
+// 6종 소모품 아이템 보유 수량 저장 데이터
+[Serializable]
+public class ConsumableSaveData
+{
+    // 하급 체력포션 (HP 25% 회복) 보유 수량
+    public int healthPotionLow;
+    // 중급 체력포션 (HP 50% 회복) 보유 수량
+    public int healthPotionMid;
+    // 상급 체력포션 (HP 100% 회복) 보유 수량
+    public int healthPotionHigh;
+
+    // 초급 경험치책 (+100 EXP) 보유 수량
+    public int expBookLow;
+    // 중급 경험치책 (+1,000 EXP) 보유 수량
+    public int expBookMid;
+    // 고급 경험치책 (+10,000 EXP) 보유 수량
+    public int expBookHigh;
+}
+
+// 공방(아이템 조합 공장) 상태 저장 데이터
+[Serializable]
+public class CraftingSaveData
+{
+    // 공장 현재 레벨 (Lv.1 ~ Lv.5)
+    public int factoryLevel = 1;
+    // 전역 자동 전환 토글 활성화 여부
+    public bool isGlobalAutoEnabled = false;
+    // 현재 제작 목록에 등록된 레시피 인덱스 목록
+    public List<int> queuedRecipeIndices = new List<int>();
+    // 6개 레시피의 현재 생산 진행 시간 (초)
+    public float[] recipeProgresses = new float[6];
+}
+
+
 
