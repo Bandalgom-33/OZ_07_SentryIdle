@@ -16,12 +16,14 @@ public class InventoryView : MonoBehaviour
 
     private void CreateSlots()
     { 
-        if (inventoryGridManager == null || itemSlotPrefab == null || itemSlotRoot == null) return;
-        
-        for (int i = 0; i < inventoryGridManager.Slots.Count; i++)
+        if (inventoryGridManager == null || itemSlotPrefab == null || itemSlotRoot == null)
         {
-            InventorySlotUI slotUI = Instantiate(itemSlotPrefab, itemSlotRoot);
-            slotUI.SetSlot(inventoryGridManager.Slots[i]);
+            Debug.LogError("InventoryView 참조가 연결되지 않았습니다.");
+            return;
         }
+        
+        InventorySlotUI slotUI = Instantiate(itemSlotPrefab, itemSlotRoot);
+
+        slotUI.SetSlot(inventoryGridManager.Slots[0]);
     }
 }

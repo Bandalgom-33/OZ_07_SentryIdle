@@ -4,17 +4,6 @@ using System.Collections.Generic;
 
 public class InventoryGridManager : MonoBehaviour
 {
-    [Header("테스트")]
-    [SerializeField] private ItemDataSO testItem;
-    
-    private void Start()
-    {
-        AddItem(testItem, 2005);
-
-        Debug.Log($"0번 : {slots[0].quantity}");
-        Debug.Log($"1번 : {slots[1].quantity}");
-        Debug.Log($"2번 : {slots[2].quantity}");
-    }
     
     
     [Header("인벤토리 설정")] 
