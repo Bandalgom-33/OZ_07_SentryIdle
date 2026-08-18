@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryView : MonoBehaviour
@@ -9,9 +10,13 @@ public class InventoryView : MonoBehaviour
     //슬롯들이 생성될 부모
     [SerializeField] private Transform itemSlotRoot;
     
+    //생성한 50개의 슬롯을 리스트에 저장
+    private List<InventorySlotUI> slotUIs = new List<InventorySlotUI>();
+    
     private void Start()
     {
         CreateSlots();
+        Refresh();
     }
 
     private void CreateSlots()
@@ -23,7 +28,17 @@ public class InventoryView : MonoBehaviour
         {
             InventorySlotUI slotUI = Instantiate(itemSlotPrefab, itemSlotRoot);
 
-            slotUI.SetSlot(inventoryGridManager.Slots[i]);
+            slotUIs.Add(slotUI);
+        }
+    }
+    
+    public void Refresh()
+    {
+        for (int i = 0; i < slotUIs.Count; i++)
+        {
+            slotUIs[i].SetSlot(
+                inventoryGridManager.Slots[i]
+            );
         }
     }
 }
