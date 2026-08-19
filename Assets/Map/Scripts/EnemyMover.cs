@@ -13,12 +13,15 @@ public class EnemyMover : MonoBehaviour
     private int currentPathIndex;
     //Grid 좌표를 World 위치치로 변환하기 위해 사용
     private GridMapRenderer mapRenderer;
+    
+    private WaveManager waveManager;
 
 
-    public void Initialize(IReadOnlyList<Vector2Int> newPath, GridMapRenderer newMapRenderer)
+    public void Initialize(IReadOnlyList<Vector2Int> newPath, GridMapRenderer newMapRenderer, WaveManager newWaveManager)
     {
         path = newPath;
         mapRenderer = newMapRenderer;
+        waveManager = newWaveManager;
         currentPathIndex = 0;
     }
 
@@ -58,6 +61,12 @@ public class EnemyMover : MonoBehaviour
     //적 삭제 메서드 이건 추후에 적 도착시 체력 깍이는 로직 추가 예정
     private void EnemyArrivedExit()
     {
+        
+        if (waveManager != null)
+        {
+            waveManager.EnemyRemoved(this);
+        }
+        
         Destroy(gameObject);
     }
   
