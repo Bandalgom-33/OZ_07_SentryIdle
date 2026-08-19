@@ -64,7 +64,9 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
     {
         // 적 유닛 사망 시 발행되는 보상 이벤트 수신
         EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
-        // 덱 슬롯 변경 이벤트 수신
+        // 일반 덱 슬롯 변경 이벤트 수신
+        EventBus.Subscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
+        // 레거시 덱 슬롯 변경 이벤트 수신
         EventBus.Subscribe<DeckChangedEvent>(OnDeckChanged);
         // 세이브 데이터 로드 및 저장 이벤트 수신
         EventBus.Subscribe<DataLoadEvent>(OnLoad);
@@ -78,6 +80,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
     private void OnDisable()
     {
         EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
+        EventBus.Unsubscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
         EventBus.Unsubscribe<DeckChangedEvent>(OnDeckChanged);
         EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
         EventBus.Unsubscribe<DataSaveEvent>(OnSave);
@@ -88,10 +91,19 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
 
     #region 세이브 / 로드 및 덱 이벤트 처리
 
+    // 일반 덱 슬롯 변경 이벤트 수신 시 인스펙터 모니터링 갱신
+    private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
+    {
+        RefreshDeckUnitsInspectorView();
+    }
+
     // 덱 슬롯 변경 이벤트 수신 시 인스펙터 모니터링 갱신
     private void OnDeckChanged(DeckChangedEvent evt)
     {
-        RefreshDeckUnitsInspectorView();
+        if (evt.deckType == DeckType.Normal)
+        {
+            RefreshDeckUnitsInspectorView();
+        }
     }
 
     // 세이브 데이터 로드 시 유닛 성장 정보 캐시 동기화

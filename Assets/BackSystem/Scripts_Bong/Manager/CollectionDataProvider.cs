@@ -14,6 +14,7 @@ public class CollectionItemViewModel
     public int FragmentCount { get; set; }
     public bool IsInDeck { get; set; }
     public int DeckSlotIndex { get; set; }
+    public DeckType CurrentDeckType { get; set; } = DeckType.Normal;
 
     public string UnitId => UnitData != null ? UnitData.UnitId : string.Empty;
     public string DisplayName => UnitData != null ? UnitData.DisplayName : string.Empty;
@@ -142,8 +143,8 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
 
     #region 뷰모델 제공 메서드
 
-    // 보관함 유닛 뷰모델 리스트 생성 및 반환
-    public List<CollectionItemViewModel> GetCollectionViewModels()
+    // 보관함 유닛 뷰모델 리스트 생성 및 반환 (기본값: 일반 필드 덱 기준)
+    public List<CollectionItemViewModel> GetCollectionViewModels(DeckType deckType = DeckType.Normal)
     {
         List<CollectionItemViewModel> list = new List<CollectionItemViewModel>();
 
@@ -163,12 +164,12 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
             int breakThroughStep = savedUnit != null ? savedUnit.breakThroughStep : 0;
             int fragmentCount = savedUnit != null ? savedUnit.fragmentCount : 0;
 
-            // DeckManager를 통해 덱 포함 여부 및 슬롯 번호 조회
+            // DeckManager를 통해 지정된 덱(Normal / Raid1 / Raid2) 내 포함 여부 및 슬롯 번호 조회
             bool isInDeck = false;
             int deckIndex = -1;
             if (DeckManager.Instance != null)
             {
-                isInDeck = DeckManager.Instance.IsInDeck(unitSO.UnitId, out deckIndex);
+                isInDeck = DeckManager.Instance.IsUnitInDeck(deckType, unitSO.UnitId, out deckIndex);
             }
 
             Sprite portrait = portraitCatalog != null ? portraitCatalog.GetPortraitByUnitData(unitSO) : null;
@@ -183,7 +184,8 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
                 BreakThroughStep = breakThroughStep,
                 FragmentCount = fragmentCount,
                 IsInDeck = isInDeck,
-                DeckSlotIndex = deckIndex
+                DeckSlotIndex = deckIndex,
+                CurrentDeckType = deckType
             });
         }
 

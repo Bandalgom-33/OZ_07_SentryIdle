@@ -19,6 +19,8 @@ public class SaveData
     public ConsumableSaveData consumable = new ConsumableSaveData();
     // 아이템 조합 공방 상태 데이터 (공장 레벨, 토글 상태, 진행도)
     public CraftingSaveData crafting = new CraftingSaveData();
+    // 던전 파견 및 자동 생산 상태 데이터 (3개 던전 유닛 배치 및 진행 시간)
+    public DungeonSaveData dungeon = new DungeonSaveData();
     // 마지막 저장 일시 타임스탬프 (오프라인 보상 계산용)
     public string lastSaveTimestamp = string.Empty;
 }
@@ -99,14 +101,28 @@ public class StageData
     public int maxWave = 1;
 }
 
-// 유닛 보유 및 덱 슬롯 데이터
+// 유닛 보유 및 멀티 덱(일반 1개, 레이드 2개) 슬롯 데이터
 [Serializable]
 public class UnitDeckData
 {
     // 보유 중인 유닛 세이브 데이터 리스트
     public List<UnitSaveData> ownedUnits = new List<UnitSaveData>();
-    // 필드 덱 슬롯 배치 유닛 ID 목록 (총 10개, 미배치 시 -1)
-    public int[] deckSlots = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+    // 일반 필드 덱 슬롯 배치 유닛 ID 목록 (미배치 시 -1)
+    public int[] normalDeckSlots = new int[] { 1, 2, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+    // 레이드 1팀 덱 슬롯 배치 유닛 ID 목록 (미배치 시 -1)
+    public int[] raid1DeckSlots = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+    // 레이드 2팀 덱 슬롯 배치 유닛 ID 목록 (미배치 시 -1)
+    public int[] raid2DeckSlots = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+    // 기존 단일 덱 세이브 데이터 및 레거시 코드 하위 호환용 프로퍼티
+    public int[] deckSlots
+    {
+        get => normalDeckSlots;
+        set => normalDeckSlots = value;
+    }
 }
 
 // 개별 유닛 성장 데이터
@@ -175,6 +191,27 @@ public class CraftingSaveData
     // 6개 레시피의 현재 생산 진행 시간 (초)
     public float[] recipeProgresses = new float[6];
 }
+
+// 개별 던전 슬롯 파견 상태 저장 데이터
+[Serializable]
+public class DungeonSlotSaveData
+{
+    // 대상 던전 식별 ID (예: DUNGEON_01, DUNGEON_02, DUNGEON_03)
+    public string dungeonId = string.Empty;
+    // 해당 던전에 파견된 3개 유닛 고유 ID 배열 (-1: 미배치)
+    public int[] assignedUnitIds = new int[3] { -1, -1, -1 };
+    // 현재 생산 주기 진행 시간 (초)
+    public float currentCycleTimer = 0.0f;
+}
+
+// 던전 전체 파견 및 방치 생산 저장 데이터
+[Serializable]
+public class DungeonSaveData
+{
+    // 3개 던전 슬롯의 저장 데이터 리스트
+    public List<DungeonSlotSaveData> dungeonSlots = new List<DungeonSlotSaveData>();
+}
+
 
 
 
