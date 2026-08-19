@@ -76,7 +76,14 @@ public class UICollectionItemCard : MonoBehaviour
 
             if (viewModel.IsInDeck)
             {
-                deckBadgeText.text = $"DECK {viewModel.DeckSlotIndex + 1}";
+                string prefix = viewModel.CurrentDeckType switch
+                {
+                    DeckType.Normal => "DECK",
+                    DeckType.Raid1 => "RAID 1",
+                    DeckType.Raid2 => "RAID 2",
+                    _ => "DECK"
+                };
+                deckBadgeText.text = $"{prefix} {viewModel.DeckSlotIndex + 1}";
             }
         }
     }

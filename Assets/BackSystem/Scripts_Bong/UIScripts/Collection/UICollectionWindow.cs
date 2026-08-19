@@ -59,6 +59,8 @@ public class UICollectionWindow : MonoBehaviour
     private void OnEnable()
     {
         EventBus.Subscribe<GachaDrawCompletedEvent>(OnGachaDrawCompleted);
+        EventBus.Subscribe<NormalDeckChangedEvent>(OnDeckChanged);
+        EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
         RefreshCollectionUI();
     }
 
@@ -66,10 +68,24 @@ public class UICollectionWindow : MonoBehaviour
     private void OnDisable()
     {
         EventBus.Unsubscribe<GachaDrawCompletedEvent>(OnGachaDrawCompleted);
+        EventBus.Unsubscribe<NormalDeckChangedEvent>(OnDeckChanged);
+        EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
     }
 
     // 가챠 완료 시 UI 갱신
     private void OnGachaDrawCompleted(GachaDrawCompletedEvent evt)
+    {
+        RefreshCollectionUI();
+    }
+
+    // 일반 덱 변경 시 UI 갱신
+    private void OnDeckChanged(NormalDeckChangedEvent evt)
+    {
+        RefreshCollectionUI();
+    }
+
+    // 레이드 덱 변경 시 UI 갱신
+    private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
         RefreshCollectionUI();
     }
