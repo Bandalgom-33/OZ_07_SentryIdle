@@ -18,7 +18,7 @@ public class MapGenerator : MonoBehaviour
 
     [Header("자동 배치 테스트")]
     [SerializeField] private UnitRuntimeState meleeUnitPrefab;
-    [SerializeField] private GameObject rangedUnitPrefab;
+    [SerializeField] private UnitRuntimeState rangedUnitPrefab;
 
     [Header("Wave 참조")]
     [SerializeField] private WaveManager waveManager;
@@ -64,10 +64,9 @@ public class MapGenerator : MonoBehaviour
 
         //SpawnTestUnits();
         SpawnMeleeUnit();
-        SpawnMeleeUnit();
-
+       // SpawnMeleeUnit();
         SpawnRangedUnit();
-        SpawnRangedUnit();
+        //SpawnRangedUnit();
 
         if (waveManager != null)
         {
@@ -396,16 +395,24 @@ public class MapGenerator : MonoBehaviour
     {
         if (rangedUnitPrefab == null) return;
 
+        //HighGround 중 배치 가능한 타일 찾기
         TileNode rangedTile = FindRandomDeployableTile(TileType.HighGround);
 
         if (rangedTile == null) return;
 
+        //Grid 좌표를 World 좌표로 변환
         Vector3 rangedPosition = mapRenderer.GridToWorld(rangedTile.GridPosition);
 
+        //HighGround 위에 캐릭터가 올라오도록 높이 조절
         rangedPosition.y = 0.8f;
 
-        Instantiate(rangedUnitPrefab, rangedPosition, Quaternion.identity);
+        //정식 UnitRuntimeState 프리팹 생성
+        UnitRuntimeState spawnUnit = Instantiate( rangedUnitPrefab, rangedPosition, Quaternion.identity );
 
+        //전투 시스템에서 현재 유닛의 타일 위치를 알 수 있도록 초기화
+        spawnUnit.GridPosition.Initialize( rangedTile.GridPosition, GridFacingDirection.East, CombatTargetLayer.Ground);
+
+        //현재 타일 사용중으로 변경
         rangedTile.SetOccupied(true);
     }
 
