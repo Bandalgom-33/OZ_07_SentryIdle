@@ -395,17 +395,31 @@ namespace EndlessGuard.Map
             }
         }
 
-        // 매니저 객체 파괴 시 전체 유닛의 사망 이벤트 구독 일괄 정리 및 메모리 누수 방지 처리
-        private void ClearAllUnitSubscriptions()
+        // 전체 생존 아군 유닛 파괴, 타일 해제 및 추적 딕셔너리 일괄 초기화
+        public void ClearAllUnits()
         {
             foreach (KeyValuePair<CombatHealth, TileNode> pair in _occupiedTilesByUnit)
             {
                 if (pair.Key != null)
                 {
                     pair.Key.OnDied -= HandleUnitDied;
+                    if (pair.Value != null)
+                    {
+                        pair.Value.SetOccupied(false);
+                    }
+                    if (pair.Key.gameObject != null)
+                    {
+                        Destroy(pair.Key.gameObject);
+                    }
                 }
             }
+
             _occupiedTilesByUnit.Clear();
+        }
+
+        private void ClearAllUnitSubscriptions()
+        {
+            ClearAllUnits();
         }
 
         #endregion

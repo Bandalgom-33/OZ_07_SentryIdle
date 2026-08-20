@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 899b3da2e03185c4ea943a358dd87ec8, type: 3}
+  m_Name: DUNGEON_01
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonDataSO
+  dungeonId: DUNGEON_01
+  dungeonName: "\uACE0\uBE14\uB9AD \uC9C0\uD558 \uAD11\uC0B0"
+  description: "\uBE44\uAD50\uC801 \uC57D\uD55C \uBAAC\uC2A4\uD130\uB4E4\uC774 \uC810\uAC70\uD55C
+    \uAD11\uC0B0\uC73C\uB85C, \uC720\uB2DB\uB4E4\uC744 \uD30C\uACAC\uD558\uC5EC
+    \uC9C0\uC18D\uC801\uC73C\uB85C \uACE8\uB4DC\uC640 \uB9C8\uC11D\uC744 \uCC44\uAD74\uD569\uB2C8\uB2E4."
+  dungeonIcon: {fileID: 0}
+  requiredMinCombatPower: 50
+  baseCycleSeconds: 30
+  baseRewardGold: 500
+  baseRewardDiamond: 1
+  baseRewardStageStone: 1

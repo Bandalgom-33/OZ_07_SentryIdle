@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d7900024d1c0f44894b34f0b22d016, type: 3}
+  m_Name: UnitPortraitCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitPortraitCatalogSO
+  targetCatalog: {fileID: 11400000, guid: 8009f11140c0429409c98b0cf3b3b803, type: 2}
+  portraitMappings:
+  - unitData: {fileID: 11400000, guid: 7f50f0f799baa4f478f6a59572733a63, type: 2}
+    portraitIcon: {fileID: -2745747098976433411, guid: 64bbd45b0b7014f5892c5aa9f0fa187d, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 81fb5d2ab53211a45bd2a19e84e1ec64, type: 2}
+    portraitIcon: {fileID: 9155539873246937934, guid: 5203ed5baae15483da53ff34dafb0006, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: d64b6dc48003e85428422ae875d70972, type: 2}
+    portraitIcon: {fileID: -7005502892267247473, guid: 04cd59292a0e34ee6b2a6dc9a7b2a974, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 9e9ab073452a2bc4b916b54485f2ceb9, type: 2}
+    portraitIcon: {fileID: -2745747098976433411, guid: 6a53d415e16a34b61b2dc21580cec501, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 068b13a556602794ca350e8b52536c3c, type: 2}
+    portraitIcon: {fileID: 7195734205691627793, guid: 7212bef95b8a58344944fb6e590be91e, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 147283e0a7384e34cbf955f4c44c0dfa, type: 2}
+    portraitIcon: {fileID: 5223213533427645220, guid: 470cfb1e4f7865c40b83d403037c90c9, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: f483f776d7004874c9920075ef079de2, type: 2}
+    portraitIcon: {fileID: 1606628532965834737, guid: 9dbef0fdede574b5fad7cc4a7adcda48, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 4374e11ae7640d94eab78cb0a600682a, type: 2}
+    portraitIcon: {fileID: 5223213533427645220, guid: d24756e433435b249be5737019648d69, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 454dc6b83e6856e4f8bad10c4cce4924, type: 2}
+    portraitIcon: {fileID: 5223213533427645220, guid: 9f6f74f146203417fae095263bf53e7c, type: 3}
+    fullIllustration: {fileID: 0}
+  - unitData: {fileID: 11400000, guid: 0ce0ca7c716c15b43b3501302a7c9dcb, type: 2}
+    portraitIcon: {fileID: -2679891834695985245, guid: 9319101edbfea48f58b3eb3a01e16f2a, type: 3}
+    fullIllustration: {fileID: 0}

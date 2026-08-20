@@ -41,4 +41,13 @@ public class GridMapRenderer : MonoBehaviour
         return new Vector3(gridPosition.x * tileSize, 0f, gridPosition.y * tileSize);
     }
 
+    public void ClearMap()
+    {
+        //타일루트 아래에 생성되는 타일들(맵)을 삭제
+        if(tileRoot ==  null) return;
+        for (int i = tileRoot.childCount - 1; i >= 0; i--)
+        {
+            Destroy(tileRoot.GetChild(i).gameObject);
+        }
+    }
 }

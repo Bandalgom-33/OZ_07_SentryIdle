@@ -2015,6 +2015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f7a481403c0c29478c8c98ee4aac407, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyUpgradeManager
+  maxPurchaseLimit: 9999
   goldBonusUpgradeCost: 100
   goldMagnificationUpgradeCost: 100
   goldBonusIncreaseMultiplier: 1.5
@@ -4505,7 +4506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &749539641
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6428,7 +6429,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1102089189
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10114,6 +10115,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   optionPanel: {fileID: 0}
+  maxLife: 20
+  currentLife: 20
 --- !u!4 &1811075404
 Transform:
   m_ObjectHideFlags: 0
@@ -11320,7 +11323,7 @@ MonoBehaviour:
   width: 12
   height: 8
   mapRenderer: {fileID: 2034993285}
-  enemyData: {fileID: 11400000, guid: 0fdcf246590647f40bfb1793cf944480, type: 2}
+  enemyData: {fileID: 11400000, guid: 2b7e23d199b4acd4e818bb566798e3b0, type: 2}
   airHeight: 2
   meleeUnitPrefab: {fileID: 3732451057153881359, guid: 727fca4c3cb4c4b44904dd245ffb2f35, type: 3}
   rangedUnitPrefab: {fileID: 5707405784260888266, guid: 3614af83f8fe11741a0fe8326a489375, type: 3}
