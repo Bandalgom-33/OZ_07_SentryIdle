@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,18 @@ public class InventoryView : MonoBehaviour
     {
         CreateSlots();
         Refresh();
+    }
+
+    private void OnEnable()
+    {
+        if (inventoryGridManager != null) 
+            inventoryGridManager.OnInventoryChanged += Refresh;
+    }
+
+    private void OnDisable()
+    {
+        if(inventoryGridManager != null)
+            inventoryGridManager.OnInventoryChanged -= Refresh;
     }
 
     private void CreateSlots()
