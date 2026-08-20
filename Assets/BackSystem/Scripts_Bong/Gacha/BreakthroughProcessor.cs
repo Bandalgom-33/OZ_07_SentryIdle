@@ -1,48 +1,32 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
-// 가챠 획득 유닛의 신규 해금, 한계돌파 승급 및 풀돌 상태를 판정하고 세이브 데이터를 갱신하는 처리기
-public class BreakthroughProcessor
+// 가챠 획득 유닛의 신규 해금, 한계돌파 승급 및 풀돌 상태를 판정하는 처리기
+public static class BreakthroughProcessor
 {
-    // 최대 한계 돌파 허용 상한 단계 (0단계: 기본 해금 ~ 6단계: 최대 풀돌)
     public const int MaxBreakthroughLimit = 6;
 
-    // 가챠로 뽑힌 개별 유닛 보상 아이템에 대해 신규/돌파/풀돌 상태를 처리하고 어댑터를 갱신하는 핵심 메서드
-    public static void ProcessGachaUnit(
-        ref IGachaRewardItem rewardItem,
-        List<UnitSaveData> ownedUnitsList,
-        HashSet<string> ownedUnitIdSet)
+    // 가챠 보상 유닛의 신규/돌파/풀돌 상태 판정 및 결과 갱신 연산
+    public static void ProcessGachaUnit(ref IGachaRewardItem rewardItem)
     {
-        if (rewardItem == null || rewardItem.TargetUnitData == null || ownedUnitsList == null)
+        if (rewardItem == null || rewardItem.TargetUnitData == null)
         {
             return;
         }
 
-        string unitIdStr = rewardItem.RewardId;
-        int numericId = ParseUnitId(unitIdStr);
+        int numericId = UnitIdHelper.ParseUnitId(rewardItem.RewardId);
+        if (numericId <= 0) return;
 
-        // 세이브 데이터 목록에서 해당 유닛의 기존 저장 데이터 검색
-        UnitSaveData existingSave = FindSaveData(ownedUnitsList, numericId, unitIdStr);
+        UnitSaveData existingSave = CollectionDataProvider.Instance != null ? CollectionDataProvider.Instance.GetOwnedUnitSaveData(numericId) : null;
 
-        // 1. 신규 미보유 캐릭터 획득 처리 (NewUnlock)
+        // 1. 신규 미보유 캐릭터 획득 처리
         if (existingSave == null)
         {
-            // 신규 유닛 세이브 데이터 인스턴스 생성 (레벨 1, 돌파 0단계)
-            UnitSaveData newUnitSave = new UnitSaveData
+            if (CollectionDataProvider.Instance != null)
             {
-                unitId = numericId,
-                level = 1,
-                currentExp = 0L,
-                breakThroughStep = 0,
-                fragmentCount = 0
-            };
-
-            ownedUnitsList.Add(newUnitSave);
-            if (ownedUnitIdSet != null)
-            {
-                ownedUnitIdSet.Add(unitIdStr);
+                CollectionDataProvider.Instance.AddOrUpdateOwnedUnit(numericId, 1, 0L, 0, 0);
             }
 
             rewardItem.IsOwned = false;
@@ -57,14 +41,12 @@ public class BreakthroughProcessor
         int previousStep = existingSave.breakThroughStep;
         rewardItem.PreviousBreakthroughStep = previousStep;
 
-        // 2-1. 아직 최대 돌파(6단계)에 도달하지 않은 경우: 한계돌파 1단계 상승
         if (previousStep < MaxBreakthroughLimit)
         {
             existingSave.breakThroughStep++;
             rewardItem.CurrentBreakthroughStep = existingSave.breakThroughStep;
             rewardItem.ResultType = GachaResultType.Breakthrough;
         }
-        // 2-2. 이미 6단계 풀돌에 도달한 경우: 변환 아이템 없이 최대 돌파 완료 상태 유지
         else
         {
             rewardItem.CurrentBreakthroughStep = previousStep;
@@ -72,33 +54,12 @@ public class BreakthroughProcessor
         }
     }
 
-    // 세이브 데이터 리스트에서 숫자 ID 또는 문자열 해시값으로 유닛을 검색하는 헬퍼 메서드
-    private static UnitSaveData FindSaveData(List<UnitSaveData> list, int numericId, string unitIdStr)
+    // [하위 호환] 리스트 직접 전달 방식 가챠 유닛 처리 연산
+    public static void ProcessGachaUnit(
+        ref IGachaRewardItem rewardItem,
+        List<UnitSaveData> ownedUnitsList,
+        HashSet<string> ownedUnitIdSet)
     {
-        for (int i = 0; i < list.Count; i++)
-        {
-            UnitSaveData item = list[i];
-            if (item == null) continue;
-
-            if (item.unitId == numericId)
-            {
-                return item;
-            }
-        }
-
-        return null;
-    }
-
-    // 유닛 ID 문자열(예: "UNIT_0001")에서 정수 번호(1)를 추출하는 유틸리티
-    public static int ParseUnitId(string unitIdStr)
-    {
-        if (string.IsNullOrEmpty(unitIdStr)) return 0;
-
-        if (int.TryParse(unitIdStr.Replace("UNIT_", ""), out int parsedId))
-        {
-            return parsedId;
-        }
-
-        return unitIdStr.GetHashCode();
+        ProcessGachaUnit(ref rewardItem);
     }
 }
