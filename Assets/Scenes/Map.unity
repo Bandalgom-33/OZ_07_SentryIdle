@@ -390,8 +390,7 @@ MonoBehaviour:
   width: 12
   height: 8
   mapRenderer: {fileID: 206666535}
-  enemyPrefab: {fileID: 4458884028838379206, guid: 39ed200ea9a470949ab34412016849b2, type: 3}
-  meleeUnitPrefab: {fileID: 540724104247911764, guid: ef97240e602e9c74dad557e2322156ac, type: 3}
+  meleeUnitPrefab: {fileID: 1078171258862399160, guid: b77056a701d5e134f8b556db0b0b498f, type: 3}
   rangedUnitPrefab: {fileID: 4128163135516489488, guid: 8b65f60e2f10b394a998b4dd327b893e, type: 3}
   waveManager: {fileID: 753784559}
 --- !u!4 &206666537
@@ -1003,10 +1002,11 @@ MonoBehaviour:
   mapRenderer: {fileID: 206666535}
   stageManager: {fileID: 2101606010}
   bossPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 2203000127058307797, guid: fbfd5b238295d4c45ba931d5f1f83c90, type: 3}
+  enemyHeight: 1
   enemyCountPerWave: 3
   spawnInterval: 1
   waveInterval: 5
-  enemyPrefab: {fileID: 4458884028838379206, guid: 39ed200ea9a470949ab34412016849b2, type: 3}
   path: []
 --- !u!4 &753784560
 Transform:

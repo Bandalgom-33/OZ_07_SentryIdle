@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using EndlessGuard.Unit.Data;
+using EndlessGuard.Unit.Runtime;
 using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine.InputSystem.iOS;
@@ -12,12 +14,10 @@ public class MapGenerator : MonoBehaviour
 
     [Header("맵 크기")]
     [SerializeField] private GridMapRenderer mapRenderer;
-
-    [Header("적 생성 설정")]
-    [SerializeField] private EnemyMover enemyPrefab;
+    
 
     [Header("자동 배치 테스트")]
-    [SerializeField] private GameObject meleeUnitPrefab;
+    [SerializeField] private UnitRuntimeState meleeUnitPrefab;
     [SerializeField] private GameObject rangedUnitPrefab;
 
     [Header("Wave 참조")]
@@ -297,20 +297,7 @@ public class MapGenerator : MonoBehaviour
     }
 
     
-    private void SpawnEnemy(IReadOnlyList<Vector2Int> path)
-    {
-        if (enemyPrefab == null) return;
-        if(path == null || path.Count == 0) return;
-
-        //스폰 포지션 좌표 받기
-        Vector2Int spawnGridPosition = path[0];
-        //World 위치로 변환
-        Vector3 spawnWorldPosition =   mapRenderer.GridToWorld(spawnGridPosition);
-        spawnWorldPosition.y = 1.0f;
-        //생성 시키기
-        EnemyMover spawnEnemy = Instantiate(enemyPrefab,spawnWorldPosition,Quaternion.identity);
-        spawnEnemy.Initialize(path, mapRenderer,waveManager);
-    }
+   
 
     //pathPosition의 유효성을 검사하는 메서드
     private bool ValidatePath(IReadOnlyList<Vector2Int>path,Vector2Int spawnPosition, Vector2Int goalPosition)
@@ -324,15 +311,7 @@ public class MapGenerator : MonoBehaviour
     }
 
     //어느 경로에 몇 마리가 몇 초간격으로 나올지에 대한 Wave 메서드 만들기
-    private IEnumerator spawnWave(IReadOnlyList<Vector2Int> path, int enemyCount,float spawnInterval)
-    {
-        for(int i = 0; i < enemyCount; i++)
-        {
-            SpawnEnemy(path);
-
-            yield return new WaitForSeconds(spawnInterval);
-        }
-    }
+  
 
     private void GenerateTerrain()
     {
@@ -386,8 +365,7 @@ public class MapGenerator : MonoBehaviour
         return candidates[randomIndex];  
     }
 
-
-    //근거리 유닛 배치
+//근거리 유닛 배치
     private void SpawnMeleeUnit()
     {
         if (meleeUnitPrefab == null) return;
@@ -396,12 +374,19 @@ public class MapGenerator : MonoBehaviour
         TileNode meleeTile = FindRandomDeployableTile(TileType.Path);
 
         if (meleeTile == null) return;
+
         //월드 좌표로 변환 해주기
         Vector3 meleePosition = mapRenderer.GridToWorld(meleeTile.GridPosition);
-        
+
         meleePosition.y = 0.5f;
-        //생성
-        Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity);
+
+        //정식 UnitRuntimeState 프리팹 생성
+        UnitRuntimeState spawnUnit = Instantiate(meleeUnitPrefab, meleePosition, Quaternion.identity );
+
+        //전투 시스템에서 현재 유닛의 타일 위치를 알 수 있도록 초기화
+        spawnUnit.GridPosition.Initialize( meleeTile.GridPosition,
+            GridFacingDirection.East, CombatTargetLayer.Ground );
+
         //현재 타일 사용중으로 바꾸기
         meleeTile.SetOccupied(true);
     }

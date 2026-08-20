@@ -2,21 +2,31 @@ using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using EndlessGuard.Unit.Data;
+using EndlessGuard.Unit.Runtime;
 
 public class WaveManager : MonoBehaviour
 {
     [Header("맵 참조하기")] 
     [SerializeField] private MapGenerator mapGenerator;
     [SerializeField] private GridMapRenderer mapRenderer;
-    
+
     [Header("Stage 참조하기")]
     [SerializeField] private StageManager stageManager;
-     
+
     [Header("Wave 설정")]
     private int currentWave = 0;
 
-    [Header("보스 설정")] [SerializeField] private EnemyMover bossPrefab;
-   
+    [Header("보스 설정")]
+    [SerializeField] private EnemyRuntimeState bossPrefab;
+
+    [Header("적 생성 설정")]
+    [SerializeField] private EnemyRuntimeState enemyPrefab;
+
+    //정식 EnemyMove의 SetPath()가 PathNode의 월드 좌표를 사용하기 때문에
+    //적이 이동할 높이도 PathNode 생성 시 같이 적용
+    [SerializeField] private float enemyHeight = 1.0f;
+
     //한 웨이브당 적 소환 갯수
     [SerializeField] private int enemyCountPerWave = 3;
     //적 한 마리와 다음 적 소환 간격
@@ -24,39 +34,59 @@ public class WaveManager : MonoBehaviour
     //웨이브와 웨이브 사이 대기 시간
     [SerializeField] private float waveInterval = 5.0f;
 
-    [Header("적 생성 설정")] 
-    [SerializeField] private EnemyMover enemyPrefab;
-
     //적이 살아있는지 확인
     private int aliveEnemyCount = 0;
 
     //적 리스트 직접 관리하기
-    private List<EnemyMover> spawnedEnemies = new List<EnemyMover>();
-    
-    public List<Vector3> path; int CurrentWave => currentWave;
+    private List<EnemyRuntimeState> spawnedEnemies = new List<EnemyRuntimeState>();
 
-    
+    public List<Vector3> path; 
+    int CurrentWave => currentWave;
 
     //MapGenerator 에 있는 SpawnEnemy를 WaveManager로 가져오기
+    //기존 EnemyMover 대신 정식 EnemyRuntimeState / EnemyMove 시스템 사용
     private void SpawnEnemy(IReadOnlyList<Vector2Int> path)
     {
         if (enemyPrefab == null) return;
         if (mapRenderer == null) return;
         if (path == null || path.Count == 0) return;
-        
-        Vector2Int spawnGridPosition = path[0];
-        
-        Vector3 spawnWorldPOsition = mapRenderer.GridToWorld(spawnGridPosition);
 
-        spawnWorldPOsition.y = 1.0f;
-        
-        EnemyMover spawnEnemy = Instantiate(enemyPrefab,spawnWorldPOsition, Quaternion.identity);
+        //우리 MapGenerator의 Vector2Int 경로를
+        //정식 EnemyMove가 사용하는 PathNode[] 형태로 변경
+        PathNode[] pathNodes = BuildPathNodes(path);
 
+        if (pathNodes == null || pathNodes.Length == 0) return;
+
+        //첫 번째 PathNode의 위치에서 정식 적 프리팹 생성
+        EnemyRuntimeState spawnEnemy =
+            Instantiate(enemyPrefab, pathNodes[0].Position, Quaternion.identity);
+
+        //정식 EnemyRuntimeState 안에 EnemyMove가 정상적으로 연결됐는지 확인
+        if (spawnEnemy.Move == null)
+        {
+            Debug.LogError("생성된 Enemy에 EnemyMove가 없습니다.", spawnEnemy);
+            Destroy(spawnEnemy.gameObject);
+            return;
+        }
+
+        //정식 EnemyMove에 이동 경로 전달
+        bool pathSet = spawnEnemy.Move.SetPath(pathNodes);
+
+        if (!pathSet)
+        {
+            Debug.LogError("Enemy 경로 설정에 실패했습니다.", spawnEnemy);
+            Destroy(spawnEnemy.gameObject);
+            return;
+        }
+
+        //현재 WaveManager가 생성한 적 리스트에 등록
         spawnedEnemies.Add(spawnEnemy);
-        
+
+        //정식 SpawnedEnemyManager에도 등록
+        //적이 전투로 사망했을 때 EnemyDiedEvent를 받아 제거할 수 있게 하기 위함
+        SpawnedEnemyManager.Instance.RegisterEnemy(spawnEnemy);
+
         aliveEnemyCount++;
-       
-        spawnEnemy.Initialize(path,mapRenderer,this);
     }
 
     //웨이브 시작 메서드
@@ -64,10 +94,10 @@ public class WaveManager : MonoBehaviour
     {
         if(mapGenerator == null) return;
         if(stageManager == null) return;
-        
-       StartCoroutine(RunWaveSystem());
+
+        StartCoroutine(RunWaveSystem());
     }
-    
+
     //코루틴으로 Wave마다 적 생성하기 -> 1웨이브를 담당
     private IEnumerator RunWave()
     {
@@ -79,12 +109,11 @@ public class WaveManager : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
         }
 
-        while ( aliveEnemyCount > 0)
+        while (aliveEnemyCount > 0)
         {
             //프레임 마다 한 번씩 적생존여부 확인하기
             yield return null;
         }
-        
     }
 
     //웨이브 자체를 여러번 반복시키는 웨이브 코루틴
@@ -93,7 +122,7 @@ public class WaveManager : MonoBehaviour
         for (int waveIndex = 0; waveIndex < stageManager.WavesPerStage; waveIndex++)
         {
             currentWave = waveIndex + 1;
-            
+
             Debug.Log($"Stage {stageManager.CurrentStage} - Wave {currentWave} 시작");
 
             if (currentWave == stageManager.WavesPerStage)
@@ -105,14 +134,13 @@ public class WaveManager : MonoBehaviour
             {
                 yield return StartCoroutine(RunWave());
             }
-            
-        
-            
+
             if (waveIndex < stageManager.WavesPerStage - 1)
             {
                 yield return new WaitForSeconds(waveInterval);
             }
         }
+
         Debug.Log("모든 웨이브 종료");
         //스테이지 클리어
         stageManager.ClearStage();
@@ -120,14 +148,23 @@ public class WaveManager : MonoBehaviour
         mapGenerator.RegenerateMap(); 
     }
 
+    
+    
     //적이 사라질때 카운트 줄이기
-    public void EnemyRemoved(EnemyMover enemy)
+    //기존 EnemyMover 대신 정식 EnemyRuntimeState를 받도록 변경
+    public void EnemyRemoved(EnemyRuntimeState enemy)
     {
-        if (spawnedEnemies.Contains(enemy))
+        if (enemy == null) return;
+
+        //이미 제거된 적이면 중복 처리하지 않기
+        if (!spawnedEnemies.Remove(enemy))
         {
-            spawnedEnemies.Remove(enemy);
+            return;
         }
-        
+
+        //정식 SpawnedEnemyManager에서도 등록 해제
+        SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
+
         aliveEnemyCount--;
 
         if (aliveEnemyCount < 0)
@@ -145,27 +182,47 @@ public class WaveManager : MonoBehaviour
         {
             yield return null;
         }
-       
     }
 
     private void SpawnBoss(IReadOnlyList<Vector2Int> path)
     {
         if(bossPrefab == null) return;
         if(mapRenderer == null) return;
-        if (path == null||path.Count == 0) return;
-        //좌표 받아오기
-        Vector2Int spawnGridPosition = path[0];
-        //받아온 좌표 월드 위치로 변환
-        Vector3 spawnWorldPOsition = mapRenderer.GridToWorld(spawnGridPosition);
-        //높이 조절
-        spawnWorldPOsition.y = 1.0f;
-        
-        EnemyMover spawnBoss = Instantiate(bossPrefab,spawnWorldPOsition, Quaternion.identity);
+        if(path == null || path.Count == 0) return;
 
-        
-        spawnedEnemies.Add(spawnBoss);    
+        //우리 MapGenerator의 경로를 정식 PathNode[]로 변경
+        PathNode[] pathNodes = BuildPathNodes(path);
+
+        if (pathNodes == null || pathNodes.Length == 0) return;
+
+        //첫 번째 PathNode 위치에서 보스 생성
+        EnemyRuntimeState spawnBoss =
+            Instantiate(bossPrefab, pathNodes[0].Position, Quaternion.identity);
+
+        //보스 프리팹에 EnemyMove가 정상 연결되어 있는지 확인
+        if (spawnBoss.Move == null)
+        {
+            Debug.LogError("생성된 Boss에 EnemyMove가 없습니다.", spawnBoss);
+            Destroy(spawnBoss.gameObject);
+            return;
+        }
+
+        //정식 EnemyMove에 경로 전달
+        bool pathSet = spawnBoss.Move.SetPath(pathNodes);
+
+        if (!pathSet)
+        {
+            Debug.LogError("Boss 경로 설정에 실패했습니다.", spawnBoss);
+            Destroy(spawnBoss.gameObject);
+            return;
+        }
+
+        spawnedEnemies.Add(spawnBoss);
+
+        //정식 SpawnedEnemyManager에도 등록
+        SpawnedEnemyManager.Instance.RegisterEnemy(spawnBoss);
+
         aliveEnemyCount++;
-        spawnBoss.Initialize(path,mapRenderer,this);
     }
 
     public void RestartCurtrentStage()
@@ -180,6 +237,59 @@ public class WaveManager : MonoBehaviour
         StartCoroutine(RunWaveSystem());
     }
 
+    
+    private void OnEnable()
+    {
+        CombatEvents.OnEnemyDied += HandleEnemyDied;
+        CombatEvents.OnEnemyReachedGoal += HandleEnemyReachedGoal;
+    }
+    
+    private void OnDisable()
+    {
+        CombatEvents.OnEnemyDied -= HandleEnemyDied;
+        CombatEvents.OnEnemyReachedGoal -= HandleEnemyReachedGoal;
+    }
+    
+//적이 전투 중 사망했을 때 처리
+    private void HandleEnemyDied(EnemyDiedInfo info)
+    {
+        EnemyRuntimeState enemy = FindSpawnedEnemy(info.RuntimeId);
+
+        if (enemy == null) return;
+
+        EnemyRemoved(enemy);
+    }
+
+//적이 Goal에 도착했을 때 처리
+    private void HandleEnemyReachedGoal(EnemyReachedGoalInfo info)
+    {
+        EnemyRuntimeState enemy = FindSpawnedEnemy(info.RuntimeId);
+
+        if (enemy == null) return;
+
+        EnemyRemoved(enemy);
+
+        //Goal 도착은 사망이 아니기 때문에
+        //SpawnedEnemyManager가 자동으로 삭제해주지 않음
+        Destroy(enemy.gameObject);
+    }
+
+//RuntimeId를 이용해서 WaveManager가 생성한 적 찾기
+    private EnemyRuntimeState FindSpawnedEnemy(int runtimeId)
+    {
+        for (int i = 0; i < spawnedEnemies.Count; i++)
+        {
+            EnemyRuntimeState enemy = spawnedEnemies[i];
+
+            if (enemy != null &&
+                enemy.RuntimeId == runtimeId)
+            {
+                return enemy;
+            }
+        }
+
+        return null;
+    }
     //테스트용
     private void Update()
     {
@@ -196,10 +306,96 @@ public class WaveManager : MonoBehaviour
         {
             if (spawnedEnemies[i] != null)
             {
+                //정식 SpawnedEnemyManager에서도 먼저 등록 해제
+                SpawnedEnemyManager.Instance.UnregisterEnemy(spawnedEnemies[i]);
                 Destroy(spawnedEnemies[i].gameObject);
             }
         }
+
         spawnedEnemies.Clear();
         aliveEnemyCount = 0;
+    }
+
+    //우리 MapGenerator에서 만들어진 Vector2Int 경로를
+    //정식 EnemyMove가 사용하는 PathNode[] 경로로 변환
+    private PathNode[] BuildPathNodes(IReadOnlyList<Vector2Int> gridPath)
+    {
+        if (gridPath == null || gridPath.Count == 0)
+        {
+            return null;
+        }
+
+        PathNode[] pathNodes = new PathNode[gridPath.Count];
+
+        for (int i = 0; i < gridPath.Count; i++)
+        {
+            Vector2Int gridPosition = gridPath[i];
+
+            //Grid 좌표를 월드 좌표로 변환
+            Vector3 worldPosition = mapRenderer.GridToWorld(gridPosition);
+
+            //적 프리팹 높이 적용
+            worldPosition.y = enemyHeight;
+
+            //현재 PathNode에서 적이 바라볼 방향 계산
+            GridFacingDirection facing = ResolveFacing(gridPath, i);
+
+            pathNodes[i] =
+                new PathNode(
+                    worldPosition,
+                    gridPosition,
+                    facing
+                );
+        }
+
+        return pathNodes;
+    }
+
+    //현재 경로와 다음 경로의 차이를 이용해서
+    //Enemy가 바라볼 North / East / South / West 방향 계산
+    private GridFacingDirection ResolveFacing(
+        IReadOnlyList<Vector2Int> path,
+        int index)
+    {
+        if (path == null || path.Count <= 1)
+        {
+            return GridFacingDirection.East;
+        }
+
+        Vector2Int direction;
+
+        //마지막 노드가 아니면 현재 위치 -> 다음 위치 방향 사용
+        if (index < path.Count - 1)
+        {
+            direction = path[index + 1] - path[index];
+        }
+        //마지막 노드는 이전 위치 -> 현재 위치 방향 사용
+        else
+        {
+            direction = path[index] - path[index - 1];
+        }
+
+        if (direction.x > 0)
+        {
+            return GridFacingDirection.East;
+        }
+
+        if (direction.x < 0)
+        {
+            return GridFacingDirection.West;
+        }
+
+        if (direction.y > 0)
+        {
+            return GridFacingDirection.North;
+        }
+
+        if (direction.y < 0)
+        {
+            return GridFacingDirection.South;
+        }
+
+        //같은 좌표가 들어오는 예외 상황에서는 기본 East
+        return GridFacingDirection.East;
     }
 }
