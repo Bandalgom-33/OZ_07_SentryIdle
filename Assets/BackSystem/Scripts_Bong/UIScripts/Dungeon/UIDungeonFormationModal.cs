@@ -255,8 +255,14 @@ public class UIDungeonFormationModal : MonoBehaviour
             int uId = ParseUnitId(so.UnitId);
             if (uId <= 0) continue;
 
-            int power = DungeonManager.Instance.GetUnitCombatPower(uId);
-            string assignedDungeon = DungeonManager.Instance.GetAssignedDungeonId(uId, out _);
+            // 미보유 유닛은 던전 파견 편성 목록에서 제외 (보유 유닛만 노출)
+            if (DungeonManager.Instance != null && !DungeonManager.Instance.IsUnitOwned(uId))
+            {
+                continue;
+            }
+
+            int power = DungeonManager.Instance != null ? DungeonManager.Instance.GetUnitCombatPower(uId) : 0;
+            string assignedDungeon = DungeonManager.Instance != null ? DungeonManager.Instance.GetAssignedDungeonId(uId, out _) : null;
 
             unitInfoList.Add((so, uId, power, assignedDungeon));
         }

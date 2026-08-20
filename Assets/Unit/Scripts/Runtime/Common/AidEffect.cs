@@ -77,6 +77,7 @@ namespace EndlessGuard.Unit.Runtime
             {
                 RingView view = activePulses[i];
 
+                // 유효한 이펙트 뷰에 대해서만 펄스 스텝 진행 (파괴된 경우 false 반환)
                 if (view != null && view.StepPulse(deltaTime))
                 {
                     continue;
@@ -84,13 +85,12 @@ namespace EndlessGuard.Unit.Runtime
 
                 activePulses.RemoveAt(i);
 
-                if (view == null)
+                // 유니티 엔진 상에서 부모 유닛과 함께 파괴되지 않고 정상 종료된 뷰만 풀에 반환
+                if (view != null && !view.IsDestroyed)
                 {
-                    continue;
+                    view.Hide();
+                    pulsePool.Push(view);
                 }
-
-                view.Hide();
-                pulsePool.Push(view);
             }
         }
 
@@ -348,6 +348,9 @@ namespace EndlessGuard.Unit.Runtime
             private Color color;
             private float elapsed;
 
+            // 유니티 엔진 상에서 오브젝트가 이미 파괴되었는지 여부를 확인하는 프로퍼티
+            public bool IsDestroyed => gameObject == null;
+
             public RingView(GameObject viewObject, LineRenderer lineRenderer)
             {
                 gameObject = viewObject;
@@ -357,6 +360,8 @@ namespace EndlessGuard.Unit.Runtime
 
             public void ShowPersistent(Transform parent, Color ringColor, float scale)
             {
+                if (IsDestroyed) return;
+
                 transform.SetParent(parent, false);
                 transform.localPosition = new Vector3(0f, 0.15f, 0f);
                 transform.localRotation = Quaternion.identity;
@@ -371,6 +376,8 @@ namespace EndlessGuard.Unit.Runtime
 
             public void PlayPulse(Transform parent, Color ringColor)
             {
+                if (IsDestroyed) return;
+
                 transform.SetParent(parent, false);
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
@@ -385,7 +392,8 @@ namespace EndlessGuard.Unit.Runtime
 
             public bool StepPulse(float deltaTime)
             {
-                if (!gameObject.activeSelf)
+                // 유니티 GameObject가 파괴되었거나 비활성 상태인 경우 접근하지 않고 안전하게 false 반환
+                if (IsDestroyed || !gameObject.activeSelf)
                 {
                     return false;
                 }
@@ -403,6 +411,12 @@ namespace EndlessGuard.Unit.Runtime
 
             public void Hide()
             {
+                // 이미 파괴된 오브젝트에 대한 접근 방어
+                if (IsDestroyed)
+                {
+                    return;
+                }
+
                 gameObject.SetActive(false);
                 transform.SetParent(runner != null ? runner.transform : null, false);
                 transform.localPosition = Vector3.zero;

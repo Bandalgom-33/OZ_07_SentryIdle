@@ -2273,7 +2273,7 @@ PrefabInstance:
     - target: {fileID: 7069521993219156377, guid: a506406e49ac73a4ca70cb4cc7344ae7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2034993286}
+      objectReference: {fileID: 0}
     - target: {fileID: 7069521993219156377, guid: a506406e49ac73a4ca70cb4cc7344ae7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -7278,7 +7278,12 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5161293210169227433, guid: 1e824550cd428d94c8874eb834b30da1, type: 3}
   m_PrefabInstance: {fileID: 4109834969028399030}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &933683823
+--- !u!224 &956478024 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5144046252546962283, guid: fe85b062690a5cd47935d3f3d35b7a8a, type: 3}
+  m_PrefabInstance: {fileID: 273963613}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &960565322
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7286,34 +7291,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 933683824}
+  - component: {fileID: 960565323}
   m_Layer: 0
-  m_Name: TileRoot
+  m_Name: ===========Manager============
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &933683824
+--- !u!4 &960565323
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 933683823}
+  m_GameObject: {fileID: 960565322}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -5037.7744, y: 0.00001, z: 437768.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2034993287}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!224 &956478024 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5144046252546962283, guid: fe85b062690a5cd47935d3f3d35b7a8a, type: 3}
-  m_PrefabInstance: {fileID: 273963613}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &975988615
 GameObject:
   m_ObjectHideFlags: 0
@@ -8955,6 +8955,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b6697ce6f538d249b499792039da91a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIUpgradeItemSlot
+--- !u!114 &1126358804 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4531074511007015688, guid: fe85b062690a5cd47935d3f3d35b7a8a, type: 3}
+  m_PrefabInstance: {fileID: 273963613}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1143539699
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9399,7 +9410,7 @@ MonoBehaviour:
   normalDeckCapacity: 10
   raid1DeckCapacity: 10
   raid2DeckCapacity: 10
-  normalDeckSlots: 0100000002000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  normalDeckSlots: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000
   raid1DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   raid2DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   normalDeckInspectorView:
@@ -9412,37 +9423,37 @@ MonoBehaviour:
     unitName: "\uB8E8\uCE74"
     isEquipped: 1
   - slotIndex: 3
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0003
+    unitName: "\uCE74\uC5D0\uB77C"
+    isEquipped: 1
   - slotIndex: 4
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0004
+    unitName: "\uAE40\uD558\uC9C4"
+    isEquipped: 1
   - slotIndex: 5
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0005
+    unitName: "\uBC1C\uB80C"
+    isEquipped: 1
   - slotIndex: 6
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0006
+    unitName: "\uC138\uB974\uCE74"
+    isEquipped: 1
   - slotIndex: 7
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0007
+    unitName: "\uB2C8\uC544"
+    isEquipped: 1
   - slotIndex: 8
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0008
+    unitName: "\uBAA8\uB9AC\uC544\uD2F0"
+    isEquipped: 1
   - slotIndex: 9
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0009
+    unitName: "\uCE74\uC778"
+    isEquipped: 1
   - slotIndex: 10
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
+    unitId: UNIT_0010
+    unitName: "\uBCA8\uB9AC\uCE74"
+    isEquipped: 1
   raid1DeckInspectorView:
   - slotIndex: 1
     unitId: '-'
@@ -10208,8 +10219,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c2e60385b8b2774ba2d12b077686a90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeUi
-  availableGoldText: {fileID: 0}
+  availableGoldText: {fileID: 1126358804}
   exitButton: {fileID: 5472141952068674938}
+  cheatGoldButton: {fileID: 1798730825}
+  cheatGoldAmount: 9000000000000000000
   upgradeSlots:
   - {fileID: 167476879}
   - {fileID: 649433017}
@@ -10228,6 +10241,37 @@ MonoBehaviour:
   - {fileID: 1222402556}
   - {fileID: 1655345409}
   - {fileID: 1934040860}
+--- !u!1 &1286297649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1286297650}
+  m_Layer: 0
+  m_Name: TileRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1286297650
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286297649}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1462219790}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1292109544
 GameObject:
   m_ObjectHideFlags: 0
@@ -11931,6 +11975,155 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
   m_PrefabInstance: {fileID: 2310369137556869734}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1462219783
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1462219790}
+  - component: {fileID: 1462219789}
+  - component: {fileID: 1462219788}
+  - component: {fileID: 1462219787}
+  - component: {fileID: 1462219786}
+  - component: {fileID: 1462219785}
+  - component: {fileID: 1462219784}
+  m_Layer: 0
+  m_Name: TestMapSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1462219784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a8c2ab0992b13e49ae47293b630f301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.TestBattle.TestBattleCoordinator
+  mapGenerator: {fileID: 1462219788}
+  unitSummonManager: {fileID: 1462219786}
+  waveManager: {fileID: 1462219785}
+  autoStartBattleOnStart: 1
+  enableDebugHotkeys: 1
+--- !u!114 &1462219785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccdf31c000a02014d932907bd0235f9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.TestBattle.TestWaveManager
+  mapGenerator: {fileID: 1462219788}
+  enemyCatalog: {fileID: 11400000, guid: 8f3bc95bb70d00e41a6886aee5f591dd, type: 2}
+  bossEnemyData: {fileID: 11400000, guid: f401d789bdf56954a94d764a4fc2f228, type: 2}
+  currentStage: 1
+  wavesPerStage: 5
+  enemiesPerWave: 3
+  spawnInterval: 1
+  waveInterval: 3
+  stageHpMultiplier: 0.25
+  waveHpMultiplier: 0.05
+  stageAttackMultiplier: 0.15
+  waveAttackMultiplier: 0.03
+  stageDefenseMultiplier: 0.1
+  airMonsterHeight: 2
+  waveClearWaveStone: 1
+  stageClearWaveStone: 5
+--- !u!114 &1462219786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ddf67b57bcd974da6c585c061ac80d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.TestBattle.TestUnitSummonManager
+  mapGenerator: {fileID: 1462219788}
+  unitCatalog: {fileID: 11400000, guid: 8009f11140c0429409c98b0cf3b3b803, type: 2}
+  maxFieldUnitCount: 10
+  initialSpawnCount: 4
+  ignoreDpCostForInitialSpawn: 1
+  autoSpawnEnabled: 1
+  autoSpawnInterval: 1
+  groundUnitHeight: 0
+  highGroundUnitHeight: 0.25
+--- !u!114 &1462219787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c46282be02c6ba479b0d7d8deca27dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridMapRenderer
+  tilePrefab: {fileID: 5665433859218404168, guid: b546099fbbe25b344b8eb3c7e723d024, type: 3}
+  tileSize: 1
+  tileRoot: {fileID: 1286297650}
+--- !u!114 &1462219788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78815af276a8a2d44a9c205ac73b9e18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.TestBattle.TestMapGenerator
+  width: 12
+  height: 8
+  mapRenderer: {fileID: 1462219787}
+  highGroundRatio: 0.25
+  minHighGroundNearPath: 4
+--- !u!114 &1462219789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f1db40ca68f7fe4486b8de538a5da0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.CombatLoop
+  isRunning: 1
+--- !u!4 &1462219790
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5037.7744, y: 0.00001, z: 437768.44}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1286297650}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1467797149 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
@@ -16675,116 +16868,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013453230}
   m_CullTransparentMesh: 1
---- !u!1 &2034993284
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2034993287}
-  - component: {fileID: 2034993286}
-  - component: {fileID: 2034993285}
-  - component: {fileID: 2034993288}
-  - component: {fileID: 2034993289}
-  m_Layer: 0
-  m_Name: MapSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2034993285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034993284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c46282be02c6ba479b0d7d8deca27dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GridMapRenderer
-  tilePrefab: {fileID: 5665433859218404168, guid: b546099fbbe25b344b8eb3c7e723d024, type: 3}
-  tileSize: 1
-  tileRoot: {fileID: 933683824}
---- !u!114 &2034993286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034993284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e20dfd610af5e24bb124e7e061528e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
-  width: 12
-  height: 8
-  mapRenderer: {fileID: 2034993285}
-  enemyData: {fileID: 11400000, guid: 2b7e23d199b4acd4e818bb566798e3b0, type: 2}
-  airHeight: 2
-  meleeUnitPrefab: {fileID: 3732451057153881359, guid: 727fca4c3cb4c4b44904dd245ffb2f35, type: 3}
-  rangedUnitPrefab: {fileID: 5707405784260888266, guid: 3614af83f8fe11741a0fe8326a489375, type: 3}
-  meleeUnitHeight: 0
-  rangedUnitHeight: 0.25
-  enemyCountPerPath: 3
-  enemySpawnInterval: 1
---- !u!4 &2034993287
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034993284}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 66, y: 1.72199, z: -40}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 933683824}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2034993288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034993284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f1db40ca68f7fe4486b8de538a5da0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.CombatLoop
-  isRunning: 1
---- !u!114 &2034993289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034993284}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14afe4625ac2bd74faebc71d3bd3dc65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Map.MapUnitSummonManager
-  mapGenerator: {fileID: 2034993286}
-  meleeUnitPrefab: {fileID: 3732451057153881359, guid: 727fca4c3cb4c4b44904dd245ffb2f35, type: 3}
-  rangedUnitPrefab: {fileID: 5707405784260888266, guid: 3614af83f8fe11741a0fe8326a489375, type: 3}
-  meleeUnitHeight: 0
-  rangedUnitHeight: 0.25
-  maxFieldUnitCount: 10
-  initialSpawnCount: 4
-  ignoreDpCostForInitialSpawn: 1
-  defaultUnitSpawnCost: 10
-  autoSpawnEnabled: 1
-  autoSpawnCheckInterval: 1
 --- !u!1001 &2052395735
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19593,16 +19676,17 @@ SceneRoots:
   - {fileID: 975988618}
   - {fileID: 192387502}
   - {fileID: 1409334117}
-  - {fileID: 632057954}
-  - {fileID: 1811075404}
-  - {fileID: 209013665}
   - {fileID: 349623045}
-  - {fileID: 1371897625}
   - {fileID: 1160144406}
-  - {fileID: 2034993287}
   - {fileID: 1093859337}
+  - {fileID: 960565323}
   - {fileID: 457107914}
   - {fileID: 1831558288}
   - {fileID: 1172856399}
   - {fileID: 1352158773}
   - {fileID: 710506055}
+  - {fileID: 1371897625}
+  - {fileID: 209013665}
+  - {fileID: 1811075404}
+  - {fileID: 632057954}
+  - {fileID: 1462219790}

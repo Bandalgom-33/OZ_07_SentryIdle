@@ -81,6 +81,9 @@ public class InGameUI : MonoBehaviour
         CurrencyManager.OnDpCostChange += UpdateDpCostUI;
         CurrencyManager.OnDpCostSliderChange += UpdateDpRegenSlider;
         GameManager.OnLifeChanged += UpdateLifeUI;
+
+        // 스테이지 및 웨이브 변경 이벤트 구독
+        EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
     }
 
     // 이벤트 구독 해제 연산
@@ -91,6 +94,14 @@ public class InGameUI : MonoBehaviour
         CurrencyManager.OnDpCostChange -= UpdateDpCostUI;
         CurrencyManager.OnDpCostSliderChange -= UpdateDpRegenSlider;
         GameManager.OnLifeChanged -= UpdateLifeUI;
+
+        EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
+    }
+
+    // 스테이지 및 웨이브 변경 이벤트 핸들러 (5웨이브 기준 표시)
+    private void OnStageWaveChanged(StageWaveChangedEvent evt)
+    {
+        UpdateStageWaveUI(evt.stageNumber, evt.waveNumber, 5);
     }
 
     #endregion
