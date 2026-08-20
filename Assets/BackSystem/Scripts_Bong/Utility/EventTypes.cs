@@ -8,9 +8,10 @@ public enum CurrencyType
     Gold,
     Diamond,
     DpCost,
-    WaveStone,
-    StageStone,
-    RaidStone
+    WaveStone,     // 일반 스테이지 및 웨이브 클리어 마석
+    DungeonStone,  // 던전 파견 생산 마석 (기존 StageStone 개편)
+    StageStone = DungeonStone, // 기존 코드 호환성용 별칭
+    RaidStone      // 레이드 콘텐츠 마석
 }
 
 #region 게임 상태 및 세팅 이벤트
@@ -77,6 +78,7 @@ public enum CurrencyType
 
 #region 스테이지 및 디펜스 전투 이벤트
 
+    // 스테이지 및 웨이브 변경 알림 이벤트
     public readonly struct StageWaveChangedEvent
     {
         public readonly int stageNumber;
@@ -87,6 +89,50 @@ public enum CurrencyType
         {
             this.stageNumber = stageNumber;
             this.waveNumber = waveNumber;
+        }
+    }
+
+    // 웨이브 클리어 시 발행되는 이벤트 (웨이브 마석 보상 포함)
+    public readonly struct WaveClearedEvent
+    {
+        public readonly int stageNumber;
+        public readonly int waveNumber;
+        public readonly int rewardWaveStone;
+
+        // 웨이브 클리어 이벤트 생성자
+        public WaveClearedEvent(int stageNumber, int waveNumber, int rewardWaveStone)
+        {
+            this.stageNumber = stageNumber;
+            this.waveNumber = waveNumber;
+            this.rewardWaveStone = rewardWaveStone;
+        }
+    }
+
+    // 스테이지(전체 웨이브 완료) 클리어 시 발행되는 이벤트 (웨이브 마석 보상 포함)
+    public readonly struct StageClearedEvent
+    {
+        public readonly int stageNumber;
+        public readonly int rewardWaveStone;
+
+        // 스테이지 클리어 이벤트 생성자
+        public StageClearedEvent(int stageNumber, int rewardWaveStone)
+        {
+            this.stageNumber = stageNumber;
+            this.rewardWaveStone = rewardWaveStone;
+        }
+    }
+
+    // 아군 유닛의 필드 소환/사망(퇴각) 상태 변경 알림 이벤트 (HUD 덱 슬롯 명암 처리용)
+    public readonly struct UnitFieldSpawnStateChangedEvent
+    {
+        public readonly string unitKey;   // 예: "UNIT_0001"
+        public readonly bool isSpawned;   // true: 필드 배치 중, false: 사망 또는 미배치
+
+        // 유닛 필드 소환 상태 변경 이벤트 생성자
+        public UnitFieldSpawnStateChangedEvent(string unitKey, bool isSpawned)
+        {
+            this.unitKey = unitKey ?? string.Empty;
+            this.isSpawned = isSpawned;
         }
     }
 
