@@ -1,4 +1,6 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using EndlessGuard.Unit.Runtime;
 using UnityEngine;
 
 public enum GameState
@@ -10,10 +12,12 @@ public enum GameState
     GameOver
 }
 
+// 게임 전체 상태(Title, InGame, Pause, GameOver), 플레이어 라이프 및 게임 배속을 제어하는 싱글톤 매니저
 public class GameManager : SingletonBase<GameManager>
 {
     #region 참조 및 변수
 
+    [Header("--- 팝업 UI 참조 ---")]
     [Tooltip("옵션/환경설정 팝업 패널 오브젝트")]
     [SerializeField] private GameObject optionPanel;
 
@@ -27,10 +31,12 @@ public class GameManager : SingletonBase<GameManager>
     private bool _optionPanelActive;
     private InGameUI _inGameUI;
     private int _currentSpeedIndex = 1;
+    private GameState _currentState;
 
     public int CurrentLife => currentLife;
     public int MaxLife => maxLife;
     public int CurrentSpeedIndex => _currentSpeedIndex;
+    public GameState CurrentState => _currentState;
 
     public static event Action<int, int> OnLifeChanged;
 
@@ -47,23 +53,23 @@ public class GameManager : SingletonBase<GameManager>
         _inGameUI = FindFirstObjectByType<InGameUI>();
         currentLife = maxLife;
 
-        // 덱 및 경험치 관리 매니저 인스턴스 사전 활성화
         _ = DeckManager.Instance;
         _ = ExperienceManager.Instance;
+        _ = CollectionDataProvider.Instance;
     }
 
     // 이벤트 버스 및 시스템 이벤트 구독
     private void OnEnable()
     {
         InGameUI.OnGameSpeedChange += SetGameSpeed;
-        EndlessGuard.Unit.Runtime.CombatEvents.OnEnemyReachedGoal += HandleEnemyReachedGoal;
+        CombatEvents.OnEnemyReachedGoal += HandleEnemyReachedGoal;
     }
 
-    // 이벤트 구독 해제 연산
+    // 이벤트 구독 해제
     private void OnDisable()
     {
         InGameUI.OnGameSpeedChange -= SetGameSpeed;
-        EndlessGuard.Unit.Runtime.CombatEvents.OnEnemyReachedGoal -= HandleEnemyReachedGoal;
+        CombatEvents.OnEnemyReachedGoal -= HandleEnemyReachedGoal;
     }
 
     // 라이프 UI 초기 표시 연산
@@ -76,13 +82,13 @@ public class GameManager : SingletonBase<GameManager>
 
     #region 라이프 및 적 도달 처리
 
-    // 적 목표 지점 도달 처리
-    private void HandleEnemyReachedGoal(EndlessGuard.Unit.Runtime.EnemyReachedGoalInfo info)
+    // 적 목표 지점 도달 시 라이프 차감 및 적 제거 처리
+    private void HandleEnemyReachedGoal(EnemyReachedGoalInfo info)
     {
         DecreaseLife(1);
 
-        EndlessGuard.Unit.Runtime.EnemyRuntimeState targetEnemy = null;
-        foreach (var enemy in EndlessGuard.Unit.Runtime.SpawnedEnemyManager.Instance.ActiveEnemies)
+        EnemyRuntimeState targetEnemy = null;
+        foreach (var enemy in SpawnedEnemyManager.Instance.ActiveEnemies)
         {
             if (enemy != null && enemy.RuntimeId == info.RuntimeId)
             {
@@ -93,17 +99,17 @@ public class GameManager : SingletonBase<GameManager>
 
         if (targetEnemy != null)
         {
-            EndlessGuard.Unit.Runtime.SpawnedEnemyManager.Instance.UnregisterEnemy(targetEnemy);
+            SpawnedEnemyManager.Instance.UnregisterEnemy(targetEnemy);
             Destroy(targetEnemy.gameObject);
         }
         else
         {
-            var activeEnemies = new System.Collections.Generic.List<EndlessGuard.Unit.Runtime.EnemyRuntimeState>(EndlessGuard.Unit.Runtime.SpawnedEnemyManager.Instance.ActiveEnemies);
+            var activeEnemies = new List<EnemyRuntimeState>(SpawnedEnemyManager.Instance.ActiveEnemies);
             foreach (var enemy in activeEnemies)
             {
                 if (enemy != null && Vector3.Distance(enemy.transform.position, info.Position) < 0.5f)
                 {
-                    EndlessGuard.Unit.Runtime.SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
+                    SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
                     Destroy(enemy.gameObject);
                     break;
                 }
@@ -146,10 +152,6 @@ public class GameManager : SingletonBase<GameManager>
 
     #region 외부 노출 메서드
 
-    private GameState _currentState;
-
-    public GameState CurrentState => _currentState;
-
     // 게임 상태 전환 연산
     public void ChangeState(GameState newState)
     {
@@ -159,7 +161,6 @@ public class GameManager : SingletonBase<GameManager>
         switch (newState)
         {
             case GameState.Title:
-                break;
             case GameState.Tutorial:
                 break;
             case GameState.InGame:
@@ -204,33 +205,26 @@ public class GameManager : SingletonBase<GameManager>
     // 게임 속도 설정 및 배속 변경
     public void SetGameSpeed(int index)
     {
-        Debug.Log(index);
         if (index > 0)
         {
             _currentSpeedIndex = index;
         }
 
-        switch (index)
+        Time.timeScale = index switch
         {
-            case 0:
-                Time.timeScale = 0;
-                break;
-            case 1:
-                Time.timeScale = 1;
-                break;
-            case 2:
-                Time.timeScale = 2;
-                break;
-            case 3:
-                Time.timeScale = 3;
-                break;
-        }
+            0 => 0f,
+            1 => 1f,
+            2 => 2f,
+            3 => 3f,
+            _ => 1f
+        };
+
         EventBus.Publish(new GameSpeedChangedEvent(index, Time.timeScale));
     }
 
     #endregion
 
-    #region 내부 메서드 모음
+    #region 내부 메서드
 
     // 게임 일시 정지 처리
     private void PauseGame()

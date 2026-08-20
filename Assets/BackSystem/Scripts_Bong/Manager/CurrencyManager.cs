@@ -1,13 +1,14 @@
-using System;
+﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
+// 골드, 다이아, DP 코스트, 마석 등 게임 내 재화의 보유량 관리, 획득/소모 및 자동 회복을 총괄하는 싱글톤 매니저
 public class CurrencyManager : SingletonBase<CurrencyManager>
 {
-#region 노출 변수 모음
-    
-    [Header("재화 베이스 정보")]
+    #region 노출 변수 모음
+
+    [Header("--- 기본 보유 재화 설정 ---")]
     [Tooltip("기본 생성/초기 보유 골드 수량")]
     [SerializeField] private long baseGold = 10;
 
@@ -15,7 +16,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     [SerializeField] private long baseDiamond = 3;
 
     [Tooltip("기본 생성/초기 보유 DP 코스트 수량")]
-    [SerializeField] private int baseDpCost = 0;
+    [SerializeField] private int baseDpCost = 30;
 
     [Tooltip("골드 고정 보너스 획득량")]
     [SerializeField] private long goldBonus = 0;
@@ -35,7 +36,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     [Tooltip("DP 코스트 1 회복에 소요되는 시간(초)")]
     [SerializeField] private float dpCostRegenTime = 1.0f;
 
-    [Space(5f), Header("업그레이드 세팅 값")]
+    [Space(5f), Header("--- 업그레이드 수치 설정 ---")]
     [Tooltip("골드 보너스 1레벨당 증가 수량")]
     [SerializeField] private int goldBonusIncrease = 10;
 
@@ -53,17 +54,18 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
     [Tooltip("최대 DP 상한 1레벨당 증가 수량")]
     [SerializeField] private int maxDpCostIncrease = 10;
-    
-#endregion
 
-#region 프로퍼티
-    
+    #endregion
+
+    #region 프로퍼티
+
     public long Gold { get; private set; }
     public long Diamond { get; private set; }
     public int DpCost { get; private set; }
     public int MaxDpCost { get; private set; } = 100;
     public long WaveStone { get; private set; }
-    public long StageStone { get; private set; }
+    public long DungeonStone { get; private set; }
+    public long StageStone => DungeonStone;
     public long RaidStone { get; private set; }
 
     // 골드 보유 여부 검증
@@ -78,8 +80,9 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 웨이브 마석 보유 여부 검증
     public bool HasWaveStone(long amount) => WaveStone >= amount;
 
-    // 스테이지 마석 보유 여부 검증
+    // 던전(스테이지) 마석 보유 여부 검증
     public bool HasStageStone(long amount) => StageStone >= amount;
+    public bool HasDungeonStone(long amount) => DungeonStone >= amount;
 
     // 레이드 마석 보유 여부 검증
     public bool HasRaidStone(long amount) => RaidStone >= amount;
@@ -93,36 +96,36 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             CurrencyType.Diamond => HasDiamond(amount),
             CurrencyType.DpCost => HasDpCost((int)amount),
             CurrencyType.WaveStone => HasWaveStone(amount),
-            CurrencyType.StageStone => HasStageStone(amount),
+            CurrencyType.DungeonStone => HasDungeonStone(amount),
             CurrencyType.RaidStone => HasRaidStone(amount),
             _ => false
         };
     }
 
-#endregion
+    #endregion
 
-#region 비공개 변수 모음
-    
+    #region 비공개 필드
+
     private bool _isPaused = false;
     private float _currentRegenTime;
-    
-#endregion
 
-#region 이벤트
+    #endregion
+
+    #region 이벤트
 
     public static event Action<long> OnGoldChange;
     public static event Action<long> OnDiamondChange;
     public static event Action<int> OnDpCostChange;
-    public static event Action<float> OnDpCostSliderChange; 
+    public static event Action<float> OnDpCostSliderChange;
     public static event Action<long> OnWaveStoneChange;
     public static event Action<long> OnStageStoneChange;
     public static event Action<long> OnRaidStoneChange;
 
-#endregion
+    #endregion
 
-#region 라이프 사이클
+    #region 라이프 사이클
 
-    // 이벤트 버스 구독 연산
+    // 이벤트 버스 구독 등록
     private void OnEnable()
     {
         EventBus.Subscribe<GameSpeedChangedEvent>(GameSpeedChange);
@@ -132,14 +135,14 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
     }
 
-    // DP 회복 루프 시작 연산
+    // DP 회복 루프 시작
     private void Start()
     {
         _currentRegenTime = dpCostRegenTime;
         RegenDpCost(this.GetCancellationTokenOnDestroy()).Forget();
     }
 
-    // 이벤트 버스 구독 해제 연산
+    // 이벤트 버스 구독 해제
     private void OnDisable()
     {
         EventBus.Unsubscribe<GameSpeedChangedEvent>(GameSpeedChange);
@@ -158,9 +161,9 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         }
     }
 
-#endregion
+    #endregion
 
-#region 재화 획득 및 차감 메서드
+    #region 재화 획득 및 차감 메서드
 
     // 통합 재화 수급 처리
     public void AddCurrency(CurrencyType type, long amount, bool applyModifiers = true)
@@ -179,8 +182,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             case CurrencyType.WaveStone:
                 GetWaveStone(amount);
                 break;
-            case CurrencyType.StageStone:
-                GetStageStone(amount);
+            case CurrencyType.DungeonStone:
+                GetDungeonStone(amount);
                 break;
             case CurrencyType.RaidStone:
                 GetRaidStone(amount);
@@ -201,13 +204,6 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         Gold += finalGold;
         OnGoldChange?.Invoke(Gold);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Gold, Gold, finalGold));
-        Debug.Log("Gold: " + finalGold);
-    }
-
-    // 골드 획득 테스트 연산
-    public void TestGetGold()
-    {
-        GetGold(1000000000000000, applyModifiers: false);
     }
 
     // 골드 소모 연산
@@ -277,7 +273,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         return true;
     }
 
-    // DP 코스트 설정 연산
+    // DP 코스트 직접 설정 연산
     public void SetDpCost(int dpCost)
     {
         DpCost = Mathf.Clamp(dpCost, 0, MaxDpCost);
@@ -311,23 +307,27 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         return true;
     }
 
-    // 스테이지 마석 획득 연산
-    public void GetStageStone(long amount)
+    // 던전 마석 획득 연산
+    public void GetDungeonStone(long amount)
     {
-        StageStone += amount;
-        OnStageStoneChange?.Invoke(StageStone);
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.StageStone, StageStone, amount));
+        DungeonStone += amount;
+        OnStageStoneChange?.Invoke(DungeonStone);
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, amount));
     }
 
-    // 스테이지 마석 소모 연산
-    public bool TrySpendStageStone(long amount)
+    public void GetStageStone(long amount) => GetDungeonStone(amount);
+
+    // 던전 마석 소모 연산
+    public bool TrySpendDungeonStone(long amount)
     {
-        if (StageStone < amount) return false;
-        StageStone -= amount;
-        OnStageStoneChange?.Invoke(StageStone);
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.StageStone, StageStone, -amount));
+        if (DungeonStone < amount) return false;
+        DungeonStone -= amount;
+        OnStageStoneChange?.Invoke(DungeonStone);
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, -amount));
         return true;
     }
+
+    public bool TrySpendStageStone(long amount) => TrySpendDungeonStone(amount);
 
     // 레이드 마석 획득 연산
     public void GetRaidStone(long amount)
@@ -356,35 +356,35 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             CurrencyType.Diamond => TrySpendDiamond(amount),
             CurrencyType.DpCost => TrySpendDpCost((int)amount),
             CurrencyType.WaveStone => TrySpendWaveStone(amount),
-            CurrencyType.StageStone => TrySpendStageStone(amount),
+            CurrencyType.DungeonStone => TrySpendDungeonStone(amount),
             CurrencyType.RaidStone => TrySpendRaidStone(amount),
             _ => false
         };
     }
-    
-#endregion
 
-#region 재화 관련 업그레이드 메서드
+    #endregion
 
-    // 골드 보너스 업그레이드 연산
+    #region 재화 관련 업그레이드 메서드
+
+    // 골드 보너스 수치 업그레이드 연산
     public void GoldBonusUpgrade(int level)
     {
         goldBonus = level * goldBonusIncrease;
     }
 
-    // 골드 배율 업그레이드 연산
+    // 골드 획득 배율 업그레이드 연산
     public void GoldMagnificationUpgrade(int level)
     {
         goldMagnification = 1.0f + (level * goldMagnificationIncrease);
     }
 
-    // 다이아 보너스 업그레이드 연산
+    // 다이아 보너스 수치 업그레이드 연산
     public void DiamondBonusUpgrade(int level)
     {
         diamondBonus = level * diamondBonusIncrease;
     }
 
-    // 다이아 배율 업그레이드 연산
+    // 다이아 획득 배율 업그레이드 연산
     public void DiamondMagnificationUpgrade(int level)
     {
         diamondMagnification = 1.0f + (level * diamondMagnificationIncrease);
@@ -396,7 +396,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         dpCostBonus = level * dpCostBonusIncrease;
     }
 
-    // 최대 DP 코스트 업그레이드 연산
+    // 최대 DP 상한 업그레이드 연산
     public void MaxDpCostUpgrade(int level)
     {
         MaxDpCost = 100 + (level * maxDpCostIncrease);
@@ -407,11 +407,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         }
     }
 
-#endregion
+    #endregion
 
-#region 계산 메서드
+    #region 계산 및 회복 루프
 
-    // 게임 속도 변경 처리
+    // 게임 배속 변경 처리
     private void GameSpeedChange(GameSpeedChangedEvent evt)
     {
         if (evt.timeScale == 0)
@@ -424,8 +424,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             _currentRegenTime = dpCostRegenTime / evt.timeScale;
         }
     }
-    
-    // DP 코스트 자동 회복 연산
+
+    // DP 코스트 자동 회복 비동기 루프 연산
     private async UniTaskVoid RegenDpCost(CancellationToken token)
     {
         float timer = 0;
@@ -448,14 +448,38 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
-     
-#endregion
 
-#region 재화 저장 관리
+    #endregion
 
-    // 세이브 데이터 저장 연산
+    #region 재화 저장 및 브로드캐스트
+
+    // 전체 재화 UI 액션 및 이벤트 일괄 브로드캐스트 헬퍼
+    private void BroadcastAllCurrencies()
+    {
+        OnGoldChange?.Invoke(Gold);
+        OnDiamondChange?.Invoke(Diamond);
+        OnDpCostChange?.Invoke(DpCost);
+        OnWaveStoneChange?.Invoke(WaveStone);
+        OnStageStoneChange?.Invoke(DungeonStone);
+        OnRaidStoneChange?.Invoke(RaidStone);
+
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Gold, Gold, 0));
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Diamond, Diamond, 0));
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DpCost, DpCost, 0));
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.WaveStone, WaveStone, 0));
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, 0));
+        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.RaidStone, RaidStone, 0));
+    }
+
+    // 세이브 데이터 저장 처리
     private void OnSave(DataSaveEvent evt)
     {
+        if (evt.saveData == null) return;
+        if (evt.saveData.currency == null)
+        {
+            evt.saveData.currency = new CurrencyData();
+        }
+
         evt.saveData.currency.gold = Gold;
         evt.saveData.currency.diamond = Diamond;
         evt.saveData.currency.waveStone = WaveStone;
@@ -463,57 +487,33 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         evt.saveData.currency.raidStone = RaidStone;
     }
 
-    // 세이브 데이터 로드 연산
+    // 세이브 데이터 로드 처리
     private void OnLoad(DataLoadEvent evt)
     {
+        if (evt.saveData == null || evt.saveData.currency == null) return;
+
         Gold = evt.saveData.currency.gold;
         Diamond = evt.saveData.currency.diamond;
         WaveStone = evt.saveData.currency.waveStone;
-        StageStone = evt.saveData.currency.stageStone;
+        DungeonStone = evt.saveData.currency.stageStone;
         RaidStone = evt.saveData.currency.raidStone;
-        DpCost = 5;
+        DpCost = baseDpCost;
 
-        OnGoldChange?.Invoke(Gold);
-        OnDiamondChange?.Invoke(Diamond);
-        OnDpCostChange?.Invoke(DpCost);
-        OnWaveStoneChange?.Invoke(WaveStone);
-        OnStageStoneChange?.Invoke(StageStone);
-        OnRaidStoneChange?.Invoke(RaidStone);
-
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Gold, Gold, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Diamond, Diamond, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DpCost, DpCost, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.WaveStone, WaveStone, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.StageStone, StageStone, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.RaidStone, RaidStone, 0));
+        BroadcastAllCurrencies();
     }
 
-    // 데이터 초기화 연산
+    // 데이터 초기화 처리
     private void OnReset(DataResetEvent evt)
     {
         Gold = baseGold;
         Diamond = baseDiamond;
         DpCost = baseDpCost;
         WaveStone = 0;
-        StageStone = 0;
+        DungeonStone = 0;
         RaidStone = 0;
 
-        OnGoldChange?.Invoke(Gold);
-        OnDiamondChange?.Invoke(Diamond);
-        OnDpCostChange?.Invoke(DpCost);
-        OnWaveStoneChange?.Invoke(WaveStone);
-        OnStageStoneChange?.Invoke(StageStone);
-        OnRaidStoneChange?.Invoke(RaidStone);
-
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Gold, Gold, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Diamond, Diamond, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DpCost, DpCost, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.WaveStone, WaveStone, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.StageStone, StageStone, 0));
-        EventBus.Publish(new CurrencyChangedEvent(CurrencyType.RaidStone, RaidStone, 0));
+        BroadcastAllCurrencies();
     }
 
-#endregion
+    #endregion
 }
-
-
