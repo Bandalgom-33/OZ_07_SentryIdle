@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -41,9 +41,9 @@ public class DeckManager : SingletonBase<DeckManager>
     [SerializeField] private int raid2DeckCapacity = 10;
 
     [Header("--- [Debug] 덱별 슬롯 편집 (유닛 정수 ID, -1: 빈 슬롯) ---")]
-    [Tooltip("일반 필드 덱 슬롯 배열 (1: 검사, 2: 궁수 등, -1: 미편성)")]
+    [Tooltip("일반 필드 덱 슬롯 배열 (1번: 루카 ID 2, 2번: 김하진 ID 4, -1: 미편성)")]
     [FormerlySerializedAs("deckSlots")]
-    [SerializeField] private int[] normalDeckSlots = new int[10] { 1, 2, -1, -1, -1, -1, -1, -1, -1, -1 };
+    [SerializeField] private int[] normalDeckSlots = new int[10] { 2, 4, -1, -1, -1, -1, -1, -1, -1, -1 };
 
     [Tooltip("레이드 1팀 덱 슬롯 배열")]
     [SerializeField] private int[] raid1DeckSlots = new int[10] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
@@ -82,7 +82,8 @@ public class DeckManager : SingletonBase<DeckManager>
     // 에디터 인스펙터 값 변경 시 배열 크기 동기화 및 뷰 갱신
     private void OnValidate()
     {
-        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 1, 2 });
+        // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 크기 조정
+        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
         AdjustDeckArraySize(ref raid1DeckSlots, raid1DeckCapacity, null);
         AdjustDeckArraySize(ref raid2DeckSlots, raid2DeckCapacity, null);
 
@@ -107,7 +108,8 @@ public class DeckManager : SingletonBase<DeckManager>
             unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
 
-        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 1, 2 });
+        // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 배열 초기화
+        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
         AdjustDeckArraySize(ref raid1DeckSlots, raid1DeckCapacity, null);
         AdjustDeckArraySize(ref raid2DeckSlots, raid2DeckCapacity, null);
 
@@ -151,7 +153,7 @@ public class DeckManager : SingletonBase<DeckManager>
         if (deckData.normalDeckSlots != null && deckData.normalDeckSlots.Length > 0)
         {
             normalDeckSlots = (int[])deckData.normalDeckSlots.Clone();
-            AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 1, 2 });
+            AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
             _deckSlotMap[DeckType.Normal] = (int[])normalDeckSlots.Clone();
         }
 
@@ -192,7 +194,8 @@ public class DeckManager : SingletonBase<DeckManager>
     // 데이터 리셋 시 기본 덱 구성으로 초기화
     private void OnReset(DataResetEvent evt)
     {
-        normalDeckSlots = CreateDefaultSlotArray(normalDeckCapacity, new int[] { 1, 2 });
+        // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)으로 기본 덱 복구
+        normalDeckSlots = CreateDefaultSlotArray(normalDeckCapacity, new int[] { 2, 4 });
         raid1DeckSlots = CreateDefaultSlotArray(raid1DeckCapacity, null);
         raid2DeckSlots = CreateDefaultSlotArray(raid2DeckCapacity, null);
 
@@ -594,7 +597,7 @@ public class DeckManager : SingletonBase<DeckManager>
         if (!_deckSlotMap.TryGetValue(deckType, out int[] slots) || slots == null)
         {
             int cap = GetDeckCapacity(deckType);
-            slots = CreateDefaultSlotArray(cap, deckType == DeckType.Normal ? new int[] { 1, 2 } : null);
+            slots = CreateDefaultSlotArray(cap, deckType == DeckType.Normal ? new int[] { 2, 4 } : null);
             _deckSlotMap[deckType] = slots;
         }
         return slots;
@@ -603,7 +606,7 @@ public class DeckManager : SingletonBase<DeckManager>
     // 직렬화 필드 값을 런타임 딕셔너리로 동기화
     private void SyncInternalMapFromSerializedFields()
     {
-        _deckSlotMap[DeckType.Normal] = normalDeckSlots != null ? (int[])normalDeckSlots.Clone() : CreateDefaultSlotArray(normalDeckCapacity, new int[] { 1, 2 });
+        _deckSlotMap[DeckType.Normal] = normalDeckSlots != null ? (int[])normalDeckSlots.Clone() : CreateDefaultSlotArray(normalDeckCapacity, new int[] { 2, 4 });
         _deckSlotMap[DeckType.Raid1] = raid1DeckSlots != null ? (int[])raid1DeckSlots.Clone() : CreateDefaultSlotArray(raid1DeckCapacity, null);
         _deckSlotMap[DeckType.Raid2] = raid2DeckSlots != null ? (int[])raid2DeckSlots.Clone() : CreateDefaultSlotArray(raid2DeckCapacity, null);
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -45,7 +45,7 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
 
     #region 라이프 사이클
 
-    // 카탈로그 리소스 초기화
+    // 카탈로그 리소스 초기화 및 기본 보유 유닛 설정
     protected override void Awake()
     {
         base.Awake();
@@ -58,6 +58,12 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
         if (portraitCatalog == null)
         {
             portraitCatalog = Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
+        }
+
+        // 세이브 데이터가 로드되기 전 기본 유닛(루카, 김하진)을 캐시에 초기화
+        if (_cachedOwnedUnits.Count == 0)
+        {
+            InitDefaultOwnedUnits();
         }
     }
 
@@ -118,9 +124,14 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
     private void OnLoad(DataLoadEvent evt)
     {
         _cachedOwnedUnits.Clear();
-        if (evt.saveData != null && evt.saveData.unitDeck != null && evt.saveData.unitDeck.ownedUnits != null)
+        if (evt.saveData != null && evt.saveData.unitDeck != null && evt.saveData.unitDeck.ownedUnits != null && evt.saveData.unitDeck.ownedUnits.Count > 0)
         {
             _cachedOwnedUnits.AddRange(evt.saveData.unitDeck.ownedUnits);
+        }
+        else
+        {
+            // 세이브 데이터에 보유 유닛이 비어있을 경우 기본 유닛(루카, 김하진) 자동 복원
+            InitDefaultOwnedUnits();
         }
     }
 
@@ -136,10 +147,36 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
         evt.saveData.unitDeck.ownedUnits = new List<UnitSaveData>(_cachedOwnedUnits);
     }
 
-    // 데이터 초기화 처리
+    // 데이터 초기화 처리 (초기화 시 기본 유닛인 루카와 김하진 재할당)
     private void OnReset(DataResetEvent evt)
     {
+        InitDefaultOwnedUnits();
+    }
+
+    // 기본 지급 유닛 초기화 헬퍼 (루카: ID 2 1성, 김하진: ID 4 2성, 0돌파)
+    private void InitDefaultOwnedUnits()
+    {
         _cachedOwnedUnits.Clear();
+
+        // 1성 뱅가드 루카 (UNIT_0002, 0돌파 기본 보유)
+        _cachedOwnedUnits.Add(new UnitSaveData
+        {
+            unitId = 2,
+            level = 1,
+            currentExp = 0L,
+            breakThroughStep = 0,
+            fragmentCount = 0
+        });
+
+        // 2성 가드 김하진 (UNIT_0004, 0돌파 기본 보유)
+        _cachedOwnedUnits.Add(new UnitSaveData
+        {
+            unitId = 4,
+            level = 1,
+            currentExp = 0L,
+            breakThroughStep = 0,
+            fragmentCount = 0
+        });
     }
 
     #endregion
