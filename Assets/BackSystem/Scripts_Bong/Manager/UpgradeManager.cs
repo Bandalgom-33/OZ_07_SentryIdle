@@ -1,17 +1,43 @@
-using System;
+﻿using System;
 using EndlessGuard.Unit.Data;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
 
+// 골드/다이아/DP 및 아군 공통 전투 스탯 업그레이드 수치 관리와 CommonGrowthService 연동을 총괄하는 싱글톤 매니저
 public class UpgradeManager : SingletonBase<UpgradeManager>
 {
+    #region 업그레이드 종류 열거형
+
+    private enum UpgradeType
+    {
+        GoldBonus = 0,
+        GoldMagnification = 1,
+        DiamondBonus = 2,
+        DiamondMagnification = 3,
+        DpCostBonus = 4,
+        MaxDpCost = 5,
+        PhysicalAttack = 6,
+        MagicalAttack = 7,
+        MaxHp = 8,
+        HpRegen = 9,
+        PhysicalDefense = 10,
+        MagicalDefense = 11,
+        AttackSpeed = 12,
+        Accuracy = 13,
+        Evasion = 14,
+        CriticalChance = 15,
+        CriticalDamage = 16
+    }
+
+    #endregion
+
     #region 노출 변수
 
-    [Header("구매 상한 설정")]
+    [Header("--- 구매 상한 설정 ---")]
     [Tooltip("1회 구매 가능한 최대 강화 횟수 제한 (기본 9999)")]
     [SerializeField] private int maxPurchaseLimit = 9999;
 
-    [Space(5f), Header("골드 업그레이드 설정 값")]
+    [Space(5f), Header("--- 골드 업그레이드 설정 값 ---")]
     [Tooltip("골드 보너스 1레벨 업그레이드 소모 비용")]
     [SerializeField] private int goldBonusUpgradeCost = 1000;
 
@@ -24,7 +50,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [Tooltip("골드 배율 레벨당 비용 증가 가중치 배율")]
     [SerializeField] private float goldMagnificationIncreaseMultiplier = 2.5f;
 
-    [Space(5f), Header("다이아 업그레이드 설정 값")]
+    [Space(5f), Header("--- 다이아 업그레이드 설정 값 ---")]
     [Tooltip("다이아 보너스 1레벨 업그레이드 소모 비용")]
     [SerializeField] private int diamondBonusUpgradeCost = 10;
 
@@ -37,7 +63,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [Tooltip("다이아 배율 레벨당 비용 증가 가중치 배율")]
     [SerializeField] private float diamondMagnificationIncreaseMultiplier = 2.5f;
 
-    [Space(5f), Header("소환 코스트 업그레이드 설정 값")]
+    [Space(5f), Header("--- 소환 코스트 업그레이드 설정 값 ---")]
     [Tooltip("DP 코스트 보너스 1레벨 업그레이드 소모 비용")]
     [SerializeField] private int dpCostBonusUpgradeCost = 5;
 
@@ -50,14 +76,14 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [Tooltip("최대 DP 상한 레벨당 비용 증가 가중치 배율")]
     [SerializeField] private float maxDpCostIncreaseMultiplier = 2.5f;
 
-    [Space(5f), Header("아군 공통 스탯 기본 비용")]
+    [Space(5f), Header("--- 아군 공통 스탯 기본 비용 ---")]
     [Tooltip("공통 스탯 1레벨 기본 소모 골드 비용")]
     [SerializeField] private long baseStatUpgradeCost = 500;
 
     [Tooltip("공통 스탯 레벨당 비용 증가 배율")]
     [SerializeField] private float statCostMultiplier = 1.3f;
 
-    [Space(5f), Header("공통 스탯 1레벨당 수치 증가 세팅")]
+    [Space(5f), Header("--- 공통 스탯 1레벨당 수치 증가 세팅 ---")]
     [Tooltip("물리 공격력 1레벨당 수치 증가량")]
     [SerializeField] private float physicalAttackIncrease = 10f;
 
@@ -91,7 +117,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [Tooltip("치명타 피해량 1레벨당 수치 증가량 (%)")]
     [SerializeField] private float criticalDamageIncrease = 1.0f;
 
-    [Space(5f), Header("공통 스탯 최대 레벨 상한 설정 (0은 무제한)")]
+    [Space(5f), Header("--- 공통 스탯 최대 레벨 상한 설정 (0은 무제한) ---")]
     [Tooltip("공격 속도 최대 레벨 상한 (0은 무제한)")]
     [SerializeField] private int attackSpeedMaxLevel = 100;
 
@@ -145,7 +171,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         EventBus.Subscribe<DataResetEvent>(OnReset);
     }
 
-    // 이벤트 구독 해제 연산
+    // 이벤트 구독 해제
     private void OnDisable()
     {
         UpgradeUi.OnCurrencyUpgrade -= SelectUpgrade;
@@ -161,11 +187,11 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     // 업그레이드 타입별 최대 레벨 상한 조회
     public int GetMaxLevelByType(int type)
     {
-        return type switch
+        return (UpgradeType)type switch
         {
-            12 => attackSpeedMaxLevel,
-            15 => criticalChanceMaxLevel,
-            16 => criticalDamageMaxLevel,
+            UpgradeType.AttackSpeed => attackSpeedMaxLevel,
+            UpgradeType.CriticalChance => criticalChanceMaxLevel,
+            UpgradeType.CriticalDamage => criticalDamageMaxLevel,
             _ => 0
         };
     }
@@ -176,34 +202,34 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         int maxLvl = GetMaxLevelByType(type);
         if (maxLvl > 0 && level >= maxLvl)
         {
-            return type switch
+            return (UpgradeType)type switch
             {
-                12 => $"+{level * attackSpeedIncrease:F2} (MAX)",
-                15 => $"+{level * criticalChanceIncrease:F1}% (MAX)",
-                16 => $"+{level * criticalDamageIncrease:F1}% (MAX)",
-                _ => $"MAX"
+                UpgradeType.AttackSpeed => $"+{level * attackSpeedIncrease:F2} (MAX)",
+                UpgradeType.CriticalChance => $"+{level * criticalChanceIncrease:F1}% (MAX)",
+                UpgradeType.CriticalDamage => $"+{level * criticalDamageIncrease:F1}% (MAX)",
+                _ => "MAX"
             };
         }
 
-        return type switch
+        return (UpgradeType)type switch
         {
-            0 => $"+{level * 10}",
-            1 => $"x{1.0f + (level * 0.1f):F1} (+{level * 10}%)",
-            2 => $"+{level * 3}",
-            3 => $"x{1.0f + (level * 0.1f):F1} (+{level * 10}%)",
-            4 => $"+{level * 1} DP",
-            5 => $"Max DP {100 + (level * 10)}",
-            6 => $"+{level * physicalAttackIncrease:N0}",
-            7 => $"+{level * magicalAttackIncrease:N0}",
-            8 => $"+{level * maxHpIncrease:N0}",
-            9 => $"+{level * hpRegenIncrease:F1}/sec",
-            10 => $"+{level * physicalDefenseIncrease:N0}",
-            11 => $"+{level * magicalDefenseIncrease:N0}",
-            12 => $"+{level * attackSpeedIncrease:F2}",
-            13 => $"+{level * accuracyIncrease:N0}",
-            14 => $"+{level * evasionIncrease:N0}",
-            15 => $"+{level * criticalChanceIncrease:F1}%",
-            16 => $"+{level * criticalDamageIncrease:F1}%",
+            UpgradeType.GoldBonus => $"+{level * 10}",
+            UpgradeType.GoldMagnification => $"x{1.0f + (level * 0.1f):F1} (+{level * 10}%)",
+            UpgradeType.DiamondBonus => $"+{level * 3}",
+            UpgradeType.DiamondMagnification => $"x{1.0f + (level * 0.1f):F1} (+{level * 10}%)",
+            UpgradeType.DpCostBonus => $"+{level * 1} DP",
+            UpgradeType.MaxDpCost => $"Max DP {100 + (level * 10)}",
+            UpgradeType.PhysicalAttack => $"+{level * physicalAttackIncrease:N0}",
+            UpgradeType.MagicalAttack => $"+{level * magicalAttackIncrease:N0}",
+            UpgradeType.MaxHp => $"+{level * maxHpIncrease:N0}",
+            UpgradeType.HpRegen => $"+{level * hpRegenIncrease:F1}/sec",
+            UpgradeType.PhysicalDefense => $"+{level * physicalDefenseIncrease:N0}",
+            UpgradeType.MagicalDefense => $"+{level * magicalDefenseIncrease:N0}",
+            UpgradeType.AttackSpeed => $"+{level * attackSpeedIncrease:F2}",
+            UpgradeType.Accuracy => $"+{level * accuracyIncrease:N0}",
+            UpgradeType.Evasion => $"+{level * evasionIncrease:N0}",
+            UpgradeType.CriticalChance => $"+{level * criticalChanceIncrease:F1}%",
+            UpgradeType.CriticalDamage => $"+{level * criticalDamageIncrease:F1}%",
             _ => $"+{level}"
         };
     }
@@ -230,7 +256,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
 
         for (int i = 0; i < targetCount; i++)
         {
-            totalCost += CalculateSingleStepCost(type, currentLevel + i);
+            totalCost += CalculateSingleStepCost((UpgradeType)type, currentLevel + i);
         }
 
         return totalCost;
@@ -254,7 +280,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         {
             if (maxLvl > 0 && currentLevel + count >= maxLvl) break;
 
-            double stepCost = CalculateSingleStepCost(type, currentLevel + count);
+            double stepCost = CalculateSingleStepCost((UpgradeType)type, currentLevel + count);
             if (accumulatedCost + stepCost > availableCurrency)
             {
                 break;
@@ -273,11 +299,11 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     {
         if (CurrencyManager.Instance == null) return 0;
 
-        return type switch
+        return (UpgradeType)type switch
         {
-            0 or 1 => CurrencyManager.Instance.Gold,
-            2 or 3 => CurrencyManager.Instance.Diamond,
-            4 or 5 => CurrencyManager.Instance.DpCost,
+            UpgradeType.GoldBonus or UpgradeType.GoldMagnification => CurrencyManager.Instance.Gold,
+            UpgradeType.DiamondBonus or UpgradeType.DiamondMagnification => CurrencyManager.Instance.Diamond,
+            UpgradeType.DpCostBonus or UpgradeType.MaxDpCost => CurrencyManager.Instance.DpCost,
             _ => CurrencyManager.Instance.Gold
         };
     }
@@ -285,40 +311,40 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     // 업그레이드 타입별 현재 레벨 조회
     public int GetLevelByType(int type)
     {
-        return type switch
+        return (UpgradeType)type switch
         {
-            0 => GoldBonusLevel,
-            1 => GoldMagnificationLevel,
-            2 => DiamondBonusLevel,
-            3 => DiamondMagnificationLevel,
-            4 => DpCostBonusLevel,
-            5 => MaxDpCostLevel,
-            6 => PhysicalAttackLevel,
-            7 => MagicalAttackLevel,
-            8 => MaxHpLevel,
-            9 => HpRegenLevel,
-            10 => PhysicalDefenseLevel,
-            11 => MagicalDefenseLevel,
-            12 => AttackSpeedLevel,
-            13 => AccuracyLevel,
-            14 => EvasionLevel,
-            15 => CriticalChanceLevel,
-            16 => CriticalDamageLevel,
+            UpgradeType.GoldBonus => GoldBonusLevel,
+            UpgradeType.GoldMagnification => GoldMagnificationLevel,
+            UpgradeType.DiamondBonus => DiamondBonusLevel,
+            UpgradeType.DiamondMagnification => DiamondMagnificationLevel,
+            UpgradeType.DpCostBonus => DpCostBonusLevel,
+            UpgradeType.MaxDpCost => MaxDpCostLevel,
+            UpgradeType.PhysicalAttack => PhysicalAttackLevel,
+            UpgradeType.MagicalAttack => MagicalAttackLevel,
+            UpgradeType.MaxHp => MaxHpLevel,
+            UpgradeType.HpRegen => HpRegenLevel,
+            UpgradeType.PhysicalDefense => PhysicalDefenseLevel,
+            UpgradeType.MagicalDefense => MagicalDefenseLevel,
+            UpgradeType.AttackSpeed => AttackSpeedLevel,
+            UpgradeType.Accuracy => AccuracyLevel,
+            UpgradeType.Evasion => EvasionLevel,
+            UpgradeType.CriticalChance => CriticalChanceLevel,
+            UpgradeType.CriticalDamage => CriticalDamageLevel,
             _ => 0
         };
     }
 
     // 단일 단계 소모 비용 연산
-    private double CalculateSingleStepCost(int type, int targetLevel)
+    private double CalculateSingleStepCost(UpgradeType type, int targetLevel)
     {
         return type switch
         {
-            0 => goldBonusUpgradeCost * Mathf.Pow(goldBonusIncreaseMultiplier, targetLevel),
-            1 => goldMagnificationUpgradeCost * Mathf.Pow(goldMagnificationIncreaseMultiplier, targetLevel),
-            2 => diamondBonusUpgradeCost * Mathf.Pow(diamondBonusIncreaseMultiplier, targetLevel),
-            3 => diamondMagnificationUpgradeCost * Mathf.Pow(diamondMagnificationIncreaseMultiplier, targetLevel),
-            4 => dpCostBonusUpgradeCost * Mathf.Pow(dpCostBonusIncreaseMultiplier, targetLevel),
-            5 => maxDpCostUpgradeCost * Mathf.Pow(maxDpCostIncreaseMultiplier, targetLevel),
+            UpgradeType.GoldBonus => goldBonusUpgradeCost * Mathf.Pow(goldBonusIncreaseMultiplier, targetLevel),
+            UpgradeType.GoldMagnification => goldMagnificationUpgradeCost * Mathf.Pow(goldMagnificationIncreaseMultiplier, targetLevel),
+            UpgradeType.DiamondBonus => diamondBonusUpgradeCost * Mathf.Pow(diamondBonusIncreaseMultiplier, targetLevel),
+            UpgradeType.DiamondMagnification => diamondMagnificationUpgradeCost * Mathf.Pow(diamondMagnificationIncreaseMultiplier, targetLevel),
+            UpgradeType.DpCostBonus => dpCostBonusUpgradeCost * Mathf.Pow(dpCostBonusIncreaseMultiplier, targetLevel),
+            UpgradeType.MaxDpCost => maxDpCostUpgradeCost * Mathf.Pow(maxDpCostIncreaseMultiplier, targetLevel),
             _ => baseStatUpgradeCost * Mathf.Pow(statCostMultiplier, targetLevel)
         };
     }
@@ -328,36 +354,29 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     #region 업그레이드 실행 및 CommonGrowthService 연동
 
     // 업그레이드 실행 요청 처리
-    private void SelectUpgrade(int type, int count)
+    private void SelectUpgrade(int typeInt, int count)
     {
+        UpgradeType type = (UpgradeType)typeInt;
         int actualCount = count;
 
         if (count == -1)
         {
-            long currentCurrency = GetAvailableCurrencyForType(type);
-            actualCount = GetMaxPurchasableCount(type, currentCurrency);
+            long currentCurrency = GetAvailableCurrencyForType(typeInt);
+            actualCount = GetMaxPurchasableCount(typeInt, currentCurrency);
             if (actualCount <= 0) return;
         }
 
-        int maxLvl = GetMaxLevelByType(type);
-        int currentLvl = GetLevelByType(type);
+        int maxLvl = GetMaxLevelByType(typeInt);
+        int currentLvl = GetLevelByType(typeInt);
         if (maxLvl > 0 && currentLvl + actualCount > maxLvl)
         {
             actualCount = maxLvl - currentLvl;
             if (actualCount <= 0) return;
         }
 
-        if (type <= 5)
+        if (typeInt <= 5)
         {
-            switch (type)
-            {
-                case 0: GoldBonusUpgrade(actualCount); break;
-                case 1: GoldMagnificationUpgrade(actualCount); break;
-                case 2: DiamondBonusUpgrade(actualCount); break;
-                case 3: DiamondMagnificationUpgrade(actualCount); break;
-                case 4: DpCostBonusUpgrade(actualCount); break;
-                case 5: MaxDpCostUpgrade(actualCount); break;
-            }
+            ExecuteCurrencyUpgrade(type, actualCount);
         }
         else
         {
@@ -365,121 +384,100 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         }
     }
 
-    // 골드 보너스 업그레이드 실행
-    private void GoldBonusUpgrade(int count)
+    // 재화 보너스/배율 업그레이드 실행
+    private void ExecuteCurrencyUpgrade(UpgradeType type, int count)
     {
-        if (ExecuteGoldUpgradeTransaction(0, count))
-        {
-            GoldBonusLevel += count;
-            CurrencyManager.Instance.GoldBonusUpgrade(GoldBonusLevel);
-            OnUpgradeCompleted?.Invoke();
-        }
-    }
+        double totalCost = GetUpgradeCost((int)type, count);
 
-    // 골드 배율 업그레이드 실행
-    private void GoldMagnificationUpgrade(int count)
-    {
-        if (ExecuteGoldUpgradeTransaction(1, count))
+        CurrencyType currencyType = type switch
         {
-            GoldMagnificationLevel += count;
-            CurrencyManager.Instance.GoldMagnificationUpgrade(GoldMagnificationLevel);
-            OnUpgradeCompleted?.Invoke();
-        }
-    }
+            UpgradeType.GoldBonus or UpgradeType.GoldMagnification => CurrencyType.Gold,
+            UpgradeType.DiamondBonus or UpgradeType.DiamondMagnification => CurrencyType.Diamond,
+            _ => CurrencyType.DpCost
+        };
 
-    // 다이아 보너스 업그레이드 실행
-    private void DiamondBonusUpgrade(int count)
-    {
-        if (ExecuteDiamondUpgradeTransaction(2, count))
-        {
-            DiamondBonusLevel += count;
-            CurrencyManager.Instance.DiamondBonusUpgrade(DiamondBonusLevel);
-            OnUpgradeCompleted?.Invoke();
-        }
-    }
+        if (!CurrencyManager.Instance.ConsumeCurrency(currencyType, (long)totalCost)) return;
 
-    // 다이아 배율 업그레이드 실행
-    private void DiamondMagnificationUpgrade(int count)
-    {
-        if (ExecuteDiamondUpgradeTransaction(3, count))
+        switch (type)
         {
-            DiamondMagnificationLevel += count;
-            CurrencyManager.Instance.DiamondMagnificationUpgrade(DiamondMagnificationLevel);
-            OnUpgradeCompleted?.Invoke();
+            case UpgradeType.GoldBonus:
+                GoldBonusLevel += count;
+                CurrencyManager.Instance.GoldBonusUpgrade(GoldBonusLevel);
+                break;
+            case UpgradeType.GoldMagnification:
+                GoldMagnificationLevel += count;
+                CurrencyManager.Instance.GoldMagnificationUpgrade(GoldMagnificationLevel);
+                break;
+            case UpgradeType.DiamondBonus:
+                DiamondBonusLevel += count;
+                CurrencyManager.Instance.DiamondBonusUpgrade(DiamondBonusLevel);
+                break;
+            case UpgradeType.DiamondMagnification:
+                DiamondMagnificationLevel += count;
+                CurrencyManager.Instance.DiamondMagnificationUpgrade(DiamondMagnificationLevel);
+                break;
+            case UpgradeType.DpCostBonus:
+                DpCostBonusLevel += count;
+                CurrencyManager.Instance.DpCostBonusUpgrade(DpCostBonusLevel);
+                break;
+            case UpgradeType.MaxDpCost:
+                MaxDpCostLevel += count;
+                CurrencyManager.Instance.MaxDpCostUpgrade(MaxDpCostLevel);
+                break;
         }
-    }
 
-    // DP 코스트 보너스 업그레이드 실행
-    private void DpCostBonusUpgrade(int count)
-    {
-        if (ExecuteDpCostUpgradeTransaction(4, count))
-        {
-            DpCostBonusLevel += count;
-            CurrencyManager.Instance.DpCostBonusUpgrade(DpCostBonusLevel);
-            OnUpgradeCompleted?.Invoke();
-        }
-    }
-
-    // 최대 DP 상한 업그레이드 실행
-    private void MaxDpCostUpgrade(int count)
-    {
-        if (ExecuteDpCostUpgradeTransaction(5, count))
-        {
-            MaxDpCostLevel += count;
-            CurrencyManager.Instance.MaxDpCostUpgrade(MaxDpCostLevel);
-            OnUpgradeCompleted?.Invoke();
-        }
+        OnUpgradeCompleted?.Invoke();
     }
 
     // 공통 스탯 업그레이드 연산 및 전파
-    private void ExecuteStatUpgrade(int type, int count)
+    private void ExecuteStatUpgrade(UpgradeType type, int count)
     {
-        double totalCost = GetUpgradeCost(type, count);
+        double totalCost = GetUpgradeCost((int)type, count);
         if (!CurrencyManager.Instance.TrySpendGold((long)totalCost)) return;
 
         switch (type)
         {
-            case 6:
+            case UpgradeType.PhysicalAttack:
                 PhysicalAttackLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.PhysicalAttack, PhysicalAttackLevel * physicalAttackIncrease);
                 break;
-            case 7:
+            case UpgradeType.MagicalAttack:
                 MagicalAttackLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.MagicalAttack, MagicalAttackLevel * magicalAttackIncrease);
                 break;
-            case 8:
+            case UpgradeType.MaxHp:
                 MaxHpLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.MaxHp, MaxHpLevel * maxHpIncrease);
                 break;
-            case 9:
+            case UpgradeType.HpRegen:
                 HpRegenLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.HpRegenPerSecond, HpRegenLevel * hpRegenIncrease);
                 break;
-            case 10:
+            case UpgradeType.PhysicalDefense:
                 PhysicalDefenseLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.PhysicalDefense, PhysicalDefenseLevel * physicalDefenseIncrease);
                 break;
-            case 11:
+            case UpgradeType.MagicalDefense:
                 MagicalDefenseLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.MagicalDefense, MagicalDefenseLevel * magicalDefenseIncrease);
                 break;
-            case 12:
+            case UpgradeType.AttackSpeed:
                 AttackSpeedLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.AttacksPerSecond, AttackSpeedLevel * attackSpeedIncrease);
                 break;
-            case 13:
+            case UpgradeType.Accuracy:
                 AccuracyLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.Accuracy, AccuracyLevel * accuracyIncrease);
                 break;
-            case 14:
+            case UpgradeType.Evasion:
                 EvasionLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.Evasion, EvasionLevel * evasionIncrease);
                 break;
-            case 15:
+            case UpgradeType.CriticalChance:
                 CriticalChanceLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.CriticalChancePercent, CriticalChanceLevel * criticalChanceIncrease);
                 break;
-            case 16:
+            case UpgradeType.CriticalDamage:
                 CriticalDamageLevel += count;
                 CommonGrowthService.Set(GrowthStatMask.CriticalDamageBonusPercent, CriticalDamageLevel * criticalDamageIncrease);
                 break;
@@ -488,25 +486,33 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         OnUpgradeCompleted?.Invoke();
     }
 
-    // 골드 소모 트랜잭션 처리
-    private bool ExecuteGoldUpgradeTransaction(int type, int count)
+    // 재화 업그레이드 값 일괄 적용 헬퍼
+    private void ApplyAllCurrencyUpgrades()
     {
-        double totalCost = GetUpgradeCost(type, count);
-        return CurrencyManager.Instance.TrySpendGold((long)totalCost);
+        if (CurrencyManager.Instance == null) return;
+
+        CurrencyManager.Instance.GoldBonusUpgrade(GoldBonusLevel);
+        CurrencyManager.Instance.GoldMagnificationUpgrade(GoldMagnificationLevel);
+        CurrencyManager.Instance.DiamondBonusUpgrade(DiamondBonusLevel);
+        CurrencyManager.Instance.DiamondMagnificationUpgrade(DiamondMagnificationLevel);
+        CurrencyManager.Instance.DpCostBonusUpgrade(DpCostBonusLevel);
+        CurrencyManager.Instance.MaxDpCostUpgrade(MaxDpCostLevel);
     }
 
-    // 다이아 소모 트랜잭션 처리
-    private bool ExecuteDiamondUpgradeTransaction(int type, int count)
+    // 공통 스탯 수치 일괄 반영 헬퍼
+    private void ApplyAllCommonGrowthStats()
     {
-        double totalCost = GetUpgradeCost(type, count);
-        return CurrencyManager.Instance.TrySpendDiamond((long)totalCost);
-    }
-
-    // DP 코스트 소모 트랜잭션 처리
-    private bool ExecuteDpCostUpgradeTransaction(int type, int count)
-    {
-        double totalCost = GetUpgradeCost(type, count);
-        return CurrencyManager.Instance.TrySpendDpCost((int)totalCost);
+        CommonGrowthService.Set(GrowthStatMask.PhysicalAttack, PhysicalAttackLevel * physicalAttackIncrease);
+        CommonGrowthService.Set(GrowthStatMask.MagicalAttack, MagicalAttackLevel * magicalAttackIncrease);
+        CommonGrowthService.Set(GrowthStatMask.MaxHp, MaxHpLevel * maxHpIncrease);
+        CommonGrowthService.Set(GrowthStatMask.HpRegenPerSecond, HpRegenLevel * hpRegenIncrease);
+        CommonGrowthService.Set(GrowthStatMask.PhysicalDefense, PhysicalDefenseLevel * physicalDefenseIncrease);
+        CommonGrowthService.Set(GrowthStatMask.MagicalDefense, MagicalDefenseLevel * magicalDefenseIncrease);
+        CommonGrowthService.Set(GrowthStatMask.AttacksPerSecond, AttackSpeedLevel * attackSpeedIncrease);
+        CommonGrowthService.Set(GrowthStatMask.Accuracy, AccuracyLevel * accuracyIncrease);
+        CommonGrowthService.Set(GrowthStatMask.Evasion, EvasionLevel * evasionIncrease);
+        CommonGrowthService.Set(GrowthStatMask.CriticalChancePercent, CriticalChanceLevel * criticalChanceIncrease);
+        CommonGrowthService.Set(GrowthStatMask.CriticalDamageBonusPercent, CriticalDamageLevel * criticalDamageIncrease);
     }
 
     #endregion
@@ -516,6 +522,12 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     // 세이브 데이터 저장 연산
     private void OnSave(DataSaveEvent evt)
     {
+        if (evt.saveData == null) return;
+        if (evt.saveData.statUpgrade == null)
+        {
+            evt.saveData.statUpgrade = new CurrencyUpgradeData();
+        }
+
         evt.saveData.statUpgrade.goldBonusLevel = GoldBonusLevel;
         evt.saveData.statUpgrade.goldMagnificationLevel = GoldMagnificationLevel;
         evt.saveData.statUpgrade.diamondBonusLevel = DiamondBonusLevel;
@@ -539,6 +551,8 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     // 세이브 데이터 로드 연산
     private void OnLoad(DataLoadEvent evt)
     {
+        if (evt.saveData == null || evt.saveData.statUpgrade == null) return;
+
         GoldBonusLevel = evt.saveData.statUpgrade.goldBonusLevel;
         GoldMagnificationLevel = evt.saveData.statUpgrade.goldMagnificationLevel;
         DiamondBonusLevel = evt.saveData.statUpgrade.diamondBonusLevel;
@@ -558,24 +572,8 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         CriticalChanceLevel = evt.saveData.statUpgrade.criticalChanceLevel;
         CriticalDamageLevel = evt.saveData.statUpgrade.criticalDamageLevel;
 
-        CurrencyManager.Instance.GoldBonusUpgrade(GoldBonusLevel);
-        CurrencyManager.Instance.GoldMagnificationUpgrade(GoldMagnificationLevel);
-        CurrencyManager.Instance.DiamondBonusUpgrade(DiamondBonusLevel);
-        CurrencyManager.Instance.DiamondMagnificationUpgrade(DiamondMagnificationLevel);
-        CurrencyManager.Instance.DpCostBonusUpgrade(DpCostBonusLevel);
-        CurrencyManager.Instance.MaxDpCostUpgrade(MaxDpCostLevel);
-
-        CommonGrowthService.Set(GrowthStatMask.PhysicalAttack, PhysicalAttackLevel * physicalAttackIncrease);
-        CommonGrowthService.Set(GrowthStatMask.MagicalAttack, MagicalAttackLevel * magicalAttackIncrease);
-        CommonGrowthService.Set(GrowthStatMask.MaxHp, MaxHpLevel * maxHpIncrease);
-        CommonGrowthService.Set(GrowthStatMask.HpRegenPerSecond, HpRegenLevel * hpRegenIncrease);
-        CommonGrowthService.Set(GrowthStatMask.PhysicalDefense, PhysicalDefenseLevel * physicalDefenseIncrease);
-        CommonGrowthService.Set(GrowthStatMask.MagicalDefense, MagicalDefenseLevel * magicalDefenseIncrease);
-        CommonGrowthService.Set(GrowthStatMask.AttacksPerSecond, AttackSpeedLevel * attackSpeedIncrease);
-        CommonGrowthService.Set(GrowthStatMask.Accuracy, AccuracyLevel * accuracyIncrease);
-        CommonGrowthService.Set(GrowthStatMask.Evasion, EvasionLevel * evasionIncrease);
-        CommonGrowthService.Set(GrowthStatMask.CriticalChancePercent, CriticalChanceLevel * criticalChanceIncrease);
-        CommonGrowthService.Set(GrowthStatMask.CriticalDamageBonusPercent, CriticalDamageLevel * criticalDamageIncrease);
+        ApplyAllCurrencyUpgrades();
+        ApplyAllCommonGrowthStats();
     }
 
     // 업그레이드 데이터 초기화 연산
@@ -600,13 +598,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         CriticalChanceLevel = 0;
         CriticalDamageLevel = 0;
 
-        CurrencyManager.Instance.GoldBonusUpgrade(0);
-        CurrencyManager.Instance.GoldMagnificationUpgrade(0);
-        CurrencyManager.Instance.DiamondBonusUpgrade(0);
-        CurrencyManager.Instance.DiamondMagnificationUpgrade(0);
-        CurrencyManager.Instance.DpCostBonusUpgrade(0);
-        CurrencyManager.Instance.MaxDpCostUpgrade(0);
-
+        ApplyAllCurrencyUpgrades();
         CommonGrowthService.Clear();
     }
 

@@ -18,8 +18,7 @@ public struct DeckSlotInspectorInfo
     public bool isEquipped;
 }
 
-// 일반 필드 덱 1개와 레이드 전용 덱 2개(총 3개)의 편성, 가변 슬롯 용량 관리,
-// EventBus 이벤트 발행/수신, 그리고 세이브/로드를 총괄하는 마스터 덱 매니저 클래스
+// 일반 필드 덱 1개와 레이드 전용 덱 2개(총 3개)의 슬롯 편성, 용량 관리 및 이벤트 발행을 총괄하는 덱 전담 매니저
 public class DeckManager : SingletonBase<DeckManager>
 {
     #region 직렬화 변수 (인스펙터 설정 및 모니터링)
@@ -42,9 +41,9 @@ public class DeckManager : SingletonBase<DeckManager>
     [SerializeField] private int raid2DeckCapacity = 10;
 
     [Header("--- [Debug] 덱별 슬롯 편집 (유닛 정수 ID, -1: 빈 슬롯) ---")]
-    [Tooltip("일반 필드 덱 슬롯 배열 (1: 검사, 2: 궁수 등, -1: 미편성)")]
+    [Tooltip("일반 필드 덱 슬롯 배열 (1번: 루카 ID 2, 2번: 김하진 ID 4, -1: 미편성)")]
     [FormerlySerializedAs("deckSlots")]
-    [SerializeField] private int[] normalDeckSlots = new int[10] { 1, 2, -1, -1, -1, -1, -1, -1, -1, -1 };
+    [SerializeField] private int[] normalDeckSlots = new int[10] { 2, 4, -1, -1, -1, -1, -1, -1, -1, -1 };
 
     [Tooltip("레이드 1팀 덱 슬롯 배열")]
     [SerializeField] private int[] raid1DeckSlots = new int[10] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
@@ -83,18 +82,14 @@ public class DeckManager : SingletonBase<DeckManager>
     // 에디터 인스펙터 값 변경 시 배열 크기 동기화 및 뷰 갱신
     private void OnValidate()
     {
-        // 1. 슬롯 용량(Capacity)에 맞춰 배열 크기 보정
-        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 1, 2 });
+        // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 크기 조정
+        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
         AdjustDeckArraySize(ref raid1DeckSlots, raid1DeckCapacity, null);
         AdjustDeckArraySize(ref raid2DeckSlots, raid2DeckCapacity, null);
 
-        // 2. 내부 런타임 딕셔너리 동기화
         SyncInternalMapFromSerializedFields();
-
-        // 3. 인스펙터 디버그 뷰 갱신
         RefreshAllInspectorViews();
 
-        // 4. 에디터 플레이 모드 중일 때 이벤트 발행
         if (Application.isPlaying)
         {
             PublishDeckChanged(DeckType.Normal);
@@ -108,33 +103,27 @@ public class DeckManager : SingletonBase<DeckManager>
     {
         base.Awake();
 
-        // 1. 카탈로그 리소스 미할당 시 자동 로드
         if (unitCatalog == null)
         {
             unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
 
-        // 2. 인스펙터 설정 크기에 맞춰 배열 안전 보정
-        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 1, 2 });
+        // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 배열 초기화
+        AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
         AdjustDeckArraySize(ref raid1DeckSlots, raid1DeckCapacity, null);
         AdjustDeckArraySize(ref raid2DeckSlots, raid2DeckCapacity, null);
 
-        // 3. 내부 런타임 딕셔너리 초기화
         SyncInternalMapFromSerializedFields();
-
-        // 4. 모니터링 뷰 초기화
         RefreshAllInspectorViews();
     }
 
-    // 전역 이벤트 버스 구독 등록 (세이브/로드 및 커맨드 요청 이벤트)
+    // 전역 이벤트 버스 구독 등록
     private void OnEnable()
     {
-        // 세이브 & 로드 이벤트 구독
         EventBus.Subscribe<DataLoadEvent>(OnLoad);
         EventBus.Subscribe<DataSaveEvent>(OnSave);
         EventBus.Subscribe<DataResetEvent>(OnReset);
 
-        // UI 등에서 전송하는 커맨드 요청 이벤트 구독 (Decoupled Command 처리)
         EventBus.Subscribe<RequestSetDeckSlotEvent>(OnRequestSetDeckSlot);
         EventBus.Subscribe<RequestAutoAddDeckEvent>(OnRequestAutoAddDeck);
     }
@@ -161,15 +150,13 @@ public class DeckManager : SingletonBase<DeckManager>
 
         UnitDeckData deckData = evt.saveData.unitDeck;
 
-        // 1. 일반 필드 덱 복원
         if (deckData.normalDeckSlots != null && deckData.normalDeckSlots.Length > 0)
         {
             normalDeckSlots = (int[])deckData.normalDeckSlots.Clone();
-            AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 1, 2 });
+            AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
             _deckSlotMap[DeckType.Normal] = (int[])normalDeckSlots.Clone();
         }
 
-        // 2. 레이드 1팀 덱 복원
         if (deckData.raid1DeckSlots != null && deckData.raid1DeckSlots.Length > 0)
         {
             raid1DeckSlots = (int[])deckData.raid1DeckSlots.Clone();
@@ -177,7 +164,6 @@ public class DeckManager : SingletonBase<DeckManager>
             _deckSlotMap[DeckType.Raid1] = (int[])raid1DeckSlots.Clone();
         }
 
-        // 3. 레이드 2팀 덱 복원
         if (deckData.raid2DeckSlots != null && deckData.raid2DeckSlots.Length > 0)
         {
             raid2DeckSlots = (int[])deckData.raid2DeckSlots.Clone();
@@ -185,17 +171,20 @@ public class DeckManager : SingletonBase<DeckManager>
             _deckSlotMap[DeckType.Raid2] = (int[])raid2DeckSlots.Clone();
         }
 
-        // 4. 인스펙터 뷰 갱신 및 각각의 전용 이벤트 발행
         RefreshAllInspectorViews();
         PublishDeckChanged(DeckType.Normal);
         PublishDeckChanged(DeckType.Raid1);
         PublishDeckChanged(DeckType.Raid2);
     }
 
-    // 세이브 데이터 저장 시 3개 덱 슬롯 데이터 기록
+    // 세이브 데이터 저장 시 3개 덱 슬롯 데이터 기록 (덱 전담)
     private void OnSave(DataSaveEvent evt)
     {
-        if (evt.saveData == null || evt.saveData.unitDeck == null) return;
+        if (evt.saveData == null) return;
+        if (evt.saveData.unitDeck == null)
+        {
+            evt.saveData.unitDeck = new UnitDeckData();
+        }
 
         evt.saveData.unitDeck.normalDeckSlots = GetDeckSlotsCopy(DeckType.Normal);
         evt.saveData.unitDeck.raid1DeckSlots = GetDeckSlotsCopy(DeckType.Raid1);
@@ -205,7 +194,8 @@ public class DeckManager : SingletonBase<DeckManager>
     // 데이터 리셋 시 기본 덱 구성으로 초기화
     private void OnReset(DataResetEvent evt)
     {
-        normalDeckSlots = CreateDefaultSlotArray(normalDeckCapacity, new int[] { 1, 2 });
+        // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)으로 기본 덱 복구
+        normalDeckSlots = CreateDefaultSlotArray(normalDeckCapacity, new int[] { 2, 4 });
         raid1DeckSlots = CreateDefaultSlotArray(raid1DeckCapacity, null);
         raid2DeckSlots = CreateDefaultSlotArray(raid2DeckCapacity, null);
 
@@ -224,10 +214,9 @@ public class DeckManager : SingletonBase<DeckManager>
     // 외부/UI에서 발행한 슬롯 장착 커맨드 처리
     private void OnRequestSetDeckSlot(RequestSetDeckSlotEvent evt)
     {
-        int unitId = ParseUnitId(evt.unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(evt.unitKey);
         if (unitId <= 0)
         {
-            // 유닛 ID가 유효하지 않거나 빈 문자열인 경우 슬롯 해제로 처리
             RemoveSlot(evt.deckType, evt.slotIndex);
         }
         else
@@ -239,7 +228,7 @@ public class DeckManager : SingletonBase<DeckManager>
     // 외부/UI에서 발행한 빈 슬롯 자동 장착 커맨드 처리
     private void OnRequestAutoAddDeck(RequestAutoAddDeckEvent evt)
     {
-        int unitId = ParseUnitId(evt.unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(evt.unitKey);
         if (unitId > 0)
         {
             TryAddUnitToDeck(evt.deckType, unitId, out _);
@@ -248,7 +237,7 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #endregion
 
-    #region 팀원 호출용 덱 조회 API (Query APIs)
+    #region 팀원 호출용 덱 조회 API (Query APIs - Read-Only)
 
     // 특정 덱의 최대 슬롯 용량(Capacity) 반환
     public int GetDeckCapacity(DeckType deckType)
@@ -262,8 +251,7 @@ public class DeckManager : SingletonBase<DeckManager>
         };
     }
 
-    // 특정 덱에 실제 등록된 유닛 문자열 키 목록 반환 (예: ["UNIT_0001", "UNIT_0002"])
-    // 다른 작업자가 미배치(-1) 슬롯을 신경쓰지 않고 실제 유닛 키만 순회할 때 사용
+    // 특정 덱에 실제 등록된 유닛 문자열 키 목록 반환
     public List<string> GetRegisteredUnitKeys(DeckType deckType)
     {
         List<string> keys = new List<string>();
@@ -273,13 +261,13 @@ public class DeckManager : SingletonBase<DeckManager>
         {
             if (slots[i] > 0)
             {
-                keys.Add($"UNIT_{slots[i]:D4}");
+                keys.Add(UnitIdHelper.ToUnitKey(slots[i]));
             }
         }
         return keys;
     }
 
-    // 특정 덱에 실제 등록된 유닛 정수 ID 목록 반환 (예: [1, 2])
+    // 특정 덱에 실제 등록된 유닛 정수 ID 목록 반환
     public List<int> GetRegisteredUnitIds(DeckType deckType)
     {
         List<int> ids = new List<int>();
@@ -295,8 +283,7 @@ public class DeckManager : SingletonBase<DeckManager>
         return ids;
     }
 
-    // 특정 덱에 실제 등록된 유닛들의 UnitDataSO(ScriptableObject) 리스트 반환
-    // 전투 소환 및 레이드 보스전 스폰 로직에서 메타데이터를 즉시 꺼내 쓸 때 활용
+    // 특정 덱에 실제 등록된 유닛들의 UnitDataSO 리스트 반환
     public List<UnitDataSO> GetRegisteredUnitData(DeckType deckType)
     {
         List<UnitDataSO> dataList = new List<UnitDataSO>();
@@ -306,7 +293,7 @@ public class DeckManager : SingletonBase<DeckManager>
         {
             if (slots[i] > 0)
             {
-                string unitKey = $"UNIT_{slots[i]:D4}";
+                string unitKey = UnitIdHelper.ToUnitKey(slots[i]);
                 if (TryGetUnitDataSO(unitKey, out UnitDataSO so) && so != null)
                 {
                     dataList.Add(so);
@@ -316,7 +303,7 @@ public class DeckManager : SingletonBase<DeckManager>
         return dataList;
     }
 
-    // 특정 덱의 전체 슬롯 상세 엔트리(슬롯 번호, 유닛 ID, 키, SO 포함) 목록 반환 (빈 슬롯 포함)
+    // 특정 덱의 전체 슬롯 상세 엔트리 목록 반환 (빈 슬롯 포함)
     public List<DeckSlotUnitEntry> GetAllDeckSlotEntries(DeckType deckType)
     {
         List<DeckSlotUnitEntry> list = new List<DeckSlotUnitEntry>();
@@ -326,7 +313,7 @@ public class DeckManager : SingletonBase<DeckManager>
         {
             int rawId = slots[i];
             bool isEquipped = rawId > 0;
-            string key = isEquipped ? $"UNIT_{rawId:D4}" : string.Empty;
+            string key = isEquipped ? UnitIdHelper.ToUnitKey(rawId) : string.Empty;
             TryGetUnitDataSO(key, out UnitDataSO so);
 
             list.Add(new DeckSlotUnitEntry(i, rawId, key, so));
@@ -334,7 +321,7 @@ public class DeckManager : SingletonBase<DeckManager>
         return list;
     }
 
-    // 특정 덱에서 실제 장착된 유효 슬롯 엔트리만 필터링하여 반환 (빈 슬롯 제외)
+    // 특정 덱에서 실제 장착된 유효 슬롯 엔트리만 필터링하여 반환
     public List<DeckSlotUnitEntry> GetActiveDeckSlotEntries(DeckType deckType)
     {
         List<DeckSlotUnitEntry> list = new List<DeckSlotUnitEntry>();
@@ -345,7 +332,7 @@ public class DeckManager : SingletonBase<DeckManager>
             int rawId = slots[i];
             if (rawId > 0)
             {
-                string key = $"UNIT_{rawId:D4}";
+                string key = UnitIdHelper.ToUnitKey(rawId);
                 TryGetUnitDataSO(key, out UnitDataSO so);
                 list.Add(new DeckSlotUnitEntry(i, rawId, key, so));
             }
@@ -353,7 +340,7 @@ public class DeckManager : SingletonBase<DeckManager>
         return list;
     }
 
-    // 특정 덱 슬롯 배열 전체 복사본 반환 (-1 포함 원본 배열 보존용)
+    // 특정 덱 슬롯 배열 전체 복사본 반환
     public int[] GetDeckSlotsCopy(DeckType deckType)
     {
         int[] slots = GetInternalSlots(deckType);
@@ -381,7 +368,7 @@ public class DeckManager : SingletonBase<DeckManager>
     // 특정 유닛(문자열 키)이 지정 덱에 편성되어 있는지 확인하는 오버로딩 메서드
     public bool IsUnitInDeck(DeckType deckType, string unitKey, out int slotIndex)
     {
-        int unitId = ParseUnitId(unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(unitKey);
         return IsUnitInDeck(deckType, unitId, out slotIndex);
     }
 
@@ -389,7 +376,7 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #region 덱 조작 및 편집 API (Command APIs)
 
-    // 특정 덱의 지정 슬롯에 유닛 장착 (동일 덱 내 중복 유닛 자동 해제 처리)
+    // 특정 덱의 지정 슬롯에 유닛 장착 (동일 덱 내 중복 배치 방지)
     public bool SetSlot(DeckType deckType, int slotIndex, int unitId)
     {
         int[] slots = GetInternalSlots(deckType);
@@ -398,7 +385,7 @@ public class DeckManager : SingletonBase<DeckManager>
             return false;
         }
 
-        // 1. 해당 덱 내에 이미 동일한 유닛이 배치되어 있다면 기존 위치 해제 (중복 배치 방지)
+        // 해당 덱 내에 이미 동일한 유닛이 배치되어 있다면 기존 위치 해제
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] == unitId)
@@ -407,10 +394,7 @@ public class DeckManager : SingletonBase<DeckManager>
             }
         }
 
-        // 2. 지정된 슬롯에 유닛 ID 등록
         slots[slotIndex] = unitId;
-
-        // 3. 인스펙터 동기화 및 덱 분리 이벤트 전파
         PublishDeckChanged(deckType);
         return true;
     }
@@ -418,11 +402,11 @@ public class DeckManager : SingletonBase<DeckManager>
     // 문자열 키 기반 슬롯 장착 오버로딩
     public bool SetSlot(DeckType deckType, int slotIndex, string unitKey)
     {
-        int unitId = ParseUnitId(unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(unitKey);
         return SetSlot(deckType, slotIndex, unitId);
     }
 
-    // 덱의 빈 슬롯(-1)을 앞에서부터 탐색하여 유닛을 자동 장착 (보관함 원클릭 장착 등에 활용)
+    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착
     public bool TryAddUnitToDeck(DeckType deckType, int unitId, out int assignedSlotIndex)
     {
         assignedSlotIndex = -1;
@@ -430,14 +414,12 @@ public class DeckManager : SingletonBase<DeckManager>
 
         int[] slots = GetInternalSlots(deckType);
 
-        // 1. 이미 편성된 유닛이라면 기존 슬롯 위치 반환 후 성공 처리
         if (IsUnitInDeck(deckType, unitId, out int existingIndex))
         {
             assignedSlotIndex = existingIndex;
             return true;
         }
 
-        // 2. 첫 번째 빈 슬롯(-1) 탐색
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] <= 0)
@@ -449,18 +431,17 @@ public class DeckManager : SingletonBase<DeckManager>
             }
         }
 
-        // 덱 슬롯이 가득 참
         return false;
     }
 
     // 문자열 키 기반 빈 슬롯 자동 장착 오버로딩
     public bool TryAddUnitToDeck(DeckType deckType, string unitKey, out int assignedSlotIndex)
     {
-        int unitId = ParseUnitId(unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(unitKey);
         return TryAddUnitToDeck(deckType, unitId, out assignedSlotIndex);
     }
 
-    // 특정 덱의 슬롯 유닛 해제 (빈 슬롯으로 변경)
+    // 특정 덱의 슬롯 유닛 해제
     public bool RemoveSlot(DeckType deckType, int slotIndex)
     {
         int[] slots = GetInternalSlots(deckType);
@@ -506,7 +487,7 @@ public class DeckManager : SingletonBase<DeckManager>
     // 문자열 키 기반 유닛 해제 오버로딩
     public bool RemoveUnit(DeckType deckType, string unitKey)
     {
-        int unitId = ParseUnitId(unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(unitKey);
         return RemoveUnit(deckType, unitId);
     }
 
@@ -540,7 +521,7 @@ public class DeckManager : SingletonBase<DeckManager>
         return true;
     }
 
-    // 원본 덱의 유닛 구성을 대상 덱으로 복사 (예: 일반 덱 -> 레이드 1팀 덱 복사)
+    // 원본 덱의 유닛 구성을 대상 덱으로 복사
     public void CopyDeck(DeckType sourceDeck, DeckType targetDeck)
     {
         if (sourceDeck == targetDeck) return;
@@ -559,9 +540,8 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #endregion
 
-    #region 레거시 호환 조작 메서드 (단일 덱 시절 코드 지원)
+    #region 레거시 호환 조작 메서드 (단일 덱 지원)
 
-    // 기존 단일 덱 SetSlot 호출 시 DeckType.Normal로 자동 라우팅
     public bool SetSlot(int slotIndex, int unitId) => SetSlot(DeckType.Normal, slotIndex, unitId);
     public bool RemoveSlot(int slotIndex) => RemoveSlot(DeckType.Normal, slotIndex);
     public bool RemoveUnit(int unitId) => RemoveUnit(DeckType.Normal, unitId);
@@ -576,23 +556,18 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #region 내부 헬퍼 및 이벤트 발행 로직
 
-    // 덱 변경 시 인스펙터 동기화 및 일반/레이드 분리 이벤트 발행
+    // 덱 변경 시 인스펙터 동기화 및 일반/레이드 독립 이벤트 발행
     private void PublishDeckChanged(DeckType deckType)
     {
-        // 1. 인스펙터 직렬화 필드에 복사본 반영
         SyncSerializedFieldsFromInternalMap(deckType);
-
-        // 2. 인스펙터 디버그 뷰 갱신
         RefreshInspectorView(deckType);
 
-        // 3. 엔트리 및 데이터 목록 수집
         List<DeckSlotUnitEntry> allSlots = GetAllDeckSlotEntries(deckType);
         List<DeckSlotUnitEntry> activeUnits = GetActiveDeckSlotEntries(deckType);
         List<string> registeredKeys = GetRegisteredUnitKeys(deckType);
         List<int> registeredIds = GetRegisteredUnitIds(deckType);
         List<UnitDataSO> registeredDatas = GetRegisteredUnitData(deckType);
 
-        // 4. 일반 덱과 레이드 덱 이벤트를 분리하여 각각 독립 발행
         if (deckType == DeckType.Normal)
         {
             EventBus.Publish(new NormalDeckChangedEvent(
@@ -605,7 +580,6 @@ public class DeckManager : SingletonBase<DeckManager>
         }
         else
         {
-            // Raid1 또는 Raid2
             EventBus.Publish(new RaidDeckChangedEvent(
                 deckType,
                 allSlots,
@@ -615,9 +589,6 @@ public class DeckManager : SingletonBase<DeckManager>
                 registeredDatas
             ));
         }
-
-        // 5. 이전 버전 구독자를 위한 레거시 이벤트 발행
-        EventBus.Publish(new DeckChangedEvent(deckType, GetInternalSlots(deckType)));
     }
 
     // 덱 타입별 내부 슬롯 배열 획득
@@ -626,7 +597,7 @@ public class DeckManager : SingletonBase<DeckManager>
         if (!_deckSlotMap.TryGetValue(deckType, out int[] slots) || slots == null)
         {
             int cap = GetDeckCapacity(deckType);
-            slots = CreateDefaultSlotArray(cap, deckType == DeckType.Normal ? new int[] { 1, 2 } : null);
+            slots = CreateDefaultSlotArray(cap, deckType == DeckType.Normal ? new int[] { 2, 4 } : null);
             _deckSlotMap[deckType] = slots;
         }
         return slots;
@@ -635,7 +606,7 @@ public class DeckManager : SingletonBase<DeckManager>
     // 직렬화 필드 값을 런타임 딕셔너리로 동기화
     private void SyncInternalMapFromSerializedFields()
     {
-        _deckSlotMap[DeckType.Normal] = normalDeckSlots != null ? (int[])normalDeckSlots.Clone() : CreateDefaultSlotArray(normalDeckCapacity, new int[] { 1, 2 });
+        _deckSlotMap[DeckType.Normal] = normalDeckSlots != null ? (int[])normalDeckSlots.Clone() : CreateDefaultSlotArray(normalDeckCapacity, new int[] { 2, 4 });
         _deckSlotMap[DeckType.Raid1] = raid1DeckSlots != null ? (int[])raid1DeckSlots.Clone() : CreateDefaultSlotArray(raid1DeckCapacity, null);
         _deckSlotMap[DeckType.Raid2] = raid2DeckSlots != null ? (int[])raid2DeckSlots.Clone() : CreateDefaultSlotArray(raid2DeckCapacity, null);
     }
@@ -685,7 +656,7 @@ public class DeckManager : SingletonBase<DeckManager>
         {
             int rawId = slots[i];
             bool isEquipped = rawId > 0;
-            string unitKey = isEquipped ? $"UNIT_{rawId:D4}" : "-";
+            string unitKey = isEquipped ? UnitIdHelper.ToUnitKey(rawId) : "-";
             string unitName = "None";
 
             if (isEquipped && TryGetUnitDataSO(unitKey, out UnitDataSO dataSO) && dataSO != null)
@@ -710,18 +681,6 @@ public class DeckManager : SingletonBase<DeckManager>
         if (string.IsNullOrEmpty(unitKey) || unitCatalog == null) return false;
 
         return unitCatalog.TryGetById(unitKey, out unitData);
-    }
-
-    // 유닛 ID 파싱 유틸리티 ("UNIT_0001" -> 1)
-    private int ParseUnitId(string unitKey)
-    {
-        if (string.IsNullOrEmpty(unitKey)) return -1;
-
-        if (int.TryParse(unitKey.Replace("UNIT_", ""), out int parsedId))
-        {
-            return parsedId;
-        }
-        return -1;
     }
 
     // 슬롯 용량 변경 시 배열 크기 재할당 및 데이터 보존 헬퍼

@@ -1,17 +1,29 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 업그레이드 화면 표시, 슬롯별 레벨/비용 갱신 및 강화 요청을 중계하는 UI 컨트롤러
 public class UpgradeUi : MonoBehaviour
 {
     #region 직렬화 변수 (인스펙터 바인딩)
 
     [Header("--- 상단 UI 요소 ---")]
     [Tooltip("상단 보유 골드 표시 텍스트")]
-    [SerializeField] private Text availableGoldText;
+    [SerializeField] private TMP_Text availableGoldText;
 
     [Tooltip("업그레이드 패널 닫기 버튼")]
     [SerializeField] private Button exitButton;
+
+    [Header("--- 치트 및 테스트 UI ---")]
+    [Tooltip("클릭 시 대량의 치트 골드 및 다이아를 즉시 지급받는 버튼")]
+    [SerializeField] private Button cheatGoldButton;
+
+    [Tooltip("치트 골드 1회 지급 수량 (기본 900경)")]
+    [SerializeField] private long cheatGoldAmount = 9_000_000_000_000_000_000L;
+
+    [Tooltip("치트 다이아 1회 지급 수량 (기본 100만)")]
+    [SerializeField] private long cheatDiamondAmount = 1_000_000L;
 
     [Header("--- 업그레이드 슬롯 리스트 ---")]
     [Tooltip("화면에 노출할 업그레이드 슬롯 컴포넌트 배열")]
@@ -33,6 +45,11 @@ public class UpgradeUi : MonoBehaviour
         if (exitButton != null)
         {
             exitButton.onClick.AddListener(ClosePanel);
+        }
+
+        if (cheatGoldButton != null)
+        {
+            cheatGoldButton.onClick.AddListener(OnCheatGoldClicked);
         }
 
         if (upgradeSlots != null)
@@ -77,6 +94,21 @@ public class UpgradeUi : MonoBehaviour
     private void OnDpCostAmountChanged(int amount)
     {
         RefreshAllSlots();
+    }
+
+    #endregion
+
+    #region 치트 골드 지급
+
+    // 치트 골드 및 다이아 즉시 획득 처리
+    public void OnCheatGoldClicked()
+    {
+        if (CurrencyManager.Instance != null)
+        {
+            CurrencyManager.Instance.GetGold(cheatGoldAmount, applyModifiers: false);
+            CurrencyManager.Instance.GetDiamond(cheatDiamondAmount, applyModifiers: false);
+            Debug.Log($"[UpgradeUi] 치트 재화 지급 완료: +{cheatGoldAmount:N0} Gold, +{cheatDiamondAmount:N0} Diamond");
+        }
     }
 
     #endregion

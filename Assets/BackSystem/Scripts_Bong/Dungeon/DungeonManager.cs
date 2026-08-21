@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -25,7 +25,7 @@ public struct DungeonInspectorState
     public float progressRatio;
 }
 
-// 던전 시스템 총괄 마스터 매니저
+// 던전 방치형 자동 생산 주기 연산 및 유닛 파견 편성을 총괄하는 매니저
 public class DungeonManager : SingletonBase<DungeonManager>
 {
     #region 직렬화 변수 (인스펙터 바인딩 및 모니터링)
@@ -47,7 +47,6 @@ public class DungeonManager : SingletonBase<DungeonManager>
     private readonly Dictionary<string, DungeonDataSO> _dungeonDataMap = new Dictionary<string, DungeonDataSO>();
     private readonly Dictionary<string, int[]> _assignedUnitsMap = new Dictionary<string, int[]>();
     private readonly Dictionary<string, float> _cycleTimerMap = new Dictionary<string, float>();
-    private List<UnitSaveData> _cachedOwnedUnits = new List<UnitSaveData>();
 
     #endregion
 
@@ -144,7 +143,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 보상 지급 로직
 
-    // 던전 1회 완료 보상 실시간 지급 처리
+    // 던전 생산 주기 완료 보상 지급 연산
     private void GrantDungeonReward(DungeonDataSO dataSO, int totalPower, int cycleCount)
     {
         if (dataSO == null || cycleCount <= 0) return;
@@ -162,7 +161,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         {
             if (totalGold > 0) CurrencyManager.Instance.AddCurrency(CurrencyType.Gold, totalGold, applyModifiers: false);
             if (totalDia > 0) CurrencyManager.Instance.AddCurrency(CurrencyType.Diamond, totalDia, applyModifiers: false);
-            if (totalStone > 0) CurrencyManager.Instance.AddCurrency(CurrencyType.StageStone, totalStone, applyModifiers: false);
+            if (totalStone > 0) CurrencyManager.Instance.AddCurrency(CurrencyType.DungeonStone, totalStone, applyModifiers: false);
         }
 
         EventBus.Publish(new DungeonCycleCompletedEvent(
@@ -178,34 +177,21 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 런타임 실시간 전투력 계산 API
 
-    // 유닛 런타임 레벨 조회
+    // 유닛 런타임 레벨 조회 연산
     public int GetUnitRuntimeLevel(int unitId)
     {
         if (unitId <= 0) return 1;
 
-        string unitKey = $"UNIT_{unitId:D4}";
-
         if (CollectionDataProvider.Instance != null)
         {
-            var viewModels = CollectionDataProvider.Instance.GetCollectionViewModels();
-            if (viewModels != null)
+            UnitSaveData unitSave = CollectionDataProvider.Instance.GetOwnedUnitSaveData(unitId);
+            if (unitSave != null)
             {
-                for (int i = 0; i < viewModels.Count; i++)
-                {
-                    if (viewModels[i] != null && viewModels[i].UnitId == unitKey)
-                    {
-                        return Mathf.Max(1, viewModels[i].Level);
-                    }
-                }
+                return Mathf.Max(1, unitSave.level);
             }
         }
 
-        UnitSaveData unitSave = FindOwnedUnitSave(unitId);
-        if (unitSave != null)
-        {
-            return Mathf.Max(1, unitSave.level);
-        }
-
+        string unitKey = UnitIdHelper.ToUnitKey(unitId);
         if (unitCatalog != null && unitCatalog.TryGetById(unitKey, out UnitDataSO so) && so != null)
         {
             return Mathf.Max(1, so.InitialLevel);
@@ -214,41 +200,41 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return 1;
     }
 
-    // 유닛 런타임 돌파 단계 조회
+    // 유닛 런타임 돌파 단계 조회 연산
     public int GetUnitRuntimeBreakthrough(int unitId)
     {
         if (unitId <= 0) return 0;
 
-        string unitKey = $"UNIT_{unitId:D4}";
-
         if (CollectionDataProvider.Instance != null)
         {
-            var viewModels = CollectionDataProvider.Instance.GetCollectionViewModels();
-            if (viewModels != null)
+            UnitSaveData unitSave = CollectionDataProvider.Instance.GetOwnedUnitSaveData(unitId);
+            if (unitSave != null)
             {
-                for (int i = 0; i < viewModels.Count; i++)
-                {
-                    if (viewModels[i] != null && viewModels[i].UnitId == unitKey)
-                    {
-                        return Mathf.Max(0, viewModels[i].BreakThroughStep);
-                    }
-                }
+                return Mathf.Max(0, unitSave.breakThroughStep);
             }
-        }
-
-        UnitSaveData unitSave = FindOwnedUnitSave(unitId);
-        if (unitSave != null)
-        {
-            return Mathf.Max(0, unitSave.breakThroughStep);
         }
 
         return 0;
     }
 
-    // 유닛 런타임 실시간 전투력 계산
+    // 유닛 보유 여부 판정 연산
+    public bool IsUnitOwned(int unitId)
+    {
+        if (unitId <= 0) return false;
+        return CollectionDataProvider.Instance != null && CollectionDataProvider.Instance.IsUnitOwned(unitId);
+    }
+
+    // 문자열 키 기반 유닛 보유 여부 판정 연산
+    public bool IsUnitOwned(string unitKey)
+    {
+        int unitId = UnitIdHelper.ParseUnitId(unitKey);
+        return IsUnitOwned(unitId);
+    }
+
+    // 유닛 런타임 실시간 전투력 계산 연산
     public int GetUnitCombatPower(int unitId)
     {
-        if (unitId <= 0) return 0;
+        if (unitId <= 0 || !IsUnitOwned(unitId)) return 0;
 
         int level = GetUnitRuntimeLevel(unitId);
         int breakthroughMultiplier = GetUnitRuntimeBreakthrough(unitId) + 1;
@@ -256,14 +242,14 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return Mathf.Max(1, level * breakthroughMultiplier);
     }
 
-    // 문자열 키 기반 유닛 전투력 계산
+    // 문자열 키 기반 유닛 전투력 계산 연산
     public int GetUnitCombatPower(string unitKey)
     {
-        int unitId = ParseUnitId(unitKey);
+        int unitId = UnitIdHelper.ParseUnitId(unitKey);
         return GetUnitCombatPower(unitId);
     }
 
-    // 던전 총 전투력 합산 반환
+    // 던전 총 전투력 합산 연산
     public int GetDungeonTotalPower(string dungeonId)
     {
         if (!_assignedUnitsMap.TryGetValue(dungeonId, out int[] slots) || slots == null)
@@ -282,7 +268,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return sum;
     }
 
-    // 유닛 파견 던전 ID 및 슬롯 인덱스 조회
+    // 유닛 파견 던전 ID 및 슬롯 인덱스 조회 연산
     public string GetAssignedDungeonId(int unitId, out int slotIndex)
     {
         slotIndex = -1;
@@ -309,7 +295,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 유닛 파견 편성 조작 API
 
-    // 던전 슬롯 유닛 배치 및 중복 해제 처리
+    // 던전 슬롯 유닛 배치 연산
     public bool AssignUnitToSlot(string targetDungeonId, int targetSlotIndex, int unitId)
     {
         if (string.IsNullOrEmpty(targetDungeonId) || targetSlotIndex < 0 || targetSlotIndex >= 3 || unitId <= 0)
@@ -334,7 +320,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return true;
     }
 
-    // 빈 슬롯 유닛 자동 장착
+    // 빈 슬롯 유닛 자동 배치 연산
     public bool TryAddUnitToDungeon(string dungeonId, int unitId, out int assignedSlotIndex)
     {
         assignedSlotIndex = -1;
@@ -355,7 +341,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return false;
     }
 
-    // 던전 슬롯 유닛 해제
+    // 던전 슬롯 유닛 해제 연산
     public bool RemoveUnitFromSlot(string dungeonId, int slotIndex)
     {
         if (string.IsNullOrEmpty(dungeonId) || slotIndex < 0 || slotIndex >= 3) return false;
@@ -372,7 +358,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return false;
     }
 
-    // 던전 전체 슬롯 초기화
+    // 던전 전체 슬롯 초기화 연산
     public void ClearDungeonSlots(string dungeonId)
     {
         if (string.IsNullOrEmpty(dungeonId)) return;
@@ -387,29 +373,42 @@ public class DungeonManager : SingletonBase<DungeonManager>
         }
     }
 
-    // 최강 전투력 유닛 3인 자동 일괄 배치
+    // 최강 전투력 유닛 3인 자동 일괄 배치 연산
     public void AutoAssignHighestPowerUnits(string dungeonId)
     {
-        if (string.IsNullOrEmpty(dungeonId) || _cachedOwnedUnits == null || _cachedOwnedUnits.Count == 0)
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(dungeonId)) return;
 
         ClearDungeonSlots(dungeonId);
 
         List<(int unitId, int combatPower)> candidates = new List<(int, int)>();
 
-        for (int i = 0; i < _cachedOwnedUnits.Count; i++)
+        if (CollectionDataProvider.Instance != null)
         {
-            int uId = _cachedOwnedUnits[i].unitId;
-            if (uId <= 0) continue;
-
-            string assignedDungeon = GetAssignedDungeonId(uId, out _);
-            if (string.IsNullOrEmpty(assignedDungeon))
+            var ownedUnits = CollectionDataProvider.Instance.GetAllOwnedUnits();
+            if (ownedUnits != null)
             {
-                int power = GetUnitCombatPower(uId);
-                candidates.Add((uId, power));
+                for (int i = 0; i < ownedUnits.Count; i++)
+                {
+                    int uId = ownedUnits[i].unitId;
+                    if (uId <= 0) continue;
+
+                    string assignedDungeon = GetAssignedDungeonId(uId, out _);
+                    if (string.IsNullOrEmpty(assignedDungeon))
+                    {
+                        int power = GetUnitCombatPower(uId);
+                        if (power > 0)
+                        {
+                            candidates.Add((uId, power));
+                        }
+                    }
+                }
             }
+        }
+
+        if (candidates.Count == 0)
+        {
+            Debug.LogWarning($"[DungeonManager] 던전 {dungeonId}에 자동 배치할 수 있는 미파견 보유 유닛이 없습니다.");
+            return;
         }
 
         candidates.Sort((a, b) => b.combatPower.CompareTo(a.combatPower));
@@ -425,10 +424,8 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 데이터 조회 API
 
-    // 전체 던전 SO 목록 반환
     public IReadOnlyList<DungeonDataSO> GetAllDungeonData() => dungeonList;
 
-    // 던전 ID 기반 SO 조회
     public DungeonDataSO GetDungeonData(string dungeonId)
     {
         if (string.IsNullOrEmpty(dungeonId)) return null;
@@ -436,7 +433,6 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return so;
     }
 
-    // 던전 배치 유닛 ID 배열 반환
     public int[] GetAssignedUnitIds(string dungeonId)
     {
         if (_assignedUnitsMap.TryGetValue(dungeonId, out int[] slots) && slots != null)
@@ -446,7 +442,6 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return new int[3] { -1, -1, -1 };
     }
 
-    // 던전 현재 진행 타이머 반환
     public float GetCurrentCycleTimer(string dungeonId)
     {
         return _cycleTimerMap.TryGetValue(dungeonId, out float t) ? t : 0.0f;
@@ -456,15 +451,10 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 세이브 / 로드 및 오프라인 방치 정산
 
-    // 세이브 데이터 로드 및 오프라인 보상 정산
+    // 세이브 데이터 로드 및 오프라인 보상 정산 연산
     private void OnLoad(DataLoadEvent evt)
     {
         if (evt.saveData == null) return;
-
-        if (evt.saveData.unitDeck != null && evt.saveData.unitDeck.ownedUnits != null)
-        {
-            _cachedOwnedUnits = evt.saveData.unitDeck.ownedUnits;
-        }
 
         if (evt.saveData.dungeon != null && evt.saveData.dungeon.dungeonSlots != null)
         {
@@ -494,7 +484,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         RefreshInspectorViews();
     }
 
-    // 오프라인 누적 생산 보상 일괄 지급
+    // 오프라인 누적 생산 보상 일괄 지급 연산
     private void ProcessOfflineDungeonRewards(string lastSaveTimestamp)
     {
         if (string.IsNullOrEmpty(lastSaveTimestamp)) return;
@@ -536,7 +526,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         }
     }
 
-    // 던전 진행 상태 데이터 저장
+    // 던전 진행 상태 데이터 저장 처리
     private void OnSave(DataSaveEvent evt)
     {
         if (evt.saveData == null) return;
@@ -563,7 +553,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         }
     }
 
-    // 던전 데이터 초기화
+    // 던전 데이터 초기화 처리
     private void OnReset(DataResetEvent evt)
     {
         InitializeDungeonMaps();
@@ -659,32 +649,6 @@ public class DungeonManager : SingletonBase<DungeonManager>
                 progressRatio = ratio
             });
         }
-    }
-
-    // 보유 유닛 세이브 데이터 조회
-    private UnitSaveData FindOwnedUnitSave(int unitId)
-    {
-        if (_cachedOwnedUnits == null || _cachedOwnedUnits.Count == 0) return null;
-
-        for (int i = 0; i < _cachedOwnedUnits.Count; i++)
-        {
-            if (_cachedOwnedUnits[i].unitId == unitId)
-            {
-                return _cachedOwnedUnits[i];
-            }
-        }
-        return null;
-    }
-
-    // 유닛 문자열 키 정수 ID 변환
-    private int ParseUnitId(string unitKey)
-    {
-        if (string.IsNullOrEmpty(unitKey)) return -1;
-        if (int.TryParse(unitKey.Replace("UNIT_", ""), out int id))
-        {
-            return id;
-        }
-        return -1;
     }
 
     #endregion

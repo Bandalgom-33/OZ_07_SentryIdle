@@ -105,11 +105,17 @@ public class StageData
 [Serializable]
 public class UnitDeckData
 {
-    // 보유 중인 유닛 세이브 데이터 리스트
-    public List<UnitSaveData> ownedUnits = new List<UnitSaveData>();
+    // 기본 보유 유닛 세이브 데이터 리스트 (루카: 1성 ID 2, 김하진: 2성 ID 4 기본 지급, 0돌파)
+    public List<UnitSaveData> ownedUnits = new List<UnitSaveData>
+    {
+        // 1성 뱅가드 루카 (UNIT_0002, 0돌파 기본 보유)
+        new UnitSaveData { unitId = 2, level = 1, currentExp = 0L, breakThroughStep = 0, fragmentCount = 0 },
+        // 2성 가드 김하진 (UNIT_0004, 0돌파 기본 보유)
+        new UnitSaveData { unitId = 4, level = 1, currentExp = 0L, breakThroughStep = 0, fragmentCount = 0 }
+    };
 
-    // 일반 필드 덱 슬롯 배치 유닛 ID 목록 (미배치 시 -1)
-    public int[] normalDeckSlots = new int[] { 1, 2, -1, -1, -1, -1, -1, -1, -1, -1 };
+    // 일반 필드 덱 슬롯 배치 유닛 ID 목록 (1번: 루카 ID 2, 2번: 김하진 ID 4, 미배치 시 -1)
+    public int[] normalDeckSlots = new int[] { 2, 4, -1, -1, -1, -1, -1, -1, -1, -1 };
 
     // 레이드 1팀 덱 슬롯 배치 유닛 ID 목록 (미배치 시 -1)
     public int[] raid1DeckSlots = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };

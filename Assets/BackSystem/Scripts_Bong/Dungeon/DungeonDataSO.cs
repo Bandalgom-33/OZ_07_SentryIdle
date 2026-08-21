@@ -66,8 +66,9 @@ public class DungeonDataSO : ScriptableObject
     // 기본 다이아 보상량 반환
     public long BaseRewardDiamond => baseRewardDiamond;
 
-    // 기본 스테이지 마석 보상량 반환
-    public long BaseRewardStageStone => baseRewardStageStone;
+    // 기본 던전 마석 보상량 반환
+    public long BaseRewardDungeonStone => baseRewardStageStone;
+    public long BaseRewardStageStone => baseRewardStageStone; // 기존 호환용
 
     #endregion
 
@@ -98,12 +99,14 @@ public class DungeonDataSO : ScriptableObject
         return (long)Math.Floor(baseRewardDiamond * (1.0f + bonus));
     }
 
-    // 초과 보너스 적용 최종 스테이지 마석 보상 계산
-    public long CalculateFinalStageStone(int currentTotalPower)
+    // 초과 보너스 적용 최종 던전 마석 보상 계산
+    public long CalculateFinalDungeonStone(int currentTotalPower)
     {
         float bonus = CalculateBonusRatio(currentTotalPower);
         return (long)Math.Floor(baseRewardStageStone * (1.0f + bonus));
     }
+
+    public long CalculateFinalStageStone(int currentTotalPower) => CalculateFinalDungeonStone(currentTotalPower);
 
     #endregion
 }

@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
 
@@ -8,10 +7,7 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
 {
     #region 내부 변수 모음
 
-    // 6종 소모품의 보유 수량 배열 (인덱스: ConsumableType)
     private readonly int[] _itemCounts = new int[6];
-
-    // 포션 재사용 쿨타임 타이머
     private float _potionCooldownTimer = 0f;
     private const float PotionCooldownDuration = 5.0f;
 
@@ -19,7 +15,6 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
 
     #region 이벤트
 
-    // 소모품 보유 수량 변동 실시간 브로드캐스트 이벤트 (타입, 현재수량)
     public static event Action<ConsumableType, int> OnConsumableCountChanged;
 
     #endregion
@@ -83,7 +78,6 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
         {
             _itemCounts[index] += amount;
             OnConsumableCountChanged?.Invoke(type, _itemCounts[index]);
-            Debug.Log($"[ConsumableItemManager] 소모품 획득: {type} +{amount}개 (현재: {_itemCounts[index]}개)");
         }
     }
 
@@ -105,12 +99,10 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
 
     #region 아이템 인게임 효과 실행 메서드
 
-    // 전체 필드 아군 유닛 HP 동시 회복 실행 (체력포션 3종)
+    // 전체 필드 아군 유닛 HP 동시 회복 실행 연산 (체력포션 3종)
     public bool UseHealthPotion(ConsumableType type)
     {
-        if (type != ConsumableType.HealthPotion_Low &&
-            type != ConsumableType.HealthPotion_Mid &&
-            type != ConsumableType.HealthPotion_High)
+        if (!IsHealthPotion(type))
         {
             Debug.LogWarning($"[ConsumableItemManager] {type}은(는) 체력 포션이 아닙니다.");
             return false;
@@ -136,8 +128,6 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
             _ => 0.25f
         };
 
-        int healedUnitCount = 0;
-
         foreach (UnitRuntimeState unit in CombatRegistry.Units)
         {
             if (unit == null) continue;
@@ -147,23 +137,18 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
             {
                 float healAmount = health.MaxHp * healRatio;
                 health.Heal(healAmount);
-                healedUnitCount++;
             }
         }
 
         _potionCooldownTimer = PotionCooldownDuration;
         SaveManager.Instance.SaveGameData();
-
-        Debug.Log($"[ConsumableItemManager] {type} 사용 완료: 필드 아군 {healedUnitCount}명 HP {healRatio * 100}% 회복");
         return true;
     }
 
-    // 지정 유닛 즉시 경험치 부여 실행 (경험치책 3종)
+    // 지정 유닛 즉시 경험치 부여 실행 연산 (경험치책 3종)
     public bool UseExpBook(ConsumableType type, string unitId)
     {
-        if (type != ConsumableType.ExpBook_Low &&
-            type != ConsumableType.ExpBook_Mid &&
-            type != ConsumableType.ExpBook_High)
+        if (!IsExpBook(type))
         {
             Debug.LogWarning($"[ConsumableItemManager] {type}은(는) 경험치 책이 아닙니다.");
             return false;
@@ -171,13 +156,11 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
 
         if (string.IsNullOrWhiteSpace(unitId))
         {
-            Debug.LogWarning("[ConsumableItemManager] 경험치를 부여할 대상 유닛 ID가 비어 있습니다.");
             return false;
         }
 
         if (!TrySpendConsumable(type, 1))
         {
-            Debug.LogWarning($"[ConsumableItemManager] {type} 보유 수량이 부족합니다.");
             return false;
         }
 
@@ -189,30 +172,57 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
             _ => 100L
         };
 
-        bool success = ExperienceManager.Instance.AddExperienceToUnit(unitId, expReward);
+        bool success = ExperienceManager.Instance != null && ExperienceManager.Instance.AddExperienceToUnit(unitId, expReward);
 
         if (success)
         {
             SaveManager.Instance.SaveGameData();
-            Debug.Log($"[ConsumableItemManager] {type} 사용 완료: [{unitId}] 유닛에게 +{expReward} EXP 지급");
         }
         else
         {
             AddConsumable(type, 1);
-            Debug.LogWarning($"[ConsumableItemManager] [{unitId}] 유닛에게 경험치 지급 실패하여 아이템을 환불합니다.");
         }
 
         return success;
+    }
+
+    // 체력 포션 타입 여부 판정 헬퍼
+    private bool IsHealthPotion(ConsumableType type)
+    {
+        return type == ConsumableType.HealthPotion_Low ||
+               type == ConsumableType.HealthPotion_Mid ||
+               type == ConsumableType.HealthPotion_High;
+    }
+
+    // 경험치 책 타입 여부 판정 헬퍼
+    private bool IsExpBook(ConsumableType type)
+    {
+        return type == ConsumableType.ExpBook_Low ||
+               type == ConsumableType.ExpBook_Mid ||
+               type == ConsumableType.ExpBook_High;
     }
 
     #endregion
 
     #region 세이브 / 로드 연동
 
-    // 세이브 데이터에 소모품 수량 저장
+    // 전체 소모품 수량 변경 이벤트 일괄 브로드캐스트 헬퍼
+    private void BroadcastAllCounts()
+    {
+        for (int i = 0; i < _itemCounts.Length; i++)
+        {
+            OnConsumableCountChanged?.Invoke((ConsumableType)i, _itemCounts[i]);
+        }
+    }
+
+    // 세이브 데이터 저장 처리
     private void OnSave(DataSaveEvent evt)
     {
         if (evt.saveData == null) return;
+        if (evt.saveData.consumable == null)
+        {
+            evt.saveData.consumable = new ConsumableSaveData();
+        }
 
         evt.saveData.consumable.healthPotionLow = _itemCounts[(int)ConsumableType.HealthPotion_Low];
         evt.saveData.consumable.healthPotionMid = _itemCounts[(int)ConsumableType.HealthPotion_Mid];
@@ -223,7 +233,7 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
         evt.saveData.consumable.expBookHigh = _itemCounts[(int)ConsumableType.ExpBook_High];
     }
 
-    // 세이브 데이터로부터 소모품 수량 복원 및 이벤트 브로드캐스트
+    // 세이브 데이터 로드 처리
     private void OnLoad(DataLoadEvent evt)
     {
         if (evt.saveData == null || evt.saveData.consumable == null) return;
@@ -236,22 +246,16 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
         _itemCounts[(int)ConsumableType.ExpBook_Mid] = evt.saveData.consumable.expBookMid;
         _itemCounts[(int)ConsumableType.ExpBook_High] = evt.saveData.consumable.expBookHigh;
 
-        for (int i = 0; i < _itemCounts.Length; i++)
-        {
-            OnConsumableCountChanged?.Invoke((ConsumableType)i, _itemCounts[i]);
-        }
+        BroadcastAllCounts();
     }
 
-    // 소모품 데이터 초기화 및 이벤트 브로드캐스트
+    // 소모품 데이터 초기화 처리
     private void OnReset(DataResetEvent evt)
     {
         Array.Clear(_itemCounts, 0, _itemCounts.Length);
         _potionCooldownTimer = 0f;
 
-        for (int i = 0; i < _itemCounts.Length; i++)
-        {
-            OnConsumableCountChanged?.Invoke((ConsumableType)i, 0);
-        }
+        BroadcastAllCounts();
     }
 
     #endregion
