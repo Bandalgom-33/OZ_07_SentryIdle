@@ -1149,6 +1149,10 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7598380415749654349, guid: a506406e49ac73a4ca70cb4cc7344ae7, type: 3}
+      propertyPath: m_text
+      value: Lobby
+      objectReference: {fileID: 0}
+    - target: {fileID: 7598380415749654349, guid: a506406e49ac73a4ca70cb4cc7344ae7, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4294964720
       objectReference: {fileID: 0}
@@ -4340,6 +4344,7 @@ MonoBehaviour:
   dpCostText: {fileID: 379181191}
   dpRegenSlider: {fileID: 718365318}
   fieldUnitsText: {fileID: 406094309}
+  returnToLobbyButton: {fileID: 1483199889}
   speedButtons:
   - {fileID: 736978671}
   - {fileID: 303416156}
@@ -4634,6 +4639,17 @@ Transform:
   - {fileID: 1286297650}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1483199889 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7069521993219156377, guid: a506406e49ac73a4ca70cb4cc7344ae7, type: 3}
+  m_PrefabInstance: {fileID: 207978924}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &1494954317
 PrefabInstance:
   m_ObjectHideFlags: 0
