@@ -348,8 +348,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: AVAILABLE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 67f02eae716e5ec4bb316aa60c8b42a5, type: 2}
+  m_sharedMaterial: {fileID: -2461231080495212561, guid: 67f02eae716e5ec4bb316aa60c8b42a5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -430,7 +430,8 @@ GameObject:
   - component: {fileID: 419754027954661182}
   - component: {fileID: 4541577123737398319}
   - component: {fileID: 8287826690207195199}
-  - component: {fileID: 5593770484606374929}
+  - component: {fileID: 3722927006230227791}
+  - component: {fileID: 3961914201221739265}
   m_Layer: 5
   m_Name: PF_UI_CharacterCard
   m_TagString: Untagged
@@ -520,7 +521,7 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &5593770484606374929
+--- !u!114 &3722927006230227791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -529,9 +530,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 5200506365906289190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Script: {fileID: 11500000, guid: 130cd9882877c0a4ba05ae59721faad6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Toggle
+  m_EditorClassIdentifier: Assembly-CSharp::UICollectionItemCard
+  cardButton: {fileID: 3961914201221739265}
+  selectedIndicator: {fileID: 1546191597521102546}
+  portraitImage: {fileID: 9086490635091598660}
+  unitNameText: {fileID: 7094139984401399787}
+  statusText: {fileID: 729398167406641446}
+  deckBadgeText: {fileID: 0}
+  gradeText: {fileID: 0}
+  ownedColor: {r: 1, g: 1, b: 1, a: 1}
+  lockedColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.7}
+--- !u!114 &3961914201221739265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200506365906289190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
     m_Mode: 3
     m_WrapAround: 0
@@ -542,12 +564,12 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 1.08, g: 1.08, b: 1.08, a: 1}
-    m_PressedColor: {r: 0.88, g: 0.92, b: 0.96, a: 1}
-    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
-    m_FadeDuration: 0.08
+    m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -561,25 +583,9 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 4541577123737398319}
-  toggleTransition: 1
-  graphic: {fileID: 0}
-  m_Group: {fileID: 0}
-  onValueChanged:
+  m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1546191597521102546}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_IsOn: 0
+      m_Calls: []
 --- !u!1 &6325761660574278762
 GameObject:
   m_ObjectHideFlags: 0
@@ -722,8 +728,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: UNIT A
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 67f02eae716e5ec4bb316aa60c8b42a5, type: 2}
+  m_sharedMaterial: {fileID: -2461231080495212561, guid: 67f02eae716e5ec4bb316aa60c8b42a5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1009,8 +1015,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: NO ART
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 67f02eae716e5ec4bb316aa60c8b42a5, type: 2}
+  m_sharedMaterial: {fileID: -2461231080495212561, guid: 67f02eae716e5ec4bb316aa60c8b42a5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
