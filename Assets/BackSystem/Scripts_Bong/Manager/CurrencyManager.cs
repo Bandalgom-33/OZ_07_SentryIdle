@@ -15,7 +15,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     [Tooltip("기본 생성/초기 보유 다이아 수량")]
     [SerializeField] private long baseDiamond = 3;
 
-    [Tooltip("기본 생성/초기 보유 DP 코스트 수량")]
+    [Tooltip("인게임 시작 시 기본 DP 코스트 수량")]
     [SerializeField] private int baseDpCost = 30;
 
     [Tooltip("골드 고정 보너스 획득량")]
@@ -106,7 +106,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
     #region 비공개 필드
 
-    private bool _isPaused = false;
+    private bool _isPaused = true; // 기본값: 일시정지 (로비 시작 시 비활성)
+    private bool _isRegenAllowed = false; // 인게임 진입 시에만 true
     private float _currentRegenTime;
 
     #endregion
@@ -133,6 +134,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<DataLoadEvent>(OnLoad);
         EventBus.Subscribe<DataResetEvent>(OnReset);
         EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
+        EventBus.Subscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
+        EventBus.Subscribe<GameStateChangedEvent>(OnGameStateChanged);
     }
 
     // DP 회복 루프 시작
@@ -150,6 +153,47 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
         EventBus.Unsubscribe<DataResetEvent>(OnReset);
         EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
+        EventBus.Unsubscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
+        EventBus.Unsubscribe<GameStateChangedEvent>(OnGameStateChanged);
+    }
+
+    // 씬 전환 완료 이벤트 수신 처리
+    private void OnSceneLoadCompleted(SceneLoadCompletedEvent evt)
+    {
+        if (evt.loadedScene == SceneType.GamePlay)
+        {
+            _isRegenAllowed = true;
+            _isPaused = false;
+            ResetDpCostOnRoundStart();
+        }
+        else
+        {
+            _isRegenAllowed = false;
+            _isPaused = true;
+            SetDpCost(0);
+            OnDpCostSliderChange?.Invoke(0f);
+        }
+    }
+
+    // 게임 상태 변경 이벤트 수신 처리
+    private void OnGameStateChanged(GameStateChangedEvent evt)
+    {
+        if (evt.newState == GameState.InGame)
+        {
+            _isRegenAllowed = true;
+            _isPaused = false;
+        }
+        else if (evt.newState == GameState.Pause)
+        {
+            _isPaused = true;
+        }
+        else
+        {
+            _isRegenAllowed = false;
+            _isPaused = true;
+            SetDpCost(0);
+            OnDpCostSliderChange?.Invoke(0f);
+        }
     }
 
     // 적 사망 시 골드 보상 획득 처리
@@ -244,6 +288,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // DP 코스트 획득 연산
     public void GetDpCost(int dpCost)
     {
+        if (!_isRegenAllowed && dpCost > 0) return;
+
         int prevDp = DpCost;
         DpCost = Mathf.Min(DpCost + dpCost, MaxDpCost);
         int change = DpCost - prevDp;
@@ -265,7 +311,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         OnDpCostChange?.Invoke(DpCost);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DpCost, DpCost, -dpCost));
 
-        if (DpCost < MaxDpCost)
+        if (_isRegenAllowed && DpCost < MaxDpCost)
         {
             _isPaused = false;
         }
@@ -280,7 +326,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         OnDpCostChange?.Invoke(DpCost);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DpCost, DpCost, 0));
 
-        _isPaused = (DpCost >= MaxDpCost);
+        _isPaused = (!_isRegenAllowed || DpCost >= MaxDpCost);
     }
 
     // 라운드 시작 시 DP 코스트 초기화 연산
@@ -401,7 +447,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     {
         MaxDpCost = 100 + (level * maxDpCostIncrease);
 
-        if (DpCost < MaxDpCost)
+        if (_isRegenAllowed && DpCost < MaxDpCost)
         {
             _isPaused = false;
         }
@@ -420,7 +466,10 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         }
         else
         {
-            _isPaused = false;
+            if (_isRegenAllowed && DpCost < MaxDpCost)
+            {
+                _isPaused = false;
+            }
             _currentRegenTime = dpCostRegenTime / evt.timeScale;
         }
     }
@@ -432,7 +481,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         while (true)
         {
             token.ThrowIfCancellationRequested();
-            if (!_isPaused)
+            if (!_isPaused && _isRegenAllowed)
             {
                 timer += Time.deltaTime;
                 float sliderValue = Mathf.Lerp(0, 1, timer / _currentRegenTime);
@@ -445,6 +494,10 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
                     timer = 0;
                 }
             }
+            else
+            {
+                timer = 0;
+            }
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
@@ -454,7 +507,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     #region 재화 저장 및 브로드캐스트
 
     // 전체 재화 UI 액션 및 이벤트 일괄 브로드캐스트 헬퍼
-    private void BroadcastAllCurrencies()
+    public void BroadcastAllCurrencies()
     {
         OnGoldChange?.Invoke(Gold);
         OnDiamondChange?.Invoke(Diamond);
@@ -497,7 +550,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         WaveStone = evt.saveData.currency.waveStone;
         DungeonStone = evt.saveData.currency.stageStone;
         RaidStone = evt.saveData.currency.raidStone;
-        DpCost = baseDpCost;
+        DpCost = _isRegenAllowed ? baseDpCost : 0;
 
         BroadcastAllCurrencies();
     }
@@ -507,7 +560,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     {
         Gold = baseGold;
         Diamond = baseDiamond;
-        DpCost = baseDpCost;
+        DpCost = _isRegenAllowed ? baseDpCost : 0;
         WaveStone = 0;
         DungeonStone = 0;
         RaidStone = 0;

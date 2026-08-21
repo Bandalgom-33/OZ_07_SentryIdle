@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
@@ -53,9 +53,12 @@ public class GameManager : SingletonBase<GameManager>
         _inGameUI = FindFirstObjectByType<InGameUI>();
         currentLife = maxLife;
 
+        _ = SaveManager.Instance;
         _ = DeckManager.Instance;
         _ = ExperienceManager.Instance;
         _ = CollectionDataProvider.Instance;
+        _ = StageProgressManager.Instance;
+        _ = SceneLoader.Instance;
     }
 
     // 이벤트 버스 및 시스템 이벤트 구독

@@ -132,6 +132,11 @@ namespace EndlessGuard.TestBattle
         /// </summary>
         public void StartStageWaves()
         {
+            if (StageProgressManager.Instance != null)
+            {
+                currentStage = StageProgressManager.Instance.CurrentStage;
+            }
+
             StopWaveSystem();
             ClearAllEnemies();
             _waveSystemCoroutine = StartCoroutine(RunStageWaveSystem());
@@ -154,6 +159,11 @@ namespace EndlessGuard.TestBattle
         /// </summary>
         public void RestartCurrentStage()
         {
+            if (StageProgressManager.Instance != null)
+            {
+                currentStage = StageProgressManager.Instance.CurrentStage;
+            }
+
             Debug.Log($"[TestWaveManager] Stage {currentStage} 웨이브 재시작");
             StartStageWaves();
         }
@@ -164,6 +174,11 @@ namespace EndlessGuard.TestBattle
             for (int waveIdx = 0; waveIdx < wavesPerStage; waveIdx++)
             {
                 _currentWave = waveIdx + 1;
+
+                if (StageProgressManager.Instance != null)
+                {
+                    StageProgressManager.Instance.SetCurrentWave(_currentWave);
+                }
 
                 // 1. EventBus로 스테이지/웨이브 변경 이벤트 발행 -> InGameUI 등에 반영
                 EventBus.Publish(new StageWaveChangedEvent(currentStage, _currentWave));
@@ -202,17 +217,27 @@ namespace EndlessGuard.TestBattle
 
             Debug.Log($"[TestWaveManager] Stage {currentStage} 모든 웨이브 클리어!");
 
+            int clearedStage = currentStage;
+
             // 스테이지 클리어 보상 (추가 웨이브 마석 지급 및 이벤트 발행)
             if (CurrencyManager.Instance != null && stageClearWaveStone > 0)
             {
                 CurrencyManager.Instance.AddCurrency(CurrencyType.WaveStone, stageClearWaveStone, applyModifiers: false);
             }
-            EventBus.Publish(new StageClearedEvent(currentStage, stageClearWaveStone));
+            EventBus.Publish(new StageClearedEvent(clearedStage, stageClearWaveStone));
 
-            OnStageCleared?.Invoke(currentStage);
+            // StageProgressManager에 다음 스테이지 진입 및 자동 저장 요청
+            if (StageProgressManager.Instance != null)
+            {
+                StageProgressManager.Instance.AdvanceToNextStage();
+                currentStage = StageProgressManager.Instance.CurrentStage;
+            }
+            else
+            {
+                currentStage++;
+            }
 
-            // 스테이지 번호 증가
-            currentStage++;
+            OnStageCleared?.Invoke(clearedStage);
         }
 
         // 일반 웨이브 스폰 코루틴

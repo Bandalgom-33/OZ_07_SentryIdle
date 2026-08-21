@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,11 +16,14 @@ public class UpgradeUi : MonoBehaviour
     [SerializeField] private Button exitButton;
 
     [Header("--- 치트 및 테스트 UI ---")]
-    [Tooltip("클릭 시 대량의 치트 골드를 즉시 지급받는 버튼")]
+    [Tooltip("클릭 시 대량의 치트 골드 및 다이아를 즉시 지급받는 버튼")]
     [SerializeField] private Button cheatGoldButton;
 
     [Tooltip("치트 골드 1회 지급 수량 (기본 900경)")]
     [SerializeField] private long cheatGoldAmount = 9_000_000_000_000_000_000L;
+
+    [Tooltip("치트 다이아 1회 지급 수량 (기본 100만)")]
+    [SerializeField] private long cheatDiamondAmount = 1_000_000L;
 
     [Header("--- 업그레이드 슬롯 리스트 ---")]
     [Tooltip("화면에 노출할 업그레이드 슬롯 컴포넌트 배열")]
@@ -97,13 +100,14 @@ public class UpgradeUi : MonoBehaviour
 
     #region 치트 골드 지급
 
-    // 치트 골드 즉시 획득 처리
+    // 치트 골드 및 다이아 즉시 획득 처리
     public void OnCheatGoldClicked()
     {
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.GetGold(cheatGoldAmount, applyModifiers: false);
-            Debug.Log($"[UpgradeUi] 치트 골드 지급 완료: +{cheatGoldAmount:N0} Gold");
+            CurrencyManager.Instance.GetDiamond(cheatDiamondAmount, applyModifiers: false);
+            Debug.Log($"[UpgradeUi] 치트 재화 지급 완료: +{cheatGoldAmount:N0} Gold, +{cheatDiamondAmount:N0} Diamond");
         }
     }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace EndlessGuard.Unit.Runtime
@@ -47,11 +47,19 @@ namespace EndlessGuard.Unit.Runtime
         private void OnEnable()
         {
             EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
+            EventBus.Subscribe<SceneLoadStartEvent>(OnSceneLoadStart);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
+            EventBus.Unsubscribe<SceneLoadStartEvent>(OnSceneLoadStart);
+        }
+
+        // 씬 전환 시작 시 적 목록 일괄 초기화
+        private void OnSceneLoadStart(SceneLoadStartEvent evt)
+        {
+            ClearAll();
         }
 
         // 스폰된 적 유닛 등록
@@ -72,6 +80,12 @@ namespace EndlessGuard.Unit.Runtime
             }
         }
 
+        // 씬 전환 또는 웨이브 종료 시 전체 적 목록 일괄 초기화 연산
+        public void ClearAll()
+        {
+            _activeEnemies.Clear();
+        }
+
         // 적 사망 이벤트 수신 시 디스폰/파괴 연동
         private void OnEnemyDied(EnemyDiedEvent eventMessage)
         {
@@ -86,7 +100,7 @@ namespace EndlessGuard.Unit.Runtime
                 UnregisterEnemy(enemyState);
             }
 
-            // 사망 애니메이션/연출 고려 지연 파괴 (필요 시 바로 Destroy(eventMessage.enemyGameObject) 변경 가능)
+            // 사망 애니메이션/연출 고려 지연 파괴
             if (despawnDelay > 0f)
             {
                 Destroy(eventMessage.enemyGameObject, despawnDelay);
