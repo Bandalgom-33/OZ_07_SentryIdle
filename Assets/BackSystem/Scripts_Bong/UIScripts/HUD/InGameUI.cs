@@ -30,6 +30,10 @@ public class InGameUI : MonoBehaviour
     [Tooltip("필드에 배치된 유닛 수 표시 텍스트 (예: FIELD UNITS 0 / 10)")]
     [SerializeField] private TMP_Text fieldUnitsText;
 
+    [Header("--- 씬 전환 제어 버튼 ---")]
+    [Tooltip("메인 로비 씬으로 복귀하는 버튼")]
+    [SerializeField] private Button returnToLobbyButton;
+
     [Header("--- 배속 조절 버튼 및 색상 연동 ---")]
     [Tooltip("게임 속도 변경 버튼 배열 (0: Pause, 1: 1x, 2: 2x, 3: 3x)")]
     [SerializeField] private Button[] speedButtons;
@@ -59,6 +63,13 @@ public class InGameUI : MonoBehaviour
     // 버튼 이벤트 바인딩 및 속도 비주얼 초기화
     private void Awake()
     {
+        // 로비 씬 복귀 버튼 리스너 바인딩
+        if (returnToLobbyButton != null)
+        {
+            returnToLobbyButton.onClick.AddListener(OnReturnToLobbyClicked);
+        }
+
+        // 배속 조절 버튼 리스너 바인딩
         if (speedButtons != null)
         {
             for (int i = 0; i < speedButtons.Length; i++)
@@ -71,6 +82,28 @@ public class InGameUI : MonoBehaviour
         }
 
         SetSpeedButtonVisual(1);
+    }
+
+    #endregion
+
+    #region 씬 전환 처리
+
+    // 메인 로비 씬으로 복귀 요청 처리
+    public void OnReturnToLobbyClicked()
+    {
+        Debug.Log("[InGameUI] 메인 로비 씬 복귀를 요청합니다.");
+
+        // SceneLoader를 통해 자동 세이브 및 페이드 아웃 연출과 함께 안전하게 로비 씬 전환
+        if (SceneLoader.Instance != null)
+        {
+            SceneLoader.Instance.LoadScene(SceneType.Lobby);
+        }
+        else
+        {
+            // SceneLoader가 없는 독립 씬 테스트 환경을 위한 폴백 처리
+            Debug.LogWarning("[InGameUI] SceneLoader 인스턴스가 존재하지 않아 기본 씬 매니저로 로비 씬을 로드합니다.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("TestBuild2MainLobby");
+        }
     }
 
     // 이벤트 버스 및 시스템 액션 구독
