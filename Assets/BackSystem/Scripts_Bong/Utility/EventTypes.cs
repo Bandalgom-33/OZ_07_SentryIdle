@@ -14,6 +14,57 @@ public enum CurrencyType
     RaidStone      // 레이드 콘텐츠 마석
 }
 
+// 게임 내 주요 씬 종류 열거형
+public enum SceneType
+{
+    Lobby = 0,     // 메인 로비 씬 (패널 및 관리 화면)
+    GamePlay = 1,  // 방치형 전투 진행 씬
+    Raid = 2       // 레이드 보스전 씬
+}
+
+#region 씬 전환 이벤트
+
+public readonly struct SceneLoadStartEvent
+{
+    public readonly SceneType targetScene;
+    public readonly string sceneName;
+
+    // 씬 로드 시작 이벤트 생성자
+    public SceneLoadStartEvent(SceneType targetScene, string sceneName)
+    {
+        this.targetScene = targetScene;
+        this.sceneName = sceneName ?? string.Empty;
+    }
+}
+
+public readonly struct SceneLoadProgressEvent
+{
+    public readonly SceneType targetScene;
+    public readonly float progressRatio;
+
+    // 씬 로드 진행률 이벤트 생성자
+    public SceneLoadProgressEvent(SceneType targetScene, float progressRatio)
+    {
+        this.targetScene = targetScene;
+        this.progressRatio = progressRatio;
+    }
+}
+
+public readonly struct SceneLoadCompletedEvent
+{
+    public readonly SceneType loadedScene;
+    public readonly string sceneName;
+
+    // 씬 로드 완료 이벤트 생성자
+    public SceneLoadCompletedEvent(SceneType loadedScene, string sceneName)
+    {
+        this.loadedScene = loadedScene;
+        this.sceneName = sceneName ?? string.Empty;
+    }
+}
+
+#endregion
+
 #region 게임 상태 및 세팅 이벤트
     
     public readonly struct GameStateChangedEvent

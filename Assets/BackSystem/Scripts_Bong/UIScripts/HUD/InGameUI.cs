@@ -9,16 +9,16 @@ public class InGameUI : MonoBehaviour
 
     [Header("--- 상단 HUD 정보 바 ---")]
     [Tooltip("스테이지 및 웨이브 통합 표시 텍스트 (예: STAGE 01 | WAVE 03 / 10)")]
-    [SerializeField] private Text stageWaveText;
+    [SerializeField] private TMP_Text stageWaveText;
 
     [Tooltip("라이프 현황 표시 텍스트 (예: LIFE 20 / 20)")]
-    [SerializeField] private Text lifeText;
+    [SerializeField] private TMP_Text lifeText;
 
     [Tooltip("상단 재화 1: 골드 텍스트")]
-    [SerializeField] private Text goldText;
+    [SerializeField] private TMP_Text goldText;
 
     [Tooltip("상단 재화 2: 다이아 텍스트")]
-    [SerializeField] private Text diamondText;
+    [SerializeField] private TMP_Text diamondText;
 
     [Header("--- 하단 배치 & DP 정보 바 ---")]
     [Tooltip("하단 재화 3: DP 코스트 텍스트 (예: 45 / 100)")]
@@ -84,6 +84,37 @@ public class InGameUI : MonoBehaviour
 
         // 스테이지 및 웨이브 변경 이벤트 구독
         EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
+        EventBus.Subscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
+        EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
+
+        RefreshAllHUD();
+    }
+
+    // 씬 시작 시 최신 데이터로 HUD 즉시 갱신
+    private void Start()
+    {
+        RefreshAllHUD();
+    }
+
+    // 인게임 전체 HUD 정보 일괄 갱신 연산
+    public void RefreshAllHUD()
+    {
+        if (CurrencyManager.Instance != null)
+        {
+            UpdateGoldUI(CurrencyManager.Instance.Gold);
+            UpdateDiamondUI(CurrencyManager.Instance.Diamond);
+            UpdateDpCostUI(CurrencyManager.Instance.DpCost);
+        }
+
+        if (GameManager.Instance != null)
+        {
+            UpdateLifeUI(GameManager.Instance.CurrentLife, GameManager.Instance.MaxLife);
+        }
+
+        if (StageProgressManager.Instance != null)
+        {
+            UpdateStageWaveUI(StageProgressManager.Instance.CurrentStage, StageProgressManager.Instance.CurrentWave, StageProgressManager.Instance.WavesPerStage);
+        }
     }
 
     // 이벤트 구독 해제 연산
@@ -96,12 +127,27 @@ public class InGameUI : MonoBehaviour
         GameManager.OnLifeChanged -= UpdateLifeUI;
 
         EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
+        EventBus.Unsubscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
+        EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
+    }
+
+    // 씬 로드 완료 이벤트 핸들러
+    private void OnSceneLoadCompleted(SceneLoadCompletedEvent evt)
+    {
+        RefreshAllHUD();
+    }
+
+    // 데이터 로드 완료 이벤트 핸들러
+    private void OnDataLoaded(DataLoadEvent evt)
+    {
+        RefreshAllHUD();
     }
 
     // 스테이지 및 웨이브 변경 이벤트 핸들러 (5웨이브 기준 표시)
     private void OnStageWaveChanged(StageWaveChangedEvent evt)
     {
-        UpdateStageWaveUI(evt.stageNumber, evt.waveNumber, 5);
+        int maxWave = (StageProgressManager.Instance != null) ? StageProgressManager.Instance.WavesPerStage : 5;
+        UpdateStageWaveUI(evt.stageNumber, evt.waveNumber, maxWave);
     }
 
     #endregion
