@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9afdd35810f2594393110050c2441cb, type: 3}
   m_Name: Ring
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
-  itemId: 
-  itemName: 
-  itemIcon: {fileID: 0}
+  itemId: Accessory_Test_001
+  itemName: Test Ring
+  itemIcon: {fileID: 21300808, guid: bae98cccbeaa147719d0db15c5d488cd, type: 3}
   itemCategory: 0
-  maxStack: 999
-  equipmentType: 0
+  maxStack: 1
+  equipmentType: 3
