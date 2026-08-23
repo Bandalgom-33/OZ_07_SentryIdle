@@ -17,7 +17,7 @@ MonoBehaviour:
   displayName: "\uC911\uAE09 \uACBD\uD5D8\uCE58 \uCC45"
   description: "\uC544\uAD70 \uC720\uB2DB\uC758 \uACBD\uD5D8\uCE58\uB97C  \uB298\uB824\uC8FC\uB294
     \uACBD\uD5D8\uCE58 \uCC45\uC785\uB2C8\uB2E4."
-  recipeIcon: {fileID: 0}
+  recipeIcon: {fileID: 2142515430, guid: 1a0f02a615b59b54890fb243e0e58b6f, type: 3}
   baseCraftingTime: 8
   goldCost: 500
   requiredStoneType: 4
