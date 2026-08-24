@@ -77,10 +77,8 @@ public class MapGenerator : MonoBehaviour
         IsMapGenerated = true;
         OnMapGenerated?.Invoke();
 
-        //SpawnTestUnits();
-        SpawnMeleeUnit();
+
        // SpawnMeleeUnit();
-        SpawnRangedUnit();
         //SpawnRangedUnit();
 
         if (waveManager != null)
@@ -422,6 +420,15 @@ public class MapGenerator : MonoBehaviour
 
                 if(node.IsDeployable && !node.IsOccupied &&node.TileType == targetTileType)
                 {
+                    
+                    if (targetTileType == TileType.Path)
+                    {
+                        if (node.GridPosition.x == 0 || node.GridPosition.x == width - 1)
+                        {
+                            continue;
+                        }
+                    }
+                    
                     //path에서 2칸 이내인지를 확인하기 아니면 제외
                     if (targetTileType == TileType.HighGround && !IsNearPath(node.GridPosition, 2)) continue;
 

@@ -23,9 +23,14 @@ public class ItemDataSO : ScriptableObject
     [SerializeField] private EquipmentType equipmentType;
 
     [Header("장비 능력치")]
-    [SerializeField] private int attack;
-    [SerializeField] private int defense;
-    [SerializeField] private int health;
+    [SerializeField] private int physicalAttack;
+    [SerializeField] private int magicAttack;
+
+    [SerializeField] private int physicalDefense;
+    [SerializeField] private int magicDefense;
+
+    [SerializeField] private float criticalDamageBonus;
+    [SerializeField] private float accuracy;
 
     public string ItemID => itemId;
     public string ItemName => itemName;
@@ -36,7 +41,12 @@ public class ItemDataSO : ScriptableObject
     public int MaxStack => maxStack;
     public EquipmentType EquipmentType => equipmentType;
 
-    public int Attack => attack;
-    public int Defense => defense;
-    public int Health => health;
+    public int PhysicalAttack => physicalAttack;
+    public int MagicAttack => magicAttack;
+
+    public int PhysicalDefense => physicalDefense;
+    public int MagicDefense => magicDefense;
+
+    public float CriticalDamageBonus => criticalDamageBonus;
+    public float Accuracy => accuracy;
 }
