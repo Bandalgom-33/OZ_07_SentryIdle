@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 
-// <T>를 붙여서 자기 자신의 타입을 인스턴스로 반환하도록 변경
 public abstract class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T _instance;
@@ -14,7 +13,6 @@ public abstract class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
             {
                 _instance = FindAnyObjectByType<T>();
 
-                // 씬에 인스턴스가 없을 경우 자동 게임오브젝트 생성하여 동적 할당
                 if (_instance == null)
                 {
                     GameObject singletonObject = new GameObject(typeof(T).Name);
@@ -25,6 +23,7 @@ public abstract class SingletonBase<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
+    // 싱글톤 인스턴스 중복 검사 및 생성
     protected virtual void Awake()
     {
         if (_instance == null)

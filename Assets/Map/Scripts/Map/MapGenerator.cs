@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
@@ -5,6 +6,9 @@ using EndlessGuard.Unit.Runtime;
 using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine.InputSystem.iOS;
+using EndlessGuard.Unit.Runtime;
+using EndlessGuard.Map;
+using Random = UnityEngine.Random;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -29,10 +33,16 @@ public class MapGenerator : MonoBehaviour
     //두 번째 spawn 경로
     private List<Vector2Int> pathPositionB = new List<Vector2Int>();
    
+    // 맵 생성 완료 여부 (소환 매니저 등 외부 시스템 동기화용)
+    public bool IsMapGenerated { get; private set; }
+    // 맵 생성 완료 시 발행되는 C# Action 이벤트
+    public event Action OnMapGenerated;
 
     public TileNode[,] Grid => grid;
     public IReadOnlyList<Vector2Int> PathPosition => pathPosition;
     public IReadOnlyList<Vector2Int> PathPositionB => pathPositionB;
+    // 외부에서 월드 좌표 변환 등을 수행할 수 있도록 렌더러 프로퍼티 노출
+    public GridMapRenderer MapRenderer => mapRenderer;
     public int Width => width;
     public int Height => height;
 
@@ -44,7 +54,8 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        InitializedGrid();
+        // 그리드 2차원 배열 초기화 호출
+        InitializeGrid();
         //고정 경로 생성은 주석처리
         // GenerateFixedPath();
         GenerateRandomPath();
@@ -62,6 +73,10 @@ public class MapGenerator : MonoBehaviour
         if (mapRenderer == null) return;
         mapRenderer.RenderMap(grid);
 
+        // 맵 생성 및 타일 렌더링 완료 상태 플래그 설정 및 이벤트 발행 (MapUnitSummonManager 연동)
+        IsMapGenerated = true;
+        OnMapGenerated?.Invoke();
+
         //SpawnTestUnits();
         SpawnMeleeUnit();
        // SpawnMeleeUnit();
@@ -77,7 +92,64 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-    public void InitializedGrid()
+    // 필드의 모든 아군 유닛과 적 유닛을 제거하고 타일 점유 해제
+    public void ClearAllUnitsAndEnemies()
+    {
+        // 1. 진행 중인 스폰 코루틴 중단
+        StopAllCoroutines();
+
+        // 2. 타일 점유 상태 해제
+        if (grid != null)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    grid[x, y]?.SetOccupied(false);
+                }
+            }
+        }
+
+        // 3. 적 유닛 제거 (전투 레지스트리 및 디스폰 매니저 연동)
+        var activeEnemies = new List<EnemyRuntimeState>(CombatRegistry.Enemies);
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy != null)
+            {
+                SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
+                Destroy(enemy.gameObject);
+            }
+        }
+
+        // 4. 아군 유닛 제거 (MapUnitSummonManager 추적 딕셔너리 및 이벤트 일괄 초기화)
+        var summonManager = FindFirstObjectByType<EndlessGuard.Map.MapUnitSummonManager>();
+        if (summonManager != null)
+        {
+            summonManager.ClearAllUnits();
+        }
+
+        var activeUnits = new List<UnitRuntimeState>(CombatRegistry.Units);
+        foreach (var unit in activeUnits)
+        {
+            if (unit != null)
+            {
+                Destroy(unit.gameObject);
+            }
+        }
+    }
+
+    // 필드 유닛 청소 후 맵은 그대로 둔 채 WaveManager를 통해 스테이지 웨이브 재시작
+    public void RestartWave()
+    {
+        ClearAllUnitsAndEnemies();
+        // 현재 웨이브 루프를 초기화하고 1웨이브부터 재가동
+        if (waveManager != null)
+        {
+            waveManager.RestartCurtrentStage();
+        }
+    }
+
+    public void InitializeGrid()
     {
         grid = new TileNode[width, height];
 
@@ -337,8 +409,8 @@ public class MapGenerator : MonoBehaviour
     }
 
   
-    //배치 가능한 타일에 랜덤 배치 하기
-    private TileNode FindRandomDeployableTile(TileType targetTileType)
+    // 배치 가능한 타일에 랜덤 배치 하기 (소환 매니저 등 외부 시스템에서도 타일 검색이 가능하도록 public 공개)
+    public TileNode FindRandomDeployableTile(TileType targetTileType)
     {
         List<TileNode> candidates = new List<TileNode>();
 

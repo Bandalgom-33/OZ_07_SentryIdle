@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OZ.SentryIdle.UI.Samples
 {
@@ -10,7 +11,7 @@ namespace OZ.SentryIdle.UI.Samples
         [SerializeField] private GameObject[] pages;
         [SerializeField] private Button previousButton;
         [SerializeField] private Button nextButton;
-        [SerializeField] private Text pageLabel;
+        [SerializeField] private TMP_Text pageLabel;
 
         // 현재 보이는 페이지 번호
         private int currentPageIndex;
@@ -114,7 +115,7 @@ namespace OZ.SentryIdle.UI.Samples
             GameObject[] pageObjects,
             Button previous,
             Button next,
-            Text label)
+            TMP_Text label)
         {
             pages = pageObjects;
             previousButton = previous;

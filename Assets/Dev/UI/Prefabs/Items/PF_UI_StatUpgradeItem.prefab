@@ -897,16 +897,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8684861334376842950}
     m_Modifications:
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_Text
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_text
       value: +1
       objectReference: {fileID: 0}
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_FontData.m_MinSize
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_fontSizeMin
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_FontData.m_FontSize
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_fontSize
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7448001501966433634, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
@@ -1022,16 +1022,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8684861334376842950}
     m_Modifications:
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_Text
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_text
       value: +10
       objectReference: {fileID: 0}
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_FontData.m_MinSize
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_fontSizeMin
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_FontData.m_FontSize
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_fontSize
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7448001501966433634, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
@@ -1147,16 +1147,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8684861334376842950}
     m_Modifications:
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_Text
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_text
       value: MAX
       objectReference: {fileID: 0}
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_FontData.m_MinSize
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_fontSizeMin
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 156910455912716192, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
-      propertyPath: m_FontData.m_FontSize
+    - target: {fileID: 4338164548819303547, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
+      propertyPath: m_fontSize
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7448001501966433634, guid: faca639efcf1cc84aae061dea82d9f3a, type: 3}
