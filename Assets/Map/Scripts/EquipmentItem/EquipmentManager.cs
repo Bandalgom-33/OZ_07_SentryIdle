@@ -123,16 +123,6 @@ public class EquipmentManager : MonoBehaviour
             criticalDamageBonus,
             accuracy
         );
-            
-        Debug.Log(
-            $"장비 스탯 합계 | " +
-            $"물공: {physicalAttack} / " +
-            $"마공: {magicAttack} / " +
-            $"물방: {physicalDefense} / " +
-            $"마방: {magicDefense} / " +
-            $"치명타피해: {criticalDamageBonus} / " +
-            $"명중: {accuracy}"
-        );
 
         OnEquipmentStatsChanged?.Invoke(CurrentBonusStats);
 
