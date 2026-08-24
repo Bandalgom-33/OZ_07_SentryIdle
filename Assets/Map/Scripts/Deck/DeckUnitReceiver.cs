@@ -6,8 +6,13 @@ using System.Collections.Generic;
 public class DeckUnitReceiver : MonoBehaviour
 {
     [SerializeField] private MapGenerator mapGenerator;
+    
 
     private readonly List<UnitDataSO> deckUnits = new List<UnitDataSO>();
+    
+    private const int MaxFieldUnitCount = 10;
+
+    private readonly HashSet<string> spawnedUnitIds = new HashSet<string>();
 
     private void OnEnable()
     {
@@ -63,6 +68,11 @@ public class DeckUnitReceiver : MonoBehaviour
         if (unitData == null) return;
         if (unitData.UnitPrefab == null) return;
         if (mapGenerator == null) return;
+        
+        //이미 10마리면 소환하지 않도록, 같은 유닛이 이미 있으면 동일하게 소환 x
+        if (spawnedUnitIds.Count >= MaxFieldUnitCount) return;
+        if (spawnedUnitIds.Contains(unitData.UnitId)) return;
+        
 
         TileType targetTileType;
 
@@ -129,5 +139,7 @@ public class DeckUnitReceiver : MonoBehaviour
         }
 
         targetTile.SetOccupied(true);
+        
+        spawnedUnitIds.Add(unitData.UnitId);
     }
 }
