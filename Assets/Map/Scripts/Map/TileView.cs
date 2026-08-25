@@ -13,6 +13,11 @@ public class TileView : MonoBehaviour
 
     [Header("타일 높이 설정")]
     [SerializeField] private float highGroundHeight = 0.25f;
+    
+    [Header("타일 Visual")]
+    [SerializeField] private Transform visualRoot;
+
+    private GameObject currentVisual;
 
     private TileNode node;
     private MeshRenderer meshRenderer;
@@ -24,7 +29,7 @@ public class TileView : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void Initialize(TileNode tilenode)
+    public void Initialize(TileNode tilenode,TileVisualSetSO visualSet)
     {
         if (tilenode == null) return;
         
@@ -36,6 +41,8 @@ public class TileView : MonoBehaviour
 
         ApplyMaterial();
         ApplyHeight();
+        
+        ApplyVisual(visualSet);
     }
 
    /*
@@ -98,6 +105,25 @@ public class TileView : MonoBehaviour
             position.y = 0f;
         }
         transform.position = position;  
+    }
+    
+    private void ApplyVisual(TileVisualSetSO visualSet)
+    {
+        if (visualSet == null) return;
+        if (visualRoot == null) return;
+
+        GameObject visualPrefab =
+            visualSet.GetRandomVisual(node.TileType);
+
+        if (visualPrefab == null) return;
+
+        currentVisual = Instantiate(
+            visualPrefab,
+            visualRoot
+        );
+
+        currentVisual.transform.localPosition = Vector3.zero;
+        currentVisual.transform.localRotation = Quaternion.identity;
     }
 
 }

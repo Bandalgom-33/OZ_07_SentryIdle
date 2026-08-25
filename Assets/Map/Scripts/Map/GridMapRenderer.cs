@@ -4,12 +4,17 @@ public class GridMapRenderer : MonoBehaviour
 {
     [Header("타일 설정")]
     [SerializeField] private TileView tilePrefab;
+    
+    [Header("타일 Visual Set")]
+    [SerializeField] private TileVisualSetSO tileVisualSet;
 
     [SerializeField, Min(0.1f)]
     private float tileSize = 1.0f;
 
     [Header("생성 타일 부모")]
     [SerializeField] private Transform tileRoot;
+    
+    
 
     public void RenderMap(TileNode[,] grid)
     {
@@ -33,7 +38,7 @@ public class GridMapRenderer : MonoBehaviour
 
         TileView tileView = Instantiate(tilePrefab, worldPosition, Quaternion.identity, tileRoot);
 
-        tileView.Initialize(node);
+        tileView.Initialize(node, tileVisualSet);
     }
 
     public Vector3 GridToWorld(Vector2Int gridPosition)
