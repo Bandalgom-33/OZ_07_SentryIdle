@@ -13,7 +13,8 @@ public class InventoryGridManager : MonoBehaviour
     private List<InventorySlotData> slots = new List<InventorySlotData>();
     
     public IReadOnlyList<InventorySlotData> Slots => slots;
-
+    public event Action OnInventoryChanged;
+    
     private void Awake()
     {
         InitializeSlots();
@@ -48,7 +49,11 @@ public class InventoryGridManager : MonoBehaviour
                 int amountToAdd = Mathf.Min(availableSpace, quantity);
                 slot.quantity += amountToAdd;
                 quantity -= amountToAdd;
-                if (quantity <= 0) return true;
+                if (quantity <= 0)
+                {
+                    OnInventoryChanged?.Invoke();
+                    return true;
+                }
             }
         }
         
@@ -61,7 +66,11 @@ public class InventoryGridManager : MonoBehaviour
             slots[i] = new InventorySlotData(itemData, amountToAdd);
             quantity -= amountToAdd;
 
-            if (quantity <= 0) return true;
+            if (quantity <= 0)
+            {
+                OnInventoryChanged?.Invoke();
+                return true;
+            }
             
         }
         //빈 슬롯도 없으면 패스

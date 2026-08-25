@@ -38,6 +38,7 @@ public class TileView : MonoBehaviour
         ApplyHeight();
     }
 
+   /*
     private void OnMouseDown()
     {
         if(node == null) return;
@@ -49,6 +50,7 @@ public class TileView : MonoBehaviour
            $"배치 가능: {node.IsDeployable}"
        );
     }
+    */
 
     private void ApplyMaterial()
     {
