@@ -5,7 +5,6 @@ using EndlessGuard.Unit.Data;
 using EndlessGuard.Unit.Runtime;
 using Unity.VisualScripting;
 using System.Collections;
-using UnityEngine.InputSystem.iOS;
 using EndlessGuard.Unit.Runtime;
 using EndlessGuard.Map;
 using Random = UnityEngine.Random;
