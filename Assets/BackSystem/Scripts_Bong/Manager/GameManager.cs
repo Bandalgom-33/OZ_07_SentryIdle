@@ -58,6 +58,7 @@ public class GameManager : SingletonBase<GameManager>
         _ = ExperienceManager.Instance;
         _ = CollectionDataProvider.Instance;
         _ = StageProgressManager.Instance;
+        _ = OfflineRewardManager.Instance;
         _ = SceneLoader.Instance;
     }
 

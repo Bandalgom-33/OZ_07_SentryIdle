@@ -184,6 +184,9 @@ namespace EndlessGuard.TestBattle
                 EventBus.Publish(new StageWaveChangedEvent(currentStage, _currentWave));
                 Debug.Log($"[TestWaveManager] >>> Stage {currentStage} - Wave {_currentWave}/{wavesPerStage} 시작 <<<");
 
+                // 웨이브 시작 시점 타임스탬프 기록 (최근 5개 웨이브 평균 클리어 시간 측정용)
+                float waveStartTime = Time.time;
+
                 // 2. 마지막 웨이브는 보스 웨이브, 그 외는 일반 웨이브 실행
                 if (_currentWave == wavesPerStage)
                 {
@@ -200,13 +203,20 @@ namespace EndlessGuard.TestBattle
                     yield return null;
                 }
 
+                // 웨이브 클리어 소요 시간 산출 및 기록
+                float waveDuration = Time.time - waveStartTime;
+                if (StageProgressManager.Instance != null)
+                {
+                    StageProgressManager.Instance.RecordWaveClearDuration(waveDuration);
+                }
+
                 // 4. 웨이브 클리어 보상 (웨이브 마석 지급 및 이벤트 발행)
                 if (CurrencyManager.Instance != null && waveClearWaveStone > 0)
                 {
                     CurrencyManager.Instance.AddCurrency(CurrencyType.WaveStone, waveClearWaveStone, applyModifiers: false);
                 }
                 EventBus.Publish(new WaveClearedEvent(currentStage, _currentWave, waveClearWaveStone));
-                Debug.Log($"[TestWaveManager] Stage {currentStage} - Wave {_currentWave} 클리어! (보상: 웨이브 마석 +{waveClearWaveStone})");
+                Debug.Log($"[TestWaveManager] Stage {currentStage} - Wave {_currentWave} 클리어! (보상: 웨이브 마석 +{waveClearWaveStone}, 소요시간: {waveDuration:F1}초)");
 
                 // 5. 다음 웨이브 사이 대기
                 if (waveIdx < wavesPerStage - 1)

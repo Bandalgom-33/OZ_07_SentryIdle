@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -143,8 +143,20 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 보상 지급 로직
 
+    public List<DungeonDataSO> DungeonList => dungeonList;
+
+    public float GetDungeonCycleTimer(string dungeonId)
+    {
+        return _cycleTimerMap.TryGetValue(dungeonId, out float t) ? t : 0.0f;
+    }
+
+    public void SetDungeonCycleTimer(string dungeonId, float timer)
+    {
+        _cycleTimerMap[dungeonId] = timer;
+    }
+
     // 던전 생산 주기 완료 보상 지급 연산
-    private void GrantDungeonReward(DungeonDataSO dataSO, int totalPower, int cycleCount)
+    public void GrantDungeonReward(DungeonDataSO dataSO, int totalPower, int cycleCount)
     {
         if (dataSO == null || cycleCount <= 0) return;
 
@@ -471,8 +483,6 @@ public class DungeonManager : SingletonBase<DungeonManager>
                 _cycleTimerMap[slotSave.dungeonId] = slotSave.currentCycleTimer;
             }
         }
-
-        ProcessOfflineDungeonRewards(evt.saveData.lastSaveTimestamp);
 
         for (int i = 0; i < dungeonList.Count; i++)
         {

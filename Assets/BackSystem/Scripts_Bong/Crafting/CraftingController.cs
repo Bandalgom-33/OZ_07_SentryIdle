@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,6 +37,7 @@ public class CraftingController : SingletonBase<CraftingController>
     public int OutputAmount => FactoryUpgradeProcessor.GetCraftingOutputAmount(_factoryLevel);
     public float SpeedMultiplier => FactoryUpgradeProcessor.GetCraftingSpeedMultiplier(_factoryLevel);
     public bool IsGlobalAutoEnabled => _isGlobalAutoEnabled;
+    public List<CraftingRecipeSO> RecipeDatabase => recipeDatabase;
     public IReadOnlyList<CraftingRecipeSO> Recipes => recipeDatabase;
     public IReadOnlyList<int> ActiveRecipeQueue => _activeRecipeQueue;
     public int CurrentQueueCount => _activeRecipeQueue.Count;

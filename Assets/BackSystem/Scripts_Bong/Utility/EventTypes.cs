@@ -480,4 +480,43 @@ public readonly struct DungeonFormationChangedEvent
     }
 }
 
+#endregion
+
+#region 오프라인 방치 보상 리포트 이벤트
+
+// 오프라인 방치 보상 정산 결과 종합 DTO (UI 팝업 출력 및 데이터 전달용)
+public class OfflineRewardReportData
+{
+    // 정산에 적용된 유효 오프라인 시간 (초, 최대 24시간 캡)
+    public double ValidOfflineSeconds;
+    // UI 표시용 포맷 문자열 (예: "01시간 23분 45초")
+    public string FormattedDuration = string.Empty;
+
+    // 1. 일반 스테이지 방치 보상
+    public long GainedGold;
+    public long GainedWaveStone;
+
+    // 2. 공방 소모품 생산 보상 (소모품 타입별 획득 수량)
+    public Dictionary<ConsumableType, int> GainedConsumables = new Dictionary<ConsumableType, int>();
+
+    // 3. 던전 파견 생산 보상 (던전 ID별 완료 사이클 횟수)
+    public Dictionary<string, int> DungeonCompletedCycles = new Dictionary<string, int>();
+
+    // 보상 획득 여부 판정 플래그
+    public bool HasAnyReward => GainedGold > 0 || GainedWaveStone > 0 || (GainedConsumables != null && GainedConsumables.Count > 0) || (DungeonCompletedCycles != null && DungeonCompletedCycles.Count > 0);
+}
+
+// 오프라인 방치 보상 정산 완료 및 UI 표시 요청 이벤트
+public readonly struct OfflineRewardReportEvent
+{
+    // 정산된 오프라인 보상 데이터 원본
+    public readonly OfflineRewardReportData reportData;
+
+    // 오프라인 보상 리포트 이벤트 생성자
+    public OfflineRewardReportEvent(OfflineRewardReportData reportData)
+    {
+        this.reportData = reportData;
+    }
+}
+
 #endregion
