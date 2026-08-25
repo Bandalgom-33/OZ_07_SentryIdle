@@ -981,7 +981,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -170}
+  m_AnchoredPosition: {x: 0, y: -174}
   m_SizeDelta: {x: 220, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &269038263
@@ -1021,7 +1021,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1039,8 +1039,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1150,7 +1150,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281479730
   m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -1163,7 +1163,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2152,7 +2152,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryTest
   inventoryGridManager: {fileID: 1691899582}
-  testItem: {fileID: 11400000, guid: e49d511cef6e3dd46a158fa58ecfc2bf, type: 2}
+  headItem: {fileID: 11400000, guid: 3e5fcea8e0a072842be05154808600e7, type: 2}
+  armorItem: {fileID: 11400000, guid: f457de3f485ca8f4ca0f9a305fbebd94, type: 2}
+  weaponItem: {fileID: 11400000, guid: 601d4d7b358cbe9489393ecf2caef6e3, type: 2}
+  accessoryItem: {fileID: 11400000, guid: 97e500562318c3d428929d6a1433dd67, type: 2}
 --- !u!4 &588652342
 Transform:
   m_ObjectHideFlags: 0
@@ -2842,6 +2845,51 @@ MonoBehaviour:
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &818359000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 818359002}
+  - component: {fileID: 818359001}
+  m_Layer: 0
+  m_Name: DeckUnitReceiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &818359001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818359000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edce4d8485efa3449ad8943b51a08c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckUnitReceiver
+  mapGenerator: {fileID: 0}
+--- !u!4 &818359002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818359000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &822766779
 GameObject:
   m_ObjectHideFlags: 0
@@ -4177,6 +4225,180 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1330163303}
   m_CullTransparentMesh: 1
+--- !u!1 &1353824490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1353824492}
+  - component: {fileID: 1353824491}
+  m_Layer: 0
+  m_Name: DeckManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1353824491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353824490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40fb86416eba17a42a0f2d08cb7c52e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckManager
+  unitCatalog: {fileID: 11400000, guid: 8009f11140c0429409c98b0cf3b3b803, type: 2}
+  normalDeckCapacity: 10
+  raid1DeckCapacity: 10
+  raid2DeckCapacity: 10
+  normalDeckSlots: 0200000004000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  raid1DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  raid2DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  normalDeckInspectorView:
+  - slotIndex: 1
+    unitId: UNIT_0002
+    unitName: "\uB8E8\uCE74"
+    isEquipped: 1
+  - slotIndex: 2
+    unitId: UNIT_0004
+    unitName: "\uAE40\uD558\uC9C4"
+    isEquipped: 1
+  - slotIndex: 3
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 4
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 5
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 6
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 7
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 8
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 9
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 10
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  raid1DeckInspectorView:
+  - slotIndex: 1
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 2
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 3
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 4
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 5
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 6
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 7
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 8
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 9
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 10
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  raid2DeckInspectorView:
+  - slotIndex: 1
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 2
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 3
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 4
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 5
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 6
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 7
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 8
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 9
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+  - slotIndex: 10
+    unitId: '-'
+    unitName: None
+    isEquipped: 0
+--- !u!4 &1353824492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353824490}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1364432302
 GameObject:
   m_ObjectHideFlags: 0
@@ -5240,6 +5462,56 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1705623437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1705623439}
+  - component: {fileID: 1705623438}
+  m_Layer: 0
+  m_Name: MapGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1705623438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705623437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e20dfd610af5e24bb124e7e061528e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
+  width: 12
+  height: 8
+  mapRenderer: {fileID: 206666535}
+  meleeUnitPrefab: {fileID: 0}
+  rangedUnitPrefab: {fileID: 0}
+  waveManager: {fileID: 753784559}
+--- !u!4 &1705623439
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705623437}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1718975440
 GameObject:
   m_ObjectHideFlags: 0
@@ -5494,8 +5766,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -135}
-  m_SizeDelta: {x: 220, y: 30}
+  m_AnchoredPosition: {x: 15, y: -126}
+  m_SizeDelta: {x: 250, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1765667341
 CanvasRenderer:
@@ -5534,7 +5806,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -5738,7 +6010,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281479730
   m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -5751,7 +6023,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -6111,7 +6383,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -6129,8 +6401,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6198,7 +6470,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -200}
+  m_AnchoredPosition: {x: 0, y: -222}
   m_SizeDelta: {x: 220, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2056382130
@@ -6666,3 +6938,6 @@ SceneRoots:
   - {fileID: 1212733563}
   - {fileID: 1718975442}
   - {fileID: 475286204}
+  - {fileID: 818359002}
+  - {fileID: 1353824492}
+  - {fileID: 1705623439}

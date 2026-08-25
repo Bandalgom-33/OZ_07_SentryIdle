@@ -12,9 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9afdd35810f2594393110050c2441cb, type: 3}
   m_Name: Accessory_01
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
-  itemId: 
-  itemName: 
-  itemIcon: {fileID: 0}
+  itemId: Accessory_01
+  itemName: "\uCE58\uBA85\uC801 \uBAA9\uAC78\uC774"
+  itemIcon: {fileID: 21300000, guid: 4930d7c9842c04602b1ef9e2c0d4dcfc, type: 3}
+  description: 
   itemCategory: 0
-  maxStack: 999
-  equipmentType: 0
+  maxStack: 1
+  equipmentType: 3
+  physicalAttack: 0
+  magicAttack: 0
+  physicalDefense: 0
+  magicDefense: 0
+  criticalDamageBonus: 10
+  accuracy: 0

@@ -15,6 +15,13 @@ MonoBehaviour:
   itemId: Armor_03
   itemName: "\uB9C8\uB825 \uAC11\uC637"
   itemIcon: {fileID: 2295288814720475729, guid: d31e9b2f54b2e4c81af2cd4bc1330eab, type: 3}
+  description: 
   itemCategory: 0
-  maxStack: 999
-  equipmentType: 0
+  maxStack: 1
+  equipmentType: 1
+  physicalAttack: 0
+  magicAttack: 0
+  physicalDefense: 2
+  magicDefense: 10
+  criticalDamageBonus: 0
+  accuracy: 0

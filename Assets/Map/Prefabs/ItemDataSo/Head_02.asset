@@ -15,6 +15,13 @@ MonoBehaviour:
   itemId: Head_02
   itemName: "\uCCA0 \uD22C\uAD6C"
   itemIcon: {fileID: 21300000, guid: 74997d997e09e81c057b65850d411662, type: 3}
+  description: 
   itemCategory: 0
   maxStack: 1
   equipmentType: 0
+  physicalAttack: 0
+  magicAttack: 0
+  physicalDefense: 5
+  magicDefense: 2
+  criticalDamageBonus: 0
+  accuracy: 0
