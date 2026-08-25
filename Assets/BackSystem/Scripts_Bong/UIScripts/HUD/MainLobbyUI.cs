@@ -30,6 +30,9 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("오프라인 보상 팝업 닫기/수령 확인 버튼")]
     [SerializeField] private Button closeOfflineRewardButton;
 
+    [Tooltip("오프라인 방치 경과 시간 및 획득 보상 내역 표시 단일 통합 TMP 텍스트")]
+    [SerializeField] private TMP_Text offlineRewardInfoText;
+
     [Header("--- 상단 HUD 정보 텍스트 ---")]
     [Tooltip("현재 스테이지 정보 표시 TMP 텍스트")]
     [SerializeField] private TMP_Text stageInfoText;
@@ -162,6 +165,7 @@ public class MainLobbyUI : MonoBehaviour
         CurrencyManager.OnDiamondChange += UpdateDiamondUI;
         EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
+        EventBus.Subscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
 
         RefreshAllHUD();
     }
@@ -173,6 +177,7 @@ public class MainLobbyUI : MonoBehaviour
         CurrencyManager.OnDiamondChange -= UpdateDiamondUI;
         EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
+        EventBus.Unsubscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
     }
 
     // 첫 실행 여부에 따른 초기 메인 패널 표시 및 HUD 갱신
@@ -188,6 +193,75 @@ public class MainLobbyUI : MonoBehaviour
         if (Instance == this)
         {
             Instance = null;
+        }
+    }
+
+    #endregion
+
+    #region 오프라인 방치 보상 이벤트 핸들러 및 텍스트 빌더
+
+    // 오프라인 방치 시간 및 보상 상세 내역을 단일 문자열로 조립하는 헬퍼 메서드
+    private string BuildOfflineRewardText(OfflineRewardReportData report)
+    {
+        if (report == null)
+        {
+            return "오프라인 보상 데이터가 없습니다.";
+        }
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine($"방치 시간: <color=#00FFFF>{report.FormattedDuration}</color>");
+        sb.AppendLine();
+
+        if (report.HasAnyReward)
+        {
+            sb.AppendLine("[오프라인 획득 보상]");
+
+            if (report.GainedGold > 0)
+            {
+                sb.AppendLine($"• 골드: <color=#FFD700>+{report.GainedGold:N0}</color>");
+            }
+
+            if (report.GainedWaveStone > 0)
+            {
+                sb.AppendLine($"• 웨이브 마석: <color=#00FFFF>+{report.GainedWaveStone:N0}</color>");
+            }
+
+            if (report.GainedConsumables != null && report.GainedConsumables.Count > 0)
+            {
+                foreach (var pair in report.GainedConsumables)
+                {
+                    if (pair.Value > 0)
+                    {
+                        sb.AppendLine($"• {pair.Key}: <color=#00FF00>+{pair.Value}개</color>");
+                    }
+                }
+            }
+
+            if (report.DungeonCompletedCycles != null && report.DungeonCompletedCycles.Count > 0)
+            {
+                foreach (var pair in report.DungeonCompletedCycles)
+                {
+                    if (pair.Value > 0)
+                    {
+                        sb.AppendLine($"• 던전 [{pair.Key}]: <color=#FFA500>{pair.Value}회 완료</color>");
+                    }
+                }
+            }
+        }
+        else
+        {
+            sb.AppendLine("획득한 오프라인 보상이 없습니다.");
+        }
+
+        return sb.ToString();
+    }
+
+    // 오프라인 방치 보상 수신 및 텍스트 바인딩 연산 (팝업은 시작 버튼 클릭 시 노출)
+    private void OnOfflineRewardReported(OfflineRewardReportEvent evt)
+    {
+        if (offlineRewardInfoText != null && evt.reportData != null)
+        {
+            offlineRewardInfoText.text = BuildOfflineRewardText(evt.reportData);
         }
     }
 
@@ -225,6 +299,20 @@ public class MainLobbyUI : MonoBehaviour
 
         if (startPanel != null) startPanel.SetActive(false);
         if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
+
+        // 저장 파일이 존재하는 기존 유저인 경우 보상 유무와 상관없이 오프라인 보상 팝업 노출 (신규 유저는 생략)
+        bool isExistingUser = SaveManager.Instance != null && SaveManager.Instance.HasExistingSaveFile;
+        if (isExistingUser)
+        {
+            if (OfflineRewardManager.Instance != null && OfflineRewardManager.Instance.LastReportData != null)
+            {
+                if (offlineRewardInfoText != null)
+                {
+                    offlineRewardInfoText.text = BuildOfflineRewardText(OfflineRewardManager.Instance.LastReportData);
+                }
+                ShowOfflineRewardPopup();
+            }
+        }
     }
 
     #endregion
