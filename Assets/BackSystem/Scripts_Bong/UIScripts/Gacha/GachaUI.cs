@@ -197,7 +197,7 @@ public class GachaUI : MonoBehaviour
     {
         if (pityCountText != null && GachaController.Instance != null)
         {
-            pityCountText.text = $"Pity Stack: <color=#00FFFF>{GachaController.Instance.CurrentPityStack}</color> / {GachaController.Instance.PityThreshold}";
+            pityCountText.text = $"<color=#00FFFF>{GachaController.Instance.CurrentPityStack}</color> / {GachaController.Instance.PityThreshold}";
         }
     }
 
