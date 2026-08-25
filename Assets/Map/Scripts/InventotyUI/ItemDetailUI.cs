@@ -46,8 +46,6 @@ public class ItemDetailUI : MonoBehaviour
         equipmentManager.EquipItem(currentItem);
 
         UpdateButtonState();
-
-        Debug.Log($"{currentItem.ItemName} 장착 완료");
     }
     
     //장착 중인지 확인 하는 메서드
