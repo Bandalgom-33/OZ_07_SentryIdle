@@ -26,22 +26,26 @@ public class DeckUnitReceiver : MonoBehaviour
             mapGenerator = FindFirstObjectByType<MapGenerator>();
         }
 
-        if (DeckManager.Instance == null) return;
-        
+        if (mapGenerator == null) return;
 
-        List<DeckSlotUnitEntry> currentUnits = DeckManager.Instance.GetActiveDeckSlotEntries(DeckType.Normal);
-
-        UpdateDeckUnits(currentUnits);
-
-        for (int i = 0; i < deckUnits.Count; i++)
+        if (mapGenerator.IsMapGenerated)
         {
-            SpawnDeckUnit(deckUnits[i]);
+            SpawnCurrentDeck();
+        }
+        else
+        {
+            mapGenerator.OnMapGenerated += HandleMapGenerated;
         }
     }
 
     private void OnDisable()
     {
         EventBus.Unsubscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
+
+        if (mapGenerator != null)
+        {
+            mapGenerator.OnMapGenerated -= HandleMapGenerated;
+        }
     }
 
     private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
@@ -68,6 +72,10 @@ public class DeckUnitReceiver : MonoBehaviour
         if (unitData == null) return;
         if (unitData.UnitPrefab == null) return;
         if (mapGenerator == null) return;
+        Debug.Log(
+            $"[DeckUnitReceiver] 실제 소환: " +
+            $"{unitData.DisplayName} / {unitData.UnitId}"
+        );
         
         //이미 10마리면 소환하지 않도록, 같은 유닛이 이미 있으면 동일하게 소환 x
         if (spawnedUnitIds.Count >= MaxFieldUnitCount) return;
@@ -141,5 +149,35 @@ public class DeckUnitReceiver : MonoBehaviour
         targetTile.SetOccupied(true);
         
         spawnedUnitIds.Add(unitData.UnitId);
+    }
+    
+    private void HandleMapGenerated()
+    {
+        if (mapGenerator != null)
+        {
+            mapGenerator.OnMapGenerated -= HandleMapGenerated;
+        }
+
+        SpawnCurrentDeck();
+    }
+    
+    //덱 읽고 소환
+    private void SpawnCurrentDeck()
+    {
+        if (DeckManager.Instance == null) return;
+
+        List<DeckSlotUnitEntry> currentUnits =
+            DeckManager.Instance.GetActiveDeckSlotEntries(DeckType.Normal);
+
+        Debug.Log(
+            $"[DeckUnitReceiver] 현재 덱 유닛 수: {currentUnits.Count}"
+        );
+
+        UpdateDeckUnits(currentUnits);
+
+        for (int i = 0; i < deckUnits.Count; i++)
+        {
+            SpawnDeckUnit(deckUnits[i]);
+        }
     }
 }
