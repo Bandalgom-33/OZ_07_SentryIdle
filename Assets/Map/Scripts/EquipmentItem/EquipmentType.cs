@@ -1,6 +1,7 @@
 public enum EquipmentType
 {
-    Weapon,
+    Head,
     Armor,
+    Weapon,
     Accessory
 }
