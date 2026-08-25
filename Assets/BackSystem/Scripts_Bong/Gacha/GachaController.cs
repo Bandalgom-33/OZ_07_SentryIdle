@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
@@ -25,10 +25,17 @@ public class GachaController : SingletonBase<GachaController>
     private GachaDataProvider _dataProvider;
     private PityEvaluator _pityEvaluator;
 
+    // 최근 가챠 이력 로그 캐시 리스트 (최대 100개 보관)
+    private readonly List<GachaLogEntry> _drawLogs = new List<GachaLogEntry>();
+    private const int MaxLogCount = 100;
+
     public int CurrentPityStack => _pityEvaluator != null ? _pityEvaluator.CurrentPityStack : 0;
     public int SingleDrawCost => singleDrawCost;
     public int TenDrawCost => tenDrawCost;
     public int PityThreshold => pityThreshold;
+
+    // UI에서 세이브된 이전 가챠 로그를 순회 조회할 수 있는 읽기 전용 컬렉션
+    public IReadOnlyList<GachaLogEntry> DrawLogs => _drawLogs;
 
     #endregion
 
@@ -74,6 +81,7 @@ public class GachaController : SingletonBase<GachaController>
         }
 
         List<IGachaRewardItem> results = new List<IGachaRewardItem>();
+        string currentTimestamp = System.DateTime.Now.ToString("HH:mm:ss");
 
         for (int i = 0; i < drawCount; i++)
         {
@@ -92,6 +100,17 @@ public class GachaController : SingletonBase<GachaController>
             {
                 BreakthroughProcessor.ProcessGachaUnit(ref rewardItem);
                 results.Add(rewardItem);
+
+                // 유닛 ID 파싱 후 가챠 로그 엔트리 추가 (유닛 인덱스와 시간만 경량 저장)
+                int unitId = UnitIdHelper.ParseUnitId(rewardItem.RewardId);
+                if (unitId > 0)
+                {
+                    AddDrawLog(new GachaLogEntry
+                    {
+                        unitId = unitId,
+                        timestamp = currentTimestamp
+                    });
+                }
             }
         }
 
@@ -101,11 +120,22 @@ public class GachaController : SingletonBase<GachaController>
         return results;
     }
 
+    // 신규 가챠 로그 추가 및 최대 보관 개수 제한(100개) 유지 헬퍼
+    private void AddDrawLog(GachaLogEntry entry)
+    {
+        if (_drawLogs.Count >= MaxLogCount)
+        {
+            // 메모리 및 세이브 파일 용량 비대화를 방지하기 위해 가장 오래된 로그부터 제거 (FIFO)
+            _drawLogs.RemoveAt(0);
+        }
+        _drawLogs.Add(entry);
+    }
+
     #endregion
 
     #region 데이터 세이브/로드 연동
 
-    // 가챠 천장 세이브 데이터 저장 처리
+    // 가챠 천장 및 로그 세이브 데이터 저장 처리
     private void OnSave(DataSaveEvent evt)
     {
         if (evt.saveData == null) return;
@@ -115,9 +145,11 @@ public class GachaController : SingletonBase<GachaController>
         }
 
         evt.saveData.gacha.pityStackCount = CurrentPityStack;
+        // 세이브 데이터에 최근 가챠 로그 리스트 복사 저장
+        evt.saveData.gacha.drawLogs = new List<GachaLogEntry>(_drawLogs);
     }
 
-    // 가챠 천장 세이브 데이터 로드 처리
+    // 가챠 천장 및 로그 세이브 데이터 로드 처리
     private void OnLoad(DataLoadEvent evt)
     {
         if (evt.saveData == null || evt.saveData.gacha == null) return;
@@ -131,6 +163,13 @@ public class GachaController : SingletonBase<GachaController>
         {
             _pityEvaluator = new PityEvaluator(loadedPity);
         }
+
+        // 세이브된 가챠 이력 로그 캐시 복구
+        _drawLogs.Clear();
+        if (evt.saveData.gacha.drawLogs != null)
+        {
+            _drawLogs.AddRange(evt.saveData.gacha.drawLogs);
+        }
     }
 
     // 가챠 데이터 초기화 처리
@@ -140,6 +179,7 @@ public class GachaController : SingletonBase<GachaController>
         {
             _pityEvaluator.ResetPity();
         }
+        _drawLogs.Clear();
     }
 
     #endregion

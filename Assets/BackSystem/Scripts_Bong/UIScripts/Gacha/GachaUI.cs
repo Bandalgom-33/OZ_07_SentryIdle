@@ -43,6 +43,14 @@ public class GachaUI : MonoBehaviour
 
     #endregion
 
+    #region 직렬화 필드 추가
+
+    [Header("카탈로그 참조")]
+    [Tooltip("로그 복원 시 유닛 이름 및 성급 조회를 위한 카탈로그 SO")]
+    [SerializeField] private UnitCatalog unitCatalog;
+
+    #endregion
+
     #region 비공개 필드
 
     private readonly StringBuilder _logBuilder = new StringBuilder();
@@ -51,7 +59,7 @@ public class GachaUI : MonoBehaviour
 
     #region 라이프 사이클
 
-    // 버튼 이벤트 초기화
+    // 버튼 이벤트 초기화 및 카탈로그 로드
     private void Awake()
     {
         if (closePanelButton != null) closePanelButton.onClick.AddListener(() => SetPanelActive(false));
@@ -60,6 +68,11 @@ public class GachaUI : MonoBehaviour
         if (drawTenButton != null) drawTenButton.onClick.AddListener(OnClickDrawTen);
         if (addCheatDiamondButton != null) addCheatDiamondButton.onClick.AddListener(OnClickAddDiamond);
         if (clearLogButton != null) clearLogButton.onClick.AddListener(ClearLog);
+
+        if (unitCatalog == null)
+        {
+            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+        }
     }
 
     // 이벤트 버스 구독 및 UI 초기화
@@ -67,8 +80,10 @@ public class GachaUI : MonoBehaviour
     {
         EventBus.Subscribe<GachaDrawCompletedEvent>(OnGachaCompleted);
         EventBus.Subscribe<CurrencyChangedEvent>(OnCurrencyChanged);
+        EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
         UpdatePityText();
         UpdateDrawButtonsInteractable();
+        RestoreSavedDrawLogs();
     }
 
     // 이벤트 버스 구독 해제
@@ -76,6 +91,7 @@ public class GachaUI : MonoBehaviour
     {
         EventBus.Unsubscribe<GachaDrawCompletedEvent>(OnGachaCompleted);
         EventBus.Unsubscribe<CurrencyChangedEvent>(OnCurrencyChanged);
+        EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
     }
 
     #endregion
@@ -92,8 +108,15 @@ public class GachaUI : MonoBehaviour
             {
                 UpdatePityText();
                 UpdateDrawButtonsInteractable();
+                RestoreSavedDrawLogs();
             }
         }
+    }
+
+    // 세이브 데이터 로드 이벤트 콜백
+    private void OnDataLoaded(DataLoadEvent evt)
+    {
+        RestoreSavedDrawLogs();
     }
 
     // 1회 단차 가챠 실행 요청
@@ -145,51 +168,53 @@ public class GachaUI : MonoBehaviour
 
     #endregion
 
-    #region 이벤트 수신 및 상세 돌파 로그 뷰어 연산
+    #region 이벤트 수신 및 로그 뷰어 연산 (시간 및 유닛 정보만 출력)
 
-    // 가챠 완료 이벤트 수신 및 상세 결과 로그 기록
+    // 세이브된 가챠 로그 전체를 읽어와 스크롤뷰에 복원 출력
+    public void RestoreSavedDrawLogs()
+    {
+        _logBuilder.Clear();
+
+        if (GachaController.Instance != null && GachaController.Instance.DrawLogs != null)
+        {
+            var logs = GachaController.Instance.DrawLogs;
+            for (int i = 0; i < logs.Count; i++)
+            {
+                var entry = logs[i];
+                string unitKey = UnitIdHelper.ToUnitKey(entry.unitId);
+                string unitName = $"Unit {entry.unitId}";
+                UnitGrade grade = UnitGrade.OneStar;
+
+                if (unitCatalog != null && unitCatalog.TryGetById(unitKey, out UnitDataSO dataSO) && dataSO != null)
+                {
+                    unitName = dataSO.DisplayName;
+                    grade = dataSO.Grade;
+                }
+
+                string colorHex = GetGradeColorHex(grade);
+                string time = string.IsNullOrEmpty(entry.timestamp) ? "--:--:--" : entry.timestamp;
+                _logBuilder.AppendLine($"[{time}] <color={colorHex}>[{(int)grade}성] {unitName}</color>");
+            }
+        }
+
+        UpdateLogDisplay();
+    }
+
+    // 가챠 완료 이벤트 수신 및 결과 로그 추가 (돌파 단계 제외, 시간 및 유닛 정보만 기록)
     private void OnGachaCompleted(GachaDrawCompletedEvent evt)
     {
         UpdatePityText();
         UpdateDrawButtonsInteractable();
 
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
-        _logBuilder.AppendLine($"<color=#00FFFF>[{timestamp}] --- Gacha x{evt.resultItems.Count} Result ---</color>");
-
         for (int i = 0; i < evt.resultItems.Count; i++)
         {
             var item = evt.resultItems[i];
             string colorHex = GetGradeColorHex(item.Grade);
-            string statusTag = FormatResultStatusTag(item);
-            
-            _logBuilder.AppendLine($"  └ [{i + 1}] <color={colorHex}>[{(int)item.Grade}성 {item.Grade}] {item.DisplayName}</color> {statusTag}");
+            _logBuilder.AppendLine($"[{timestamp}] <color={colorHex}>[{(int)item.Grade}성] {item.DisplayName}</color>");
         }
 
-        _logBuilder.AppendLine($"<color=#888888>  (Pity Stack: {evt.currentPityStack} / {GachaController.Instance.PityThreshold})</color>");
-        _logBuilder.AppendLine();
-
         UpdateLogDisplay();
-    }
-
-    // 가챠 결과 아이템의 신규/돌파/풀돌 상태를 색상 태그로 포맷팅하는 헬퍼 메서드 (폰트 깨짐 방지를 위해 특수문자 배제)
-    private string FormatResultStatusTag(IGachaRewardItem item)
-    {
-        return item.ResultType switch
-        {
-            // 신규 캐릭터 최초 해금 상태
-            GachaResultType.NewUnlock => 
-                "<color=#FFD700>[NEW! 신규 해금 (0단계)]</color>",
-
-            // 중복 획득으로 인한 한계돌파 단계 상승 상태
-            GachaResultType.Breakthrough => 
-                $"<color=#00FF00>[돌파 성공! ({item.PreviousBreakthroughStep}단계 -> {item.CurrentBreakthroughStep}단계)]</color>",
-
-            // 이미 6단계 풀돌에 도달한 캐릭터 획득 상태
-            GachaResultType.MaxBreakthroughReached => 
-                $"<color=#FFA500>[MAX 돌파! ({item.CurrentBreakthroughStep}단계 최대 돌파 완료)]</color>",
-
-            _ => string.Empty
-        };
     }
 
     // 천장 스택 UI 텍스트 갱신

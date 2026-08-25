@@ -99,6 +99,11 @@ public class StageData
     public int currentWave = 1;
     // 도달한 최고 웨이브 번호
     public int maxWave = 1;
+
+    // 최근 5개 웨이브 클리어 소요 시간 기록 목록 (초 단위)
+    public List<float> recentWaveDurations = new List<float>();
+    // 최근 5개 웨이브 클리어 소요 시간 이동 평균 (기본값: 15.0초)
+    public float averageWaveDuration = 15.0f;
 }
 
 // 유닛 보유 및 멀티 덱(일반 1개, 레이드 2개) 슬롯 데이터
@@ -147,12 +152,24 @@ public class UnitSaveData
     public int fragmentCount = 0;
 }
 
+// 가챠 뽑기 개별 로그 데이터 DTO (시간 및 유닛 인덱스만 경량화하여 저장)
+[Serializable]
+public class GachaLogEntry
+{
+    // 획득 유닛의 정수 ID (예: 2 -> UNIT_0002)
+    public int unitId;
+    // 뽑은 시점 타임스탬프 (HH:mm:ss 포맷)
+    public string timestamp = string.Empty;
+}
+
 // 가챠 진행 데이터
 [Serializable]
 public class GachaData
 {
     // 현재 누적 천장 뽑기 횟수
     public int pityStackCount = 0;
+    // 최근 가챠 이력 로그 목록 (최대 100개 기록 보관)
+    public List<GachaLogEntry> drawLogs = new List<GachaLogEntry>();
 }
 
 // 게임 환경 설정 데이터
