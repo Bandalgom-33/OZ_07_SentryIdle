@@ -4653,6 +4653,8 @@ MonoBehaviour:
     sceneName: TestBuild2MainLobby
   - sceneType: 1
     sceneName: TestBuild2
+  - sceneType: 2
+    sceneName: Unit
   fadeOutDuration: 0.35
   fadeInDuration: 0.35
   minLoadingWaitDuration: 0.2

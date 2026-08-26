@@ -39,6 +39,8 @@ namespace EndlessGuard.Unit.Raid.Runtime
         private const float HighStackEntryIgnitionDuration = 0.80f;
         private const float HighStackStepIgnitionDuration = 0.58f;
         private const float MaxStackIgnitionDuration = 1.00f;
+        private const float InitializeRetryInterval = 0.10f;
+        private const float InitializeTimeout = 5.0f;
 
         [Header("Runtime")]
         [SerializeField] private RaidBattleController battle;
@@ -94,13 +96,15 @@ namespace EndlessGuard.Unit.Raid.Runtime
         private Material healRuneMaterial;
         private bool initialized;
         private bool subscribed;
+        private bool referencesValidated;
+        private bool initializationBlocked;
+        private bool initializationFailureLogged;
+        private float initializeRetryTimer;
+        private float initializeElapsedTime;
 
         private void Start()
         {
-            if (!TryInitialize())
-            {
-                enabled = false;
-            }
+            TryInitialize();
         }
 
         private void OnEnable()
@@ -108,6 +112,14 @@ namespace EndlessGuard.Unit.Raid.Runtime
             if (initialized)
             {
                 Subscribe();
+                return;
+            }
+
+            if (!initializationBlocked)
+            {
+                initializeRetryTimer = 0f;
+                initializeElapsedTime = 0f;
+                initializationFailureLogged = false;
             }
         }
 
@@ -118,6 +130,7 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
         private void OnDestroy()
         {
+            Unsubscribe();
             ReleaseRuntimeMaterial(ref attackFrameMaterial, attackFrame);
             ReleaseRuntimeMaterial(ref speedFrameMaterial, speedFrame);
             ReleaseRuntimeMaterial(ref healFrameMaterial, healFrame);
@@ -128,7 +141,13 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
         private void Update()
         {
-            if (!initialized || buffs == null)
+            if (!initialized)
+            {
+                RetryInitialize();
+                return;
+            }
+
+            if (buffs == null)
             {
                 return;
             }
@@ -139,22 +158,68 @@ namespace EndlessGuard.Unit.Raid.Runtime
             healBar.Tick(buffs.GetState(RaidItemType.Heal), deltaTime);
         }
 
+        private void RetryInitialize()
+        {
+            if (initializationBlocked)
+            {
+                return;
+            }
+
+            float deltaTime = Time.unscaledDeltaTime;
+            initializeElapsedTime += deltaTime;
+            initializeRetryTimer -= deltaTime;
+
+            if (initializeRetryTimer > 0f)
+            {
+                return;
+            }
+
+            initializeRetryTimer = InitializeRetryInterval;
+
+            if (TryInitialize())
+            {
+                return;
+            }
+
+            if (!initializationFailureLogged && initializeElapsedTime >= InitializeTimeout)
+            {
+                initializationFailureLogged = true;
+                Debug.LogError($"RaidBuffHudView가 {InitializeTimeout:0.#}초 동안 RaidFieldBuffRuntime 연결을 기다렸지만 찾지 못했습니다. RaidRuntimeInstaller의 씬 로드 설치 상태를 확인하세요.", this);
+            }
+        }
+
         private bool TryInitialize()
         {
+            if (initialized)
+            {
+                return true;
+            }
+
+            if (initializationBlocked)
+            {
+                return false;
+            }
+
             if (battle == null)
             {
                 Debug.LogError("RaidBuffHudView의 Battle 참조가 연결되지 않았습니다.", this);
+                initializationBlocked = true;
                 return false;
+            }
+
+            if (!referencesValidated)
+            {
+                if (!ValidateReferences())
+                {
+                    initializationBlocked = true;
+                    return false;
+                }
+
+                referencesValidated = true;
             }
 
             buffs = battle.GetComponent<RaidFieldBuffRuntime>();
             if (buffs == null)
-            {
-                Debug.LogError("RaidBuffHudView가 RaidFieldBuffRuntime을 찾지 못했습니다.", this);
-                return false;
-            }
-
-            if (!ValidateReferences())
             {
                 return false;
             }
@@ -169,6 +234,9 @@ namespace EndlessGuard.Unit.Raid.Runtime
             attackSpeedBar = new BarView(speedFrame, speedAccent, speedLabel, speedTrack, speedFill, speedFillImage, speedFillGlow, speedSweep, speedSweepImage, speedStackText, speedTimeText, SpeedFrame, SpeedFill, SpeedGlow, speedFrameMaterial, speedRuneMaterial);
             healBar = new BarView(healFrame, healAccent, healLabel, healTrack, healFill, healFillImage, healFillGlow, healSweep, healSweepImage, healStackText, healTimeText, HealFrame, HealFill, HealGlow, healFrameMaterial, healRuneMaterial);
             initialized = true;
+            initializeRetryTimer = 0f;
+            initializeElapsedTime = 0f;
+            initializationFailureLogged = false;
             Subscribe();
             attackBar.ApplyState(buffs.GetState(RaidItemType.Attack), false, false);
             attackSpeedBar.ApplyState(buffs.GetState(RaidItemType.AttackSpeed), false, false);
@@ -236,12 +304,16 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
         private void Unsubscribe()
         {
-            if (!subscribed || buffs == null)
+            if (!subscribed)
             {
                 return;
             }
 
-            buffs.OnBuffChanged -= HandleBuffChanged;
+            if (buffs != null)
+            {
+                buffs.OnBuffChanged -= HandleBuffChanged;
+            }
+
             subscribed = false;
         }
 
