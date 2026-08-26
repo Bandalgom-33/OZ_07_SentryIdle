@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8d06538e6fa1244a8c460831c35d9c, type: 3}
+  m_Name: CraftingRecipe_6
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipeSO
+  recipeId: RECIPE_006
+  resultType: 5
+  displayName: "\uC0C1\uAE09 \uACBD\uD5D8\uCE58 \uCC45"
+  description: "\uC544\uAD70 \uC720\uB2DB\uC758 \uACBD\uD5D8\uCE58\uB97C  \uB9CE\uC774
+    \uB298\uB824\uC8FC\uB294 \uACBD\uD5D8\uCE58 \uCC45\uC785\uB2C8\uB2E4."
+  recipeIcon: {fileID: 514268681, guid: 1a0f02a615b59b54890fb243e0e58b6f, type: 3}
+  baseCraftingTime: 20
+  goldCost: 2000
+  requiredStoneType: 4
+  stoneCost: 15
+  outputAmount: 1
+  unlockFactoryLevel: 5
