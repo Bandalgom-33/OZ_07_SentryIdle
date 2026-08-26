@@ -1,3 +1,4 @@
+using EndlessGuard.Unit.Data;
 using UnityEngine;
 
 namespace EndlessGuard.Unit.Runtime
@@ -5,8 +6,11 @@ namespace EndlessGuard.Unit.Runtime
     [DisallowMultipleComponent]
     [RequireComponent(typeof(CombatHealth))]
     [RequireComponent(typeof(CombatEntityAnchors))]
+    [RequireComponent(typeof(CombatGridPosition))]
     public sealed class HitShake : MonoBehaviour
     {
+        private const float RecoilHoldRatio = 0.22f;
+
         [Header("피격 흔들림")]
         [Tooltip("피격 순간 외형이 좌우로 흔들리는 최대 거리입니다.")]
         [Min(0f)]
@@ -20,6 +24,14 @@ namespace EndlessGuard.Unit.Runtime
         [Min(0.01f)]
         [SerializeField] private float reactionDuration = 0.12f;
 
+        [Header("피격 밀림")]
+        [Tooltip("피격 순간 현재 진행 방향의 반대쪽으로 VisualRoot만 살짝 밀어 타격감을 보강합니다. 게임 좌표에는 영향을 주지 않습니다.")]
+        [SerializeField] private bool useBackwardRecoil;
+
+        [Tooltip("VisualRoot가 진행 방향의 반대쪽으로 순간 이동하는 최대 거리입니다.")]
+        [Min(0f)]
+        [SerializeField] private float recoilDistance = 0.10f;
+
         [Header("피격 크기 반동")]
         [Tooltip("피격 직후 순간적으로 커지는 크기 배율입니다.")]
         [Min(1f)]
@@ -31,9 +43,12 @@ namespace EndlessGuard.Unit.Runtime
 
         private CombatHealth health;
         private CombatEntityAnchors anchors;
+        private CombatGridPosition gridPosition;
         private Transform visualRoot;
         private Vector3 baseLocalPosition;
         private Vector3 baseLocalScale;
+        private Vector3 recoilWorldDirection;
+        private Vector3 recoilStartWorldPosition;
         private float elapsedTime;
         private bool subscribed;
 
@@ -41,6 +56,7 @@ namespace EndlessGuard.Unit.Runtime
         {
             health = GetComponent<CombatHealth>();
             anchors = GetComponent<CombatEntityAnchors>();
+            gridPosition = GetComponent<CombatGridPosition>();
             CacheVisualRoot();
             Subscribe();
             enabled = false;
@@ -117,7 +133,9 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             elapsedTime = 0f;
-            visualRoot.localPosition = baseLocalPosition + Vector3.right * shakeDistance;
+            recoilWorldDirection = useBackwardRecoil ? ResolveBackwardWorldDirection() : Vector3.zero;
+            recoilStartWorldPosition = GetHomeWorldPosition() + recoilWorldDirection * recoilDistance;
+            SetVisualWorldPosition(recoilStartWorldPosition, shakeDistance);
             visualRoot.localScale = baseLocalScale * scaleUp;
             enabled = true;
         }
@@ -137,11 +155,54 @@ namespace EndlessGuard.Unit.Runtime
 
         private void UpdatePosition(float progress)
         {
-            float envelope = 1f - Mathf.SmoothStep(0f, 1f, progress);
+            float shakeEnvelope = 1f - Mathf.SmoothStep(0f, 1f, progress);
             float wave = Mathf.Sin(progress * Mathf.PI * 2f * shakeCycles);
-            float offset = wave * shakeDistance * envelope;
+            float shakeOffset = wave * shakeDistance * shakeEnvelope;
 
-            visualRoot.localPosition = baseLocalPosition + Vector3.right * offset;
+            if (!useBackwardRecoil || recoilWorldDirection.sqrMagnitude <= 0.000001f)
+            {
+                visualRoot.localPosition = baseLocalPosition + Vector3.right * shakeOffset;
+                return;
+            }
+
+            float returnProgress = progress <= RecoilHoldRatio ? 0f : Mathf.Clamp01((progress - RecoilHoldRatio) / (1f - RecoilHoldRatio));
+            float easedReturn = Mathf.SmoothStep(0f, 1f, returnProgress);
+            Vector3 recoilWorldPosition = Vector3.Lerp(recoilStartWorldPosition, GetHomeWorldPosition(), easedReturn);
+
+            SetVisualWorldPosition(recoilWorldPosition, shakeOffset);
+        }
+
+        private Vector3 ResolveBackwardWorldDirection()
+        {
+            if (gridPosition == null || !gridPosition.IsInitialized)
+            {
+                return Vector3.zero;
+            }
+
+            switch (gridPosition.FacingDirection)
+            {
+                case GridFacingDirection.East:
+                    return Vector3.left;
+                case GridFacingDirection.South:
+                    return Vector3.forward;
+                case GridFacingDirection.West:
+                    return Vector3.right;
+                default:
+                    return Vector3.back;
+            }
+        }
+
+        private Vector3 GetHomeWorldPosition()
+        {
+            Transform parent = visualRoot.parent;
+            return parent != null ? parent.TransformPoint(baseLocalPosition) : baseLocalPosition;
+        }
+
+        private void SetVisualWorldPosition(Vector3 worldPosition, float localShakeOffset)
+        {
+            Transform parent = visualRoot.parent;
+            Vector3 localPosition = parent != null ? parent.InverseTransformPoint(worldPosition) : worldPosition;
+            visualRoot.localPosition = localPosition + Vector3.right * localShakeOffset;
         }
 
         private void UpdateScale(float progress)
@@ -176,6 +237,8 @@ namespace EndlessGuard.Unit.Runtime
 
             visualRoot.localPosition = baseLocalPosition;
             visualRoot.localScale = baseLocalScale;
+            recoilWorldDirection = Vector3.zero;
+            recoilStartWorldPosition = Vector3.zero;
         }
     }
 }

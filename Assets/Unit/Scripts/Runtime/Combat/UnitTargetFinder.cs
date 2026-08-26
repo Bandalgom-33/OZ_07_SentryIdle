@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
@@ -6,228 +6,227 @@ namespace EndlessGuard.Unit.Runtime
 {
     internal static class UnitTargetFinder
     {
-        private const float PriorityTolerance = 0.0001f;
-
-        internal static bool TryFind(UnitRuntimeState attacker, out EnemyRuntimeState target)
+        internal sealed class SearchBuffer
         {
-            target = null;
-
-            if (!CanSearch(attacker))
-            {
-                return false;
-            }
-
-            AttackSettings attackSettings = attacker.DataLink.UnitData.AttackSettings;
-            BasicAttackRangeData rangeData = attackSettings.BasicAttackRange;
-
-            if (rangeData == null)
-            {
-                return false;
-            }
-
-            Vector2Int attackerTile = attacker.GridPosition.TileCoordinate;
-            GridFacingDirection currentFacing = attacker.GridPosition.FacingDirection;
-            GridFacingDirection bestFacing = currentFacing;
-            float bestRemainingDistance = float.MaxValue;
-            float bestWorldDistance = float.MaxValue;
-            int bestInstanceId = int.MaxValue;
-            IReadOnlyList<Vector2Int> attackTiles = rangeData.AttackTiles;
-
-            if (attackSettings.RangeRotationMode == AttackRangeRotationMode.Fixed)
-            {
-                for (int i = 0; i < attackTiles.Count; i++)
-                {
-                    Vector2Int worldTile = attackerTile + RotatePatternTile(attackTiles[i], currentFacing);
-                    EvaluateTile(attacker, attackSettings, currentFacing, worldTile, ref target, ref bestFacing, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-                }
-            }
-            else
-            {
-                EvaluateFacingTiles(attacker, attackSettings, attackTiles, attackerTile, currentFacing, GridFacingDirection.North, ref target, ref bestFacing, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-                EvaluateFacingTiles(attacker, attackSettings, attackTiles, attackerTile, currentFacing, GridFacingDirection.East, ref target, ref bestFacing, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-                EvaluateFacingTiles(attacker, attackSettings, attackTiles, attackerTile, currentFacing, GridFacingDirection.South, ref target, ref bestFacing, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-                EvaluateFacingTiles(attacker, attackSettings, attackTiles, attackerTile, currentFacing, GridFacingDirection.West, ref target, ref bestFacing, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-            }
-
-            if (target == null)
-            {
-                return false;
-            }
-
-            if (attackSettings.RangeRotationMode == AttackRangeRotationMode.FollowFacing)
-            {
-                attacker.GridPosition.SetFacingDirection(bestFacing);
-            }
-
-            return true;
+            internal readonly List<TargetCandidate> Candidates = new List<TargetCandidate>(16);
         }
 
-        internal static int FindTargets(UnitRuntimeState attacker, int maxTargetCount, List<EnemyRuntimeState> targets)
+        private const float PriorityTolerance = 0.0001f;
+
+        internal readonly struct TargetCandidate
         {
-            if (targets == null)
+            public EnemyRuntimeState Target { get; }
+            public int LayerPriority { get; }
+            public float RemainingDistance { get; }
+            public float WorldDistance { get; }
+            public int InstanceId { get; }
+
+            public TargetCandidate(EnemyRuntimeState target, int layerPriority, float remainingDistance, float worldDistance, int instanceId)
+            {
+                Target = target;
+                LayerPriority = layerPriority;
+                RemainingDistance = remainingDistance;
+                WorldDistance = worldDistance;
+                InstanceId = instanceId;
+            }
+        }
+
+        private sealed class TargetCandidateComparer : IComparer<TargetCandidate>
+        {
+            public static readonly TargetCandidateComparer Instance = new TargetCandidateComparer();
+
+            public int Compare(TargetCandidate x, TargetCandidate y)
+            {
+                int layer = x.LayerPriority.CompareTo(y.LayerPriority);
+                if (layer != 0)
+                {
+                    return layer;
+                }
+
+                if (x.RemainingDistance < y.RemainingDistance - PriorityTolerance)
+                {
+                    return -1;
+                }
+
+                if (x.RemainingDistance > y.RemainingDistance + PriorityTolerance)
+                {
+                    return 1;
+                }
+
+                if (x.WorldDistance < y.WorldDistance - PriorityTolerance)
+                {
+                    return -1;
+                }
+
+                if (x.WorldDistance > y.WorldDistance + PriorityTolerance)
+                {
+                    return 1;
+                }
+
+                return x.InstanceId.CompareTo(y.InstanceId);
+            }
+        }
+
+        internal static int FindTargets(UnitRuntimeState attacker, int maxTargetCount, List<EnemyRuntimeState> targets, SearchBuffer buffer)
+        {
+            if (targets == null || buffer == null)
             {
                 return 0;
             }
 
             targets.Clear();
+            List<TargetCandidate> candidates = buffer.Candidates;
+            candidates.Clear();
 
-            if (!TryFind(attacker, out EnemyRuntimeState primaryTarget))
+            if (maxTargetCount <= 0 || !CanSearch(attacker))
             {
                 return 0;
             }
 
-            targets.Add(primaryTarget);
-            int targetLimit = Mathf.Max(1, maxTargetCount);
-
-            while (targets.Count < targetLimit && TryFindNextTargetInCurrentRange(attacker, targets, out EnemyRuntimeState nextTarget))
+            AttackSettings attackSettings = attacker.DataLink.UnitData.AttackSettings;
+            BasicAttackRangeData rangeData = attackSettings.BasicAttackRange;
+            if (rangeData == null)
             {
-                targets.Add(nextTarget);
+                return 0;
+            }
+
+            IReadOnlyList<Vector2Int> attackTiles = rangeData.AttackTiles;
+            if (attackTiles == null || attackTiles.Count == 0)
+            {
+                return 0;
+            }
+
+            Vector2Int attackerTile = attacker.GridPosition.TileCoordinate;
+            GridFacingDirection currentFacing = attacker.GridPosition.FacingDirection;
+            GridFacingDirection selectedFacing = currentFacing;
+            bool preferAir = CanPrioritizeAir(attacker, attackSettings);
+
+            if (attackSettings.RangeRotationMode == AttackRangeRotationMode.FollowFacing && !TryFindBestFacing(attacker, attackSettings, attackTiles, attackerTile, currentFacing, preferAir, out selectedFacing))
+            {
+                return 0;
+            }
+
+            if (attackSettings.RangeRotationMode == AttackRangeRotationMode.FollowFacing && selectedFacing != currentFacing)
+            {
+                attacker.GridPosition.SetFacingDirection(selectedFacing);
+            }
+
+            GatherFacingCandidates(attacker, attackSettings, attackTiles, attackerTile, selectedFacing, preferAir, candidates);
+            if (candidates.Count == 0)
+            {
+                return 0;
+            }
+
+            candidates.Sort(TargetCandidateComparer.Instance);
+            int targetLimit = Mathf.Min(maxTargetCount, candidates.Count);
+
+            for (int i = 0; i < candidates.Count && targets.Count < targetLimit; i++)
+            {
+                EnemyRuntimeState candidate = candidates[i].Target;
+                if (candidate == null || targets.Contains(candidate))
+                {
+                    continue;
+                }
+
+                targets.Add(candidate);
             }
 
             return targets.Count;
         }
 
-        private static bool TryFindNextTargetInCurrentRange(UnitRuntimeState attacker, List<EnemyRuntimeState> selectedTargets, out EnemyRuntimeState target)
+        private static bool TryFindBestFacing(UnitRuntimeState attacker, AttackSettings attackSettings, IReadOnlyList<Vector2Int> attackTiles, Vector2Int attackerTile, GridFacingDirection currentFacing, bool preferAir, out GridFacingDirection bestFacing)
         {
-            target = null;
+            bestFacing = currentFacing;
+            bool found = false;
+            TargetCandidate bestCandidate = default;
 
-            if (!CanSearch(attacker) || selectedTargets == null)
+            for (int offset = 0; offset < 4; offset++)
+            {
+                GridFacingDirection facing = (GridFacingDirection)(((int)currentFacing + offset) & 3);
+
+                for (int i = 0; i < attackTiles.Count; i++)
+                {
+                    Vector2Int relativeWorldTile = BasicAttackRangeEvaluator.ConvertPatternTileToWorldTile(attackTiles[i], attackSettings.RangeRotationMode, facing);
+                    Vector2Int worldTile = attackerTile + relativeWorldTile;
+                    if (!CombatRegistry.TryGetEnemiesAt(worldTile, out HashSet<EnemyRuntimeState> tileEnemies))
+                    {
+                        continue;
+                    }
+
+                    foreach (EnemyRuntimeState candidate in tileEnemies)
+                    {
+                        if (!TryCreateCandidate(attacker, attackSettings, facing, candidate, preferAir, out TargetCandidate evaluated))
+                        {
+                            continue;
+                        }
+
+                        if (!found || TargetCandidateComparer.Instance.Compare(evaluated, bestCandidate) < 0)
+                        {
+                            bestCandidate = evaluated;
+                            bestFacing = facing;
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            return found;
+        }
+
+        private static void GatherFacingCandidates(UnitRuntimeState attacker, AttackSettings attackSettings, IReadOnlyList<Vector2Int> attackTiles, Vector2Int attackerTile, GridFacingDirection facing, bool preferAir, List<TargetCandidate> candidates)
+        {
+            for (int i = 0; i < attackTiles.Count; i++)
+            {
+                Vector2Int relativeWorldTile = BasicAttackRangeEvaluator.ConvertPatternTileToWorldTile(attackTiles[i], attackSettings.RangeRotationMode, facing);
+                Vector2Int worldTile = attackerTile + relativeWorldTile;
+                if (!CombatRegistry.TryGetEnemiesAt(worldTile, out HashSet<EnemyRuntimeState> tileEnemies))
+                {
+                    continue;
+                }
+
+                foreach (EnemyRuntimeState candidate in tileEnemies)
+                {
+                    if (TryCreateCandidate(attacker, attackSettings, facing, candidate, preferAir, out TargetCandidate evaluated))
+                    {
+                        candidates.Add(evaluated);
+                    }
+                }
+            }
+        }
+
+        private static bool TryCreateCandidate(UnitRuntimeState attacker, AttackSettings attackSettings, GridFacingDirection facing, EnemyRuntimeState candidate, bool preferAir, out TargetCandidate evaluated)
+        {
+            evaluated = default;
+
+            if (!IsValidTarget(candidate) || !BasicAttackContextFactory.TryCreate(attacker, candidate, out BasicAttackContext baseContext))
             {
                 return false;
             }
 
-            AttackSettings attackSettings = attacker.DataLink.UnitData.AttackSettings;
-            BasicAttackRangeData rangeData = attackSettings.BasicAttackRange;
+            BasicAttackContext candidateContext = new BasicAttackContext(baseContext.RelativeTargetTile, baseContext.HorizontalWorldDistance, facing, baseContext.TargetLayer);
+            bool baseLayerAllowed = BasicAttackRangeEvaluator.CanAttackTargetLayer(attackSettings.AttackTarget, candidateContext.TargetLayer);
+            bool passiveLayerAllowed = attacker.Passives != null && attacker.Passives.AllowsTargetLayer(attacker, candidateContext.TargetLayer);
+            bool ignoreTargetLayer = !baseLayerAllowed && passiveLayerAllowed;
 
-            if (rangeData == null)
+            if (!BasicAttackRangeEvaluator.TryEvaluate(attackSettings, candidateContext, ignoreTargetLayer, out _, out _))
             {
                 return false;
             }
 
-            Vector2Int attackerTile = attacker.GridPosition.TileCoordinate;
-            GridFacingDirection facing = attacker.GridPosition.FacingDirection;
-            float bestRemainingDistance = float.MaxValue;
-            float bestWorldDistance = float.MaxValue;
-            int bestInstanceId = int.MaxValue;
-            IReadOnlyList<Vector2Int> attackTiles = rangeData.AttackTiles;
-
-            for (int i = 0; i < attackTiles.Count; i++)
-            {
-                Vector2Int relativeWorldTile = RotatePatternTile(attackTiles[i], facing);
-                Vector2Int worldTile = attackerTile + relativeWorldTile;
-                EvaluateAdditionalTile(attacker, attackSettings, facing, worldTile, selectedTargets, ref target, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-            }
-
-            return target != null;
+            int layerPriority = preferAir && candidateContext.TargetLayer == CombatTargetLayer.Air ? 0 : 1;
+            float remainingDistance = candidate.IsSummon ? float.MaxValue : candidate.Move.RemainingPathDistance;
+            evaluated = new TargetCandidate(candidate, layerPriority, remainingDistance, candidateContext.HorizontalWorldDistance, candidate.GetInstanceID());
+            return true;
         }
 
-        private static void EvaluateAdditionalTile(UnitRuntimeState attacker, AttackSettings attackSettings, GridFacingDirection facing, Vector2Int tile, List<EnemyRuntimeState> selectedTargets, ref EnemyRuntimeState target, ref float bestRemainingDistance, ref float bestWorldDistance, ref int bestInstanceId)
+        private static bool CanPrioritizeAir(UnitRuntimeState attacker, AttackSettings attackSettings)
         {
-            if (!CombatRegistry.TryGetEnemiesAt(tile, out HashSet<EnemyRuntimeState> tileEnemies))
+            if (attackSettings != null && BasicAttackRangeEvaluator.CanAttackTargetLayer(attackSettings.AttackTarget, CombatTargetLayer.Air))
             {
-                return;
+                return true;
             }
 
-            foreach (EnemyRuntimeState candidate in tileEnemies)
-            {
-                if (selectedTargets.Contains(candidate) || !IsValidTarget(candidate))
-                {
-                    continue;
-                }
-
-                if (!BasicAttackContextFactory.TryCreate(attacker, candidate, out BasicAttackContext baseContext))
-                {
-                    continue;
-                }
-
-                BasicAttackContext candidateContext = CreateFacingContext(baseContext, facing);
-                bool baseLayerAllowed = BasicAttackRangeEvaluator.CanAttackTargetLayer(attackSettings.AttackTarget, candidateContext.TargetLayer);
-                bool passiveLayerAllowed = attacker.Passives != null && attacker.Passives.AllowsTargetLayer(attacker, candidateContext.TargetLayer);
-                bool ignoreTargetLayer = !baseLayerAllowed && passiveLayerAllowed;
-
-                if (!BasicAttackRangeEvaluator.TryEvaluate(attackSettings, candidateContext, ignoreTargetLayer, out _, out _))
-                {
-                    continue;
-                }
-
-                float remainingDistance = candidate.IsSummon ? float.MaxValue : candidate.Move.RemainingPathDistance;
-                float worldDistance = candidateContext.HorizontalWorldDistance;
-                int instanceId = candidate.GetInstanceID();
-
-                if (!IsBetterTarget(target, remainingDistance, worldDistance, instanceId, bestRemainingDistance, bestWorldDistance, bestInstanceId))
-                {
-                    continue;
-                }
-
-                target = candidate;
-                bestRemainingDistance = remainingDistance;
-                bestWorldDistance = worldDistance;
-                bestInstanceId = instanceId;
-            }
-        }
-
-        private static void EvaluateFacingTiles(UnitRuntimeState attacker, AttackSettings attackSettings, IReadOnlyList<Vector2Int> attackTiles, Vector2Int attackerTile, GridFacingDirection currentFacing, GridFacingDirection facing, ref EnemyRuntimeState target, ref GridFacingDirection bestFacing, ref float bestRemainingDistance, ref float bestWorldDistance, ref int bestInstanceId)
-        {
-            for (int i = 0; i < attackTiles.Count; i++)
-            {
-                Vector2Int relativeWorldTile = RotatePatternTile(attackTiles[i], facing);
-
-                if (GetFacingDirection(relativeWorldTile, currentFacing) != facing)
-                {
-                    continue;
-                }
-
-                Vector2Int worldTile = attackerTile + relativeWorldTile;
-                EvaluateTile(attacker, attackSettings, currentFacing, worldTile, ref target, ref bestFacing, ref bestRemainingDistance, ref bestWorldDistance, ref bestInstanceId);
-            }
-        }
-
-        private static void EvaluateTile(UnitRuntimeState attacker, AttackSettings attackSettings, GridFacingDirection currentFacing, Vector2Int tile, ref EnemyRuntimeState target, ref GridFacingDirection bestFacing, ref float bestRemainingDistance, ref float bestWorldDistance, ref int bestInstanceId)
-        {
-            if (!CombatRegistry.TryGetEnemiesAt(tile, out HashSet<EnemyRuntimeState> tileEnemies))
-            {
-                return;
-            }
-
-            foreach (EnemyRuntimeState candidate in tileEnemies)
-            {
-                if (!IsValidTarget(candidate))
-                {
-                    continue;
-                }
-
-                if (!BasicAttackContextFactory.TryCreate(attacker, candidate, out BasicAttackContext baseContext))
-                {
-                    continue;
-                }
-
-                GridFacingDirection candidateFacing = attackSettings.RangeRotationMode == AttackRangeRotationMode.FollowFacing ? GetFacingDirection(baseContext.RelativeTargetTile, currentFacing) : currentFacing;
-                BasicAttackContext candidateContext = CreateFacingContext(baseContext, candidateFacing);
-
-                bool baseLayerAllowed = BasicAttackRangeEvaluator.CanAttackTargetLayer(attackSettings.AttackTarget, candidateContext.TargetLayer);
-                bool passiveLayerAllowed = attacker.Passives != null && attacker.Passives.AllowsTargetLayer(attacker, candidateContext.TargetLayer);
-                bool ignoreTargetLayer = !baseLayerAllowed && passiveLayerAllowed;
-
-                if (!BasicAttackRangeEvaluator.TryEvaluate(attackSettings, candidateContext, ignoreTargetLayer, out _, out _))
-                {
-                    continue;
-                }
-
-                float remainingDistance = candidate.IsSummon ? float.MaxValue : candidate.Move.RemainingPathDistance;
-                float worldDistance = candidateContext.HorizontalWorldDistance;
-                int instanceId = candidate.GetInstanceID();
-
-                if (!IsBetterTarget(target, remainingDistance, worldDistance, instanceId, bestRemainingDistance, bestWorldDistance, bestInstanceId))
-                {
-                    continue;
-                }
-
-                target = candidate;
-                bestFacing = candidateFacing;
-                bestRemainingDistance = remainingDistance;
-                bestWorldDistance = worldDistance;
-                bestInstanceId = instanceId;
-            }
+            return attacker != null && attacker.Passives != null && attacker.Passives.AllowsTargetLayer(attacker, CombatTargetLayer.Air);
         }
 
         private static bool CanSearch(UnitRuntimeState attacker)
@@ -248,77 +247,6 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             return target.Move.HasPath;
-        }
-
-        private static Vector2Int RotatePatternTile(Vector2Int patternTile, GridFacingDirection facing)
-        {
-            switch (facing)
-            {
-                case GridFacingDirection.East:
-                    return new Vector2Int(patternTile.y, -patternTile.x);
-
-                case GridFacingDirection.South:
-                    return new Vector2Int(-patternTile.x, -patternTile.y);
-
-                case GridFacingDirection.West:
-                    return new Vector2Int(-patternTile.y, patternTile.x);
-
-                default:
-                    return patternTile;
-            }
-        }
-
-        private static GridFacingDirection GetFacingDirection(Vector2Int relativeTargetTile, GridFacingDirection fallback)
-        {
-            if (relativeTargetTile == Vector2Int.zero)
-            {
-                return fallback;
-            }
-
-            int horizontalDistance = Mathf.Abs(relativeTargetTile.x);
-            int verticalDistance = Mathf.Abs(relativeTargetTile.y);
-
-            if (horizontalDistance >= verticalDistance)
-            {
-                return relativeTargetTile.x > 0 ? GridFacingDirection.East : GridFacingDirection.West;
-            }
-
-            return relativeTargetTile.y > 0 ? GridFacingDirection.North : GridFacingDirection.South;
-        }
-
-        private static BasicAttackContext CreateFacingContext(BasicAttackContext source, GridFacingDirection facing)
-        {
-            return new BasicAttackContext(source.RelativeTargetTile, source.HorizontalWorldDistance, facing, source.TargetLayer);
-        }
-
-        private static bool IsBetterTarget(EnemyRuntimeState currentTarget, float remainingDistance, float worldDistance, int instanceId, float bestRemainingDistance, float bestWorldDistance, int bestInstanceId)
-        {
-            if (currentTarget == null)
-            {
-                return true;
-            }
-
-            if (remainingDistance < bestRemainingDistance - PriorityTolerance)
-            {
-                return true;
-            }
-
-            if (remainingDistance > bestRemainingDistance + PriorityTolerance)
-            {
-                return false;
-            }
-
-            if (worldDistance < bestWorldDistance - PriorityTolerance)
-            {
-                return true;
-            }
-
-            if (worldDistance > bestWorldDistance + PriorityTolerance)
-            {
-                return false;
-            }
-
-            return instanceId < bestInstanceId;
         }
     }
 }

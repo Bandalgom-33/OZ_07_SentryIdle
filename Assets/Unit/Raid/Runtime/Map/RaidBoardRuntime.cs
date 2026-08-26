@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Raid.Data;
 using UnityEngine;
@@ -20,6 +20,9 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
         private RaidMapResult map;
         private RaidMapFamilySO selectedFamily;
+        private RaidMapSO currentMapData;
+        private string startupFamilyId = string.Empty;
+        private bool startupRandomFamily;
 
         public RaidBoard Board { get; private set; }
         public RaidPhase Phase => phase;
@@ -30,15 +33,34 @@ namespace EndlessGuard.Unit.Raid.Runtime
         public IReadOnlyList<RaidLanePath> LanePaths => map != null ? map.LanePaths : Array.Empty<RaidLanePath>();
         public IReadOnlyList<RaidLanePlan> LanePlans => map != null ? map.LanePlans : Array.Empty<RaidLanePlan>();
         public IReadOnlyList<RaidTravelPath> TravelPaths => map != null ? map.TravelPaths : Array.Empty<RaidTravelPath>();
+        public RaidMapFamilySO Family => selectedFamily;
         public string FamilyId => selectedFamily != null ? selectedFamily.FamilyId : string.Empty;
         public string FamilyName => selectedFamily != null ? selectedFamily.DisplayName : string.Empty;
         public string MapId => map != null ? map.MapId : string.Empty;
-        public int PathSelectionKey => map != null ? map.VisualKey : 0;
+        public RaidMapSO CurrentMapData => currentMapData;
+        internal RaidBoardView BoardView => boardView;
 
         private void Start()
         {
             ValidateReferences();
-            LoadFamily(config.DefaultFamily, phase);
+            LoadFamily(ResolveStartupFamily(), phase);
+        }
+
+        public void SetStartupFamily(string familyId)
+        {
+            if (string.IsNullOrWhiteSpace(familyId))
+            {
+                throw new ArgumentException("시작 Raid Map Family ID가 비어 있습니다.", nameof(familyId));
+            }
+
+            startupFamilyId = familyId;
+            startupRandomFamily = false;
+        }
+
+        public void SetStartupRandomFamily()
+        {
+            startupFamilyId = string.Empty;
+            startupRandomFamily = true;
         }
 
         public void LoadFamily(string familyId, RaidPhase startPhase = RaidPhase.Phase1)
@@ -65,9 +87,20 @@ namespace EndlessGuard.Unit.Raid.Runtime
             BuildPhase(startPhase);
         }
 
+        public bool TryGetMapData(RaidPhase targetPhase, out RaidMapSO mapData)
+        {
+            mapData = null;
+            return selectedFamily != null && selectedFamily.TryGetMap(targetPhase, out mapData);
+        }
+
         public void BuildPhase(RaidPhase nextPhase)
         {
             ValidateReferences();
+
+            if (nextPhase == RaidPhase.Phase1)
+            {
+                boardView.ClearPersistentEffects();
+            }
 
             if (selectedFamily == null)
             {
@@ -80,19 +113,35 @@ namespace EndlessGuard.Unit.Raid.Runtime
             }
 
             phase = nextPhase;
+            currentMapData = mapData;
             Board = new RaidBoard(boardRoot, mapData.Width, mapData.Height, config.GetCenteredOrigin(mapData.Width, mapData.Height), config.TileSize);
             map = RaidMapLoader.Load(Board, mapData);
-            boardView.Build(Board, map.VisualKey);
+            boardView.Build(Board, currentMapData);
         }
 
         public void RefreshVisuals()
         {
-            if (Board == null || map == null)
+            if (Board == null || map == null || currentMapData == null)
             {
                 throw new InvalidOperationException("Raid Board가 아직 준비되지 않았습니다.");
             }
 
-            boardView.Build(Board, map.VisualKey);
+            boardView.Build(Board, currentMapData);
+        }
+
+        private RaidMapFamilySO ResolveStartupFamily()
+        {
+            if (startupRandomFamily)
+            {
+                return config.GetRandomFamily();
+            }
+
+            if (!string.IsNullOrWhiteSpace(startupFamilyId))
+            {
+                return config.GetFamily(startupFamilyId);
+            }
+
+            return config.DefaultFamily;
         }
 
         private void ValidateReferences()

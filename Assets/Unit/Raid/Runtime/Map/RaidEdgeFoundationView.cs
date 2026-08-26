@@ -20,16 +20,25 @@ namespace EndlessGuard.Unit.Raid.Runtime
             }
         }
 
-        public void Spawn(RaidBoard board, Vector2Int coordinate, RaidTile tile)
+        public GameObject Spawn(RaidBoard board, Vector2Int coordinate, RaidTile tile)
         {
             if (tile.IsBridge || tile.Surface != RaidTileSurface.Ground && tile.Surface != RaidTileSurface.HighGround || !TouchesVoid(board, coordinate))
             {
-                return;
+                return null;
             }
 
             float scale = board.TileSize / RaidDungeonMetrics.TileSize;
             float heightOffset = -RaidDungeonMetrics.FoundationHeight * scale;
-            spawner.SpawnArt(visualSet.BoundaryBasePrefab, board.TileToWorld(coordinate, heightOffset), Quaternion.identity, scale);
+            GameObject prefab = visualSet.BoundaryBasePrefab;
+            Quaternion rotation = Quaternion.identity;
+
+            if (tile.SurfaceVisual == RaidTileSurfaceVisual.FloorCut && visualSet.FixedCutBasePrefab != null)
+            {
+                prefab = visualSet.FixedCutBasePrefab;
+                rotation = Quaternion.Euler(0f, (int)tile.SurfaceRotation * 90f, 0f);
+            }
+
+            return spawner.SpawnArt(prefab, board.TileToWorld(coordinate, heightOffset), rotation, scale);
         }
 
         private static bool TouchesVoid(RaidBoard board, Vector2Int coordinate)

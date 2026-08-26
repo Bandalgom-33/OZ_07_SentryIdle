@@ -68,6 +68,9 @@ namespace EndlessGuard.Unit.Raid.Data
 
         [SerializeField] private RaidTile[] tiles = Array.Empty<RaidTile>();
 
+        [Header("고정 장식")]
+        [SerializeField] private RaidMapDecorData[] decor = Array.Empty<RaidMapDecorData>();
+
         [Header("경로")]
         [SerializeField] private RaidMapNodeData[] nodes = Array.Empty<RaidMapNodeData>();
         [SerializeField] private RaidMapEdgeData[] edges = Array.Empty<RaidMapEdgeData>();
@@ -79,6 +82,7 @@ namespace EndlessGuard.Unit.Raid.Data
         public int Width => width;
         public int Height => height;
         public int TileCount => tiles != null ? tiles.Length : 0;
+        public int DecorCount => decor != null ? decor.Length : 0;
         public int NodeCount => nodes != null ? nodes.Length : 0;
         public int EdgeCount => edges != null ? edges.Length : 0;
         public int RouteCount => routes != null ? routes.Length : 0;
@@ -88,6 +92,12 @@ namespace EndlessGuard.Unit.Raid.Data
         {
             ValidateIndex(index, TileCount, nameof(index));
             return tiles[index];
+        }
+
+        public RaidMapDecorData GetDecor(int index)
+        {
+            ValidateIndex(index, DecorCount, nameof(index));
+            return decor[index];
         }
 
         public RaidMapNodeData GetNode(int index)

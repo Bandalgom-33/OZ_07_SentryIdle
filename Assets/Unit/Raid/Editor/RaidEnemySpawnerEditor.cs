@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
+using EndlessGuard.Unit.Raid.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +33,7 @@ namespace EndlessGuard.Unit.Raid.Editor
 
             if (!EditorApplication.isPlaying)
             {
-                EditorGUILayout.HelpBox("Play Mode에서 정식 레이드 맵의 실제 경로와 다중 몬스터 이동을 검수할 수 있습니다.", MessageType.Info);
+                EditorGUILayout.HelpBox("위 '맵 선택'에서 Map 01/02를 고른 뒤 Play하면 해당 정식 Map Family의 Phase1부터 시작합니다. 검증 완료 후 '랜덤'으로 바꾸면 됩니다.", MessageType.Info);
                 return;
             }
 
@@ -70,12 +71,41 @@ namespace EndlessGuard.Unit.Raid.Editor
 
             EditorGUILayout.Space();
 
-            using (new EditorGUI.DisabledScope(battle.IsRunning))
+            using (new EditorGUI.DisabledScope(battle.IsRunning || battle.IsTransitioning))
             {
                 if (GUILayout.Button("레이드 시작"))
                 {
                     battle.BeginRaid();
                 }
+            }
+
+            EditorGUILayout.LabelField("Battle State", battle.State.ToString());
+            DrawRaidCoreDebug(battle);
+            DrawAutomaticSpawnDebug(spawner);
+
+            if (board.Phase == RaidPhase.Phase1)
+            {
+                using (new EditorGUI.DisabledScope(!battle.IsRunning))
+                {
+                    if (GUILayout.Button("Phase1 → Phase2 붕괴 전환"))
+                    {
+                        battle.TryTransitionTo(RaidPhase.Phase2);
+                    }
+                }
+            }
+            else if (board.Phase == RaidPhase.Phase2)
+            {
+                using (new EditorGUI.DisabledScope(!battle.IsRunning))
+                {
+                    if (GUILayout.Button("Phase2 → Phase3 붕괴 전환"))
+                    {
+                        battle.TryTransitionTo(RaidPhase.Phase3);
+                    }
+                }
+            }
+            else if (board.Phase == RaidPhase.Phase3)
+            {
+                EditorGUILayout.HelpBox("현재 선택된 Map Family의 최종 Phase3입니다.", MessageType.Info);
             }
 
             using (new EditorGUI.DisabledScope(!battle.IsRunning || enemyData == null))
@@ -108,6 +138,75 @@ namespace EndlessGuard.Unit.Raid.Editor
 
             DrawSpawns(board, spawner);
             RepaintIfMoving();
+        }
+
+        private static void DrawRaidCoreDebug(Runtime.RaidBattleController battle)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("레이드 코어 상태", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Boss HP", $"{battle.CurrentBossHp:N0} / {battle.BossMaxHp:N0}  ({battle.BossHpRatio:P1})");
+            EditorGUILayout.LabelField("Time", battle.RemainingTime.ToString("F1"));
+            EditorGUILayout.LabelField("Boss Skill", $"{battle.BossSkillGauge:F0} / {battle.BossSkillGaugeMax:F0}");
+            EditorGUILayout.LabelField("Boss Skill Casting", battle.IsBossSkillCasting.ToString());
+            EditorGUILayout.LabelField("Raid Attack", $"{battle.RaidAttackGauge:F0} / {battle.RaidAttackGaugeMax:F0}");
+            EditorGUILayout.LabelField("Mode", battle.Mode.ToString());
+
+            using (new EditorGUI.DisabledScope(!battle.IsRunning))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    if (GUILayout.Button("Boss HP -10%"))
+                    {
+                        battle.ApplyBossDamage(battle.BossMaxHp * 0.1f);
+                    }
+
+                    if (GUILayout.Button("Goal 1회 Gauge"))
+                    {
+                        float amount = battle.Config != null ? battle.Config.GoalSkillGaugeGain : 0f;
+                        battle.AddBossSkillGauge(amount);
+                    }
+
+                    if (GUILayout.Button("Raid Gauge +25%"))
+                    {
+                        battle.AddRaidAttackGauge(battle.RaidAttackGaugeMax * 0.25f);
+                    }
+                }
+
+                if (GUILayout.Button("Raid Gauge 소비"))
+                {
+                    battle.ConsumeRaidAttackGauge();
+                }
+            }
+        }
+
+        private static void DrawAutomaticSpawnDebug(Runtime.RaidEnemySpawner spawner)
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("자동 Spawn 상태", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Running", spawner.IsAutomaticSpawnRunning.ToString());
+            EditorGUILayout.LabelField("Active Enemy", spawner.ActiveEnemyCount.ToString());
+            EditorGUILayout.LabelField("Burst", spawner.AutomaticBurstCount.ToString());
+            EditorGUILayout.LabelField("Automatic Spawn", spawner.AutomaticSpawnCount.ToString());
+            EditorGUILayout.LabelField("Air Spawn", spawner.AirSpawnCount.ToString());
+            EditorGUILayout.LabelField("Speed Adjusted", spawner.SpeedAdjustedSpawnCount.ToString());
+            EditorGUILayout.LabelField("Spawn Fail", spawner.FailedAutomaticSpawnCount.ToString());
+            EditorGUILayout.LabelField("Entry Cache", spawner.AutomaticEntryCount.ToString());
+            EditorGUILayout.LabelField("Enemy Data Pool", spawner.AutomaticEnemyPoolCount.ToString());
+            EditorGUILayout.LabelField("Object Pool Created", spawner.PooledEnemyCreatedCount.ToString());
+            EditorGUILayout.LabelField("Object Pool Reused", spawner.PooledEnemyReusedCount.ToString());
+            EditorGUILayout.LabelField("Object Pool Released", spawner.PooledEnemyReleasedCount.ToString());
+
+            if (!string.IsNullOrEmpty(spawner.LastSpawnedEnemyId))
+            {
+                string movement = spawner.LastSpawnWasAir ? "Air" : "Ground";
+                EditorGUILayout.LabelField("Last Enemy", $"{spawner.LastSpawnedEnemyId}  ({movement})");
+                EditorGUILayout.LabelField("Last Move Speed", $"{spawner.LastBaseMoveSpeed:F2} → {spawner.LastRaidMoveSpeed:F2}");
+
+                if (spawner.LastSpawnWasAir)
+                {
+                    EditorGUILayout.LabelField("Last Air Corridor", $"Variant {spawner.LastAirCorridorVariant + 1}");
+                }
+            }
         }
 
         private void RefreshGraph(Runtime.RaidBoardRuntime board)

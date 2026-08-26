@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace EndlessGuard.Unit.Raid.Data
 {
@@ -22,31 +21,22 @@ namespace EndlessGuard.Unit.Raid.Data
         [SerializeField] private GameObject boundaryWallPrefab;
         [SerializeField] private GameObject boundaryBrokenPrefab;
 
-        [Header("외곽 폐허")]
-        [SerializeField] private GameObject[] outerRuinFloorPrefabs = Array.Empty<GameObject>();
-        [SerializeField] private GameObject outerRuinBasePrefab;
-        [FormerlySerializedAs("boundaryCutFloorPrefab")]
-        [SerializeField] private GameObject outerRuinCutFloorPrefab;
-        [FormerlySerializedAs("boundaryCutBasePrefab")]
-        [SerializeField] private GameObject outerRuinCutBasePrefab;
-        [Range(0f, 1f)]
-        [SerializeField] private float outerRuinChance = 0.55f;
-        [Range(0f, 1f)]
-        [SerializeField] private float outerRuinWallChance = 0.55f;
-        [Range(0f, 1f)]
-        [SerializeField] private float outerRuinBrokenChance = 0.35f;
-        [FormerlySerializedAs("boundaryRailPrefab")]
-        [SerializeField] private GameObject outerRuinRailHalfPrefab;
-        [SerializeField] private GameObject outerRuinRailLongPrefab;
-        [SerializeField] private GameObject outerRuinRailEndPrefab;
-        [Range(0f, 1f)]
-        [SerializeField] private float outerRuinRailChance = 0.45f;
+        [Header("고정 장식")]
+        [SerializeField] private GameObject[] fixedFloorPrefabs = Array.Empty<GameObject>();
+        [SerializeField] private GameObject fixedBasePrefab;
+        [SerializeField] private GameObject fixedCutFloorPrefab;
+        [SerializeField] private GameObject fixedCutBasePrefab;
+        [SerializeField] private GameObject fixedRailHalfPrefab;
+        [SerializeField] private GameObject fixedRailLongPrefab;
+        [SerializeField] private GameObject fixedRailEndPrefab;
 
         [Header("다리")]
         [SerializeField] private GameObject bridgePrefab;
 
-        [Header("경로")]
-        [SerializeField] private GameObject[] pathPrefabs = Array.Empty<GameObject>();
+        [Header("균열")]
+        [SerializeField] private Material collapseCrackMaterial;
+        [SerializeField] private Material collapseScarMaterial;
+        [SerializeField] private Material collapseBeamMaterial;
 
         [Header("표식")]
         [SerializeField] private GameObject[] entryPrefabs = Array.Empty<GameObject>();
@@ -55,18 +45,11 @@ namespace EndlessGuard.Unit.Raid.Data
         public GameObject BoundaryBasePrefab => boundaryBasePrefab;
         public GameObject BoundaryWallPrefab => boundaryWallPrefab;
         public GameObject BoundaryBrokenPrefab => boundaryBrokenPrefab;
-        public IReadOnlyList<GameObject> OuterRuinFloorPrefabs => outerRuinFloorPrefabs;
-        public GameObject OuterRuinBasePrefab => outerRuinBasePrefab;
-        public GameObject OuterRuinCutFloorPrefab => outerRuinCutFloorPrefab;
-        public GameObject OuterRuinCutBasePrefab => outerRuinCutBasePrefab;
-        public float OuterRuinChance => outerRuinChance;
-        public float OuterRuinWallChance => outerRuinWallChance;
-        public float OuterRuinBrokenChance => outerRuinBrokenChance;
-        public GameObject OuterRuinRailHalfPrefab => outerRuinRailHalfPrefab;
-        public GameObject OuterRuinRailLongPrefab => outerRuinRailLongPrefab;
-        public GameObject OuterRuinRailEndPrefab => outerRuinRailEndPrefab;
-        public float OuterRuinRailChance => outerRuinRailChance;
+        public GameObject FixedCutBasePrefab => fixedCutBasePrefab;
         public GameObject BridgePrefab => bridgePrefab;
+        public Material CollapseCrackMaterial => collapseCrackMaterial;
+        public Material CollapseScarMaterial => collapseScarMaterial;
+        public Material CollapseBeamMaterial => collapseBeamMaterial;
 
         public IReadOnlyList<GameObject> GetSurfacePrefabs(RaidTileSurface surface)
         {
@@ -78,6 +61,23 @@ namespace EndlessGuard.Unit.Raid.Data
                     return highGroundPrefabs;
                 default:
                     return Array.Empty<GameObject>();
+            }
+        }
+
+        public GameObject GetSurfaceVisualPrefab(RaidTileSurfaceVisual visual)
+        {
+            switch (visual)
+            {
+                case RaidTileSurfaceVisual.Floor:
+                    return GetFixedFloor(0);
+                case RaidTileSurfaceVisual.FloorBrokenA:
+                    return GetFixedFloor(1);
+                case RaidTileSurfaceVisual.FloorBrokenB:
+                    return GetFixedFloor(2);
+                case RaidTileSurfaceVisual.FloorCut:
+                    return fixedCutFloorPrefab;
+                default:
+                    return null;
             }
         }
 
@@ -96,14 +96,38 @@ namespace EndlessGuard.Unit.Raid.Data
             }
         }
 
-        public IReadOnlyList<GameObject> GetRoutePrefabs(RaidTileRoute route)
+        public GameObject GetDecorPrefab(RaidMapDecorKind kind)
         {
-            switch (route)
+            switch (kind)
             {
-                case RaidTileRoute.Path:
-                    return pathPrefabs;
+                case RaidMapDecorKind.Floor:
+                    return GetFixedFloor(0);
+                case RaidMapDecorKind.FloorBrokenA:
+                    return GetFixedFloor(1);
+                case RaidMapDecorKind.FloorBrokenB:
+                    return GetFixedFloor(2);
+                case RaidMapDecorKind.FloorCut:
+                    return fixedCutFloorPrefab;
+                case RaidMapDecorKind.Foundation:
+                    return fixedBasePrefab;
+                case RaidMapDecorKind.FoundationCut:
+                    return fixedCutBasePrefab;
+                case RaidMapDecorKind.Wall:
+                    return boundaryWallPrefab;
+                case RaidMapDecorKind.WallBroken:
+                    return boundaryBrokenPrefab;
+                case RaidMapDecorKind.RailHalf:
+                    return fixedRailHalfPrefab;
+                case RaidMapDecorKind.RailLong:
+                    return fixedRailLongPrefab;
+                case RaidMapDecorKind.RailEnd:
+                    return fixedRailEndPrefab;
+                case RaidMapDecorKind.Rubble:
+                    return Get(rubblePrefabs, 0);
+                case RaidMapDecorKind.Rocks:
+                    return Get(rubblePrefabs, 1);
                 default:
-                    return Array.Empty<GameObject>();
+                    return null;
             }
         }
 
@@ -118,6 +142,16 @@ namespace EndlessGuard.Unit.Raid.Data
                 default:
                     return Array.Empty<GameObject>();
             }
+        }
+
+        private GameObject GetFixedFloor(int index)
+        {
+            return Get(fixedFloorPrefabs, index);
+        }
+
+        private static GameObject Get(IReadOnlyList<GameObject> prefabs, int index)
+        {
+            return prefabs != null && index >= 0 && index < prefabs.Count ? prefabs[index] : null;
         }
     }
 }

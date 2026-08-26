@@ -1,12 +1,12 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
-    [CreateAssetMenu(fileName = "FrontlineCommand", menuName = "Endless Guard/Passive/Àü¼± ÁöÈÖ")]
+    [CreateAssetMenu(fileName = "FrontlineCommand", menuName = "Endless Guard/Passive/ì „ì„  ì§€íœ˜")]
     public sealed class FrontlineCommandSO : PassiveDataSO
     {
-        [Header("Àü¼± ÁöÈÖ ±âº»°ª")]
-        [Tooltip("¾Æ±º ¼ÒÈ¯¹°ÀÌ ÇÊµå¿¡ 1°³ ÀÌ»ó Á¸ÀçÇÒ ¶§ ÀÚ½ÅÀÇ °ø°İ¼Óµµ°¡ Áõ°¡ÇÏ´Â ºñÀ²ÀÔ´Ï´Ù. Ä³¸¯ÅÍº° ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ µû·Î Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.")]
+        [Header("ì „ì„  ì§€íœ˜ ê¸°ë³¸ê°’")]
+        [Tooltip("ì•„êµ° ì†Œí™˜ë¬¼ì´ í•„ë“œì— 1ê°œ ì´ìƒ ì¡´ì¬í•  ë•Œ ìì‹ ì˜ ê³µê²©ì†ë„ê°€ ì¦ê°€í•˜ëŠ” ë¹„ìœ¨ì…ë‹ˆë‹¤. ìºë¦­í„°ë³„ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ë”°ë¡œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.")]
         [Min(0f)]
         [SerializeField] private float attackSpeedBonusPercent = 20f;
 

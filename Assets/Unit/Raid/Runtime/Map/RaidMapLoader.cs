@@ -28,6 +28,7 @@ namespace EndlessGuard.Unit.Raid.Runtime
                 throw new InvalidOperationException($"Raid Board 크기와 Map 크기가 다릅니다. Board: {board.Width}x{board.Height}, Map: {mapData.Width}x{mapData.Height}");
             }
 
+            ValidateBlockingDecor(mapData);
             ApplyTiles(board, mapData);
             RaidRouteGraph graph = BuildGraph(mapData);
             RaidRoutePlan[] routePlans = BuildRoutes(mapData);
@@ -44,7 +45,32 @@ namespace EndlessGuard.Unit.Raid.Runtime
                 throw new InvalidOperationException($"Raid Map에서 Enemy Path를 복원하지 못했습니다. Map: {mapData.MapId}");
             }
 
-            return new RaidMapResult(mapData.Phase, mapData.MapId, mapData.VisualKey, graph, routePlans, laneSet, lanePaths, lanePlans, travelPaths, enemyPaths);
+            return new RaidMapResult(mapData.Phase, mapData.MapId, graph, routePlans, laneSet, lanePaths, lanePlans, travelPaths, enemyPaths);
+        }
+
+
+        private static void ValidateBlockingDecor(RaidMapSO mapData)
+        {
+            for (int i = 0; i < mapData.DecorCount; i++)
+            {
+                RaidMapDecorData decor = mapData.GetDecor(i);
+                if (decor.Kind != RaidMapDecorKind.Rubble && decor.Kind != RaidMapDecorKind.Rocks)
+                {
+                    continue;
+                }
+
+                Vector2Int coordinate = decor.Coordinate;
+                if (coordinate.x < 0 || coordinate.x >= mapData.Width || coordinate.y < 0 || coordinate.y >= mapData.Height)
+                {
+                    throw new InvalidOperationException($"Raid 고정 장식 좌표가 Map 범위를 벗어났습니다. Map: {mapData.MapId}, Decor: {decor.Kind}, Tile: {coordinate}");
+                }
+
+                RaidTile tile = mapData.GetTile(coordinate.y * mapData.Width + coordinate.x);
+                if (tile.IsGroundCombatDeployable || tile.IsHighGroundDeployable)
+                {
+                    throw new InvalidOperationException($"Raid 배치 가능 타일에 캐릭터를 가리는 장식이 배치되어 있습니다. Map: {mapData.MapId}, Decor: {decor.Kind}, Tile: {coordinate}");
+                }
+            }
         }
 
         private static void ApplyTiles(RaidBoard board, RaidMapSO mapData)

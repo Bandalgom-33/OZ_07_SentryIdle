@@ -18,6 +18,24 @@ namespace EndlessGuard.Unit.Raid.Data
         Void = 4
     }
 
+    public enum RaidTileSurfaceVisual
+    {
+        [InspectorName("자동")]
+        Auto = 0,
+
+        [InspectorName("일반 바닥")]
+        Floor = 1,
+
+        [InspectorName("파손 바닥 A")]
+        FloorBrokenA = 2,
+
+        [InspectorName("파손 바닥 B")]
+        FloorBrokenB = 3,
+
+        [InspectorName("절단 바닥")]
+        FloorCut = 4
+    }
+
     public enum RaidTileRoute
     {
         [InspectorName("없음")]
@@ -103,6 +121,8 @@ namespace EndlessGuard.Unit.Raid.Data
         [SerializeField] private RaidTileBridge bridge;
         [SerializeField] private RaidTileBlock block;
         [SerializeField] private RaidTileRotation blockRotation;
+        [SerializeField] private RaidTileSurfaceVisual surfaceVisual;
+        [SerializeField] private RaidTileRotation surfaceRotation;
 
         public RaidTileSurface Surface => surface;
         public RaidTileRoute Route => route;
@@ -111,6 +131,8 @@ namespace EndlessGuard.Unit.Raid.Data
         public RaidTileBridge Bridge => bridge;
         public RaidTileBlock Block => block;
         public RaidTileRotation BlockRotation => blockRotation;
+        public RaidTileSurfaceVisual SurfaceVisual => surfaceVisual;
+        public RaidTileRotation SurfaceRotation => surfaceRotation;
 
         public bool IsPath => route == RaidTileRoute.Path;
         public bool IsEntry => marker == RaidTileMarker.Entry;
@@ -118,6 +140,7 @@ namespace EndlessGuard.Unit.Raid.Data
         public bool IsBridge => bridge != RaidTileBridge.None;
         public bool HasBlock => block != RaidTileBlock.None;
         public bool IsGroundDeployable => deploy == RaidTileDeploy.Ground && marker == RaidTileMarker.None && !HasBlock;
+        public bool IsGroundCombatDeployable => surface == RaidTileSurface.Ground && marker == RaidTileMarker.None && !HasBlock && (deploy == RaidTileDeploy.Ground || route == RaidTileRoute.Path);
         public bool IsHighGroundDeployable => deploy == RaidTileDeploy.HighGround && marker == RaidTileMarker.None && !HasBlock;
 
         public RaidTile(RaidTileSurface surface, RaidTileRoute route, RaidTileDeploy deploy, RaidTileMarker marker) : this(surface, route, deploy, marker, RaidTileBridge.None, RaidTileBlock.None, RaidTileRotation.North)
@@ -133,6 +156,8 @@ namespace EndlessGuard.Unit.Raid.Data
             this.bridge = bridge;
             this.block = block;
             this.blockRotation = blockRotation;
+            surfaceVisual = RaidTileSurfaceVisual.Auto;
+            surfaceRotation = RaidTileRotation.North;
         }
     }
 }

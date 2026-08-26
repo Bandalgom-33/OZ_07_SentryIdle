@@ -379,7 +379,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.HitShake
   shakeDistance: 0.05
   shakeCycles: 2.5
-  reactionDuration: 0.12
+  reactionDuration: 0.18
+  useBackwardRecoil: 1
+  recoilDistance: 0.16
   scaleUp: 1.07
   scaleDown: 0.96
 --- !u!1 &7379568559048136151

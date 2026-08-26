@@ -71,6 +71,7 @@ namespace EndlessGuard.Unit.Runtime
         private float targetPushOffset;
         private float pushVelocity;
         private int targetId;
+        private float displayScale = 1f;
         private bool prepared;
         private bool isPlaying;
 
@@ -98,6 +99,11 @@ namespace EndlessGuard.Unit.Runtime
 
         public void Show(Vector2 anchoredPosition, int ownerId)
         {
+            Show(anchoredPosition, ownerId, 1f);
+        }
+
+        public void Show(Vector2 anchoredPosition, int ownerId, float scale)
+        {
             Prepare();
 
             startPosition = anchoredPosition;
@@ -106,10 +112,11 @@ namespace EndlessGuard.Unit.Runtime
             targetPushOffset = 0f;
             pushVelocity = 0f;
             targetId = ownerId;
+            displayScale = Mathf.Clamp(scale, 0.1f, 3f);
             isPlaying = true;
 
             rectTransform.anchoredPosition = startPosition;
-            rectTransform.localScale = baseScale * startScale;
+            rectTransform.localScale = baseScale * (startScale * displayScale);
             rectTransform.localRotation = baseRotation * Quaternion.Euler(0f, 0f, tiltAngle);
             canvasGroup.alpha = 1f;
             gameObject.SetActive(true);
@@ -158,6 +165,7 @@ namespace EndlessGuard.Unit.Runtime
             targetPushOffset = 0f;
             pushVelocity = 0f;
             targetId = 0;
+            displayScale = 1f;
 
             if (rectTransform != null)
             {
@@ -193,7 +201,7 @@ namespace EndlessGuard.Unit.Runtime
                 scaleMultiplier = settleScale;
             }
 
-            rectTransform.localScale = baseScale * scaleMultiplier;
+            rectTransform.localScale = baseScale * (scaleMultiplier * displayScale);
         }
 
         private void UpdateAlpha(float progress)

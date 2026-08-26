@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 18fdc6359ee34d6d93fb432fff92301e
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _ParticleTexture: {fileID: 2800000, guid: e97abc231b6141d3a4b814aae4be882e, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 303479
+  packageName: Zap VFX - URP
+  packageVersion: 1.0.3
+  assetPath: Assets/Vefects/Zap VFX URP/VFX/Zap/Shaders/SH_Vefects_Extra_Particles_URP.shader
+  uploadId: 778923

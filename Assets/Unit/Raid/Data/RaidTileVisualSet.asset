@@ -26,23 +26,20 @@ MonoBehaviour:
   boundaryBasePrefab: {fileID: 973374580115397455, guid: bfd4073ec050de340b2d9283daa9de8a, type: 3}
   boundaryWallPrefab: {fileID: 3950577767283965755, guid: 0028dd660806b4e44949dc744df7b012, type: 3}
   boundaryBrokenPrefab: {fileID: 3797835333019482868, guid: 20c271c090ab08e41818416edcd9b9de, type: 3}
-  outerRuinFloorPrefabs:
+  fixedFloorPrefabs:
   - {fileID: 112002922629254673, guid: 042886bf938bb724ab44ad561ffc1310, type: 3}
   - {fileID: 7734241019564397009, guid: 47af606231e6959498be1168f55dfd7c, type: 3}
   - {fileID: 3998551588500210963, guid: 2f387028f21ddb64a86f77c2097ec2cd, type: 3}
-  outerRuinBasePrefab: {fileID: 973374580115397455, guid: bfd4073ec050de340b2d9283daa9de8a, type: 3}
-  outerRuinCutFloorPrefab: {fileID: 112002922629254673, guid: 12ff2f7be52086d488ab21bb7d28f24a, type: 3}
-  outerRuinCutBasePrefab: {fileID: 973374580115397455, guid: b55f80f336a0aef4080edb3dd8add326, type: 3}
-  outerRuinChance: 0.55
-  outerRuinWallChance: 0.55
-  outerRuinBrokenChance: 0.35
-  outerRuinRailHalfPrefab: {fileID: 3950577767283965755, guid: 22b0e6bd7e6a48b48a869a60465fe4d5, type: 3}
-  outerRuinRailLongPrefab: {fileID: 3950577767283965755, guid: fff0be425d7e45eba3c053017e160cd3, type: 3}
-  outerRuinRailEndPrefab: {fileID: 3950577767283965755, guid: 10702d44b90c45b781c18fe20ff7a3fa, type: 3}
-  outerRuinRailChance: 1
+  fixedBasePrefab: {fileID: 973374580115397455, guid: bfd4073ec050de340b2d9283daa9de8a, type: 3}
+  fixedCutFloorPrefab: {fileID: 112002922629254673, guid: 12ff2f7be52086d488ab21bb7d28f24a, type: 3}
+  fixedCutBasePrefab: {fileID: 973374580115397455, guid: b55f80f336a0aef4080edb3dd8add326, type: 3}
+  fixedRailHalfPrefab: {fileID: 3950577767283965755, guid: 22b0e6bd7e6a48b48a869a60465fe4d5, type: 3}
+  fixedRailLongPrefab: {fileID: 3950577767283965755, guid: fff0be425d7e45eba3c053017e160cd3, type: 3}
+  fixedRailEndPrefab: {fileID: 3950577767283965755, guid: 10702d44b90c45b781c18fe20ff7a3fa, type: 3}
   bridgePrefab: {fileID: 919132149155446097, guid: d980a3a628a329ae445515601f0fa8b2, type: 3}
-  pathPrefabs:
-  - {fileID: 6497307103071672319, guid: b42c45dbf1098794d9047f559fa35cc8, type: 3}
+  collapseCrackMaterial: {fileID: 2100000, guid: 8a2968ec75f59c6d31a6588fa003e7bc, type: 2}
+  collapseScarMaterial: {fileID: 2100000, guid: 38ea7629ab63497c9f7e74d15f58f62d, type: 2}
+  collapseBeamMaterial: {fileID: 2100000, guid: 07ed99b1a91f5b0d0c80ad4668c74def, type: 2}
   entryPrefabs:
   - {fileID: 750504062644263683, guid: b354fc791adc22a4da62a82ad5c3616b, type: 3}
   goalPrefabs:

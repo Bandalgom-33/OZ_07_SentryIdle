@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace EndlessGuard.Unit.Runtime
 {
-    // 필드에 생성(소환)된 적 유닛 목록 추적 및 사망 시 디스폰(오브젝트 파괴) 관리를 전담하는 매니저
+    // 필드에 생성된 적 유닛 목록을 추적하고, 사망 시 객체별 디스폰 정책을 실행하는 매니저
     public sealed class SpawnedEnemyManager : MonoBehaviour
     {
         private static SpawnedEnemyManager _instance;
@@ -25,6 +25,24 @@ namespace EndlessGuard.Unit.Runtime
             }
         }
 
+        public static bool TryGetExisting(out SpawnedEnemyManager manager)
+        {
+            if (_instance != null)
+            {
+                manager = _instance;
+                return true;
+            }
+
+            manager = FindFirstObjectByType<SpawnedEnemyManager>();
+            if (manager == null)
+            {
+                return false;
+            }
+
+            _instance = manager;
+            return true;
+        }
+
         [Header("디스폰 지연 시간 (초)")]
         [SerializeField] private float despawnDelay = 0.5f;
 
@@ -42,6 +60,14 @@ namespace EndlessGuard.Unit.Runtime
 
             _instance = this;
             DontDestroyOnLoad(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
         }
 
         private void OnEnable()
@@ -84,9 +110,20 @@ namespace EndlessGuard.Unit.Runtime
             if (enemyState != null)
             {
                 UnregisterEnemy(enemyState);
+
+                if (enemyState.SummonRuntime != null)
+                {
+                    return;
+                }
             }
 
-            // 사망 애니메이션/연출 고려 지연 파괴 (필요 시 바로 Destroy(eventMessage.enemyGameObject) 변경 가능)
+            EnemyDespawnHandler despawnHandler = eventMessage.enemyGameObject.GetComponent<EnemyDespawnHandler>();
+            if (despawnHandler != null)
+            {
+                despawnHandler.Despawn(despawnDelay);
+                return;
+            }
+
             if (despawnDelay > 0f)
             {
                 Destroy(eventMessage.enemyGameObject, despawnDelay);

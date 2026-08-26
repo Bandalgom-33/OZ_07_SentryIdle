@@ -38,8 +38,8 @@ MonoBehaviour:
     moveSpeed: 0
   attackSettings:
     attackMode: 1
-    damageType: 0
-    attackTarget: 0
+    damageType: 2
+    attackTarget: 1
     attackRange: 3
     targetCount: 1
     rangeRotationMode: 0

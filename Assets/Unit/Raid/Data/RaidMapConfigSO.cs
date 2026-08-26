@@ -18,6 +18,16 @@ namespace EndlessGuard.Unit.Raid.Data
         public RaidMapCatalogSO Catalog => catalog;
         public RaidMapFamilySO DefaultFamily => defaultFamily;
 
+        public RaidMapFamilySO GetRandomFamily()
+        {
+            if (catalog == null)
+            {
+                throw new InvalidOperationException("Raid Map Catalog가 연결되지 않았습니다.");
+            }
+
+            return catalog.GetRandomCompleteFamily();
+        }
+
         public RaidMapFamilySO GetFamily(string familyId)
         {
             if (string.IsNullOrWhiteSpace(familyId))

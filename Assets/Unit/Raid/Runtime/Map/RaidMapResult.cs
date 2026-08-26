@@ -13,7 +13,6 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
         public RaidPhase Phase { get; }
         public string MapId { get; }
-        public int VisualKey { get; }
         public RaidRouteGraph RouteGraph { get; }
         public RaidLaneSet LaneSet { get; }
         public RaidEnemyPathSet EnemyPaths { get; }
@@ -22,7 +21,7 @@ namespace EndlessGuard.Unit.Raid.Runtime
         public IReadOnlyList<RaidLanePlan> LanePlans => lanePlans;
         public IReadOnlyList<RaidTravelPath> TravelPaths => travelPaths;
 
-        internal RaidMapResult(RaidPhase phase, string mapId, int visualKey, RaidRouteGraph routeGraph, RaidRoutePlan[] routePlans, RaidLaneSet laneSet, RaidLanePath[] lanePaths, RaidLanePlan[] lanePlans, RaidTravelPath[] travelPaths, RaidEnemyPathSet enemyPaths)
+        internal RaidMapResult(RaidPhase phase, string mapId, RaidRouteGraph routeGraph, RaidRoutePlan[] routePlans, RaidLaneSet laneSet, RaidLanePath[] lanePaths, RaidLanePlan[] lanePlans, RaidTravelPath[] travelPaths, RaidEnemyPathSet enemyPaths)
         {
             if (string.IsNullOrWhiteSpace(mapId))
             {
@@ -49,7 +48,6 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
             Phase = phase;
             MapId = mapId;
-            VisualKey = visualKey;
         }
     }
 }

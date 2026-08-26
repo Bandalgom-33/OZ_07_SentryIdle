@@ -184,10 +184,22 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             feedback.transform.SetAsLastSibling();
-            feedback.Show(anchoredPosition, targetId);
+            feedback.Show(anchoredPosition, targetId, ResolveDisplayScale(target));
             activeMisses.Add(feedback);
             stack.Add(feedback);
             return true;
+        }
+
+
+        private static float ResolveDisplayScale(CombatHealth target)
+        {
+            if (target == null)
+            {
+                return 1f;
+            }
+
+            CombatNumberScale scale = target.GetComponentInParent<CombatNumberScale>();
+            return scale != null ? scale.Scale : 1f;
         }
 
         private void PushExisting(List<MissFeedback> stack)

@@ -1,4 +1,4 @@
-using EndlessGuard.Unit.Data;
+ï»¿using EndlessGuard.Unit.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,10 +19,10 @@ namespace EndlessGuard.Unit.Editor
         protected override void DrawSpecificFields()
         {
             EditorGUILayout.Space(8f);
-            EditorGUILayout.LabelField("Àü¼± ÁöÈÖ ±âº»°ª", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(attackSpeedBonusPercent, new GUIContent("°ø°İ¼Óµµ Áõ°¡À² (%)", "¾Æ±º ¼ÒÈ¯¹°ÀÌ ÇÊµå¿¡ 1°³ ÀÌ»ó Á¸ÀçÇÒ ¶§ ÀÚ½ÅÀÇ °ø°İ¼Óµµ°¡ Áõ°¡ÇÏ´Â ±âº» ÃßÃµ ºñÀ²ÀÔ´Ï´Ù. ½ÇÁ¦ ¼öÄ¡´Â Ä³¸¯ÅÍ µ¥ÀÌÅÍÀÇ ÆĞ½Ãºê °³º° ¼öÄ¡¿¡¼­ Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù."));
+            EditorGUILayout.LabelField("ì „ì„  ì§€íœ˜ ê¸°ë³¸ê°’", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(attackSpeedBonusPercent, new GUIContent("ê³µê²©ì†ë„ ì¦ê°€ìœ¨ (%)", "ì•„êµ° ì†Œí™˜ë¬¼ì´ í•„ë“œì— 1ê°œ ì´ìƒ ì¡´ì¬í•  ë•Œ ìì‹ ì˜ ê³µê²©ì†ë„ê°€ ì¦ê°€í•˜ëŠ” ê¸°ë³¸ ì¶”ì²œ ë¹„ìœ¨ì…ë‹ˆë‹¤. ì‹¤ì œ ìˆ˜ì¹˜ëŠ” ìºë¦­í„° ë°ì´í„°ì˜ íŒ¨ì‹œë¸Œ ê°œë³„ ìˆ˜ì¹˜ì—ì„œ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤."));
             EditorGUILayout.Space(4f);
-            EditorGUILayout.HelpBox("¾Æ±º ¼ÒÈ¯¹°ÀÌ 1°³ ÀÌ»óÀÌ¸é È¿°ú°¡ È°¼ºÈ­µÇ°í, ¼ÒÈ¯¹° ¼ö°¡ ´Ã¾î³ªµµ ÁßÃ¸µÇÁö ¾Ê½À´Ï´Ù. ¸¶Áö¸· ¾Æ±º ¼ÒÈ¯¹°ÀÌ »ç¶óÁö¸é È¿°ú°¡ Áï½Ã ÇØÁ¦µË´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ì•„êµ° ì†Œí™˜ë¬¼ì´ 1ê°œ ì´ìƒì´ë©´ íš¨ê³¼ê°€ í™œì„±í™”ë˜ê³ , ì†Œí™˜ë¬¼ ìˆ˜ê°€ ëŠ˜ì–´ë‚˜ë„ ì¤‘ì²©ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ë§ˆì§€ë§‰ ì•„êµ° ì†Œí™˜ë¬¼ì´ ì‚¬ë¼ì§€ë©´ íš¨ê³¼ê°€ ì¦‰ì‹œ í•´ì œë©ë‹ˆë‹¤.", MessageType.Info);
         }
     }
 }

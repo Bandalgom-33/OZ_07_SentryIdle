@@ -9,17 +9,28 @@ namespace EndlessGuard.Unit.Raid.Runtime
     {
         private const uint SurfaceSalt = 0xA511E9B3u;
         private const uint BlockSalt = 0x71E38A59u;
-        private const uint RouteSalt = 0xC2B2AE35u;
         private const uint MarkerSalt = 0x63D83595u;
 
-        public static GameObject PickSurface(RaidTileVisualSetSO visualSet, RaidTileSurface surface, Vector2Int coordinate, int visualKey)
+        public static GameObject PickSurface(RaidTileVisualSetSO visualSet, RaidTile tile, Vector2Int coordinate, int visualKey)
         {
             if (visualSet == null)
             {
                 throw new ArgumentNullException(nameof(visualSet));
             }
 
-            return Pick(visualSet.GetSurfacePrefabs(surface), coordinate, visualKey, SurfaceSalt);
+            if (tile.SurfaceVisual != RaidTileSurfaceVisual.Auto)
+            {
+                GameObject fixedPrefab = visualSet.GetSurfaceVisualPrefab(tile.SurfaceVisual);
+
+                if (fixedPrefab == null)
+                {
+                    throw new InvalidOperationException($"Raid 고정 Surface Visual Prefab이 없습니다. Visual: {tile.SurfaceVisual}");
+                }
+
+                return fixedPrefab;
+            }
+
+            return Pick(visualSet.GetSurfacePrefabs(tile.Surface), coordinate, visualKey, SurfaceSalt);
         }
 
         public static GameObject PickBlock(RaidTileVisualSetSO visualSet, RaidTileBlock block, Vector2Int coordinate, int visualKey)
@@ -30,16 +41,6 @@ namespace EndlessGuard.Unit.Raid.Runtime
             }
 
             return Pick(visualSet.GetBlockPrefabs(block), coordinate, visualKey, BlockSalt);
-        }
-
-        public static GameObject PickRoute(RaidTileVisualSetSO visualSet, RaidTileRoute route, Vector2Int coordinate, int visualKey)
-        {
-            if (visualSet == null)
-            {
-                throw new ArgumentNullException(nameof(visualSet));
-            }
-
-            return Pick(visualSet.GetRoutePrefabs(route), coordinate, visualKey, RouteSalt);
         }
 
         public static GameObject PickMarker(RaidTileVisualSetSO visualSet, RaidTileMarker marker, Vector2Int coordinate, int visualKey)

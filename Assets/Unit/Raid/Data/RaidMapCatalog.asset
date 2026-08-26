@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidMapCatalogSO
   families:
   - {fileID: 11400000, guid: bd27c5ce5bad4d839efb2af435d74cdb, type: 2}
+  - {fileID: 11400000, guid: fc6f49219d9941119d7891a9f18dfa6a, type: 2}

@@ -374,7 +374,8 @@ namespace EndlessGuard.Unit.Editor
             return key == PassiveValueKey.SummonCostGain ||
                    key == PassiveValueKey.RandomTargetCount ||
                    key == PassiveValueKey.BurstAttackCount ||
-                   key == PassiveValueKey.SummonCount;
+                   key == PassiveValueKey.SummonCount ||
+                   key == PassiveValueKey.MaxActiveSummons;
         }
 
         private static int GetIntegerMinimum(PassiveValueKey key)
