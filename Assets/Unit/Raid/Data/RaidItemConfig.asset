@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a80853c3094a74a7382256e2bcc2a7, type: 3}
+  m_Name: RaidItemConfig
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidItemConfigSO
+  phase1:
+    dropChance: 0.28
+    activeLifetimeSeconds: 35
+    buffDurationMultiplier: 1.5
+  phase2:
+    dropChance: 0.16
+    activeLifetimeSeconds: 25
+    buffDurationMultiplier: 1.1666666
+  maxActiveItems: 4
+  reservationGraceSeconds: 5
+  visualHeightOffset: 0.025
+  maxBuffStacks: 10
+  attack:
+    visualPrefab: {fileID: 1000000000000000100, guid: f8a5b60f24ee4fc481e629f42079f9ee, type: 3}
+    consumeVisualPrefab: {fileID: 1000000000000002100, guid: 07daa14f3bd1408485cf889cd61b2dcb, type: 3}
+    consumeVisualLifetime: 1
+    buffVisualPrefab: {fileID: 1000000000000001100, guid: 791dc4c3d16647e7839a487ea4a3fff0, type: 3}
+    effectPercent: 30
+    durationSeconds: 30
+  attackSpeed:
+    visualPrefab: {fileID: 1000000000000000200, guid: ef40af907d1f4c4aa8f19868d229d616, type: 3}
+    consumeVisualPrefab: {fileID: 1000000000000002200, guid: f63c683e887249ec864fcc49afaaa40d, type: 3}
+    consumeVisualLifetime: 1
+    buffVisualPrefab: {fileID: 1000000000000001200, guid: b364fbce2df64f2ea28dc209b7416273, type: 3}
+    effectPercent: 30
+    durationSeconds: 30
+  heal:
+    visualPrefab: {fileID: 1000000000000000300, guid: 4c055f572a924fb7a23db7f93080412b, type: 3}
+    consumeVisualPrefab: {fileID: 1000000000000002300, guid: 57cbd76514894ac699b87fce2db7a58f, type: 3}
+    consumeVisualLifetime: 1
+    buffVisualPrefab: {fileID: 1000000000000001200, guid: 5f9a07dbf72c482a883ce64ea1c799cb, type: 3}
+    effectPercent: 0.5
+    durationSeconds: 30

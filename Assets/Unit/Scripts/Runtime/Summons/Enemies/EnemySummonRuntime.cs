@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
@@ -57,6 +57,7 @@ namespace EndlessGuard.Unit.Runtime
 
         private void OnDisable()
         {
+            SummonService.UnregisterEnemySummon(this);
             UnsubscribeOwnerDeath();
             SummonLifetimeRegistry.Unregister(gameObject);
             SummonStatModifierRuntime.Remove(state != null ? state.Stats : null, appliedModifierIds);
@@ -108,6 +109,7 @@ namespace EndlessGuard.Unit.Runtime
             state.GridPosition.Initialize(owner.GridPosition.TileCoordinate, owner.GridPosition.FacingDirection, targetLayer);
 
             initialized = true;
+            SummonService.RegisterEnemySummon(this, owner, source);
 
             if (lifetimeSeconds > 0f)
             {

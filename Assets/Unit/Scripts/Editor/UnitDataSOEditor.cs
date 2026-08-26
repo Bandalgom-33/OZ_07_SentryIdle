@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using EndlessGuard.Unit.Data;
 using UnityEditor;
@@ -81,12 +81,6 @@ namespace EndlessGuard.Unit.Editor
 
             CombatDataEditorGUI.DrawReadOnlyProperty(script, "스크립트", "이 데이터 에셋을 정의하는 C# 스크립트입니다.");
             CombatDataEditorGUI.DrawReadOnlyProperty(unitId, "캐릭터 데이터 ID", "제작 도구에서 UNIT_0001 형식으로 자동 발급되며 직접 수정하지 않습니다.");
-
-            if (!unitId.hasMultipleDifferentValues && string.IsNullOrWhiteSpace(unitId.stringValue))
-            {
-                EditorGUILayout.HelpBox("캐릭터 데이터 ID는 향후 제작 도구에서 자동 발급합니다. 현재 비어 있는 것이 정상입니다.", MessageType.Info);
-            }
-
             EditorGUILayout.PropertyField(displayName, new GUIContent("표시 이름", "게임 화면과 제작 도구에 표시되는 캐릭터 이름입니다."));
             EditorGUILayout.PropertyField(description, new GUIContent("설명", "캐릭터의 역할과 특징을 설명합니다."));
             EditorGUILayout.PropertyField(grade, new GUIContent("성급", "캐릭터의 1성부터 6성까지의 성급입니다."));

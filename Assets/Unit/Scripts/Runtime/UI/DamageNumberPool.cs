@@ -8,18 +8,18 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(Canvas))]
     public sealed class DamageNumberPool : MonoBehaviour
     {
-        [Header("피해 숫자 풀")]
-        [Tooltip("풀에서 재사용할 피해 숫자 프리팹입니다.")]
+        [Header("전투 숫자 풀")]
+        [Tooltip("풀에서 재사용할 피해/회복 숫자 프리팹입니다.")]
         [SerializeField] private DamageNumber numberPrefab;
 
         [Tooltip("전투 월드 위치를 화면 좌표로 변환할 카메라입니다. 비어 있으면 시작 시 MainCamera를 한 번 찾습니다.")]
         [SerializeField] private Camera worldCamera;
 
-        [Tooltip("전투 시작 시 미리 생성할 피해 숫자 개수입니다.")]
+        [Tooltip("전투 시작 시 미리 생성할 전투 숫자 개수입니다.")]
         [Min(1)]
         [SerializeField] private int initialCapacity = 32;
 
-        [Tooltip("같은 대상에게 동시에 표시할 수 있는 피해 숫자의 최대 개수입니다.")]
+        [Tooltip("같은 대상에게 동시에 표시할 수 있는 피해/회복 숫자의 최대 개수입니다.")]
         [Range(1, 20)]
         [SerializeField] private int maxNumbersPerTarget = 6;
 
@@ -110,23 +110,48 @@ namespace EndlessGuard.Unit.Runtime
         public static bool Show(CombatHealth target, float damage, Vector3 worldPosition)
         {
             DamageInfo damageInfo = new DamageInfo(damage, DamageType.None, false);
-            return Show(target, damageInfo, worldPosition, DamageNumberTargetType.Enemy);
+            return Show(target, damageInfo, worldPosition, DamageNumberTargetType.Enemy, 1f);
         }
 
         public static bool Show(CombatHealth target, float damage, Vector3 worldPosition, DamageNumberTargetType targetType)
         {
             DamageInfo damageInfo = new DamageInfo(damage, DamageType.None, false);
-            return Show(target, damageInfo, worldPosition, targetType);
+            return Show(target, damageInfo, worldPosition, targetType, 1f);
         }
 
         public static bool Show(CombatHealth target, DamageInfo damageInfo, Vector3 worldPosition)
         {
-            return Show(target, damageInfo, worldPosition, DamageNumberTargetType.Enemy);
+            return Show(target, damageInfo, worldPosition, DamageNumberTargetType.Enemy, 1f);
         }
 
         public static bool Show(CombatHealth target, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType)
         {
-            return instance != null && instance.ShowInternal(target, damageInfo, worldPosition, targetType);
+            return Show(target, damageInfo, worldPosition, targetType, 1f);
+        }
+
+        public static bool Show(CombatHealth target, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType, float displayScale)
+        {
+            return instance != null && instance.ShowInternal(target, damageInfo, worldPosition, targetType, displayScale);
+        }
+
+        public static bool Show(int targetId, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType)
+        {
+            return Show(targetId, damageInfo, worldPosition, targetType, 1f);
+        }
+
+        public static bool Show(int targetId, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType, float displayScale)
+        {
+            return targetId != 0 && instance != null && instance.ShowInternal(targetId, damageInfo, worldPosition, targetType, displayScale);
+        }
+
+        public static bool ShowHeal(CombatHealth target, float healAmount, Vector3 worldPosition)
+        {
+            return ShowHeal(target, healAmount, worldPosition, 1f);
+        }
+
+        public static bool ShowHeal(CombatHealth target, float healAmount, Vector3 worldPosition, float displayScale)
+        {
+            return target != null && healAmount > 0f && instance != null && instance.ShowHealInternal(target.GetInstanceID(), healAmount, worldPosition, displayScale);
         }
 
         private void Prewarm()
@@ -143,9 +168,53 @@ namespace EndlessGuard.Unit.Runtime
             }
         }
 
-        private bool ShowInternal(CombatHealth target, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType)
+        private bool ShowInternal(CombatHealth target, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType, float displayScale)
         {
-            if (target == null || damageInfo.FinalDamage <= 0f || numberPrefab == null || canvas == null || canvasRect == null)
+            if (target == null)
+            {
+                return false;
+            }
+
+            return ShowInternal(target.GetInstanceID(), damageInfo, worldPosition, targetType, displayScale);
+        }
+
+        private bool ShowInternal(int targetId, DamageInfo damageInfo, Vector3 worldPosition, DamageNumberTargetType targetType, float displayScale)
+        {
+            if (targetId == 0 || damageInfo.FinalDamage <= 0f || !TryAcquireNumber(targetId, worldPosition, out DamageNumber number, out Vector2 anchoredPosition, out List<DamageNumber> stack))
+            {
+                return false;
+            }
+
+            number.Show(damageInfo, anchoredPosition, targetId, targetType, displayScale);
+
+            if (damageInfo.IsCritical)
+            {
+                BurstPool.Show(number);
+            }
+
+            CommitNumber(number, stack);
+            return true;
+        }
+
+        private bool ShowHealInternal(int targetId, float healAmount, Vector3 worldPosition, float displayScale)
+        {
+            if (targetId == 0 || healAmount <= 0f || !TryAcquireNumber(targetId, worldPosition, out DamageNumber number, out Vector2 anchoredPosition, out List<DamageNumber> stack))
+            {
+                return false;
+            }
+
+            number.ShowHeal(healAmount, anchoredPosition, targetId, displayScale);
+            CommitNumber(number, stack);
+            return true;
+        }
+
+        private bool TryAcquireNumber(int targetId, Vector3 worldPosition, out DamageNumber number, out Vector2 anchoredPosition, out List<DamageNumber> stack)
+        {
+            number = null;
+            anchoredPosition = default;
+            stack = null;
+
+            if (targetId == 0 || numberPrefab == null || canvas == null || canvasRect == null)
             {
                 return false;
             }
@@ -161,22 +230,18 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             Vector3 screenPosition = worldCamera.WorldToScreenPoint(worldPosition);
-
             if (screenPosition.z <= 0f)
             {
                 return false;
             }
 
             Camera canvasCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
-
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPosition, canvasCamera, out Vector2 anchoredPosition))
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPosition, canvasCamera, out anchoredPosition))
             {
                 return false;
             }
 
-            int targetId = target.GetInstanceID();
-            List<DamageNumber> stack = GetTargetStack(targetId);
-
+            stack = GetTargetStack(targetId);
             CleanStack(stack);
 
             if (stack.Count >= maxNumbersPerTarget)
@@ -185,24 +250,14 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             PushExistingNumbers(stack);
+            number = GetNumber();
+            return number != null;
+        }
 
-            DamageNumber number = GetNumber();
-
-            if (number == null)
-            {
-                return false;
-            }
-
-            number.Show(damageInfo, anchoredPosition, targetId, targetType);
-
-            if (damageInfo.IsCritical)
-            {
-                BurstPool.Show(number);
-            }
-
+        private void CommitNumber(DamageNumber number, List<DamageNumber> stack)
+        {
             activeNumbers.Add(number);
             stack.Add(number);
-            return true;
         }
 
         private void PushExistingNumbers(List<DamageNumber> stack)

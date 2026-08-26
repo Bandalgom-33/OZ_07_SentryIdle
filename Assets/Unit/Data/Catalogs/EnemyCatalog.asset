@@ -12,11 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1e75904d81d004fa9c6b7ba817b006, type: 3}
   m_Name: EnemyCatalog
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.EnemyCatalog
-  lastIssuedNumber: 6
+  lastIssuedNumber: 17
   enemies:
   - {fileID: 11400000, guid: 2b7e23d199b4acd4e818bb566798e3b0, type: 2}
+  - {fileID: 11400000, guid: cf24182505f0a064c9426b6f3588b0da, type: 2}
   - {fileID: 11400000, guid: 0fdcf246590647f40bfb1793cf944480, type: 2}
+  - {fileID: 11400000, guid: 5b7426768c18c3147bffcf5d21839630, type: 2}
+  - {fileID: 11400000, guid: 2d3aabaa118e45e4296e5b03f574485a, type: 2}
+  - {fileID: 11400000, guid: 959bb10dc1e061b458c55117daf748cd, type: 2}
+  - {fileID: 11400000, guid: f51a6012026e8cf4a8c0e413f3bbee7f, type: 2}
   - {fileID: 11400000, guid: 68f637b5f83af874fa918e43e6066fb4, type: 2}
+  - {fileID: 11400000, guid: 58fd9198352f6e94cb03fb94bd73de96, type: 2}
+  - {fileID: 11400000, guid: 4a7863ac429fff64284943585bf59e9d, type: 2}
+  - {fileID: 11400000, guid: d5cb7761054b0f241ae7140df44523a1, type: 2}
   - {fileID: 11400000, guid: f401d789bdf56954a94d764a4fc2f228, type: 2}
   - {fileID: 11400000, guid: ba3d9a1cff8cf014ca0033eb01455fb3, type: 2}
+  - {fileID: 11400000, guid: f056da655d5b0e14ebc39fa52ad31b2e, type: 2}
+  - {fileID: 11400000, guid: 61189df7cd0a8564fbf430a2e18cef28, type: 2}
+  - {fileID: 11400000, guid: 11c50576046a8fd49b838a334cb936df, type: 2}
   - {fileID: 11400000, guid: ce1504f193515304a9ca0ec5ec7a28c6, type: 2}

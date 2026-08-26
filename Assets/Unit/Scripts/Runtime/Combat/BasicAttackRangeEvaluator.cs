@@ -35,13 +35,16 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
-            if (context.HorizontalWorldDistance > attackSettings.AttackRange + DistanceTolerance)
+            evaluatedPatternTile = ConvertWorldTileToPatternTile(
+                context.RelativeTargetTile,
+                attackSettings.RangeRotationMode,
+                context.FacingDirection);
+
+            if (!IsWithinAttackDistance(attackSettings, evaluatedPatternTile))
             {
                 failureReason = BasicAttackFailureReason.OutsideWorldRange;
                 return false;
             }
-
-            evaluatedPatternTile = ConvertWorldTileToPatternTile(context.RelativeTargetTile, attackSettings.RangeRotationMode, context.FacingDirection);
 
             if (!attackSettings.BasicAttackRange.Contains(evaluatedPatternTile))
             {
@@ -52,9 +55,52 @@ namespace EndlessGuard.Unit.Runtime
             return true;
         }
 
+        public static bool IsWithinAttackDistance(AttackSettings attackSettings, Vector2Int relativePatternTile)
+        {
+            if (attackSettings == null)
+            {
+                return false;
+            }
+
+            float tileDistance = Mathf.Sqrt(
+                relativePatternTile.x * relativePatternTile.x +
+                relativePatternTile.y * relativePatternTile.y);
+
+            return tileDistance <= attackSettings.AttackRange + DistanceTolerance;
+        }
+
+        public static Vector2Int ConvertPatternTileToWorldTile(
+            Vector2Int patternTile,
+            AttackRangeRotationMode rotationMode,
+            GridFacingDirection facingDirection)
+        {
+            if (rotationMode == AttackRangeRotationMode.Fixed)
+            {
+                return patternTile;
+            }
+
+            switch (facingDirection)
+            {
+                case GridFacingDirection.East:
+                    return new Vector2Int(patternTile.y, -patternTile.x);
+
+                case GridFacingDirection.South:
+                    return new Vector2Int(-patternTile.x, -patternTile.y);
+
+                case GridFacingDirection.West:
+                    return new Vector2Int(-patternTile.y, patternTile.x);
+
+                default:
+                    return patternTile;
+            }
+        }
+
         public static Vector2Int ConvertWorldTileToPatternTile(Vector2Int worldRelativeTile, AttackRangeRotationMode rotationMode, GridFacingDirection facingDirection)
         {
-            _ = rotationMode;
+            if (rotationMode == AttackRangeRotationMode.Fixed)
+            {
+                return worldRelativeTile;
+            }
 
             switch (facingDirection)
             {

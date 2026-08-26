@@ -23,4 +23,5 @@ MonoBehaviour:
     allowedEnemySizes: 03000000
   summonIntervalSeconds: 10
   summonCount: 1
+  maxActiveSummons: 4
   summonPrefab: {fileID: 2262218435148668757, guid: 74e90650a650c7e4da56ed285b42d8d8, type: 3}

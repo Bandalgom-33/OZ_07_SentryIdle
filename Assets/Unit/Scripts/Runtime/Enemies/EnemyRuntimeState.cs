@@ -185,6 +185,62 @@ namespace EndlessGuard.Unit.Runtime
             return isInitialized ? health.ApplyDamage(damageInfo) : 0f;
         }
 
+        public float ApplyDamage(UnitRuntimeState source, float finalDamage)
+        {
+            return ApplyDamage(source, new DamageInfo(finalDamage, DamageType.None, false));
+        }
+
+        public float ApplyDamage(UnitRuntimeState source, DamageInfo damageInfo)
+        {
+            if (!isInitialized || source == null)
+            {
+                return isInitialized ? health.ApplyDamage(damageInfo) : 0f;
+            }
+
+            float appliedDamage = health.ApplyDamage(damageInfo);
+
+            if (appliedDamage > 0f)
+            {
+                UnitRuntimeState contributionSource = ResolveContributionSource(source, out bool isSummonAttack);
+
+                if (contributionSource != null)
+                {
+                    CombatEvents.PublishUnitDamageDealt(new UnitDamageDealtInfo(
+                        contributionSource,
+                        source,
+                        this,
+                        appliedDamage,
+                        damageInfo.DamageType,
+                        damageInfo.IsCritical,
+                        isSummonAttack));
+                }
+            }
+
+            return appliedDamage;
+        }
+
+        private static UnitRuntimeState ResolveContributionSource(UnitRuntimeState attacker, out bool isSummonAttack)
+        {
+            isSummonAttack = false;
+
+            if (attacker == null)
+            {
+                return null;
+            }
+
+            UnitSummonRuntime summonRuntime = attacker.GetComponent<UnitSummonRuntime>();
+
+            if (summonRuntime != null &&
+                summonRuntime.IsInitialized &&
+                summonRuntime.Owner != null)
+            {
+                isSummonAttack = true;
+                return summonRuntime.Owner;
+            }
+
+            return attacker;
+        }
+
         public float Heal(float amount)
         {
             return isInitialized ? health.Heal(amount) : 0f;

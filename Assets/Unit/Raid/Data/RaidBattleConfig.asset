@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a2dbe3ebdf84eaeaaf232c83dd4662d, type: 3}
+  m_Name: RaidBattleConfig
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidBattleConfigSO
+  bossDisplayName: RAID BOSS
+  bossMaxHp: 10000000
+  timeLimitSeconds: 300
+  phase2HpRatio: 0.67
+  phase3HpRatio: 0.34
+  bossSkillGaugeMax: 100
+  goalSkillGaugeGain: 10
+  bossSkillCastDelay: 1.25
+  bossSkillStrikeInterval: 0.08
+  bossSkillStrikeTelegraphDuration: 0.16
+  bossSkillMaxHpDamageRatio: 0.35
+  bossSkillMinimumDamage: 1
+  raidAttackGaugeMax: 1000
+  enemyKillRaidGaugeGain: 25
+  bossPhysicalDefense: 300
+  bossMagicalDefense: 300
+  raidAttackFullGaugeDuration: 10
+  raidAttackDamageMultiplier: 25
+  startingCost: 0
+  costMax: 100
+  costRegenPerSecond: 1
+  developmentRoster:
+  - {fileID: 11400000, guid: d64b6dc48003e85428422ae875d70972, type: 2}
+  - {fileID: 11400000, guid: 7f50f0f799baa4f478f6a59572733a63, type: 2}
+  - {fileID: 11400000, guid: f483f776d7004874c9920075ef079de2, type: 2}
+  - {fileID: 11400000, guid: b5ad783546e47dc4a87cec1e56c34650, type: 2}
+  - {fileID: 11400000, guid: 0ce0ca7c716c15b43b3501302a7c9dcb, type: 2}
+  - {fileID: 11400000, guid: e5c752f8dfbaa684599fa78e6a8605da, type: 2}
+  - {fileID: 11400000, guid: 4374e11ae7640d94eab78cb0a600682a, type: 2}
+  - {fileID: 11400000, guid: 0892e456da49e5c438b32e440e1100a8, type: 2}
+  - {fileID: 11400000, guid: 068b13a556602794ca350e8b52536c3c, type: 2}
+  - {fileID: 11400000, guid: 9e9ab073452a2bc4b916b54485f2ceb9, type: 2}
+  - {fileID: 11400000, guid: 147283e0a7384e34cbf955f4c44c0dfa, type: 2}
+  - {fileID: 11400000, guid: 5480cd5a39d932b4a8a512de36c83a6b, type: 2}
+  - {fileID: 11400000, guid: 128b9faecede01a4bb49365f9583a3db, type: 2}
+  - {fileID: 11400000, guid: 8f49c130e3aa39641ab99b19e1fb8ffc, type: 2}
+  - {fileID: 11400000, guid: b5c6e875c92186340aa4eb16a33dba77, type: 2}
+  - {fileID: 11400000, guid: 02d0abb1b3de8a741bcb683adf17a7c8, type: 2}
+  maxDeployedUnits: 16
+  autoDeployDecisionInterval: 0.65
+  autoDeployMinimumScore: 2.5
+  autoDeployVanguardLineProgress: 0.52
+  autoDeployFrontPenaltyProgress: 0.34
+  groundDeployHeight: 0.08
+  highGroundDeployHeight: 0.82
+  manualFacingDragDistance: 0.45
+  itemConfig: {fileID: 11400000, guid: 865930c2691f416cbe0878f9273b5607, type: 2}
+  enemyCatalog: {fileID: 11400000, guid: 8f3bc95bb70d00e41a6886aee5f591dd, type: 2}
+  enableAutomaticSpawn: 1
+  spawnRhythm: {fileID: 11400000, guid: 4f0c2c12b09045c99b5e3aa53b7045a5, type: 2}
+  spawnStartDelay: 8
+  phase1MaxActiveEnemies: 16
+  phase2MaxActiveEnemies: 24
+  phase3MaxActiveEnemies: 30
+  phase1OpeningDuration: 30
+  phase1OpeningSpawnInterval: 6
+  phase1OpeningSpawnPerPulse: 1
+  phase1SpawnInterval: 5.5
+  phase1SpawnPerPulse: 2
+  phase1SpawnSpacing: 0.45
+  phase1EnemyIds:
+  - ENEMY_0002
+  - ENEMY_0003
+  - ENEMY_0005
+  phase2SpawnInterval: 4.2
+  phase2SpawnPerPulse: 3
+  phase2SpawnSpacing: 0.35
+  phase2EnemyIds:
+  - ENEMY_0002
+  - ENEMY_0003
+  - ENEMY_0004
+  - ENEMY_0005
+  - ENEMY_0006
+  phase3SpawnInterval: 3.4
+  phase3SpawnPerPulse: 3
+  phase3SpawnSpacing: 0.28
+  phase3EnemyIds:
+  - ENEMY_0001
+  - ENEMY_0004
+  - ENEMY_0005
+  - ENEMY_0006
+  slowMoveSpeedThreshold: 1.6
+  slowMoveSpeedTarget: 1.8
+  slowMoveSpeedCorrection: 0.9
+  phase1MoveSpeedMultiplier: 1.05
+  phase2MoveSpeedMultiplier: 1.1
+  phase3MoveSpeedMultiplier: 1.15
+  airFlightHeight: 1.5
+  airMoveSpeedMultiplier: 1.05
+  airCorridorVariantCount: 3
+  airCorridorLateralOffsetTiles: 2.4
+  airCorridorNodeSpacingTiles: 1.25

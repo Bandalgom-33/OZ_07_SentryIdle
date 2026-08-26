@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e68650cd0b62a6419a0aceefb7230b9, type: 3}
+  m_Name: "\uC2A4\uD398\uC15C\uB9AC\uC2A4\uD2B8_\uB9C8\uC2A4\uD130_\uBB3C\uB9AC\uACF5\uACA9"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.MasterSO
+  displayName: "\uB9C8\uC2A4\uD130 - \uBB3C\uB9AC \uACF5\uACA9"
+  description: "\uD544\uB4DC\uC5D0 \uC874\uC7AC\uD558\uB294 \uB3D9\uC548 \uC9C0\uC0C1\xB7\uACF5\uC911
+    \uBAAC\uC2A4\uD130\uB97C \uACF5\uACA9\uD560 \uC218 \uC788\uC73C\uBA70 \uC790\uC2E0\uC758
+    \uBB3C\uB9AC \uACF5\uACA9\uB825\uC774 \uD06C\uAC8C \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  usableBy: 1
+  compatibility:
+    allowedUnitClasses: 
+    allowedEnemySizes: 
+  statType: 3
+  statBonusPercent: 100

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
@@ -55,8 +55,19 @@ namespace EndlessGuard.Unit.Runtime
                 while (elapsed >= interval)
                 {
                     elapsed -= interval;
+                    float rawMaxActive = tuning != null ? tuning.GetValue(PassiveValueKey.MaxActiveSummons) : data.MaxActiveSummons;
+                    int maxActive = Mathf.Max(1, Mathf.RoundToInt(rawMaxActive));
+                    int activeCount = SummonService.GetActiveEnemySummonCount(owner, data);
+                    int availableCount = maxActive - activeCount;
+
+                    if (availableCount <= 0)
+                    {
+                        continue;
+                    }
+
                     float rawCount = tuning != null ? tuning.GetValue(PassiveValueKey.SummonCount) : data.SummonCount;
-                    int count = Mathf.Max(1, Mathf.RoundToInt(rawCount));
+                    int requestedCount = Mathf.Max(1, Mathf.RoundToInt(rawCount));
+                    int count = Mathf.Min(requestedCount, availableCount);
                     GameObject prefab = tuning != null ? tuning.GetReference<GameObject>(PassiveRefKey.SummonPrefab) : data.SummonPrefab;
                     PassiveRuntimeEvents.RequestSummon(owner, prefab, count, data);
                 }

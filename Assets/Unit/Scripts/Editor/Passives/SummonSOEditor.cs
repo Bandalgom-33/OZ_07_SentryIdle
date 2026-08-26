@@ -1,4 +1,4 @@
-using EndlessGuard.Unit.Data;
+﻿using EndlessGuard.Unit.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +10,7 @@ namespace EndlessGuard.Unit.Editor
     {
         private SerializedProperty summonIntervalSeconds;
         private SerializedProperty summonCount;
+        private SerializedProperty maxActiveSummons;
         private SerializedProperty summonPrefab;
 
         protected override void OnEnable()
@@ -18,6 +19,7 @@ namespace EndlessGuard.Unit.Editor
 
             summonIntervalSeconds = serializedObject.FindProperty("summonIntervalSeconds");
             summonCount = serializedObject.FindProperty("summonCount");
+            maxActiveSummons = serializedObject.FindProperty("maxActiveSummons");
             summonPrefab = serializedObject.FindProperty("summonPrefab");
         }
 
@@ -28,6 +30,7 @@ namespace EndlessGuard.Unit.Editor
 
             EditorGUILayout.PropertyField(summonIntervalSeconds, new GUIContent("소환 주기 (초)", "소환 효과가 반복해서 발동하는 기본 추천 주기입니다. 실제 수치는 몬스터 데이터의 패시브 개별 수치에서 조정할 수 있습니다."));
             EditorGUILayout.PropertyField(summonCount, new GUIContent("한 번에 소환하는 수", "한 번의 소환 효과가 발동할 때 생성하는 기본 추천 소환물 수입니다. 실제 수치는 몬스터 데이터의 패시브 개별 수치에서 조정할 수 있습니다."));
+            EditorGUILayout.PropertyField(maxActiveSummons, new GUIContent("최대 활성 소환수", "한 소환사 몬스터가 동시에 유지할 수 있는 소환물의 최대 수입니다. 상한에 도달하면 다음 소환 주기를 건너뜁니다."));
             EditorGUILayout.PropertyField(summonPrefab, new GUIContent("기본 소환물 프리팹", "몬스터별 소환물 프리팹이 따로 설정되지 않았을 때 사용할 기본 소환물 프리팹입니다. 현재는 비어 있어도 정상입니다."));
 
             EditorGUILayout.Space(4f);

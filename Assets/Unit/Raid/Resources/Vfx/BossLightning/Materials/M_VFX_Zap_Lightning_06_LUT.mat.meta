@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0d76c678032e4b299716e40231b1617c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 303479
+  packageName: Zap VFX - URP
+  packageVersion: 1.0.3
+  assetPath: Assets/Vefects/Zap VFX URP/VFX/Zap/Materials/M_VFX_Zap_Lightning_06_LUT.mat
+  uploadId: 778923
