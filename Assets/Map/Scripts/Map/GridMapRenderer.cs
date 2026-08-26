@@ -14,6 +14,9 @@ public class GridMapRenderer : MonoBehaviour
     [Header("생성 타일 부모")]
     [SerializeField] private Transform tileRoot;
     
+    [Header("타일 월드 위치 보정")]
+    [SerializeField] private float tileYOffset = -0.8f;
+    
     
 
     public void RenderMap(TileNode[,] grid)
@@ -43,7 +46,7 @@ public class GridMapRenderer : MonoBehaviour
 
     public Vector3 GridToWorld(Vector2Int gridPosition)
     {
-        return new Vector3(gridPosition.x * tileSize, 0f, gridPosition.y * tileSize);
+        return new Vector3(gridPosition.x * tileSize, 0f, gridPosition.y * tileSize );
     }
 
     public void ClearMap()

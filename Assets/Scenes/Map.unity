@@ -759,6 +759,7 @@ MonoBehaviour:
   tileVisualSet: {fileID: 11400000, guid: fb485a972fa016747b0746e5b79ba4ea, type: 2}
   tileSize: 1
   tileRoot: {fileID: 1725251253}
+  tileYOffset: 0
 --- !u!114 &206666536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2418,9 +2419,12 @@ MonoBehaviour:
   mapGenerator: {fileID: 206666536}
   mapRenderer: {fileID: 206666535}
   stageManager: {fileID: 2101606010}
-  bossPrefab: {fileID: 0}
-  enemyPrefab: {fileID: 2203000127058307797, guid: fbfd5b238295d4c45ba931d5f1f83c90, type: 3}
-  enemyHeight: 1
+  enemyCatalog: {fileID: 11400000, guid: 8f3bc95bb70d00e41a6886aee5f591dd, type: 2}
+  hpBonusPerWavePercent: 10
+  attackBonusPerWavePercent: 5
+  defenseBonusPerWavePercent: 5
+  waveClearReward: 1
+  enemyHeight: 0.15
   enemyCountPerWave: 3
   spawnInterval: 1
   waveInterval: 5
@@ -2954,6 +2958,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edce4d8485efa3449ad8943b51a08c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckUnitReceiver
+  groundUnitHeight: 0.5
+  highGroundUnitHeight: 0.8
   mapGenerator: {fileID: 1705623438}
 --- !u!4 &818359002
 Transform:
@@ -3589,6 +3595,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1089249681}
   m_CullTransparentMesh: 1
+--- !u!1 &1118823122
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1118823124}
+  - component: {fileID: 1118823123}
+  m_Layer: 0
+  m_Name: DeckRuntimeTester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1118823123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118823122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27bf50b47db0c7a48b18d82010adbf9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckRuntimeTester
+--- !u!4 &1118823124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118823122}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.33507, y: 4.22502, z: 3.22036}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1174406688
 GameObject:
   m_ObjectHideFlags: 0
@@ -7595,3 +7645,4 @@ SceneRoots:
   - {fileID: 1937290578}
   - {fileID: 818359002}
   - {fileID: 1353824492}
+  - {fileID: 1118823124}

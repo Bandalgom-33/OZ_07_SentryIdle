@@ -31,9 +31,9 @@ public class TileVisualSetSO : ScriptableObject
             case TileType.Path:
                 visuals = floorVisuals;
                 break;
-
+            
             case TileType.HighGround:
-                visuals = highGroundVisuals;
+                visuals = floorVisuals;
                 break;
 
             case TileType.Obstacle:

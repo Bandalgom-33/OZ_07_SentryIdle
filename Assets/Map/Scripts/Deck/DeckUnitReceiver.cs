@@ -5,6 +5,12 @@ using System.Collections.Generic;
 
 public class DeckUnitReceiver : MonoBehaviour
 {
+    
+    [Header("아군 배치 높이")]
+    [SerializeField] private float groundUnitHeight = 1.0f;
+    [SerializeField] private float highGroundUnitHeight = 1.25f;
+    
+    
     [SerializeField] private MapGenerator mapGenerator;
     
 
@@ -220,14 +226,13 @@ public class DeckUnitReceiver : MonoBehaviour
         Vector3 worldPosition = mapGenerator.MapRenderer.GridToWorld(targetTile.GridPosition);
         
        
-
         if (targetTile.TileType == TileType.HighGround)
         {
-            worldPosition.y += 0.8f;
+            worldPosition.y += highGroundUnitHeight;
         }
         else
         {
-            worldPosition.y += 0.5f;
+            worldPosition.y += groundUnitHeight;
         }
 
         GameObject instance =
