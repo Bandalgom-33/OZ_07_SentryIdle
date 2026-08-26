@@ -14,6 +14,44 @@ namespace EndlessGuard.Unit.Runtime
     [RequireComponent(typeof(TextMeshProUGUI))]
     public sealed class DamageNumber : MonoBehaviour
     {
+        [Header("전투 숫자 스타일")]
+        [Tooltip("몬스터가 일반 피해를 받을 때 사용할 숫자 에셋입니다.")]
+        [SerializeField] private TMP_FontAsset normalDamageFont;
+
+        [Tooltip("몬스터가 치명타 피해를 받을 때 사용할 숫자 에셋입니다.")]
+        [SerializeField] private TMP_FontAsset criticalDamageFont;
+
+        [Tooltip("캐릭터가 피해를 받을 때 사용할 숫자 에셋입니다.")]
+        [SerializeField] private TMP_FontAsset unitDamageFont;
+
+        [Tooltip("HP가 회복될 때 사용할 숫자 에셋입니다.")]
+        [SerializeField] private TMP_FontAsset healFont;
+
+        [Header("전투 숫자 그라데이션")]
+        [Tooltip("일반 피해 숫자의 위쪽 색상입니다.")]
+        [SerializeField] private Color normalTopColor = new Color32(255, 244, 105, 255);
+
+        [Tooltip("일반 피해 숫자의 아래쪽 색상입니다.")]
+        [SerializeField] private Color normalBottomColor = new Color32(255, 132, 31, 255);
+
+        [Tooltip("치명타 숫자의 위쪽 색상입니다.")]
+        [SerializeField] private Color criticalTopColor = new Color32(255, 184, 245, 255);
+
+        [Tooltip("치명타 숫자의 아래쪽 색상입니다.")]
+        [SerializeField] private Color criticalBottomColor = new Color32(237, 48, 126, 255);
+
+        [Tooltip("캐릭터 피격 숫자의 위쪽 색상입니다.")]
+        [SerializeField] private Color unitTopColor = new Color32(255, 139, 120, 255);
+
+        [Tooltip("캐릭터 피격 숫자의 아래쪽 색상입니다.")]
+        [SerializeField] private Color unitBottomColor = new Color32(196, 27, 55, 255);
+
+        [Tooltip("회복 숫자의 위쪽 색상입니다.")]
+        [SerializeField] private Color healTopColor = new Color32(207, 255, 151, 255);
+
+        [Tooltip("회복 숫자의 아래쪽 색상입니다.")]
+        [SerializeField] private Color healBottomColor = new Color32(49, 211, 114, 255);
+
         [Header("피해 숫자 이동")]
         [Tooltip("피해 숫자가 화면에 표시되는 전체 시간입니다.")]
         [Min(0.05f)]
@@ -99,6 +137,10 @@ namespace EndlessGuard.Unit.Runtime
         [Tooltip("캐릭터가 치명타 피해를 받았을 때 표시할 더 짙은 붉은색입니다.")]
         [SerializeField] private Color unitCriticalColor = new Color32(200, 50, 50, 255);
 
+        [Header("회복 숫자 색상")]
+        [Tooltip("회복이 발생했을 때 +회복량으로 표시할 색상입니다.")]
+        [SerializeField] private Color healColor = new Color32(112, 255, 166, 255);
+
         [Header("피해 숫자 등장 색상")]
         [Tooltip("숫자가 등장하는 순간 잠깐 표시할 플래시 색상입니다.")]
         [SerializeField] private Color spawnFlashColor = Color.white;
@@ -117,7 +159,7 @@ namespace EndlessGuard.Unit.Runtime
         private Vector2 startPosition;
         private Vector3 baseScale;
         private DamageInfo damageInfo;
-        private Color damageColor;
+        private Color displayColor;
         private float activeStartScale;
         private float activePopScale;
         private float activeSettleScale;
@@ -130,6 +172,7 @@ namespace EndlessGuard.Unit.Runtime
         private float pushVelocity;
         private int targetId;
         private int displayVersion;
+        private float displayScale = 1f;
         private bool isPlaying;
 
         public bool IsPlaying => isPlaying;
@@ -181,15 +224,20 @@ namespace EndlessGuard.Unit.Runtime
 
         public void Show(float damage, Vector2 anchoredPosition, int ownerId)
         {
-            Show(new DamageInfo(damage, DamageType.None, false), anchoredPosition, ownerId, DamageNumberTargetType.Enemy);
+            Show(new DamageInfo(damage, DamageType.None, false), anchoredPosition, ownerId, DamageNumberTargetType.Enemy, 1f);
         }
 
         public void Show(DamageInfo newDamageInfo, Vector2 anchoredPosition, int ownerId)
         {
-            Show(newDamageInfo, anchoredPosition, ownerId, DamageNumberTargetType.Enemy);
+            Show(newDamageInfo, anchoredPosition, ownerId, DamageNumberTargetType.Enemy, 1f);
         }
 
         public void Show(DamageInfo newDamageInfo, Vector2 anchoredPosition, int ownerId, DamageNumberTargetType targetType)
+        {
+            Show(newDamageInfo, anchoredPosition, ownerId, targetType, 1f);
+        }
+
+        public void Show(DamageInfo newDamageInfo, Vector2 anchoredPosition, int ownerId, DamageNumberTargetType targetType, float scale)
         {
             Prepare();
 
@@ -198,23 +246,32 @@ namespace EndlessGuard.Unit.Runtime
                 return;
             }
 
-            displayVersion++;
             damageInfo = newDamageInfo;
-            ApplyScaleSettings();
-            damageColor = GetDamageColor(targetType);
-            startPosition = anchoredPosition;
-            elapsedTime = 0f;
-            currentPushOffset = 0f;
-            targetPushOffset = 0f;
-            pushVelocity = 0f;
-            targetId = ownerId;
-            isPlaying = true;
-
-            rectTransform.anchoredPosition = startPosition;
-            rectTransform.localScale = baseScale * activeStartScale;
-            label.color = spawnFlashDuration > 0f ? spawnFlashColor : damageColor;
+            ApplyFont(ResolveDamageFont(targetType, damageInfo.IsCritical));
+            ApplyDamageGradient(targetType, damageInfo.IsCritical);
+            BeginDisplay(anchoredPosition, ownerId, GetDamageColor(targetType), damageInfo.IsCritical, scale);
             label.SetText("{0:0}", damageInfo.FinalDamage);
-            gameObject.SetActive(true);
+        }
+
+        public void ShowHeal(float healAmount, Vector2 anchoredPosition, int ownerId)
+        {
+            ShowHeal(healAmount, anchoredPosition, ownerId, 1f);
+        }
+
+        public void ShowHeal(float healAmount, Vector2 anchoredPosition, int ownerId, float scale)
+        {
+            Prepare();
+
+            if (rectTransform == null || label == null || healAmount <= 0f)
+            {
+                return;
+            }
+
+            damageInfo = default;
+            ApplyFont(healFont);
+            ApplyGradient(healTopColor, healBottomColor);
+            BeginDisplay(anchoredPosition, ownerId, healColor, false, scale);
+            label.SetText("+{0:0}", healAmount);
         }
 
         public void PushUp()
@@ -256,12 +313,13 @@ namespace EndlessGuard.Unit.Runtime
         {
             isPlaying = false;
             damageInfo = default;
-            damageColor = normalColor;
+            displayColor = normalColor;
             elapsedTime = 0f;
             currentPushOffset = 0f;
             targetPushOffset = 0f;
             pushVelocity = 0f;
             targetId = 0;
+            displayScale = 1f;
 
             if (rectTransform != null)
             {
@@ -276,6 +334,60 @@ namespace EndlessGuard.Unit.Runtime
             gameObject.SetActive(false);
         }
 
+        private TMP_FontAsset ResolveDamageFont(DamageNumberTargetType targetType, bool isCritical)
+        {
+            if (targetType == DamageNumberTargetType.Unit)
+            {
+                return unitDamageFont != null ? unitDamageFont : normalDamageFont;
+            }
+
+            if (isCritical && criticalDamageFont != null)
+            {
+                return criticalDamageFont;
+            }
+
+            return normalDamageFont;
+        }
+
+        private void ApplyFont(TMP_FontAsset fontAsset)
+        {
+            if (label == null || fontAsset == null || label.font == fontAsset)
+            {
+                return;
+            }
+
+            label.font = fontAsset;
+            label.fontSharedMaterial = fontAsset.material;
+        }
+
+        private void ApplyDamageGradient(DamageNumberTargetType targetType, bool isCritical)
+        {
+            if (targetType == DamageNumberTargetType.Unit)
+            {
+                ApplyGradient(unitTopColor, unitBottomColor);
+                return;
+            }
+
+            if (isCritical)
+            {
+                ApplyGradient(criticalTopColor, criticalBottomColor);
+                return;
+            }
+
+            ApplyGradient(normalTopColor, normalBottomColor);
+        }
+
+        private void ApplyGradient(Color topColor, Color bottomColor)
+        {
+            if (label == null)
+            {
+                return;
+            }
+
+            label.enableVertexGradient = true;
+            label.colorGradient = new VertexGradient(topColor, topColor, bottomColor, bottomColor);
+        }
+
         private Color GetDamageColor(DamageNumberTargetType targetType)
         {
             if (targetType == DamageNumberTargetType.Unit)
@@ -286,9 +398,29 @@ namespace EndlessGuard.Unit.Runtime
             return damageInfo.IsCritical ? criticalColor : normalColor;
         }
 
-        private void ApplyScaleSettings()
+        private void BeginDisplay(Vector2 anchoredPosition, int ownerId, Color color, bool isCritical, float scale)
         {
-            if (damageInfo.IsCritical)
+            displayVersion++;
+            ApplyScaleSettings(isCritical);
+            displayScale = Mathf.Clamp(scale, 0.1f, 3f);
+            displayColor = color;
+            startPosition = anchoredPosition;
+            elapsedTime = 0f;
+            currentPushOffset = 0f;
+            targetPushOffset = 0f;
+            pushVelocity = 0f;
+            targetId = ownerId;
+            isPlaying = true;
+
+            rectTransform.anchoredPosition = startPosition;
+            rectTransform.localScale = baseScale * (activeStartScale * displayScale);
+            label.color = spawnFlashDuration > 0f ? spawnFlashColor : displayColor;
+            gameObject.SetActive(true);
+        }
+
+        private void ApplyScaleSettings(bool isCritical)
+        {
+            if (isCritical)
             {
                 activeStartScale = criticalStartScale;
                 activePopScale = criticalPopScale;
@@ -338,7 +470,7 @@ namespace EndlessGuard.Unit.Runtime
                 scaleMultiplier = activeSettleScale;
             }
 
-            rectTransform.localScale = baseScale * scaleMultiplier;
+            rectTransform.localScale = baseScale * (scaleMultiplier * displayScale);
         }
 
         private void UpdateColor(float progress)
@@ -348,21 +480,21 @@ namespace EndlessGuard.Unit.Runtime
                 return;
             }
 
-            Color currentColor = damageColor;
+            Color currentColor = displayColor;
 
             if (spawnFlashDuration > 0f && elapsedTime < spawnFlashDuration)
             {
                 float flashProgress = Mathf.Clamp01(elapsedTime / spawnFlashDuration);
-                currentColor = Color.Lerp(spawnFlashColor, damageColor, Mathf.SmoothStep(0f, 1f, flashProgress));
+                currentColor = Color.Lerp(spawnFlashColor, displayColor, Mathf.SmoothStep(0f, 1f, flashProgress));
             }
 
-            float alpha = damageColor.a;
+            float alpha = displayColor.a;
 
             if (progress > fadeStartRatio)
             {
                 float fadeLength = Mathf.Max(0.0001f, 1f - fadeStartRatio);
                 float fadeProgress = Mathf.Clamp01((progress - fadeStartRatio) / fadeLength);
-                alpha = Mathf.Lerp(damageColor.a, 0f, Mathf.SmoothStep(0f, 1f, fadeProgress));
+                alpha = Mathf.Lerp(displayColor.a, 0f, Mathf.SmoothStep(0f, 1f, fadeProgress));
             }
 
             currentColor.a = alpha;

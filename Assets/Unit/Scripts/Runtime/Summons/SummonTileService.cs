@@ -43,6 +43,7 @@ namespace EndlessGuard.Unit.Runtime
         private static ISummonTileProvider provider;
 
         public static bool HasProvider => provider != null;
+        public static string ProviderName => provider != null ? provider.GetType().Name : string.Empty;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()

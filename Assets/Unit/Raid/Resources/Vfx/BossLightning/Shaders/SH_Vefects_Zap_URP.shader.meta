@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a57580c703884d4d9879c3e8db4699f4
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _LUT: {fileID: 2800000, guid: 9df657aac27543b3a3162d4616d49a30, type: 3}
+  - _ZapTexture: {fileID: 2800000, guid: f462dfb6785c44a38b9c693724363ee6, type: 3}
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 303479
+  packageName: Zap VFX - URP
+  packageVersion: 1.0.3
+  assetPath: Assets/Vefects/Zap VFX URP/VFX/Zap/Shaders/SH_Vefects_Zap_URP.shader
+  uploadId: 778923

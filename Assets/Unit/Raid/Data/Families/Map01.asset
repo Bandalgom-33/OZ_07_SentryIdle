@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ea9ab6ebf8448bbd7605c4d44ea800, type: 3}
+  m_Name: Map01
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidMapFamilySO
+  familyId: RAID_MAP_01
+  displayName: 붕괴 회랑
+  concept: 외신에게 뜯겨나간 탑의 회랑과 성소. 가까운 두 입구가 중앙에서 갈라지고 두 개의 다리가 동쪽 성소로 이어진다. 페이즈가 진행될수록 상부 회랑과 다리가 붕괴해 전선이 압축된다.
+  phase1: {fileID: 11400000, guid: df5a2b05ac874b90b6a6fad7b919e323, type: 2}
+  phase2: {fileID: 11400000, guid: b385aa19ebc1417991b2c2fc9b4d2baf, type: 2}
+  phase3: {fileID: 11400000, guid: 408a2c53908043fd9f77ce3ceae95c3f, type: 2}

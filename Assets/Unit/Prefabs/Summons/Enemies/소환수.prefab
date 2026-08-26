@@ -50,6 +50,9 @@ GameObject:
   - component: {fileID: 2476081581950685784}
   - component: {fileID: 7954588191318487324}
   - component: {fileID: 5975828819141192881}
+  - component: {fileID: 8811202608181518241}
+  - component: {fileID: 8811202608181518242}
+  - component: {fileID: 8811202608181518243}
   m_Layer: 0
   m_Name: "\uC18C\uD658\uC218"
   m_TagString: Untagged
@@ -229,6 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.EnemySummonRuntime
   lifetimeSeconds: 0
   releaseWhenOwnerDies: 1
+  deathReleaseDelay: 0.14
   statModifiers: []
 --- !u!114 &5975828819141192881
 MonoBehaviour:
@@ -242,6 +246,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f92e63be445ee91438ab68b3d6a4e4ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.EnemySummonChase
+--- !u!114 &8811202608181518241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262218435148668757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a57183c2fcf6a2d42b934957aa51137f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.DamageNumberEmitter
+--- !u!114 &8811202608181518242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262218435148668757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db9ca940dab366e44ba05ac7561da4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.HitFlash
+  flashColor: {r: 1, g: 0.8392157, b: 0.8392157, a: 1}
+  flashStrength: 0.45
+  flashDuration: 0.09
+--- !u!114 &8811202608181518243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2262218435148668757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09cc9741e58cde14c97caa246b87c031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.HitShake
+  shakeDistance: 0.05
+  shakeCycles: 2.5
+  reactionDuration: 0.18
+  useBackwardRecoil: 1
+  recoilDistance: 0.16
+  scaleUp: 1.07
+  scaleDown: 0.96
 --- !u!1 &2280408904255207401
 GameObject:
   m_ObjectHideFlags: 0

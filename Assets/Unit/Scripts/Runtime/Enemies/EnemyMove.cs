@@ -89,6 +89,19 @@ namespace EndlessGuard.Unit.Runtime
             return true;
         }
 
+        public bool TryGetGoalTile(out Vector2Int goalTile)
+        {
+            goalTile = default;
+
+            if (!hasPath || path == null || path.Length == 0)
+            {
+                return false;
+            }
+
+            goalTile = path[path.Length - 1].Tile;
+            return true;
+        }
+
         public bool TryCreateRemainingPath(out PathNode[] remainingPath)
         {
             remainingPath = null;

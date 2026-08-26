@@ -736,6 +736,7 @@ GameObject:
   - component: {fileID: 206666537}
   - component: {fileID: 206666536}
   - component: {fileID: 206666535}
+  - component: {fileID: 206666538}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged

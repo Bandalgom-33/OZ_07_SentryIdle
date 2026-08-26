@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2c753d8c0be754db225c08615d38a6, type: 3}
+  m_Name: "\uC54C\uD0A4\uC624\uB124\uC2A4"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.EnemyDataSO
+  enemyId: ENEMY_0017
+  displayName: "\uC54C\uD0A4\uC624\uB124\uC2A4"
+  description: "\uC0AC\uAC70\uB9AC \uC548\uC5D0\uC11C \uAC00\uC7A5 \uBA3C \uCE90\uB9AD\uD130\uB97C
+    \uD3EC\uCC29\uD558\uBA74 \uC5F0\uC18D \uC0AC\uACA9\uC744 \uAC00\uD55C \uB4A4
+    \uC704\uCE58\uB97C \uBC14\uAFB8\uBA70 \uB2E4\uC2DC \uB2E4\uC74C \uD45C\uC801\uC744
+    \uD0D0\uC0C9\uD55C\uB2E4."
+  category: 2
+  movementType: 1
+  size: 3
+  role: 1
+  attackRule: 2
+  inRangeFireDuration: 0
+  inRangeAdvanceDuration: 0
+  baseStats:
+    maxHp: 8200
+    physicalAttack: 650
+    magicalAttack: 0
+    baseAttacksPerSecond: 1
+    physicalDefense: 260
+    magicalDefense: 220
+    accuracy: 140
+    evasion: 30
+    moveSpeed: 0.9
+  attackSettings:
+    attackMode: 2
+    damageType: 1
+    attackTarget: 1
+    attackRange: 6
+    targetCount: 1
+    rangeRotationMode: 1
+    basicAttackRange:
+      horizontalRadius: 6
+      forwardDistance: 6
+      backwardDistance: 6
+      attackTiles:
+      - {x: 0, y: 1}
+      - {x: 0, y: 2}
+      - {x: 0, y: 3}
+      - {x: -1, y: 4}
+      - {x: 0, y: 4}
+      - {x: 1, y: 4}
+      - {x: 1, y: 5}
+      - {x: 0, y: 5}
+      - {x: -1, y: 5}
+  rewardExp: 200
+  rewardGold: 120
+  passives:
+  - {fileID: 11400000, guid: 9f3a44c06828c32428aa8b2816509c94, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: 9f3a44c06828c32428aa8b2816509c94, type: 2}
+    values:
+    - key: 33
+      value: 3
+    - key: 34
+      value: 2
+    refs: []
+  enemyPrefab: {fileID: 476828548554636832, guid: d92d66027b5d45b419b2c49b6b977062, type: 3}
