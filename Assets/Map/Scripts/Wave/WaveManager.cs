@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using EndlessGuard.Unit.Runtime;
+using Random = UnityEngine.Random;
 
 public class WaveManager : MonoBehaviour
 {
@@ -19,9 +20,9 @@ public class WaveManager : MonoBehaviour
 
     [Header("보스 설정")]
     [SerializeField] private EnemyRuntimeState bossPrefab;
-
-    [Header("적 생성 설정")]
-    [SerializeField] private EnemyRuntimeState enemyPrefab;
+    
+    //인스펙터에서 웨이브풀 보기
+    [SerializeField] private WaveEnemyPool[] waveEnemyPools;
 
     //정식 EnemyMove의 SetPath()가 PathNode의 월드 좌표를 사용하기 때문에
     //적이 이동할 높이도 PathNode 생성 시 같이 적용
@@ -47,7 +48,6 @@ public class WaveManager : MonoBehaviour
     //기존 EnemyMover 대신 정식 EnemyRuntimeState / EnemyMove 시스템 사용
     private void SpawnEnemy(IReadOnlyList<Vector2Int> path)
     {
-        if (enemyPrefab == null) return;
         if (mapRenderer == null) return;
         if (path == null || path.Count == 0) return;
 
@@ -58,8 +58,14 @@ public class WaveManager : MonoBehaviour
         if (pathNodes == null || pathNodes.Length == 0) return;
 
         //첫 번째 PathNode의 위치에서 정식 적 프리팹 생성
-        EnemyRuntimeState spawnEnemy =
-            Instantiate(enemyPrefab, pathNodes[0].Position, Quaternion.identity);
+        EnemyRuntimeState[] currentPool = GetCurrentWaveEnemyPool();
+
+        if (currentPool == null || currentPool.Length == 0) return;
+        EnemyRuntimeState selectedEnemy = currentPool[Random.Range(0, currentPool.Length)];
+
+        if (selectedEnemy == null) return;
+        
+        EnemyRuntimeState spawnEnemy = Instantiate(selectedEnemy, pathNodes[0].Position, Quaternion.identity);
 
         //정식 EnemyRuntimeState 안에 EnemyMove가 정상적으로 연결됐는지 확인
         if (spawnEnemy.Move == null)
@@ -397,5 +403,20 @@ public class WaveManager : MonoBehaviour
 
         //같은 좌표가 들어오는 예외 상황에서는 기본 East
         return GridFacingDirection.East;
+    }
+    
+    //현재 웨이브 적 목록 가져오기
+    private EnemyRuntimeState[] GetCurrentWaveEnemyPool()
+    {
+        int waveIndex = currentWave - 1;
+
+        if (waveEnemyPools == null) return null;
+        if (waveIndex < 0 || waveIndex >= waveEnemyPools.Length) return null;
+
+        WaveEnemyPool pool = waveEnemyPools[waveIndex];
+
+        if (pool == null) return null;
+
+        return pool.enemyPrefabs;
     }
 }

@@ -756,6 +756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridMapRenderer
   tilePrefab: {fileID: 5665433859218404168, guid: b546099fbbe25b344b8eb3c7e723d024, type: 3}
+  tileVisualSet: {fileID: 11400000, guid: fb485a972fa016747b0746e5b79ba4ea, type: 2}
   tileSize: 1
   tileRoot: {fileID: 1725251253}
 --- !u!114 &206666536
@@ -2953,7 +2954,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edce4d8485efa3449ad8943b51a08c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckUnitReceiver
-  mapGenerator: {fileID: 0}
+  mapGenerator: {fileID: 1705623438}
 --- !u!4 &818359002
 Transform:
   m_ObjectHideFlags: 0
@@ -4607,17 +4608,17 @@ MonoBehaviour:
   normalDeckCapacity: 10
   raid1DeckCapacity: 10
   raid2DeckCapacity: 10
-  normalDeckSlots: 0200000004000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  normalDeckSlots: 0800000005000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   raid1DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   raid2DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   normalDeckInspectorView:
   - slotIndex: 1
-    unitId: UNIT_0002
-    unitName: "\uB8E8\uCE74"
+    unitId: UNIT_0008
+    unitName: "\uBAA8\uB9AC\uC544\uD2F0"
     isEquipped: 1
   - slotIndex: 2
-    unitId: UNIT_0004
-    unitName: "\uAE40\uD558\uC9C4"
+    unitId: UNIT_0005
+    unitName: "\uBC1C\uB80C"
     isEquipped: 1
   - slotIndex: 3
     unitId: '-'
@@ -7575,6 +7576,7 @@ SceneRoots:
   - {fileID: 206666537}
   - {fileID: 753784560}
   - {fileID: 2101606011}
+  - {fileID: 1705623439}
   - {fileID: 1406960954}
   - {fileID: 783268327}
   - {fileID: 2056382133}
@@ -7593,4 +7595,3 @@ SceneRoots:
   - {fileID: 1937290578}
   - {fileID: 818359002}
   - {fileID: 1353824492}
-  - {fileID: 1705623439}
