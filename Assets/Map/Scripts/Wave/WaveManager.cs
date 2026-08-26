@@ -17,12 +17,18 @@ public class WaveManager : MonoBehaviour
 
     [Header("Wave 설정")]
     private int currentWave = 0;
-
-    [Header("보스 설정")]
-    [SerializeField] private EnemyRuntimeState bossPrefab;
     
-    //인스펙터에서 웨이브풀 보기
-    [SerializeField] private WaveEnemyPool[] waveEnemyPools;
+    [Header("적 데이터 카탈로그")]
+    [SerializeField] private EnemyCatalog enemyCatalog;
+    
+    [Header("웨이브 적 강화")]
+    [SerializeField] private float hpBonusPerWavePercent = 10f;
+    [SerializeField] private float attackBonusPerWavePercent = 5f;
+    [SerializeField] private float defenseBonusPerWavePercent = 5f;
+    
+    [Header("웨이브 클리어 보상")]
+    [SerializeField] private long waveClearReward = 1;
+    
 
     //정식 EnemyMove의 SetPath()가 PathNode의 월드 좌표를 사용하기 때문에
     //적이 이동할 높이도 PathNode 생성 시 같이 적용
@@ -34,7 +40,9 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private float spawnInterval = 1.0f;
     //웨이브와 웨이브 사이 대기 시간
     [SerializeField] private float waveInterval = 5.0f;
-
+    
+    //적 출구 도착 알림이
+    public event Action<EnemyReachedGoalInfo> OnEnemyReachedGoal;
     //적이 살아있는지 확인
     private int aliveEnemyCount = 0;
 
@@ -57,20 +65,28 @@ public class WaveManager : MonoBehaviour
 
         if (pathNodes == null || pathNodes.Length == 0) return;
 
-        //첫 번째 PathNode의 위치에서 정식 적 프리팹 생성
-        EnemyRuntimeState[] currentPool = GetCurrentWaveEnemyPool();
+        EnemyCategory selectedCategory = GetCurrentEnemyCategory();
 
-        if (currentPool == null || currentPool.Length == 0) return;
-        EnemyRuntimeState selectedEnemy = currentPool[Random.Range(0, currentPool.Length)];
+        EnemyDataSO selectedEnemyData = GetRandomEnemyByCategory(selectedCategory);
 
-        if (selectedEnemy == null) return;
+        if (selectedEnemyData == null) return;
+        if (selectedEnemyData.EnemyPrefab == null) return;
+
+        GameObject enemyObject = Instantiate( selectedEnemyData.EnemyPrefab, pathNodes[0].Position, Quaternion.identity );
+
+        EnemyRuntimeState spawnEnemy = enemyObject.GetComponent<EnemyRuntimeState>();
+
+        if (spawnEnemy == null)
+        {
+            Destroy(enemyObject);
+            return;
+        }
         
-        EnemyRuntimeState spawnEnemy = Instantiate(selectedEnemy, pathNodes[0].Position, Quaternion.identity);
+        ApplyWaveScaling(spawnEnemy);
 
         //정식 EnemyRuntimeState 안에 EnemyMove가 정상적으로 연결됐는지 확인
         if (spawnEnemy.Move == null)
         {
-            Debug.LogError("생성된 Enemy에 EnemyMove가 없습니다.", spawnEnemy);
             Destroy(spawnEnemy.gameObject);
             return;
         }
@@ -80,7 +96,6 @@ public class WaveManager : MonoBehaviour
 
         if (!pathSet)
         {
-            Debug.LogError("Enemy 경로 설정에 실패했습니다.", spawnEnemy);
             Destroy(spawnEnemy.gameObject);
             return;
         }
@@ -88,6 +103,7 @@ public class WaveManager : MonoBehaviour
         //현재 WaveManager가 생성한 적 리스트에 등록
         spawnedEnemies.Add(spawnEnemy);
 
+        
         //정식 SpawnedEnemyManager에도 등록
         //적이 전투로 사망했을 때 EnemyDiedEvent를 받아 제거할 수 있게 하기 위함
         SpawnedEnemyManager.Instance.RegisterEnemy(spawnEnemy);
@@ -140,7 +156,9 @@ public class WaveManager : MonoBehaviour
             {
                 yield return StartCoroutine(RunWave());
             }
-
+            
+            GiveWaveClearReward();
+            
             if (waveIndex < stageManager.WavesPerStage - 1)
             {
                 yield return new WaitForSeconds(waveInterval);
@@ -192,9 +210,8 @@ public class WaveManager : MonoBehaviour
 
     private void SpawnBoss(IReadOnlyList<Vector2Int> path)
     {
-        if(bossPrefab == null) return;
-        if(mapRenderer == null) return;
-        if(path == null || path.Count == 0) return;
+        if (mapRenderer == null) return;
+        if (path == null || path.Count == 0) return;
 
         //우리 MapGenerator의 경로를 정식 PathNode[]로 변경
         PathNode[] pathNodes = BuildPathNodes(path);
@@ -202,13 +219,26 @@ public class WaveManager : MonoBehaviour
         if (pathNodes == null || pathNodes.Length == 0) return;
 
         //첫 번째 PathNode 위치에서 보스 생성
-        EnemyRuntimeState spawnBoss =
-            Instantiate(bossPrefab, pathNodes[0].Position, Quaternion.identity);
+        EnemyDataSO selectedBossData = GetRandomEnemyByCategory(EnemyCategory.Boss);
+
+        if (selectedBossData == null) return;
+        if (selectedBossData.EnemyPrefab == null) return;
+
+        GameObject bossObject = Instantiate( selectedBossData.EnemyPrefab, pathNodes[0].Position, Quaternion.identity );
+
+        EnemyRuntimeState spawnBoss = bossObject.GetComponent<EnemyRuntimeState>();
+
+        if (spawnBoss == null)
+        {
+            Destroy(bossObject);
+            return;
+        }
+        
+        ApplyWaveScaling(spawnBoss);
 
         //보스 프리팹에 EnemyMove가 정상 연결되어 있는지 확인
         if (spawnBoss.Move == null)
         {
-            Debug.LogError("생성된 Boss에 EnemyMove가 없습니다.", spawnBoss);
             Destroy(spawnBoss.gameObject);
             return;
         }
@@ -269,6 +299,9 @@ public class WaveManager : MonoBehaviour
 //적이 Goal에 도착했을 때 처리
     private void HandleEnemyReachedGoal(EnemyReachedGoalInfo info)
     {
+        
+        OnEnemyReachedGoal?.Invoke(info);
+        
         EnemyRuntimeState enemy = FindSpawnedEnemy(info.RuntimeId);
 
         if (enemy == null) return;
@@ -405,18 +438,166 @@ public class WaveManager : MonoBehaviour
         return GridFacingDirection.East;
     }
     
-    //현재 웨이브 적 목록 가져오기
-    private EnemyRuntimeState[] GetCurrentWaveEnemyPool()
+    
+    //적 데이터 소스에서 카타로그랑 프리펩 읽어오기
+    private EnemyDataSO GetRandomEnemyByCategory(EnemyCategory category)
     {
-        int waveIndex = currentWave - 1;
+        if (enemyCatalog == null)
+        {
+            Debug.LogWarning("[WaveManager] EnemyCatalog이 연결되어 있지 않습니다.");
+            return null;
+        }
 
-        if (waveEnemyPools == null) return null;
-        if (waveIndex < 0 || waveIndex >= waveEnemyPools.Length) return null;
+        List<EnemyDataSO> candidates = new List<EnemyDataSO>();
 
-        WaveEnemyPool pool = waveEnemyPools[waveIndex];
+        IReadOnlyList<EnemyDataSO> enemies = enemyCatalog.Enemies;
 
-        if (pool == null) return null;
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            EnemyDataSO enemyData = enemies[i];
 
-        return pool.enemyPrefabs;
+            if (enemyData == null)
+                continue;
+
+            if (enemyData.Category != category)
+                continue;
+
+            if (enemyData.EnemyPrefab == null)
+                continue;
+
+            candidates.Add(enemyData);
+        }
+
+        if (candidates.Count == 0)
+        {
+            Debug.LogWarning(
+                $"[WaveManager] {category} 카테고리에 해당하는 적이 없습니다."
+            );
+
+            return null;
+        }
+
+        return candidates[Random.Range(0, candidates.Count)];
     }
+    
+    //적 스텟 누적 계산
+    private int GetEnemyScalingLevel()
+    {
+        if (stageManager == null)
+            return 0;
+
+        int normalWavesPerStage = stageManager.WavesPerStage - 1;
+
+        int scalingLevel =
+            ((stageManager.CurrentStage - 1) * normalWavesPerStage)
+            + (currentWave - 1);
+
+        return Mathf.Max(0, scalingLevel);
+    }
+    
+    //실제 적 런타임 스탯에 강화치 적용 메서드
+    private void ApplyWaveScaling(EnemyRuntimeState enemy)
+    {
+        if (enemy == null) return;
+        if (enemy.Stats == null) return;
+
+        int scalingLevel = GetEnemyScalingLevel();
+
+        if (scalingLevel <= 0)
+            return;
+
+        float hpBonusPercent =
+            scalingLevel * hpBonusPerWavePercent;
+
+        float attackBonusPercent =
+            scalingLevel * attackBonusPerWavePercent;
+
+        float defenseBonusPercent =
+            scalingLevel * defenseBonusPerWavePercent;
+
+        // HP
+        enemy.Stats.AddModifier(
+            PassiveStatType.MaxHp,
+            0f,
+            hpBonusPercent
+        );
+
+        // 공격력
+        enemy.Stats.AddModifier(
+            PassiveStatType.PhysicalAttack,
+            0f,
+            attackBonusPercent
+        );
+
+        enemy.Stats.AddModifier(
+            PassiveStatType.MagicalAttack,
+            0f,
+            attackBonusPercent
+        );
+
+        // 방어력
+        enemy.Stats.AddModifier(
+            PassiveStatType.PhysicalDefense,
+            0f,
+            defenseBonusPercent
+        );
+
+        enemy.Stats.AddModifier(
+            PassiveStatType.MagicalDefense,
+            0f,
+            defenseBonusPercent
+        );
+
+        // RuntimeStats의 MaxHp가 증가했으니까 
+        // 실제 CombatHealth에도 새로운 최대 HP 반영
+        if (enemy.Health != null)
+        {
+            enemy.Health.SetMaxHp(enemy.Stats.MaxHp);
+
+            // 막 소환된 적이니까 증가한 MaxHp까지 체력을 채움
+            enemy.Health.Heal(enemy.Stats.MaxHp);
+        }
+
+        Debug.Log(
+            $"[Wave Scaling] Stage {stageManager.CurrentStage} / Wave {currentWave}" +
+            $" / Level {scalingLevel}" +
+            $" / HP +{hpBonusPercent}%" +
+            $" / ATK +{attackBonusPercent}%" +
+            $" / DEF +{defenseBonusPercent}%"
+        );
+    }
+    
+    //웨이브에 맞게 카테고리 정해주는 역할
+    private EnemyCategory GetCurrentEnemyCategory()
+    {
+        if (currentWave < 3)
+        {
+            return EnemyCategory.Normal;
+        }
+
+        //3 웨이브 부터는 엘리트도 포함
+        return Random.value < 0.5f
+            ? EnemyCategory.Normal
+            : EnemyCategory.Elite;
+    }
+    
+   
+    private void GiveWaveClearReward()
+    {
+        if (CurrencyManager.Instance == null)
+        {
+            Debug.LogWarning("[WaveManager] CurrencyManager.Instance가 없습니다.");
+            return;
+        }
+
+        if (waveClearReward <= 0)
+            return;
+
+        CurrencyManager.Instance.GetWaveStone(waveClearReward);
+
+        Debug.Log(
+            $"[WaveManager] Stage {stageManager.CurrentStage} / Wave {currentWave} 클리어 보상 지급: WaveStone +{waveClearReward}"
+        );
+    }
+    
 }

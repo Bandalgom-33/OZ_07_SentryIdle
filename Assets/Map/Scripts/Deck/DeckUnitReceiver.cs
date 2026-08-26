@@ -17,10 +17,14 @@ public class DeckUnitReceiver : MonoBehaviour
     private readonly Dictionary<string, UnitRuntimeState> spawnedUnits = new Dictionary<string, UnitRuntimeState>();
     // 유닛을 제거할 때 해당 타일 점유 확인
     private readonly Dictionary<string, TileNode> spawnedUnitTiles = new Dictionary<string, TileNode>();
+    
+    private bool isCheckingWaitingUnits;
 
     private void OnEnable()
     {
         EventBus.Subscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
+
+        CurrencyManager.OnDpCostChange += OnDpCostChanged;
     }
 
     private void Start()
@@ -46,10 +50,19 @@ public class DeckUnitReceiver : MonoBehaviour
     {
         EventBus.Unsubscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
 
+        CurrencyManager.OnDpCostChange -= OnDpCostChanged;
+
         if (mapGenerator != null)
         {
             mapGenerator.OnMapGenerated -= HandleMapGenerated;
         }
+    }
+    
+    private void OnDpCostChanged(int currentDp)
+    {
+        Debug.Log($"[DeckUnitReceiver] DP 변경 감지: {currentDp}");
+        //재소환 시도
+        TrySpawnWaitingDeckUnits();
     }
 
     private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
@@ -185,7 +198,28 @@ public class DeckUnitReceiver : MonoBehaviour
 
         if (targetTile == null) return;
         
+        if (CurrencyManager.Instance == null)
+        {
+            Debug.LogWarning("[DeckUnitReceiver] CurrencyManager.Instance가 없습니다.");
+            return;
+        }
+
+        int summonCost = unitData.SummonCost;
+
+        if (!CurrencyManager.Instance.TrySpendDpCost(summonCost))
+        {
+            Debug.Log(
+                $"[DeckUnitReceiver] DP 부족 - " +
+                $"{unitData.DisplayName} 필요 DP: {summonCost}"
+            );
+
+            return;
+        }
+        
+        
         Vector3 worldPosition = mapGenerator.MapRenderer.GridToWorld(targetTile.GridPosition);
+        
+       
 
         if (targetTile.TileType == TileType.HighGround)
         {
@@ -260,5 +294,29 @@ public class DeckUnitReceiver : MonoBehaviour
         {
             SpawnDeckUnit(deckUnits[i]);
         }
+    }
+    
+    private void TrySpawnWaitingDeckUnits()
+    {
+        if (isCheckingWaitingUnits)
+            return;
+
+        isCheckingWaitingUnits = true;
+
+        for (int i = 0; i < deckUnits.Count; i++)
+        {
+            UnitDataSO unitData = deckUnits[i];
+
+            if (unitData == null)
+                continue;
+
+            // 이미 필드에 있으면 건너뜀
+            if (spawnedUnitIds.Contains(unitData.UnitId))
+                continue;
+
+            SpawnDeckUnit(unitData);
+        }
+
+        isCheckingWaitingUnits = false;
     }
 }
