@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -488,7 +488,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
                 OnDpCostSliderChange?.Invoke(sliderValue);
                 if (sliderValue >= 1)
                 {
-                    int dpCost = baseDpCost + dpCostBonus;
+                    // 1초(리젠 주기)마다 기본 1 DP (+ 업그레이드 보너스) 회복
+                    int dpCost = 1 + dpCostBonus;
                     if (dpCost <= 0) dpCost = 1;
                     GetDpCost(dpCost);
                     timer = 0;
