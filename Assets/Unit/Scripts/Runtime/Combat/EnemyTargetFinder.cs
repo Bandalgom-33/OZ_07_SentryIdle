@@ -74,7 +74,7 @@ namespace EndlessGuard.Unit.Runtime
             {
                 for (int i = 0; i < attackTiles.Count; i++)
                 {
-                    Vector2Int worldTile = attackerTile + RotatePatternTile(attackTiles[i], currentFacing);
+                    Vector2Int worldTile = attackerTile + attackTiles[i];
                     EvaluateTile(attacker, attackSettings, currentFacing, worldTile, ref target, ref bestFacing, ref bestWorldDistance, ref bestInstanceId);
                 }
             }

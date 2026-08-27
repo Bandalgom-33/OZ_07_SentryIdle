@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b72afeaf8d614884848853d1c9853deb, type: 3}
+  m_Name: RaidAudioProfile
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Raid.Data.RaidAudioProfileSO
+  startRumble: {fileID: 8300000, guid: 458a134207704308951a2925628b8c0a, type: 3}
+  startVolume: 0.22
+  phase1Music: {fileID: 8300000, guid: 4d95a489e88d41158fb987e58934c143, type: 3}
+  phase2Music: {fileID: 8300000, guid: 334865bbd8c94ccabd54d5e2b6913017, type: 3}
+  phase3Music: {fileID: 8300000, guid: 4fc33f1ecc61401180886451a390d1b8, type: 3}
+  phase1MusicVolume: 0.42
+  phase2MusicVolume: 0.46
+  phase3MusicVolume: 0.50
+  musicFadeDuration: 0.72
+  phase2Surge: {fileID: 8300000, guid: e5d49a7a947a40b89efbcd359a0e5295, type: 3}
+  phase3Surge: {fileID: 8300000, guid: e5d49a7a947a40b89efbcd359a0e5295, type: 3}
+  phase2SurgeVolume: 0.52
+  phase3SurgeVolume: 0.64
+  collapseImpact: {fileID: 8300000, guid: 7d5c440ba5bd44d68edd18220bb06ab2, type: 3}
+  collapseImpactVolume: 0.55
+  collapseRumble: {fileID: 8300000, guid: 9549d71670bf4c98bef02d36c28fc293, type: 3}
+  collapseRumbleVolume: 0.32
+  collapseWhooshClips:
+  - {fileID: 8300000, guid: 687910bac6ac490dbda7b6ba215b6a84, type: 3}
+  - {fileID: 8300000, guid: 3b8e3c34e5464aabbd269a2bc932ad6a, type: 3}
+  - {fileID: 8300000, guid: 10de3b32fe3f4cd1a553ce8e28667b77, type: 3}
+  collapseWhooshVolume: 0.24
+  collapseBreakClips:
+  - {fileID: 8300000, guid: 5a89b5e66dde45158f1e262764f54ec0, type: 3}
+  - {fileID: 8300000, guid: d4fcc56a6ca24103bd8344cdf3af9dee, type: 3}
+  - {fileID: 8300000, guid: 9927ff1a814a4db6beb96a1871488e24, type: 3}
+  collapseBreakVolume: 0.22
+  collapseFinalDrop: {fileID: 8300000, guid: ec586eddb846427baad890d5390aca0a, type: 3}
+  collapseFinalDropVolume: 0.40
+  collapseBackgroundDuck: 0.42

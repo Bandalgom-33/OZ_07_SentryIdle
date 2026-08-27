@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace EndlessGuard.Unit.Runtime
 {
@@ -6,7 +6,7 @@ namespace EndlessGuard.Unit.Runtime
     public sealed class CombatEntityAnchors : MonoBehaviour
     {
         [Header("공통 프리팹 기준점")]
-        [Tooltip("캐릭터 또는 몬스터의 모델, 스프라이트와 임시 캡슐 비주얼을 배치하는 부모 Transform입니다.")]
+        [Tooltip("캐릭터 또는 몬스터의 모델과 스프라이트 등 전투 비주얼을 배치하는 부모 Transform입니다.")]
         [SerializeField] private Transform visualRoot;
 
         [Tooltip("투사체와 기본 공격 효과가 시작되는 기준점입니다.")]

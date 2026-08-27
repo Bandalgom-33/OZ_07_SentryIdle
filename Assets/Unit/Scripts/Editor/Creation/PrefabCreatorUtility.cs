@@ -12,6 +12,8 @@ namespace EndlessGuard.Unit.Editor
         private const string UnitPrefabFolder = "Assets/Unit/Prefabs/Units";
         private const string EnemyPrefabFolder = "Assets/Unit/Prefabs/Enemies";
         private const string UnitBarsPrefabPath = "Assets/Unit/Prefabs/UI/UnitBars.prefab";
+        private const string DefaultAttackImpactPrefabPath = "Assets/Unit/Prefabs/VFX/Combat/Impact/CombatImpact_Normal.prefab";
+        private const string DefaultAttackSoundPrefabPath = "Assets/Unit/Prefabs/Audio/Combat/AttackSound_Default.prefab";
         private const string HitRuleAssetPath = "Assets/Unit/Data/Combat/HitRule.asset";
         private const string DamageRuleAssetPath = "Assets/Unit/Data/Combat/DamageRule.asset";
         private const string PrototypeNamespace = "EndlessGuard.Unit.Prototype";
@@ -56,6 +58,7 @@ namespace EndlessGuard.Unit.Editor
                 EnsureComponent<CombatHealth>(root);
                 EnsureComponent<CombatGridPosition>(root);
                 EnsureComponent<UnitRuntimeState>(root);
+                EnsureComponent<UnitFacingView>(root);
                 EnsureComponent<UnitBlock>(root);
 
                 UnitAttack attack = EnsureComponent<UnitAttack>(root);
@@ -64,8 +67,10 @@ namespace EndlessGuard.Unit.Editor
 
                 EnsureComponent<DamageNumberEmitter>(root);
                 EnsureComponent<HitFlash>(root);
-                EnsureComponent<HitShake>(root);
+                HitShake hitShake = EnsureComponent<HitShake>(root);
+                ConfigureHitShake(hitShake, false);
 
+                CreateUnitAttackFeedback(anchors.AttackPoint);
                 CreateUnitBars(uiAnchor);
                 ValidateUnitRoot(root, anchors, dataLink, uiAnchor, hitRule, damageRule);
 
@@ -145,7 +150,8 @@ namespace EndlessGuard.Unit.Editor
 
                 EnsureComponent<DamageNumberEmitter>(root);
                 EnsureComponent<HitFlash>(root);
-                EnsureComponent<HitShake>(root);
+                HitShake hitShake = EnsureComponent<HitShake>(root);
+                ConfigureHitShake(hitShake, true);
 
                 ValidateEnemyRoot(root, anchors, dataLink, hitRule, damageRule);
 
@@ -217,6 +223,30 @@ namespace EndlessGuard.Unit.Editor
             }
         }
 
+        private static void CreateUnitAttackFeedback(Transform attackPoint)
+        {
+            GameObject impactPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DefaultAttackImpactPrefabPath);
+            GameObject soundPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(DefaultAttackSoundPrefabPath);
+
+            if (attackPoint == null || impactPrefab == null || soundPrefab == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            GameObject impact = PrefabUtility.InstantiatePrefab(impactPrefab, attackPoint) as GameObject;
+            GameObject sound = PrefabUtility.InstantiatePrefab(soundPrefab, attackPoint) as GameObject;
+
+            if (impact == null || sound == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            impact.name = "AttackImpact";
+            impact.SetActive(false);
+            sound.name = "AttackSound";
+            sound.SetActive(false);
+        }
+
         private static void CreateUnitBars(Transform uiAnchor)
         {
             GameObject barsPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(UnitBarsPrefabPath);
@@ -269,6 +299,24 @@ namespace EndlessGuard.Unit.Editor
             serializedAnchors.ApplyModifiedPropertiesWithoutUndo();
         }
 
+        private static void ConfigureHitShake(HitShake hitShake, bool useBackwardRecoil)
+        {
+            SerializedObject serializedHitShake = new SerializedObject(hitShake);
+            SerializedProperty reactionDurationProperty = serializedHitShake.FindProperty("reactionDuration");
+            SerializedProperty recoilEnabledProperty = serializedHitShake.FindProperty("useBackwardRecoil");
+            SerializedProperty recoilDistanceProperty = serializedHitShake.FindProperty("recoilDistance");
+
+            if (reactionDurationProperty == null || recoilEnabledProperty == null || recoilDistanceProperty == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            reactionDurationProperty.floatValue = useBackwardRecoil ? 0.18f : 0.12f;
+            recoilEnabledProperty.boolValue = useBackwardRecoil;
+            recoilDistanceProperty.floatValue = useBackwardRecoil ? 0.16f : 0f;
+            serializedHitShake.ApplyModifiedPropertiesWithoutUndo();
+        }
+
         private static void ValidateUnitRoot(GameObject root, CombatEntityAnchors anchors, UnitDataLink dataLink, Transform uiAnchor, HitRuleSO hitRule, DamageRuleSO damageRule)
         {
             ValidateNoPrototypeComponents(root);
@@ -278,11 +326,11 @@ namespace EndlessGuard.Unit.Editor
                 throw new InvalidOperationException();
             }
 
-            RequireComponents(root, typeof(CombatHealth), typeof(CombatGridPosition), typeof(UnitRuntimeState), typeof(UnitBlock), typeof(UnitAttack), typeof(DamageNumberEmitter), typeof(HitFlash), typeof(HitShake));
+            RequireComponents(root, typeof(CombatHealth), typeof(CombatGridPosition), typeof(UnitRuntimeState), typeof(UnitFacingView), typeof(UnitBlock), typeof(UnitAttack), typeof(DamageNumberEmitter), typeof(HitFlash), typeof(HitShake));
 
             UnitAttack attack = root.GetComponent<UnitAttack>();
 
-            if (attack.HitRule != hitRule || attack.DamageRule != damageRule)
+            if (attack.HitRule != hitRule || attack.DamageRule != damageRule || anchors.AttackPoint.GetComponentInChildren<AttackImpactVfxTemplate>(true) == null || anchors.AttackPoint.GetComponentInChildren<AttackHitSoundTemplate>(true) == null)
             {
                 throw new InvalidOperationException();
             }

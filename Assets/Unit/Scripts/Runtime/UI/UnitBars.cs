@@ -15,13 +15,17 @@ namespace EndlessGuard.Unit.Runtime
         [SerializeField] private RectTransform skillFill;
 
         [Header("HP 표시")]
-        [Tooltip("마지막 피격 후 HP 바를 유지하는 시간입니다.")]
+        [Tooltip("마지막 피해 또는 레이드 회복 아이템 표시 후 HP 바를 유지하는 시간입니다.")]
         [Min(0f)]
         [SerializeField] private float hpVisibleDuration = 2f;
 
         [Tooltip("HP 바가 사라질 때 사용하는 페이드 시간입니다.")]
         [Min(0f)]
         [SerializeField] private float hpFadeDuration = 0.25f;
+
+        [Tooltip("회복 시 현재 HP 위치에서 회복 후 HP 위치까지 채워지는 시간입니다.")]
+        [Min(0f)]
+        [SerializeField] private float healFillDuration = 0.3f;
 
         private static Camera cachedMainCamera;
 
@@ -30,7 +34,11 @@ namespace EndlessGuard.Unit.Runtime
         private RectTransform skillRoot;
         private Graphic[] hpGraphics;
         private Coroutine hpVisibilityRoutine;
-        private float lastDamagedTime;
+        private Coroutine hpHealRoutine;
+        private float lastHpActivityTime;
+        private float healFillStart;
+        private float healFillTarget;
+        private float healFillElapsed;
         private bool skillReady;
         private bool subscribed;
 
@@ -54,24 +62,11 @@ namespace EndlessGuard.Unit.Runtime
             RefreshAll();
         }
 
-        private void Start()
-        {
-            FindUnit();
-            CacheVisuals();
-            RefreshFacing();
-            Subscribe();
-            RefreshAll();
-        }
-
         private void OnDisable()
         {
             Unsubscribe();
-
-            if (hpVisibilityRoutine != null)
-            {
-                StopCoroutine(hpVisibilityRoutine);
-                hpVisibilityRoutine = null;
-            }
+            StopHpVisibilityRoutine();
+            StopHealFillRoutine(false);
 
             if (unit != null)
             {
@@ -195,17 +190,43 @@ namespace EndlessGuard.Unit.Runtime
                 return;
             }
 
+            StopHealFillRoutine(false);
             ShowHpBar();
+        }
+
+        public void PlayHealItemFeedback(float healedAmount)
+        {
+            FindUnit();
+            CacheVisuals();
+
+            if (unit == null || unit.Health == null || healedAmount <= 0f || unit.Health.IsDead)
+            {
+                return;
+            }
+
+            float targetNormalized = unit.Health.NormalizedHp;
+            float previousNormalized = unit.Health.MaxHp > 0f ? Mathf.Clamp01((unit.Health.CurrentHp - healedAmount) / unit.Health.MaxHp) : targetNormalized;
+
+            StopHealFillRoutine(false);
+            healFillStart = previousNormalized;
+            healFillTarget = targetNormalized;
+            healFillElapsed = 0f;
+            SetFill(hpFill, healFillStart);
+            ShowHpBar();
+
+            if (healFillDuration <= 0f || hpFill == null || healFillTarget <= healFillStart)
+            {
+                SetFill(hpFill, healFillTarget);
+                return;
+            }
+
+            hpHealRoutine = StartCoroutine(HealFillRoutine());
         }
 
         private void HandleDied(CombatHealth health)
         {
-            if (hpVisibilityRoutine != null)
-            {
-                StopCoroutine(hpVisibilityRoutine);
-                hpVisibilityRoutine = null;
-            }
-
+            StopHpVisibilityRoutine();
+            StopHealFillRoutine(false);
             SetHpAlpha(0f);
             SetRootActive(hpRoot, false);
             SetRootActive(skillRoot, false);
@@ -281,7 +302,7 @@ namespace EndlessGuard.Unit.Runtime
 
         private void ShowHpBar()
         {
-            lastDamagedTime = Time.unscaledTime;
+            lastHpActivityTime = Time.unscaledTime;
             SetRootActive(hpRoot, true);
             SetHpAlpha(1f);
 
@@ -291,11 +312,38 @@ namespace EndlessGuard.Unit.Runtime
             }
         }
 
+        private IEnumerator HealFillRoutine()
+        {
+            while (true)
+            {
+                if (healFillDuration <= 0f || hpFill == null || healFillTarget <= healFillStart)
+                {
+                    SetFill(hpFill, healFillTarget);
+                    hpHealRoutine = null;
+                    yield break;
+                }
+
+                healFillElapsed += Time.unscaledDeltaTime;
+                float progress = Mathf.Clamp01(healFillElapsed / healFillDuration);
+                float value = Mathf.SmoothStep(healFillStart, healFillTarget, progress);
+                SetFill(hpFill, value);
+
+                if (progress >= 1f)
+                {
+                    SetFill(hpFill, healFillTarget);
+                    hpHealRoutine = null;
+                    yield break;
+                }
+
+                yield return null;
+            }
+        }
+
         private IEnumerator HpVisibilityRoutine()
         {
             while (true)
             {
-                while (Time.unscaledTime - lastDamagedTime < hpVisibleDuration)
+                while (Time.unscaledTime - lastHpActivityTime < hpVisibleDuration)
                 {
                     yield return null;
                 }
@@ -312,7 +360,7 @@ namespace EndlessGuard.Unit.Runtime
 
                 while (elapsed < hpFadeDuration)
                 {
-                    if (Time.unscaledTime - lastDamagedTime < hpVisibleDuration)
+                    if (Time.unscaledTime - lastHpActivityTime < hpVisibleDuration)
                     {
                         SetHpAlpha(1f);
                         break;
@@ -323,7 +371,7 @@ namespace EndlessGuard.Unit.Runtime
                     yield return null;
                 }
 
-                if (Time.unscaledTime - lastDamagedTime >= hpVisibleDuration)
+                if (Time.unscaledTime - lastHpActivityTime >= hpVisibleDuration)
                 {
                     SetHpAlpha(0f);
                     SetRootActive(hpRoot, false);
@@ -333,14 +381,40 @@ namespace EndlessGuard.Unit.Runtime
             }
         }
 
-        private void ResetHpVisibility()
+        private void StopHpVisibilityRoutine()
         {
-            if (hpVisibilityRoutine != null)
+            if (hpVisibilityRoutine == null)
             {
-                StopCoroutine(hpVisibilityRoutine);
-                hpVisibilityRoutine = null;
+                return;
             }
 
+            StopCoroutine(hpVisibilityRoutine);
+            hpVisibilityRoutine = null;
+        }
+
+        private void StopHealFillRoutine(bool snapToCurrentHealth)
+        {
+            if (hpHealRoutine != null)
+            {
+                StopCoroutine(hpHealRoutine);
+                hpHealRoutine = null;
+            }
+
+            healFillElapsed = 0f;
+
+            if (snapToCurrentHealth && unit != null && unit.Health != null)
+            {
+                float normalized = unit.Health.NormalizedHp;
+                healFillStart = normalized;
+                healFillTarget = normalized;
+                SetFill(hpFill, normalized);
+            }
+        }
+
+        private void ResetHpVisibility()
+        {
+            StopHpVisibilityRoutine();
+            StopHealFillRoutine(false);
             SetHpAlpha(0f);
             SetRootActive(hpRoot, false);
         }

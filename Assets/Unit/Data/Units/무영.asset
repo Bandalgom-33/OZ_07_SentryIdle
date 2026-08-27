@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb559248c4596cd458de9c284bd5014a, type: 3}
+  m_Name: "\uBB34\uC601"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitDataSO
+  unitId: UNIT_0018
+  displayName: "\uBB34\uC601"
+  description: "\uBE60\uB978 \uAC80\uACA9\uACFC \uCE58\uBA85\uC801\uC778 \uC77C\uACA9\uC73C\uB85C
+    \uD55C \uB300\uC0C1\uC744 \uC9D1\uC911\uC801\uC73C\uB85C \uC555\uBC15\uD558\uB294
+    \uC194\uB85C\uBE14\uB808\uC774\uB4DC\uD615 \uAC00\uB4DC. \uCE58\uBA85\uD0C0\uC5D0
+    \uC131\uACF5\uD558\uBA74 \uC9E7\uC740 \uC2DC\uAC04 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774
+    \uD3ED\uBC1C\uC801\uC73C\uB85C \uC0C1\uC2B9\uD55C\uB2E4."
+  grade: 5
+  initialLevel: 1
+  growthTable: {fileID: 11400000, guid: e353654c25a0e5e803046d4d2f592cea, type: 2}
+  unitClass: 2
+  subclass: 205
+  placement: 1
+  summonCost: 19
+  redeployTime: 45
+  blockCount: 2
+  baseStats:
+    maxHp: 3200
+    physicalAttack: 590
+    magicalAttack: 0
+    baseAttacksPerSecond: 1.35
+    physicalDefense: 170
+    magicalDefense: 150
+    accuracy: 120
+    evasion: 20
+    moveSpeed: 0
+  attackSettings:
+    attackMode: 1
+    damageType: 1
+    attackTarget: 1
+    attackRange: 2
+    targetCount: 1
+    rangeRotationMode: 1
+    basicAttackRange:
+      horizontalRadius: 3
+      forwardDistance: 3
+      backwardDistance: 3
+      attackTiles:
+      - {x: -1, y: 1}
+      - {x: 0, y: 1}
+      - {x: 0, y: 2}
+      - {x: 1, y: 1}
+  hpRegenPerSecond: 0.5
+  criticalChancePercent: 25
+  criticalDamageBonusPercent: 70
+  maxSkillGauge: 100
+  skillGaugeRegenPerSecond: 1
+  skillGaugePerAttack: 5
+  passives:
+  - {fileID: 11400000, guid: e71da3175eb2ada41a2e0f3e0b1c3bf8, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: e71da3175eb2ada41a2e0f3e0b1c3bf8, type: 2}
+    values:
+    - key: 6
+      value: 30
+    - key: 7
+      value: 3
+    refs: []
+  unitPrefab: {fileID: 493799362969009905, guid: f41a2b31e21a37642bc3ee831c5c6de6, type: 3}
