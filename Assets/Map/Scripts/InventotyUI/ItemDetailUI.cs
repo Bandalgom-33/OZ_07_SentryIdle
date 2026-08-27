@@ -38,12 +38,19 @@ public class ItemDetailUI : MonoBehaviour
         UpdateButtonState();
     }
     
+    private EquipmentManager GetEquipmentManager()
+    {
+        if (equipmentManager != null) return equipmentManager;
+        return EquipmentManager.Instance;
+    }
+
     public void EquipCurrentItem()
     {
         if (currentItem == null) return;
-        if (equipmentManager == null) return;
+        EquipmentManager em = GetEquipmentManager();
+        if (em == null) return;
 
-        equipmentManager.EquipItem(currentItem);
+        em.EquipItem(currentItem);
 
         UpdateButtonState();
     }
@@ -52,21 +59,22 @@ public class ItemDetailUI : MonoBehaviour
     private bool IsEquipped(ItemDataSO itemData)
     {
         if (itemData == null) return false;
-        if (equipmentManager == null) return false;
+        EquipmentManager em = GetEquipmentManager();
+        if (em == null) return false;
 
         switch (itemData.EquipmentType)
         {
             case EquipmentType.Head:
-                return equipmentManager.EquippedHead == itemData;
+                return em.EquippedHead == itemData;
 
             case EquipmentType.Armor:
-                return equipmentManager.EquippedArmor == itemData;
+                return em.EquippedArmor == itemData;
 
             case EquipmentType.Weapon:
-                return equipmentManager.EquippedWeapon == itemData;
+                return em.EquippedWeapon == itemData;
 
             case EquipmentType.Accessory:
-                return equipmentManager.EquippedAccessory == itemData;
+                return em.EquippedAccessory == itemData;
         }
 
         return false;
@@ -76,16 +84,17 @@ public class ItemDetailUI : MonoBehaviour
     {
         bool isEquipped = IsEquipped(currentItem);
 
-        equipButton.SetActive(!isEquipped);
-        unequipButton.SetActive(isEquipped);
+        if (equipButton != null) equipButton.SetActive(!isEquipped);
+        if (unequipButton != null) unequipButton.SetActive(isEquipped);
     }
     
     public void UnequipCurrentItem()
     {
         if (currentItem == null) return;
-        if (equipmentManager == null) return;
+        EquipmentManager em = GetEquipmentManager();
+        if (em == null) return;
 
-        equipmentManager.UnequipItem(currentItem.EquipmentType);
+        em.UnequipItem(currentItem.EquipmentType);
 
         UpdateButtonState();
 
