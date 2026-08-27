@@ -91,12 +91,23 @@ namespace EndlessGuard.Unit.Runtime
                 return false;
             }
 
-            IReadOnlyList<Vector2Int> attackTiles = unitData.AttackSettings.BasicAttackRange.AttackTiles;
+            AttackSettings attackSettings = unitData.AttackSettings;
+            IReadOnlyList<Vector2Int> attackTiles = attackSettings.BasicAttackRange.AttackTiles;
             int visibleCount = 0;
 
             for (int i = 0; i < attackTiles.Count; i++)
             {
-                Vector2Int relativeTile = RotatePatternTile(attackTiles[i], facingDirection);
+                Vector2Int patternTile = attackTiles[i];
+
+                if (!BasicAttackRangeEvaluator.IsWithinAttackDistance(attackSettings, patternTile))
+                {
+                    continue;
+                }
+
+                Vector2Int relativeTile = BasicAttackRangeEvaluator.ConvertPatternTileToWorldTile(
+                    patternTile,
+                    attackSettings.RangeRotationMode,
+                    facingDirection);
                 Vector2Int worldTile = originTile + relativeTile;
 
                 if (!AttackRangeTileService.TryGetTile(worldTile, out AttackRangeTile tileData))
@@ -244,22 +255,5 @@ namespace EndlessGuard.Unit.Runtime
             RefreshSelected();
         }
 
-        private static Vector2Int RotatePatternTile(Vector2Int patternTile, GridFacingDirection facingDirection)
-        {
-            switch (facingDirection)
-            {
-                case GridFacingDirection.East:
-                    return new Vector2Int(patternTile.y, -patternTile.x);
-
-                case GridFacingDirection.South:
-                    return new Vector2Int(-patternTile.x, -patternTile.y);
-
-                case GridFacingDirection.West:
-                    return new Vector2Int(-patternTile.y, patternTile.x);
-
-                default:
-                    return patternTile;
-            }
-        }
     }
 }

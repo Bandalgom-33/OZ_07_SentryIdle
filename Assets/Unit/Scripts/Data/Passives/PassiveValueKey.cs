@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace EndlessGuard.Unit.Data
 {
@@ -113,6 +113,9 @@ namespace EndlessGuard.Unit.Data
         SummonIntervalSeconds = 35,
 
         [InspectorName("한 번에 소환하는 수")]
-        SummonCount = 36
+        SummonCount = 36,
+
+        [InspectorName("최대 활성 소환수")]
+        MaxActiveSummons = 37
     }
 }

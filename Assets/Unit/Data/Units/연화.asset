@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb559248c4596cd458de9c284bd5014a, type: 3}
+  m_Name: "\uC5F0\uD654"
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Data.UnitDataSO
+  unitId: UNIT_0016
+  displayName: "\uC5F0\uD654"
+  description: "\uC8FC\uC220\uC774 \uAE43\uB4E0 \uBB34\uAE30\uB85C \uC801\uC758 \uBC29\uC5B4\uB97C
+    \uBB34\uC2DC\uD558\uB4EF \uD30C\uACE0\uB4DC\uB294 \uC544\uCE20 \uD30C\uC774\uD130\uD615
+    \uAC00\uB4DC. \uBE60\uB974\uAC8C \uBAB0\uB824\uB4DC\uB294 \uC18C\uD615 \uBAAC\uC2A4\uD130\uB97C
+    \uAC15\uD55C \uB9C8\uBC95 \uD53C\uD574\uB85C \uC81C\uAC70\uD558\uB294 \uB370
+    \uD2B9\uD654\uB418\uC5B4 \uC788\uB2E4."
+  grade: 4
+  initialLevel: 1
+  growthTable: {fileID: 11400000, guid: e353654c25a0e5e803046d4d2f592cea, type: 2}
+  unitClass: 2
+  subclass: 203
+  placement: 1
+  summonCost: 18
+  redeployTime: 55
+  blockCount: 2
+  baseStats:
+    maxHp: 3400
+    physicalAttack: 0
+    magicalAttack: 560
+    baseAttacksPerSecond: 1
+    physicalDefense: 200
+    magicalDefense: 220
+    accuracy: 110
+    evasion: 12
+    moveSpeed: 0
+  attackSettings:
+    attackMode: 1
+    damageType: 2
+    attackTarget: 3
+    attackRange: 3
+    targetCount: 1
+    rangeRotationMode: 1
+    basicAttackRange:
+      horizontalRadius: 3
+      forwardDistance: 3
+      backwardDistance: 3
+      attackTiles:
+      - {x: -1, y: 1}
+      - {x: 0, y: 2}
+      - {x: -1, y: 2}
+      - {x: 1, y: 1}
+      - {x: 1, y: 2}
+      - {x: 0, y: 1}
+  hpRegenPerSecond: 0.7
+  criticalChancePercent: 10
+  criticalDamageBonusPercent: 50
+  maxSkillGauge: 100
+  skillGaugeRegenPerSecond: 1
+  skillGaugePerAttack: 5
+  passives:
+  - {fileID: 11400000, guid: f48450551a6748644ab01c6af41b62f4, type: 2}
+  passiveTunings:
+  - passive: {fileID: 11400000, guid: f48450551a6748644ab01c6af41b62f4, type: 2}
+    values:
+    - key: 2
+      value: 900
+    refs: []
+  unitPrefab: {fileID: 8581426731659903934, guid: 3830d10cc9618df4ea1a6e41508b1202, type: 3}

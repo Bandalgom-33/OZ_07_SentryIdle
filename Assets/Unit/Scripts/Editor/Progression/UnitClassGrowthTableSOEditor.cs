@@ -1,4 +1,4 @@
-using EndlessGuard.Unit.Data;
+﻿using EndlessGuard.Unit.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -125,7 +125,6 @@ namespace EndlessGuard.Unit.Editor
             EditorUtility.SetDirty(target);
             AssetDatabase.SaveAssets();
 
-            Debug.Log("[UnitClassGrowthTable] 정식 성장값 적용 완료. 레벨업은 분류별 성장, 승급은 11종 +10%, 최대 승급 단계는 6입니다.");
         }
 
         private static void SetGrowthRule(SerializedProperty rule, GrowthStatMask affectedStats, float percentPerStep)

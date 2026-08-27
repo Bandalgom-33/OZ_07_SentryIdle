@@ -150,7 +150,14 @@ namespace EndlessGuard.Unit.Runtime
             float calculatedDamage = attacker.Passives != null ? attacker.Passives.ModifyOutgoingDamage(attacker, target, criticalDamage) : criticalDamage;
 
             DamageInfo damageInfo = new DamageInfo(calculatedDamage, attackSettings.DamageType, isCritical);
-            float appliedDamage = target.ApplyDamage(damageInfo);
+            float appliedDamage = target.ApplyDamage(attacker, damageInfo);
+
+            if (appliedDamage > 0f)
+            {
+                AttackImpactVfxPool.ShowHit(attacker.Attack != null ? attacker.Attack.AttackImpactTemplate : null, target.Anchors, target.transform);
+                AttackHitSoundPool.ShowHit(attacker.Attack != null ? attacker.Attack.AttackHitSoundTemplate : null, target.Anchors, target.transform);
+            }
+
             float gainedSkillGauge = gainSkillGauge && appliedDamage > 0f ? attacker.AddSkillGauge(attacker.DataLink.UnitData.SkillGaugePerAttack) : 0f;
 
             result = new BasicAttackResult(true, BasicAttackFailureReason.None, attackSettings.DamageType, attackPower, defense, hitChancePercent, true, calculatedDamage, appliedDamage, isCritical, gainedSkillGauge, target.Health.IsDead);

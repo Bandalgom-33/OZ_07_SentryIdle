@@ -6,6 +6,9 @@ namespace EndlessGuard.Unit.Runtime
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(UnitRuntimeState))]
+    [RequireComponent(typeof(DamageNumberEmitter))]
+    [RequireComponent(typeof(HitFlash))]
+    [RequireComponent(typeof(HitShake))]
     public sealed class UnitSummonRuntime : MonoBehaviour
     {
         [Header("소환 위치")]

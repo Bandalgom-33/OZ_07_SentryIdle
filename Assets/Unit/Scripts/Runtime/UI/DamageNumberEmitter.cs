@@ -10,6 +10,7 @@ namespace EndlessGuard.Unit.Runtime
         private CombatHealth health;
         private CombatEntityAnchors anchors;
         private DamageNumberTargetType targetType;
+        private CombatNumberScale numberScale;
         private bool subscribed;
 
         private void Awake()
@@ -17,10 +18,12 @@ namespace EndlessGuard.Unit.Runtime
             health = GetComponent<CombatHealth>();
             anchors = GetComponent<CombatEntityAnchors>();
             targetType = GetComponentInParent<UnitRuntimeState>() != null ? DamageNumberTargetType.Unit : DamageNumberTargetType.Enemy;
+            numberScale = GetComponentInParent<CombatNumberScale>();
         }
 
         private void OnEnable()
         {
+            numberScale = GetComponentInParent<CombatNumberScale>();
             Subscribe();
         }
 
@@ -83,7 +86,38 @@ namespace EndlessGuard.Unit.Runtime
             }
 
             Vector3 worldPosition = anchors != null && anchors.EffectPoint != null ? anchors.EffectPoint.position : transform.position;
-            DamageNumberPool.Show(sender, damageInfo, worldPosition, targetType);
+            DamageNumberPool.Show(sender, damageInfo, worldPosition, targetType, ResolveDisplayScale(damageInfo.IsCritical));
+        }
+
+        private float ResolveDisplayScale(bool isCritical)
+        {
+            if (numberScale != null)
+            {
+                return isCritical ? numberScale.CriticalScale : numberScale.Scale;
+            }
+
+            numberScale = GetComponentInParent<CombatNumberScale>();
+            if (numberScale != null)
+            {
+                return isCritical ? numberScale.CriticalScale : numberScale.Scale;
+            }
+
+            UnitSummonRuntime unitSummon = GetComponent<UnitSummonRuntime>();
+            if (unitSummon != null && unitSummon.Owner != null)
+            {
+                numberScale = unitSummon.Owner.GetComponentInParent<CombatNumberScale>();
+            }
+
+            if (numberScale == null)
+            {
+                EnemySummonRuntime enemySummon = GetComponent<EnemySummonRuntime>();
+                if (enemySummon != null && enemySummon.Owner != null)
+                {
+                    numberScale = enemySummon.Owner.GetComponentInParent<CombatNumberScale>();
+                }
+            }
+
+            return numberScale != null ? (isCritical ? numberScale.CriticalScale : numberScale.Scale) : 1f;
         }
     }
 }

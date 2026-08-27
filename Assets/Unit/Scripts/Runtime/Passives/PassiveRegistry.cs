@@ -23,6 +23,7 @@ namespace EndlessGuard.Unit.Runtime
             { typeof(DefenseAuraSO), new DefenseAuraHandler() },
             { typeof(DefenseBuffSO), new DefenseBuffHandler() },
             { typeof(ExplosionSO), new ExplosionHandler() },
+            { typeof(FrontlineCommandSO), new FrontlineCommandHandler() },
             { typeof(HealSO), new HealHandler() },
             { typeof(HeavyArmorSO), new HeavyArmorHandler() },
             { typeof(LifeStealSO), new LifeStealHandler() },
