@@ -2701,6 +2701,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+--- !u!1 &1246640847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1246640849}
+  - component: {fileID: 1246640848}
+  m_Layer: 0
+  m_Name: DeckUnitReceiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1246640848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246640847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edce4d8485efa3449ad8943b51a08c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeckUnitReceiver
+  groundUnitHeight: 0.5
+  highGroundUnitHeight: 0.8
+  mapGenerator: {fileID: 0}
+--- !u!4 &1246640849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246640847}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1282509888 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1747086507978203918, guid: 9a59259415cbacf4585ecc535242319c, type: 3}
@@ -2986,6 +3033,63 @@ MonoBehaviour:
   - {fileID: 1153888099}
   selectedSpeedColor: {r: 0.1, g: 0.58, b: 0.82, a: 1}
   unselectedSpeedColor: {r: 0.29, g: 0.32, b: 0.36, a: 1}
+--- !u!1 &1454836349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1454836351}
+  - component: {fileID: 1454836350}
+  m_Layer: 0
+  m_Name: WaveManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1454836350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454836349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00adc2432baaf8b43ac2d8a30b28337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveManager
+  mapGenerator: {fileID: 1462219794}
+  mapRenderer: {fileID: 1462219787}
+  stageManager: {fileID: 1462219793}
+  enemyCatalog: {fileID: 11400000, guid: 8f3bc95bb70d00e41a6886aee5f591dd, type: 2}
+  hpBonusPerWavePercent: 10
+  attackBonusPerWavePercent: 5
+  defenseBonusPerWavePercent: 5
+  waveClearReward: 1
+  enemyHeight: 0.15
+  enemyCountPerWave: 3
+  spawnInterval: 1
+  waveInterval: 5
+  path: []
+--- !u!4 &1454836351
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454836349}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.04836, y: 4.07506, z: -2.81956}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1462219783
 GameObject:
   m_ObjectHideFlags: 0
@@ -2999,8 +3103,7 @@ GameObject:
   - component: {fileID: 1462219787}
   - component: {fileID: 1462219794}
   - component: {fileID: 1462219793}
-  - component: {fileID: 1462219792}
-  - component: {fileID: 1462219791}
+  - component: {fileID: 1462219795}
   m_Layer: 0
   m_Name: TestMapSystem
   m_TagString: Untagged
@@ -3021,8 +3124,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridMapRenderer
   tilePrefab: {fileID: 5665433859218404168, guid: b546099fbbe25b344b8eb3c7e723d024, type: 3}
+  tileVisualSet: {fileID: 11400000, guid: fb485a972fa016747b0746e5b79ba4ea, type: 2}
   tileSize: 1
   tileRoot: {fileID: 1286297650}
+  tileYOffset: 0
 --- !u!114 &1462219789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3052,47 +3157,6 @@ Transform:
   - {fileID: 1286297650}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1462219791
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1462219783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d04c276613133534383c94eb013b64b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.TestBattle.CatalogWaveManager
-  mapGenerator: {fileID: 1462219794}
-  mapRenderer: {fileID: 1462219787}
-  stageManager: {fileID: 1462219793}
-  enemyCatalog: {fileID: 11400000, guid: 8f3bc95bb70d00e41a6886aee5f591dd, type: 2}
-  fallbackBossPrefab: {fileID: 0}
-  enemyCountPerWave: 3
-  spawnInterval: 1
-  waveInterval: 3
-  enemyHeight: 1
---- !u!114 &1462219792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1462219783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a99d35f29dd04f94aa6ecb878f6b0ddf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.TestBattle.DeckBasedSummonController
-  mapGenerator: {fileID: 1462219794}
-  maxFieldUnits: 10
-  spawnCheckInterval: 1
-  groundUnitHeight: 0.5
-  highGroundUnitHeight: 0.8
-  priorityMode: 0
-  priorityToggleButton: {fileID: 0}
-  priorityStatusText: {fileID: 0}
 --- !u!114 &1462219793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3121,9 +3185,32 @@ MonoBehaviour:
   width: 12
   height: 8
   mapRenderer: {fileID: 1462219787}
+  meleeUnitPrefab: {fileID: 1078171258862399160, guid: b77056a701d5e134f8b556db0b0b498f, type: 3}
+  rangedUnitPrefab: {fileID: 6529314922798111660, guid: 0d98d440af4194942b9b452901beae67, type: 3}
+  waveManager: {fileID: 1454836350}
+--- !u!114 &1462219795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462219783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14afe4625ac2bd74faebc71d3bd3dc65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Map.MapUnitSummonManager
+  mapGenerator: {fileID: 1462219794}
   meleeUnitPrefab: {fileID: 0}
   rangedUnitPrefab: {fileID: 0}
-  waveManager: {fileID: 0}
+  meleeUnitHeight: 0
+  rangedUnitHeight: 0.25
+  maxFieldUnitCount: 10
+  initialSpawnCount: 4
+  ignoreDpCostForInitialSpawn: 1
+  defaultUnitSpawnCost: 10
+  autoSpawnEnabled: 1
+  autoSpawnCheckInterval: 1
 --- !u!114 &1483199889 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7069521993219156377, guid: a506406e49ac73a4ca70cb4cc7344ae7, type: 3}
@@ -6165,3 +6252,5 @@ SceneRoots:
   - {fileID: 1462219790}
   - {fileID: 1093859337}
   - {fileID: 632057954}
+  - {fileID: 1246640849}
+  - {fileID: 1454836351}
