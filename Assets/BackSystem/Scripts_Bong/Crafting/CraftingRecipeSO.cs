@@ -11,8 +11,14 @@ public class CraftingRecipeSO : ScriptableObject
     [Tooltip("레시피 고유 식별자 문자열 (예: RECIPE_POTION_LOW)")]
     public string recipeId = "RECIPE_001";
 
-    [Tooltip("조합 결과로 생성되는 소모품 아이템 종류")]
+    [Tooltip("레시피 카테고리 (소모품 vs 장비)")]
+    public ItemCategory itemCategory = ItemCategory.Consumable;
+
+    [Tooltip("조합 결과로 생성되는 소모품 아이템 종류 (itemCategory가 Consumable일 때 사용)")]
     public ConsumableType resultType = ConsumableType.HealthPotion_Low;
+
+    [Tooltip("조합 결과로 생성되는 장비 아이템 SO 에셋 (itemCategory가 Equipment일 때 사용)")]
+    public ItemDataSO equipmentResult;
 
     [Tooltip("공방 UI에 표시될 아이템 이름")]
     public string displayName = "하급 체력포션";

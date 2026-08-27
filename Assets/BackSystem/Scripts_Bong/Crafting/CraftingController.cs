@@ -90,27 +90,35 @@ public class CraftingController : SingletonBase<CraftingController>
         }
     }
 
-    // 기본 6종 레시피 런타임 인스턴스 생성 처리
+    // 기본 소모품 6종 및 레이드 마석 장비 레시피 4종 런타임 인스턴스 생성 처리
     private void CreateDefaultRuntimeRecipes()
     {
         recipeDatabase = new List<CraftingRecipeSO>()
         {
+            // 1. 소모품 레시피 6종
             CreateRecipeInstance("RECIPE_HP_01", ConsumableType.HealthPotion_Low, "하급 체력포션", "전체 아군 HP 25% 회복", 4.0f, 100, CurrencyType.WaveStone, 1, 1),
             CreateRecipeInstance("RECIPE_EXP_01", ConsumableType.ExpBook_Low, "초급 경험치책", "지정 유닛 +100 EXP (10마리분)", 5.0f, 200, CurrencyType.StageStone, 1, 2),
             CreateRecipeInstance("RECIPE_HP_02", ConsumableType.HealthPotion_Mid, "중급 체력포션", "전체 아군 HP 50% 회복", 8.0f, 300, CurrencyType.WaveStone, 3, 3),
             CreateRecipeInstance("RECIPE_EXP_02", ConsumableType.ExpBook_Mid, "중급 경험치책", "지정 유닛 +1,000 EXP (100마리분)", 10.0f, 600, CurrencyType.StageStone, 2, 4),
             CreateRecipeInstance("RECIPE_HP_03", ConsumableType.HealthPotion_High, "상급 체력포션", "전체 아군 HP 100% 완전 회복", 15.0f, 1000, CurrencyType.WaveStone, 10, 5),
-            CreateRecipeInstance("RECIPE_EXP_03", ConsumableType.ExpBook_High, "고급 경험치책", "지정 유닛 +10,000 EXP (1000마리분)", 20.0f, 2000, CurrencyType.StageStone, 5, 5)
+            CreateRecipeInstance("RECIPE_EXP_03", ConsumableType.ExpBook_High, "고급 경험치책", "지정 유닛 +10,000 EXP (1000마리분)", 20.0f, 2000, CurrencyType.StageStone, 5, 5),
+
+            // 2. 레이드 마석 장비 제작 레시피 4종 (무기, 갑옷, 투구, 장신구)
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_WEAPON_01", "Weapon_01", "나무 검 제작", "초급 모험가를 위한 기본 한손검 (물공 +3)", 6.0f, 500, 5, 1),
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_ARMOR_01", "Armor_01", "가죽 갑옷 제작", "가볍고 질긴 기본 가죽 갑옷 (물방 +2)", 8.0f, 800, 8, 2),
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_HEAD_01", "Head_01", "가죽 투구 제작", "머리를 보호하는 기본 가죽 투구 (물방 +1)", 6.0f, 600, 6, 2),
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_ACC_01", "Accessory_01", "구리 반지 제작", "기본적인 마력을 머금은 장신구 (명중 +2)", 10.0f, 1200, 10, 3)
         };
     }
 
-    // 단일 레시피 SO 인스턴스 생성 헬퍼
+    // 단일 소모품 레시피 SO 인스턴스 생성 헬퍼
     private CraftingRecipeSO CreateRecipeInstance(
         string id, ConsumableType result, string name, string desc,
         float time, long gold, CurrencyType stoneType, long stoneAmount, int reqLevel)
     {
         CraftingRecipeSO so = ScriptableObject.CreateInstance<CraftingRecipeSO>();
         so.recipeId = id;
+        so.itemCategory = ItemCategory.Consumable;
         so.resultType = result;
         so.displayName = name;
         so.description = desc;
@@ -120,6 +128,38 @@ public class CraftingController : SingletonBase<CraftingController>
         so.stoneCost = stoneAmount;
         so.outputAmount = 1;
         so.unlockFactoryLevel = reqLevel;
+        return so;
+    }
+
+    // 단일 장비 레시피 SO 인스턴스 생성 헬퍼 (레이드 마석 소모)
+    private CraftingRecipeSO CreateEquipmentRecipeInstance(
+        string id, string equipmentItemId, string name, string desc,
+        float time, long gold, long raidStoneCost, int reqLevel)
+    {
+        CraftingRecipeSO so = ScriptableObject.CreateInstance<CraftingRecipeSO>();
+        so.recipeId = id;
+        so.itemCategory = ItemCategory.Equipment;
+        so.displayName = name;
+        so.description = desc;
+        so.baseCraftingTime = time;
+        so.goldCost = gold;
+        so.requiredStoneType = CurrencyType.RaidStone;
+        so.stoneCost = raidStoneCost;
+        so.outputAmount = 1;
+        so.unlockFactoryLevel = reqLevel;
+
+        // InventoryGridManager 또는 Resources를 통해 해당 장비 SO 연결
+        ItemDataSO equipSO = InventoryGridManager.Instance != null ? InventoryGridManager.Instance.GetItemById(equipmentItemId) : Resources.Load<ItemDataSO>($"ItemDataSo/{equipmentItemId}");
+        if (equipSO == null)
+        {
+            equipSO = Resources.Load<ItemDataSO>(equipmentItemId);
+        }
+        so.equipmentResult = equipSO;
+        if (equipSO != null && equipSO.ItemIcon != null)
+        {
+            so.recipeIcon = equipSO.ItemIcon;
+        }
+
         return so;
     }
 
@@ -195,7 +235,19 @@ public class CraftingController : SingletonBase<CraftingController>
                 if (TrySpendRecipeMaterials(recipe))
                 {
                     int finalAmount = recipe.outputAmount * currentOutput;
-                    cim.AddConsumable(recipe.resultType, finalAmount);
+
+                    // 장비 아이템 레시피인 경우 인벤토리 그리드에 자동 입고
+                    if (recipe.itemCategory == ItemCategory.Equipment && recipe.equipmentResult != null)
+                    {
+                        InventoryGridManager.Instance?.AddItem(recipe.equipmentResult, finalAmount);
+                        Debug.Log($"[CraftingController] 장비 제작 완료! {recipe.equipmentResult.ItemName} x{finalAmount} 인벤토리 입고 완료");
+                    }
+                    else
+                    {
+                        // 소모품 레시피인 경우 소모품 매니저에 수량 가산
+                        cim.AddConsumable(recipe.resultType, finalAmount);
+                    }
+
                     _recipeProgresses[recipeIndex] = 0f;
                     SaveManager.Instance.SaveGameData();
                 }
@@ -203,7 +255,7 @@ public class CraftingController : SingletonBase<CraftingController>
         }
     }
 
-    // 레시피 제작 소모 재화 보유 여부 검증 헬퍼
+    // 레시피 제작 소모 재화 보유 여부 검증 헬퍼 (웨이브/던전/레이드 마석 지원)
     private bool HasCraftingMaterials(CraftingRecipeSO recipe)
     {
         if (recipe == null || CurrencyManager.Instance == null) return false;
@@ -214,6 +266,7 @@ public class CraftingController : SingletonBase<CraftingController>
         {
             CurrencyType.WaveStone => cm.HasWaveStone(recipe.stoneCost),
             CurrencyType.StageStone or CurrencyType.DungeonStone => cm.HasStageStone(recipe.stoneCost),
+            CurrencyType.RaidStone => cm.HasRaidStone(recipe.stoneCost),
             _ => false
         };
 
@@ -235,6 +288,10 @@ public class CraftingController : SingletonBase<CraftingController>
         else if (recipe.requiredStoneType == CurrencyType.StageStone || recipe.requiredStoneType == CurrencyType.DungeonStone)
         {
             cm.TrySpendStageStone(recipe.stoneCost);
+        }
+        else if (recipe.requiredStoneType == CurrencyType.RaidStone)
+        {
+            cm.TrySpendRaidStone(recipe.stoneCost);
         }
 
         return true;
@@ -321,7 +378,11 @@ public class CraftingController : SingletonBase<CraftingController>
         if (!TrySpendRecipeMaterials(recipe)) return false;
 
         int finalAmount = recipe.outputAmount * OutputAmount;
-        if (ConsumableItemManager.Instance != null)
+        if (recipe.itemCategory == ItemCategory.Equipment && recipe.equipmentResult != null)
+        {
+            InventoryGridManager.Instance?.AddItem(recipe.equipmentResult, finalAmount);
+        }
+        else if (ConsumableItemManager.Instance != null)
         {
             ConsumableItemManager.Instance.AddConsumable(recipe.resultType, finalAmount);
         }

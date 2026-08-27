@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -272,6 +272,12 @@ public class DeckUI : MonoBehaviour
     public void UpdateDeckUI(int[] deckSlots)
     {
         if (deckSlots == null) return;
+
+        // 8칸 덱(레이드)으로 전환 시 이전 10칸 덱(일반)의 잔존 유닛이 8, 9번 슬롯에 켜지는 현상을 방지하기 위해 전체 -1로 초기화
+        for (int i = 0; i < 10; i++)
+        {
+            _currentDeckSlots[i] = -1;
+        }
 
         int length = Math.Min(10, deckSlots.Length);
         for (int i = 0; i < length; i++)

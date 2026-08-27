@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: CraftingRecipe_6
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipeSO
   recipeId: RECIPE_006
+  itemCategory: 2
   resultType: 5
+  equipmentResult: {fileID: 0}
   displayName: "\uC0C1\uAE09 \uACBD\uD5D8\uCE58 \uCC45"
   description: "\uC544\uAD70 \uC720\uB2DB\uC758 \uACBD\uD5D8\uCE58\uB97C  \uB9CE\uC774
     \uB298\uB824\uC8FC\uB294 \uACBD\uD5D8\uCE58 \uCC45\uC785\uB2C8\uB2E4."

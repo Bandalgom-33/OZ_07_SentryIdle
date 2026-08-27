@@ -21,6 +21,10 @@ public class SaveData
     public CraftingSaveData crafting = new CraftingSaveData();
     // 던전 파견 및 자동 생산 상태 데이터 (3개 던전 유닛 배치 및 진행 시간)
     public DungeonSaveData dungeon = new DungeonSaveData();
+    // 가방 인벤토리 아이템 슬롯 데이터 (50칸 그리드)
+    public InventorySaveData inventory = new InventorySaveData();
+    // 캐릭터별 4부위 장착 장비 데이터
+    public EquipmentSaveData equipment = new EquipmentSaveData();
     // 마지막 저장 일시 타임스탬프 (오프라인 보상 계산용)
     public string lastSaveTimestamp = string.Empty;
 }
@@ -233,6 +237,50 @@ public class DungeonSaveData
 {
     // 3개 던전 슬롯의 저장 데이터 리스트
     public List<DungeonSlotSaveData> dungeonSlots = new List<DungeonSlotSaveData>();
+}
+
+// 인벤토리 단일 슬롯 아이템 저장 데이터 DTO
+[Serializable]
+public class InventorySlotSaveEntry
+{
+    // 50칸 그리드 내 슬롯 인덱스 (0 ~ 49)
+    public int slotIndex;
+    // 아이템 고유 식별자 문자열 (ItemDataSO.ItemID)
+    public string itemId = string.Empty;
+    // 보유 수량
+    public int quantity = 1;
+}
+
+// 가방 인벤토리 전체 저장 데이터
+[Serializable]
+public class InventorySaveData
+{
+    // 아이템이 존재하는 슬롯 목록
+    public List<InventorySlotSaveEntry> slots = new List<InventorySlotSaveEntry>();
+}
+
+// 개별 캐릭터의 4부위(머리, 갑옷, 무기, 장신구) 장착 장비 저장 데이터 DTO
+[Serializable]
+public class CharacterEquipmentSaveEntry
+{
+    // 유닛 고유 식별자 문자열 (예: UNIT_0002, UNIT_0004)
+    public string unitId = string.Empty;
+    // 투구(Head) 아이템 ID (미장착 시 empty)
+    public string headItemId = string.Empty;
+    // 갑옷(Armor) 아이템 ID
+    public string armorItemId = string.Empty;
+    // 무기(Weapon) 아이템 ID
+    public string weaponItemId = string.Empty;
+    // 장신구(Accessory) 아이템 ID
+    public string accessoryItemId = string.Empty;
+}
+
+// 전체 캐릭터 장비 장착 상태 저장 데이터
+[Serializable]
+public class EquipmentSaveData
+{
+    // 캐릭터별 장비 장착 데이터 목록
+    public List<CharacterEquipmentSaveEntry> characterEquipments = new List<CharacterEquipmentSaveEntry>();
 }
 
 

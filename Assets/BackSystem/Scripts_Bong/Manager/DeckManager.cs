@@ -32,24 +32,27 @@ public class DeckManager : SingletonBase<DeckManager>
     [Range(1, 20)]
     [SerializeField] private int normalDeckCapacity = 10;
 
-    [Tooltip("레이드 1팀 덱의 최대 슬롯 수")]
+    // 레이드 시스템 요구사항에 따라 1팀과 2팀 각각 최대 8명의 캐릭터를 편성하도록 제한
+    [Tooltip("레이드 1팀 덱의 최대 슬롯 수 (기본 8)")]
     [Range(1, 20)]
-    [SerializeField] private int raid1DeckCapacity = 10;
+    [SerializeField] private int raid1DeckCapacity = 8;
 
-    [Tooltip("레이드 2팀 덱의 최대 슬롯 수")]
+    [Tooltip("레이드 2팀 덱의 최대 슬롯 수 (기본 8)")]
     [Range(1, 20)]
-    [SerializeField] private int raid2DeckCapacity = 10;
+    [SerializeField] private int raid2DeckCapacity = 8;
 
     [Header("--- [Debug] 덱별 슬롯 편집 (유닛 정수 ID, -1: 빈 슬롯) ---")]
     [Tooltip("일반 필드 덱 슬롯 배열 (1번: 루카 ID 2, 2번: 김하진 ID 4, -1: 미편성)")]
     [FormerlySerializedAs("deckSlots")]
     [SerializeField] private int[] normalDeckSlots = new int[10] { 2, 4, -1, -1, -1, -1, -1, -1, -1, -1 };
 
+    // 레이드 1팀 덱 기본 8칸 할당 (-1: 빈 슬롯)
     [Tooltip("레이드 1팀 덱 슬롯 배열")]
-    [SerializeField] private int[] raid1DeckSlots = new int[10] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+    [SerializeField] private int[] raid1DeckSlots = new int[8] { -1, -1, -1, -1, -1, -1, -1, -1 };
 
+    // 레이드 2팀 덱 기본 8칸 할당 (-1: 빈 슬롯)
     [Tooltip("레이드 2팀 덱 슬롯 배열")]
-    [SerializeField] private int[] raid2DeckSlots = new int[10] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+    [SerializeField] private int[] raid2DeckSlots = new int[8] { -1, -1, -1, -1, -1, -1, -1, -1 };
 
     [Header("--- [Debug] 실시간 덱 상태 모니터링 ---")]
     [Tooltip("일반 필드 덱 실시간 슬롯 정보")]
@@ -82,6 +85,10 @@ public class DeckManager : SingletonBase<DeckManager>
     // 에디터 인스펙터 값 변경 시 배열 크기 동기화 및 뷰 갱신
     private void OnValidate()
     {
+        // 씬 직렬화 값과 무관하게 레이드 덱 용량은 무조건 8로 강제 고정
+        raid1DeckCapacity = 8;
+        raid2DeckCapacity = 8;
+
         // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 크기 조정
         AdjustDeckArraySize(ref normalDeckSlots, normalDeckCapacity, new int[] { 2, 4 });
         AdjustDeckArraySize(ref raid1DeckSlots, raid1DeckCapacity, null);
@@ -103,9 +110,21 @@ public class DeckManager : SingletonBase<DeckManager>
     {
         base.Awake();
 
+        // 씬 직렬화 값과 무관하게 레이드 덱 용량은 무조건 8로 강제 고정
+        raid1DeckCapacity = 8;
+        raid2DeckCapacity = 8;
+
         if (unitCatalog == null)
         {
             unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            if (unitCatalog == null)
+            {
+                UnitCatalog[] allCatalogs = Resources.LoadAll<UnitCatalog>("");
+                if (allCatalogs != null && allCatalogs.Length > 0)
+                {
+                    unitCatalog = allCatalogs[0];
+                }
+            }
         }
 
         // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 배열 초기화
@@ -149,6 +168,10 @@ public class DeckManager : SingletonBase<DeckManager>
         if (evt.saveData == null || evt.saveData.unitDeck == null) return;
 
         UnitDeckData deckData = evt.saveData.unitDeck;
+
+        // 세이브 데이터 로드 시에도 레이드 덱 용량은 무조건 8로 고정하여 초과 로드 방지
+        raid1DeckCapacity = 8;
+        raid2DeckCapacity = 8;
 
         if (deckData.normalDeckSlots != null && deckData.normalDeckSlots.Length > 0)
         {
@@ -194,6 +217,9 @@ public class DeckManager : SingletonBase<DeckManager>
     // 데이터 리셋 시 기본 덱 구성으로 초기화
     private void OnReset(DataResetEvent evt)
     {
+        raid1DeckCapacity = 8;
+        raid2DeckCapacity = 8;
+
         // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)으로 기본 덱 복구
         normalDeckSlots = CreateDefaultSlotArray(normalDeckCapacity, new int[] { 2, 4 });
         raid1DeckSlots = CreateDefaultSlotArray(raid1DeckCapacity, null);
@@ -245,8 +271,8 @@ public class DeckManager : SingletonBase<DeckManager>
         return deckType switch
         {
             DeckType.Normal => normalDeckCapacity,
-            DeckType.Raid1 => raid1DeckCapacity,
-            DeckType.Raid2 => raid2DeckCapacity,
+            DeckType.Raid1 => 8, // 레이드 1팀 덱 최대 8칸 강제 고정
+            DeckType.Raid2 => 8, // 레이드 2팀 덱 최대 8칸 강제 고정
             _ => 10
         };
     }
@@ -376,7 +402,7 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #region 덱 조작 및 편집 API (Command APIs)
 
-    // 특정 덱의 지정 슬롯에 유닛 장착 (동일 덱 내 중복 배치 방지)
+    // 특정 덱의 지정 슬롯에 유닛 장착 (동일 덱 내 중복 및 레이드 1팀/2팀 간 상호 중복 방지)
     public bool SetSlot(DeckType deckType, int slotIndex, int unitId)
     {
         int[] slots = GetInternalSlots(deckType);
@@ -385,7 +411,17 @@ public class DeckManager : SingletonBase<DeckManager>
             return false;
         }
 
-        // 해당 덱 내에 이미 동일한 유닛이 배치되어 있다면 기존 위치 해제
+        // 레이드 덱의 경우 1팀과 2팀 간 캐릭터 중복을 방지하기 위해 반대편 레이드 덱에서 자동 해제
+        if (deckType == DeckType.Raid1)
+        {
+            RemoveUnit(DeckType.Raid2, unitId);
+        }
+        else if (deckType == DeckType.Raid2)
+        {
+            RemoveUnit(DeckType.Raid1, unitId);
+        }
+
+        // 현재 덱 내에 이미 동일한 유닛이 배치되어 있다면 기존 위치 해제 (동일 덱 내 위치 이동)
         for (int i = 0; i < slots.Length; i++)
         {
             if (slots[i] == unitId)
@@ -406,11 +442,21 @@ public class DeckManager : SingletonBase<DeckManager>
         return SetSlot(deckType, slotIndex, unitId);
     }
 
-    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착
+    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착 (레이드 1팀/2팀 간 상호 중복 방지 포함)
     public bool TryAddUnitToDeck(DeckType deckType, int unitId, out int assignedSlotIndex)
     {
         assignedSlotIndex = -1;
         if (unitId <= 0) return false;
+
+        // 레이드 덱의 경우 1팀과 2팀 간 캐릭터 중복을 방지하기 위해 반대편 레이드 덱에서 자동 해제
+        if (deckType == DeckType.Raid1)
+        {
+            RemoveUnit(DeckType.Raid2, unitId);
+        }
+        else if (deckType == DeckType.Raid2)
+        {
+            RemoveUnit(DeckType.Raid1, unitId);
+        }
 
         int[] slots = GetInternalSlots(deckType);
 
