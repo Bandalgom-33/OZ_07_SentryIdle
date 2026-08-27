@@ -9,10 +9,18 @@ public class TileView : MonoBehaviour
     [SerializeField] private Material goalMaterial;
     [SerializeField] private Material groundMaterial;
     [SerializeField] private Material highGroundMaterial;
+    
+    [Header("타일 비주얼 위치 보정")]
+    [SerializeField] private float visualYOffset = -0.8f;
 
 
     [Header("타일 높이 설정")]
-    [SerializeField] private float highGroundHeight = 0.25f;
+    [SerializeField] private float highGroundHeight = 0.1f;
+    
+    [Header("타일 Visual")]
+    [SerializeField] private Transform visualRoot;
+
+    private GameObject currentVisual;
 
     private TileNode node;
     private MeshRenderer meshRenderer;
@@ -24,7 +32,7 @@ public class TileView : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public void Initialize(TileNode tilenode)
+    public void Initialize(TileNode tilenode,TileVisualSetSO visualSet)
     {
         if (tilenode == null) return;
         
@@ -36,6 +44,8 @@ public class TileView : MonoBehaviour
 
         ApplyMaterial();
         ApplyHeight();
+        
+        ApplyVisual(visualSet);
     }
 
    /*
@@ -87,17 +97,40 @@ public class TileView : MonoBehaviour
     //배치 가능 타일 높이 조절하기
     private void ApplyHeight()
     {
+        if (node.TileType != TileType.HighGround)
+            return;
+
         Vector3 position = transform.position;
 
-        if(node.TileType == TileType.HighGround)
-        {
-            position.y = highGroundHeight;
-        }
-        else
-        {
-            position.y = 0f;
-        }
-        transform.position = position;  
+        position.y += highGroundHeight;
+
+        transform.position = position;
+
+        Debug.Log(
+            $"[HighGround] {gameObject.name} / " +
+            $"Height: {highGroundHeight} / " +
+            $"World Y: {transform.position.y}"
+        );
+    }
+    
+    private void ApplyVisual(TileVisualSetSO visualSet)
+    {
+        if (visualSet == null) return;
+        if (visualRoot == null) return;
+
+        GameObject visualPrefab =
+            visualSet.GetRandomVisual(node.TileType);
+
+        if (visualPrefab == null) return;
+
+        currentVisual = Instantiate(
+            visualPrefab,
+            visualRoot
+        );
+
+        currentVisual.transform.localPosition = new Vector3(0f, visualYOffset, 0f);
+
+        currentVisual.transform.localRotation = Quaternion.identity;
     }
 
 }
