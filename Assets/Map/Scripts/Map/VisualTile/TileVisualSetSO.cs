@@ -7,33 +7,39 @@ using UnityEngine;
 public class TileVisualSetSO : ScriptableObject
 {
     [Header("기본 바닥")]
-    [SerializeField] private GameObject[] floorVisuals;
+    [SerializeField] private TileVisualEntry[] floorVisuals;
 
     [Header("High Ground / 경사")]
-    [SerializeField] private GameObject[] highGroundVisuals;
+    [SerializeField] private TileVisualEntry[] highGroundVisuals;
 
     [Header("Obstacle / 장식")]
-    [SerializeField] private GameObject[] obstacleVisuals;
+    [SerializeField] private TileVisualEntry[] obstacleVisuals;
 
     [Header("Spawn / 입구")]
-    [SerializeField] private GameObject[] spawnVisuals;
+    [SerializeField] private TileVisualEntry[] spawnVisuals;
 
     [Header("Goal / 출구")]
-    [SerializeField] private GameObject[] goalVisuals;
+    [SerializeField] private TileVisualEntry[] goalVisuals;
+    
+    [Header("Path / 적 이동 경로")]
+    [SerializeField] private TileVisualEntry[] pathVisuals;
 
-    public GameObject GetRandomVisual(TileType tileType)
+    public TileVisualEntry GetRandomVisual(TileType tileType)
     {
-        GameObject[] visuals = null;
+        TileVisualEntry[] visuals = null;
 
         switch (tileType)
         {
             case TileType.Ground:
-            case TileType.Path:
                 visuals = floorVisuals;
+                break;
+
+            case TileType.Path:
+                visuals = pathVisuals;
                 break;
             
             case TileType.HighGround:
-                visuals = floorVisuals;
+                visuals = highGroundVisuals;
                 break;
 
             case TileType.Obstacle:
@@ -60,5 +66,17 @@ public class TileVisualSetSO : ScriptableObject
         int randomIndex = Random.Range(0, visuals.Length);
 
         return visuals[randomIndex];
+    }
+    
+    public TileVisualEntry GetRandomFloorVisual()
+    {
+        if (floorVisuals == null || floorVisuals.Length == 0)
+        {
+            return null;
+        }
+
+        int randomIndex = Random.Range(0, floorVisuals.Length);
+
+        return floorVisuals[randomIndex];
     }
 }

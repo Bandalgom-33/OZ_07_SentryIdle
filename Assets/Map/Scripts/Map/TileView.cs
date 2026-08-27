@@ -20,6 +20,9 @@ public class TileView : MonoBehaviour
     [Header("타일 Visual")]
     [SerializeField] private Transform visualRoot;
 
+[Header("타일 비주얼 크기 보정")]
+[SerializeField] private Vector3 visualScale = Vector3.one;
+
     private GameObject currentVisual;
 
     private TileNode node;
@@ -48,7 +51,7 @@ public class TileView : MonoBehaviour
         ApplyVisual(visualSet);
     }
 
-   /*
+   
     private void OnMouseDown()
     {
         if(node == null) return;
@@ -60,7 +63,7 @@ public class TileView : MonoBehaviour
            $"배치 가능: {node.IsDeployable}"
        );
     }
-    */
+    
 
     private void ApplyMaterial()
     {
@@ -118,19 +121,43 @@ public class TileView : MonoBehaviour
         if (visualSet == null) return;
         if (visualRoot == null) return;
 
-        GameObject visualPrefab =
-            visualSet.GetRandomVisual(node.TileType);
+        // Obstacle 타일은
+        // 1. 기본 바닥 생성
+        // 2. 그 위에 장애물 비주얼 추가 생성
+        if (node.TileType == TileType.Obstacle)
+        {
+            TileVisualEntry floorEntry = visualSet.GetRandomFloorVisual();
 
-        if (visualPrefab == null) return;
+            CreateVisual(floorEntry);
 
-        currentVisual = Instantiate(
-            visualPrefab,
-            visualRoot
-        );
+            TileVisualEntry obstacleEntry = visualSet.GetRandomVisual(TileType.Obstacle);
 
-        currentVisual.transform.localPosition = new Vector3(0f, visualYOffset, 0f);
+            CreateVisual(obstacleEntry);
 
-        currentVisual.transform.localRotation = Quaternion.identity;
+            return;
+        }
+
+        // 그 외 타일은 기존처럼 비주얼 하나만 생성
+        TileVisualEntry visualEntry = visualSet.GetRandomVisual(node.TileType);
+
+        currentVisual = CreateVisual(visualEntry);
+    }
+    
+    
+    //에셋 프리팹 생성 위치 보정하기
+    private GameObject CreateVisual(TileVisualEntry entry)
+    {
+        if (entry == null) return null;
+        if (entry.prefab == null) return null;
+        if (visualRoot == null) return null;
+
+        GameObject visual = Instantiate( entry.prefab, visualRoot );
+
+        visual.transform.localPosition = new Vector3(0f, visualYOffset, 0f) + entry.positionOffset;
+        visual.transform.localRotation = Quaternion.identity;
+        visual.transform.localScale = entry.scale;
+
+        return visual;
     }
 
 }
