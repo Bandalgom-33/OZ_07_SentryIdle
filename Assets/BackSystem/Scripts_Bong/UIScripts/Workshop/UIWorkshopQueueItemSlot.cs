@@ -67,19 +67,20 @@ public class UIWorkshopQueueItemSlot : MonoBehaviour
 
         if (itemNameText != null)
         {
-            itemNameText.text = recipeSO.displayName;
+            itemNameText.text = recipeSO.DisplayName;
         }
 
         if (recipeIconImage != null)
         {
-            if (recipeSO.recipeIcon != null)
+            Sprite icon = recipeSO.RecipeIcon;
+            if (icon != null)
             {
-                recipeIconImage.sprite = recipeSO.recipeIcon;
+                recipeIconImage.sprite = icon;
                 recipeIconImage.enabled = true;
             }
             else
             {
-                recipeIconImage.enabled = true;
+                recipeIconImage.enabled = false;
             }
         }
 

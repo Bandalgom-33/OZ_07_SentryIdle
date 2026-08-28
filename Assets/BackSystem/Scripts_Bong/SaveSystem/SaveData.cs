@@ -215,8 +215,8 @@ public class CraftingSaveData
     public bool isGlobalAutoEnabled = false;
     // 현재 제작 목록에 등록된 레시피 인덱스 목록
     public List<int> queuedRecipeIndices = new List<int>();
-    // 6개 레시피의 현재 생산 진행 시간 (초)
-    public float[] recipeProgresses = new float[6];
+    // 레시피별 현재 생산 진행 시간 (초, 가변 크기 지원)
+    public List<float> recipeProgresses = new List<float>();
 }
 
 // 개별 던전 슬롯 파견 상태 저장 데이터

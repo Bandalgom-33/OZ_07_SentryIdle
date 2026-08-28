@@ -199,7 +199,8 @@ public class UIWorkshopWindow : MonoBehaviour
         CraftingController cc = CraftingController.Instance;
         if (cc == null || _currentSelectedRecipeIndex < 0 || _currentSelectedRecipeIndex >= cc.Recipes.Count) return;
 
-        if (cc.Recipes[_currentSelectedRecipeIndex] != null && cc.Recipes[_currentSelectedRecipeIndex].resultType == type)
+        CraftingRecipeSO currentRecipe = cc.Recipes[_currentSelectedRecipeIndex];
+        if (currentRecipe != null && currentRecipe.resultItem != null && currentRecipe.resultItem.ConsumableType == type)
         {
             RefreshSelectedRecipeDetail();
         }
@@ -221,7 +222,7 @@ public class UIWorkshopWindow : MonoBehaviour
 
         if (stageStoneCountText != null)
         {
-            stageStoneCountText.text = $"던전 마석: <color=#CC33FF>{cm.StageStone:#,##0}</color>개";
+            stageStoneCountText.text = $"던전 마석: <color=#CC33FF>{cm.DungeonStone:#,##0}</color>개";
         }
 
         if (raidStoneCountText != null)
@@ -308,30 +309,20 @@ public class UIWorkshopWindow : MonoBehaviour
             if (isUnlocked)
             {
                 int ownedCount = 0;
-                if (recipe.itemCategory == ItemCategory.Equipment && recipe.equipmentResult != null)
+                if (recipe.resultItem != null && InventoryGridManager.Instance != null)
                 {
-                    if (InventoryGridManager.Instance != null)
-                    {
-                        var slots = InventoryGridManager.Instance.Slots;
-                        for (int s = 0; s < slots.Count; s++)
-                        {
-                            if (slots[s] != null && slots[s].itemData == recipe.equipmentResult)
-                            {
-                                ownedCount += slots[s].quantity;
-                            }
-                        }
-                    }
+                    ownedCount = InventoryGridManager.Instance.GetItemCount(recipe.resultItem);
                 }
-                else
+                else if (recipe.itemCategory == ItemCategory.Consumable && recipe.resultItem != null && cim != null)
                 {
-                    ownedCount = cim != null ? cim.GetItemCount(recipe.resultType) : 0;
+                    ownedCount = cim.GetItemCount(recipe.resultItem.ConsumableType);
                 }
 
-                selectedRecipeNameText.text = $"{recipe.displayName} <color=#00FFFF>(보유: {ownedCount:#,##0}개)</color>";
+                selectedRecipeNameText.text = $"{recipe.DisplayName} <color=#00FFFF>(보유: {ownedCount:#,##0}개)</color>";
             }
             else
             {
-                selectedRecipeNameText.text = $"{recipe.displayName} <color=#FF4444>[🔒 미해금 (공방 Lv.{reqLevel} 필요)]</color>";
+                selectedRecipeNameText.text = $"{recipe.DisplayName} <color=#FF4444>[🔒 미해금 (공방 Lv.{reqLevel} 필요)]</color>";
             }
         }
 
@@ -341,19 +332,27 @@ public class UIWorkshopWindow : MonoBehaviour
             {
                 string stoneName = recipe.requiredStoneType switch
                 {
-                    CurrencyType.WaveStone => "웨이브 마석",
-                    CurrencyType.RaidStone => "레이드 마석",
+                    StoneType.WaveStone => "웨이브 마석",
+                    StoneType.DungeonStone => "던전 마석",
+                    StoneType.RaidStone => "레이드 마석",
                     _ => "던전 마석"
                 };
 
-                selectedRecipeDescriptionText.text = $"• 효과: {recipe.description}\n" +
+                List<string> costList = new List<string>();
+                if (recipe.goldCost > 0) costList.Add($"<color=#FFD700>{recipe.goldCost:#,##0} Gold</color>");
+                if (recipe.diamondCost > 0) costList.Add($"<color=#00BFFF>{recipe.diamondCost:#,##0} Diamond</color>");
+                if (recipe.stoneCost > 0) costList.Add($"<color=#00FFFF>{stoneName} {recipe.stoneCost}개</color>");
+
+                string costText = costList.Count > 0 ? string.Join(" + ", costList) : "소모 없음";
+
+                selectedRecipeDescriptionText.text = $"• 효과: {recipe.Description}\n" +
                                                      $"• 기본 소요 시간: {recipe.baseCraftingTime:F1}초 (1회 제작: {cc.OutputAmount}개)\n" +
-                                                     $"• 소모 재료: <color=#FFD700>{recipe.goldCost:#,##0} Gold</color> + <color=#00FFFF>{stoneName} {recipe.stoneCost}개</color>";
+                                                     $"• 소모 재료: {costText}";
             }
             else
             {
                 selectedRecipeDescriptionText.text = $"<color=#AAAAAA>• 해당 레시피는 공방을 <color=#FFFF00>Lv.{reqLevel}</color> 이상으로 업그레이드하면 해금됩니다.</color>\n" +
-                                                     $"• 효과: {recipe.description}";
+                                                     $"• 효과: {recipe.Description}";
             }
         }
 
