@@ -30,7 +30,10 @@ MonoBehaviour:
   bossMagicalDefense: 300
   raidAttackFullGaugeDuration: 10
   raidAttackDamageMultiplier: 25
-  startingCost: 0
+  raidCombatNumberScale: 0.72
+  raidCriticalNumberScale: 0.95
+  raidBossDamageNumberScale: 1.4
+  startingCost: 30
   costMax: 100
   costRegenPerSecond: 1
   developmentRoster:

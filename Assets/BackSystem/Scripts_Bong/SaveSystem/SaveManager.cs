@@ -1,15 +1,18 @@
-﻿using System;
+using System;
 using System.IO;
 using UnityEngine;
 
 // 게임 전체 데이터의 파일 입출력(JSON) 및 종료/이탈 시 자동 저장을 총괄하는 싱글톤 매니저
 public class SaveManager : SingletonBase<SaveManager>
 {
-    #region 내부 필드
+    #region 내부 필드 및 프로퍼티
 
     private string _savePath;
     private float _lastSaveTime = -10f;
     private const float SaveCooldownSeconds = 0.5f; // 중복 저장 방지 쿨다운 (초)
+
+    // 최초 로드 시 실제 저장 파일이 존재했는지 여부 (신규 유저 판별용: true=기존 유저, false=신규 유저)
+    public bool HasExistingSaveFile { get; private set; } = false;
 
     #endregion
 
@@ -103,6 +106,7 @@ public class SaveManager : SingletonBase<SaveManager>
 
         if (!File.Exists(_savePath))
         {
+            HasExistingSaveFile = false;
             Debug.LogWarning($"[SaveManager] [{timeStamp}] [LOAD] 세이브 파일이 존재하지 않아 신규 데이터로 초기화합니다.");
             ResetGameData();
             return;
@@ -110,6 +114,7 @@ public class SaveManager : SingletonBase<SaveManager>
 
         try
         {
+            HasExistingSaveFile = true;
             string json = File.ReadAllText(_savePath);
 
             SaveData data = JsonUtility.FromJson<SaveData>(json);
@@ -138,6 +143,7 @@ public class SaveManager : SingletonBase<SaveManager>
             File.Delete(_savePath);
         }
 
+        HasExistingSaveFile = false;
         EventBus.Publish(new DataResetEvent());
         Debug.Log($"[SaveManager] [{timeStamp}] [RESET] 데이터 초기화 완료");
     }

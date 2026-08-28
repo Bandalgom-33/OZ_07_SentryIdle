@@ -10,17 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1e8d06538e6fa1244a8c460831c35d9c, type: 3}
-  m_Name: CraftingRecipe_3
+  m_Name: CraftingRecipe_Equip_Armor_03
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipeSO
-  recipeId: RECIPE_003
-  resultType: 2
-  displayName: "\uC0C1\uAE09 \uCCB4\uB825\uD3EC\uC158"
-  description: "\uD544\uB4DC \uC704 \uC804\uCCB4 \uC544\uAD70 \uC720\uB2DB\uC758
-    HP\uB97C 100% \uD68C\uBCF5\uD569\uB2C8\uB2E4."
-  recipeIcon: {fileID: 1279198059, guid: 1a0f02a615b59b54890fb243e0e58b6f, type: 3}
-  baseCraftingTime: 30
-  goldCost: 1000
-  requiredStoneType: 3
-  stoneCost: 10
+  recipeId: RECIPE_EQUIP_ARMOR_03
+  itemCategory: 0
+  resultItem: {fileID: 11400000, guid: 3ba363611e775a347b522050b433b77e, type: 2}
+  baseCraftingTime: 25
+  goldCost: 10000
+  diamondCost: 0
+  requiredStoneType: 2
+  stoneCost: 40
   outputAmount: 1
   unlockFactoryLevel: 5

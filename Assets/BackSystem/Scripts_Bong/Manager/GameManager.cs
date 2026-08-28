@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using EndlessGuard.Unit.Raid.Runtime;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -58,7 +61,10 @@ public class GameManager : SingletonBase<GameManager>
         _ = ExperienceManager.Instance;
         _ = CollectionDataProvider.Instance;
         _ = StageProgressManager.Instance;
+        _ = OfflineRewardManager.Instance;
         _ = SceneLoader.Instance;
+        _ = InventoryGridManager.Instance;
+        _ = EquipmentManager.Instance;
     }
 
     // 이벤트 버스 및 시스템 이벤트 구독
@@ -66,6 +72,10 @@ public class GameManager : SingletonBase<GameManager>
     {
         InGameUI.OnGameSpeedChange += SetGameSpeed;
         CombatEvents.OnEnemyReachedGoal += HandleEnemyReachedGoal;
+
+        // 레이드 씬 로드 시 레이드 전투 컨트롤러 탐색 및 이벤트 구독 등록
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+        BindActiveRaidBattles();
     }
 
     // 이벤트 구독 해제
@@ -73,6 +83,69 @@ public class GameManager : SingletonBase<GameManager>
     {
         InGameUI.OnGameSpeedChange -= SetGameSpeed;
         CombatEvents.OnEnemyReachedGoal -= HandleEnemyReachedGoal;
+
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+        UnbindActiveRaidBattles();
+    }
+
+    // 씬 로드 완료 시 레이드 전투 컨트롤러 바인딩
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BindActiveRaidBattles();
+    }
+
+    // 현재 씬의 활성 레이드 전투 컨트롤러 탐색 및 OnRaidEnded 구독
+    private void BindActiveRaidBattles()
+    {
+        RaidBattleController[] battles = FindObjectsByType<RaidBattleController>(FindObjectsSortMode.None);
+        for (int i = 0; i < battles.Length; i++)
+        {
+            if (battles[i] != null)
+            {
+                battles[i].OnRaidEnded -= HandleRaidEnded;
+                battles[i].OnRaidEnded += HandleRaidEnded;
+            }
+        }
+    }
+
+    // 레이드 전투 컨트롤러 이벤트 구독 해제
+    private void UnbindActiveRaidBattles()
+    {
+        RaidBattleController[] battles = FindObjectsByType<RaidBattleController>(FindObjectsSortMode.None);
+        for (int i = 0; i < battles.Length; i++)
+        {
+            if (battles[i] != null)
+            {
+                battles[i].OnRaidEnded -= HandleRaidEnded;
+            }
+        }
+    }
+
+    // 레이드 종료 시 승리 판정 및 로비 복귀 루틴 분기
+    private void HandleRaidEnded(RaidBattleResult result)
+    {
+        if (result == RaidBattleResult.Victory)
+        {
+            Debug.Log("[GameManager] 레이드 보스 처치 승리 확인! 2초 후 로비 씬으로 비동기 전환합니다.");
+            ReturnToLobbyAfterDelayAsync().Forget();
+        }
+    }
+
+    // 보스 사망 연출을 위해 2초 대기 후 로비 씬으로 비동기 페이드 전환
+    private async UniTaskVoid ReturnToLobbyAfterDelayAsync()
+    {
+        // 1. 보스 사망 연출 및 승리 여운을 위해 2초간 비동기 대기
+        await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: this.GetCancellationTokenOnDestroy());
+
+        // 2. SceneLoader 싱글톤을 통해 로비 씬으로 페이드아웃 효과와 함께 전환
+        if (SceneLoader.Instance != null)
+        {
+            SceneLoader.Instance.LoadScene(SceneType.Lobby, useFade: true);
+        }
+        else
+        {
+            _ = SceneManager.LoadSceneAsync("TestBuild2MainLobby");
+        }
     }
 
     // 라이프 UI 초기 표시 연산
@@ -158,8 +231,13 @@ public class GameManager : SingletonBase<GameManager>
     // 게임 상태 전환 연산
     public void ChangeState(GameState newState)
     {
+        if (_currentState == newState) return;
+
         GameState oldState = _currentState;
         _currentState = newState;
+
+        // 상태 변경 이벤트를 먼저 발행하여 시스템 간 동기화 순서 보장
+        EventBus.Publish(new GameStateChangedEvent(oldState, newState));
 
         switch (newState)
         {
@@ -176,8 +254,6 @@ public class GameManager : SingletonBase<GameManager>
                 HandleGameOver();
                 break;
         }
-
-        EventBus.Publish(new GameStateChangedEvent(oldState, newState));
     }
 
     // 라이프 수치 초기화

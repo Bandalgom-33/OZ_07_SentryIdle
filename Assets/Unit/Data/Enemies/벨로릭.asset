@@ -42,7 +42,7 @@ MonoBehaviour:
     attackTarget: 1
     attackRange: 1
     targetCount: 1
-    rangeRotationMode: 0
+    rangeRotationMode: 1
     basicAttackRange:
       horizontalRadius: 3
       forwardDistance: 3

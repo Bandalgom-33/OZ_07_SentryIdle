@@ -145,6 +145,13 @@ public class WaveManager : MonoBehaviour
         {
             currentWave = waveIndex + 1;
 
+            // 스테이지 및 웨이브 변경 이벤트 발행과 전역 진행도 매니저 동기화
+            if (StageProgressManager.Instance != null)
+            {
+                StageProgressManager.Instance.SetCurrentWave(currentWave);
+            }
+            EventBus.Publish(new StageWaveChangedEvent(stageManager.CurrentStage, currentWave));
+
             Debug.Log($"Stage {stageManager.CurrentStage} - Wave {currentWave} 시작");
 
             if (currentWave == stageManager.WavesPerStage)
@@ -166,8 +173,17 @@ public class WaveManager : MonoBehaviour
         }
 
         Debug.Log("모든 웨이브 종료");
-        //스테이지 클리어
+        //스테이지 클리어 및 전역 진행도 갱신
+        int clearedStage = stageManager.CurrentStage;
         stageManager.ClearStage();
+
+        if (StageProgressManager.Instance != null)
+        {
+            StageProgressManager.Instance.AdvanceToNextStage();
+        }
+        EventBus.Publish(new StageClearedEvent(clearedStage, (int)waveClearReward));
+        EventBus.Publish(new StageWaveChangedEvent(stageManager.CurrentStage, 1));
+
         //맵 재생성
         mapGenerator.RegenerateMap(); 
     }
@@ -269,6 +285,15 @@ public class WaveManager : MonoBehaviour
         ClearAllEnemies();
         //현재 wave와 살아있는 Enemy 초기화
         currentWave = 0;
+
+        // 전역 진행도 및 상단 UI 1웨이브 초기화 동기화
+        int stage = (stageManager != null) ? stageManager.CurrentStage : 1;
+        if (StageProgressManager.Instance != null)
+        {
+            StageProgressManager.Instance.SetCurrentWave(1);
+        }
+        EventBus.Publish(new StageWaveChangedEvent(stage, 1));
+
         //코루틴 재시작
         StartCoroutine(RunWaveSystem());
     }
@@ -338,16 +363,24 @@ public class WaveManager : MonoBehaviour
         }
     }
 
-    //적 삭제 해버리기
+    //적 및 적 소환물 삭제/회수
     private void ClearAllEnemies()
     {
         for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
         {
             if (spawnedEnemies[i] != null)
             {
-                //정식 SpawnedEnemyManager에서도 먼저 등록 해제
-                SpawnedEnemyManager.Instance.UnregisterEnemy(spawnedEnemies[i]);
-                Destroy(spawnedEnemies[i].gameObject);
+                var enemySummon = spawnedEnemies[i].GetComponent<EnemySummonRuntime>();
+                if (enemySummon != null)
+                {
+                    SummonService.Release(spawnedEnemies[i].gameObject);
+                }
+                else
+                {
+                    //정식 SpawnedEnemyManager에서도 먼저 등록 해제
+                    SpawnedEnemyManager.Instance.UnregisterEnemy(spawnedEnemies[i]);
+                    Destroy(spawnedEnemies[i].gameObject);
+                }
             }
         }
 

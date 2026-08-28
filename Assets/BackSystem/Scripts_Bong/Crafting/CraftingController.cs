@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,14 +29,15 @@ public class CraftingController : SingletonBase<CraftingController>
     private int _factoryLevel = 1;
     private bool _isGlobalAutoEnabled = false;
     private readonly List<int> _activeRecipeQueue = new List<int>();
-    private readonly float[] _recipeProgresses = new float[16];
-    private readonly RecipeState[] _recipeStates = new RecipeState[16];
+    private float[] _recipeProgresses = Array.Empty<float>();
+    private RecipeState[] _recipeStates = Array.Empty<RecipeState>();
 
     public int FactoryLevel => _factoryLevel;
     public int MaxActiveSlots => FactoryUpgradeProcessor.GetMaxActiveSlots(_factoryLevel);
     public int OutputAmount => FactoryUpgradeProcessor.GetCraftingOutputAmount(_factoryLevel);
     public float SpeedMultiplier => FactoryUpgradeProcessor.GetCraftingSpeedMultiplier(_factoryLevel);
     public bool IsGlobalAutoEnabled => _isGlobalAutoEnabled;
+    public List<CraftingRecipeSO> RecipeDatabase => recipeDatabase;
     public IReadOnlyList<CraftingRecipeSO> Recipes => recipeDatabase;
     public IReadOnlyList<int> ActiveRecipeQueue => _activeRecipeQueue;
     public int CurrentQueueCount => _activeRecipeQueue.Count;
@@ -61,6 +62,31 @@ public class CraftingController : SingletonBase<CraftingController>
         return 1;
     }
 
+    // 레시피 데이터베이스 크기에 맞춘 진행도/상태 배열 동적 확장 및 보장
+    private void EnsureArrayCapacity(int requiredCount)
+    {
+        int count = Mathf.Max(requiredCount, recipeDatabase != null ? recipeDatabase.Count : 0);
+        if (_recipeProgresses == null || _recipeProgresses.Length < count)
+        {
+            float[] newProgresses = new float[count];
+            if (_recipeProgresses != null && _recipeProgresses.Length > 0)
+            {
+                Array.Copy(_recipeProgresses, newProgresses, _recipeProgresses.Length);
+            }
+            _recipeProgresses = newProgresses;
+        }
+
+        if (_recipeStates == null || _recipeStates.Length < count)
+        {
+            RecipeState[] newStates = new RecipeState[count];
+            if (_recipeStates != null && _recipeStates.Length > 0)
+            {
+                Array.Copy(_recipeStates, newStates, _recipeStates.Length);
+            }
+            _recipeStates = newStates;
+        }
+    }
+
     #endregion
 
     #region 라이프사이클 및 초기화
@@ -70,6 +96,7 @@ public class CraftingController : SingletonBase<CraftingController>
     {
         base.Awake();
         InitializeRecipeDatabase();
+        EnsureArrayCapacity(recipeDatabase.Count);
     }
 
     // 레시피 데이터베이스 자동 로드 및 런타임 생성 처리
@@ -87,38 +114,71 @@ public class CraftingController : SingletonBase<CraftingController>
                 CreateDefaultRuntimeRecipes();
             }
         }
+        EnsureArrayCapacity(recipeDatabase.Count);
     }
 
-    // 기본 6종 레시피 런타임 인스턴스 생성 처리
+    // 기본 소모품 6종 및 레이드 마석 장비 레시피 4종 런타임 인스턴스 생성 처리
     private void CreateDefaultRuntimeRecipes()
     {
         recipeDatabase = new List<CraftingRecipeSO>()
         {
-            CreateRecipeInstance("RECIPE_HP_01", ConsumableType.HealthPotion_Low, "하급 체력포션", "전체 아군 HP 25% 회복", 4.0f, 100, CurrencyType.WaveStone, 1, 1),
-            CreateRecipeInstance("RECIPE_EXP_01", ConsumableType.ExpBook_Low, "초급 경험치책", "지정 유닛 +100 EXP (10마리분)", 5.0f, 200, CurrencyType.StageStone, 1, 2),
-            CreateRecipeInstance("RECIPE_HP_02", ConsumableType.HealthPotion_Mid, "중급 체력포션", "전체 아군 HP 50% 회복", 8.0f, 300, CurrencyType.WaveStone, 3, 3),
-            CreateRecipeInstance("RECIPE_EXP_02", ConsumableType.ExpBook_Mid, "중급 경험치책", "지정 유닛 +1,000 EXP (100마리분)", 10.0f, 600, CurrencyType.StageStone, 2, 4),
-            CreateRecipeInstance("RECIPE_HP_03", ConsumableType.HealthPotion_High, "상급 체력포션", "전체 아군 HP 100% 완전 회복", 15.0f, 1000, CurrencyType.WaveStone, 10, 5),
-            CreateRecipeInstance("RECIPE_EXP_03", ConsumableType.ExpBook_High, "고급 경험치책", "지정 유닛 +10,000 EXP (1000마리분)", 20.0f, 2000, CurrencyType.StageStone, 5, 5)
+            // 1. 소모품 레시피 6종 (웨이브/던전 마석 소모)
+            CreateRecipeInstance("RECIPE_HP_01", "Potion_Low", StoneType.WaveStone, 1, 4.0f, 1, 100, 0),
+            CreateRecipeInstance("RECIPE_EXP_01", "ExpBook_Low", StoneType.DungeonStone, 1, 5.0f, 2, 200, 0),
+            CreateRecipeInstance("RECIPE_HP_02", "Potion_Mid", StoneType.WaveStone, 3, 8.0f, 3, 300, 0),
+            CreateRecipeInstance("RECIPE_EXP_02", "ExpBook_Mid", StoneType.DungeonStone, 2, 10.0f, 4, 600, 0),
+            CreateRecipeInstance("RECIPE_HP_03", "Potion_High", StoneType.WaveStone, 10, 15.0f, 5, 1000, 0),
+            CreateRecipeInstance("RECIPE_EXP_03", "ExpBook_High", StoneType.DungeonStone, 5, 20.0f, 5, 2000, 0),
+
+            // 2. 레이드 마석 장비 제작 레시피 4종 (무기, 갑옷, 투구, 장신구)
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_WEAPON_01", "Weapon_01", 5, 6.0f, 1, 500, 0),
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_ARMOR_01", "Armor_01", 8, 8.0f, 2, 800, 0),
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_HEAD_01", "Head_01", 6, 6.0f, 2, 600, 0),
+            CreateEquipmentRecipeInstance("RECIPE_EQUIP_ACC_01", "Accessory_01", 10, 10.0f, 3, 1200, 0)
         };
     }
 
-    // 단일 레시피 SO 인스턴스 생성 헬퍼
+    // 단일 소모품 레시피 SO 인스턴스 생성 헬퍼
     private CraftingRecipeSO CreateRecipeInstance(
-        string id, ConsumableType result, string name, string desc,
-        float time, long gold, CurrencyType stoneType, long stoneAmount, int reqLevel)
+        string id, string itemId, StoneType stoneType, long stoneAmount, float time, int reqLevel, long gold = 0, long diamond = 0)
     {
         CraftingRecipeSO so = ScriptableObject.CreateInstance<CraftingRecipeSO>();
         so.recipeId = id;
-        so.resultType = result;
-        so.displayName = name;
-        so.description = desc;
+        so.itemCategory = ItemCategory.Consumable;
         so.baseCraftingTime = time;
         so.goldCost = gold;
+        so.diamondCost = diamond;
         so.requiredStoneType = stoneType;
         so.stoneCost = stoneAmount;
         so.outputAmount = 1;
         so.unlockFactoryLevel = reqLevel;
+
+        ItemDataSO itemSO = InventoryGridManager.Instance != null ? InventoryGridManager.Instance.GetItemById(itemId) : Resources.Load<ItemDataSO>($"ItemDataSo/{itemId}");
+        if (itemSO == null) itemSO = Resources.Load<ItemDataSO>(itemId);
+        so.resultItem = itemSO;
+
+        return so;
+    }
+
+    // 단일 장비 레시피 SO 인스턴스 생성 헬퍼 (레이드 마석 소모)
+    private CraftingRecipeSO CreateEquipmentRecipeInstance(
+        string id, string equipmentItemId, long raidStoneCost, float time, int reqLevel, long gold = 0, long diamond = 0)
+    {
+        CraftingRecipeSO so = ScriptableObject.CreateInstance<CraftingRecipeSO>();
+        so.recipeId = id;
+        so.itemCategory = ItemCategory.Equipment;
+        so.baseCraftingTime = time;
+        so.goldCost = gold;
+        so.diamondCost = diamond;
+        so.requiredStoneType = StoneType.RaidStone;
+        so.stoneCost = raidStoneCost;
+        so.outputAmount = 1;
+        so.unlockFactoryLevel = reqLevel;
+
+        ItemDataSO equipSO = InventoryGridManager.Instance != null ? InventoryGridManager.Instance.GetItemById(equipmentItemId) : Resources.Load<ItemDataSO>($"ItemDataSo/{equipmentItemId}");
+        if (equipSO == null) equipSO = Resources.Load<ItemDataSO>(equipmentItemId);
+        so.resultItem = equipSO;
+
         return so;
     }
 
@@ -155,6 +215,8 @@ public class CraftingController : SingletonBase<CraftingController>
         ConsumableItemManager cim = ConsumableItemManager.Instance;
         if (cm == null || cim == null) return;
 
+        EnsureArrayCapacity(recipeDatabase.Count);
+
         float speed = SpeedMultiplier;
         int currentOutput = OutputAmount;
 
@@ -180,7 +242,14 @@ public class CraftingController : SingletonBase<CraftingController>
 
             CraftingRecipeSO recipe = recipeDatabase[recipeIndex];
 
-            if (!HasCraftingMaterials(recipe))
+            // 1. 인벤토리 내 기존 스택 잔여 공간 및 빈 슬롯 수용 가능 용량 계산
+            int maxExpectedAmount = recipe.outputAmount * currentOutput;
+            int availableCapacity = recipe.resultItem == null || InventoryGridManager.Instance == null
+                ? maxExpectedAmount
+                : InventoryGridManager.Instance.GetAvailableCapacityForItem(recipe.resultItem);
+
+            // 가방 수용 공간이 전혀 없거나(0개), 요구 소모 재료가 부족하면 Hold 전환
+            if (availableCapacity <= 0 || !HasCraftingMaterials(recipe))
             {
                 _recipeStates[recipeIndex] = RecipeState.Hold;
                 continue;
@@ -193,50 +262,65 @@ public class CraftingController : SingletonBase<CraftingController>
             {
                 if (TrySpendRecipeMaterials(recipe))
                 {
-                    int finalAmount = recipe.outputAmount * currentOutput;
-                    cim.AddConsumable(recipe.resultType, finalAmount);
+                    // 남은 인벤토리 공간과 1회 생산량 중 수용 가능한 실제 수량 산정
+                    int finalAmount = Mathf.Min(maxExpectedAmount, availableCapacity);
+
+                    // 제작 완료 아이템 인벤토리 자동 입고
+                    if (recipe.resultItem != null && finalAmount > 0)
+                    {
+                        InventoryGridManager.Instance?.AddItem(recipe.resultItem, finalAmount);
+                        Debug.Log($"[CraftingController] 제작 완료: {recipe.DisplayName} x{finalAmount} 인벤토리 입고");
+                    }
+
                     _recipeProgresses[recipeIndex] = 0f;
-                    SaveManager.Instance.SaveGameData();
+                    SaveManager.Instance?.SaveGameData();
                 }
             }
         }
     }
 
-    // 레시피 제작 소모 재화 보유 여부 검증 헬퍼
+    // 레시피 제작 소모 재화(골드/다이아/3종 마석) 보유 여부 검증
     private bool HasCraftingMaterials(CraftingRecipeSO recipe)
     {
         if (recipe == null || CurrencyManager.Instance == null) return false;
 
         CurrencyManager cm = CurrencyManager.Instance;
-        bool hasGold = cm.HasGold(recipe.goldCost);
-        bool hasStone = recipe.requiredStoneType switch
+        if (recipe.goldCost > 0 && !cm.HasGold(recipe.goldCost)) return false;
+        if (recipe.diamondCost > 0 && !cm.HasDiamond(recipe.diamondCost)) return false;
+
+        return recipe.requiredStoneType switch
         {
-            CurrencyType.WaveStone => cm.HasWaveStone(recipe.stoneCost),
-            CurrencyType.StageStone or CurrencyType.DungeonStone => cm.HasStageStone(recipe.stoneCost),
+            StoneType.WaveStone => cm.HasWaveStone(recipe.stoneCost),
+            StoneType.DungeonStone => cm.HasDungeonStone(recipe.stoneCost),
+            StoneType.RaidStone => cm.HasRaidStone(recipe.stoneCost),
             _ => false
         };
-
-        return hasGold && hasStone;
     }
 
-    // 레시피 제작 소모 재화 차감 헬퍼
+    // 레시피 제작 소모 재화(골드/다이아/3종 마석) 차감 처리
     private bool TrySpendRecipeMaterials(CraftingRecipeSO recipe)
     {
         if (!HasCraftingMaterials(recipe)) return false;
 
         CurrencyManager cm = CurrencyManager.Instance;
-        cm.TrySpendGold(recipe.goldCost);
 
-        if (recipe.requiredStoneType == CurrencyType.WaveStone)
+        if (recipe.goldCost > 0 && !cm.TrySpendGold(recipe.goldCost)) return false;
+        if (recipe.diamondCost > 0 && !cm.TrySpendDiamond(recipe.diamondCost)) return false;
+
+        if (recipe.requiredStoneType == StoneType.WaveStone)
         {
-            cm.TrySpendWaveStone(recipe.stoneCost);
+            return cm.TrySpendWaveStone(recipe.stoneCost);
         }
-        else if (recipe.requiredStoneType == CurrencyType.StageStone || recipe.requiredStoneType == CurrencyType.DungeonStone)
+        else if (recipe.requiredStoneType == StoneType.DungeonStone)
         {
-            cm.TrySpendStageStone(recipe.stoneCost);
+            return cm.TrySpendDungeonStone(recipe.stoneCost);
+        }
+        else if (recipe.requiredStoneType == StoneType.RaidStone)
+        {
+            return cm.TrySpendRaidStone(recipe.stoneCost);
         }
 
-        return true;
+        return false;
     }
 
     #endregion
@@ -272,6 +356,7 @@ public class CraftingController : SingletonBase<CraftingController>
             return false;
         }
 
+        EnsureArrayCapacity(recipeDatabase.Count);
         _activeRecipeQueue.Add(recipeIndex);
         SaveManager.Instance.SaveGameData();
         return true;
@@ -286,8 +371,14 @@ public class CraftingController : SingletonBase<CraftingController>
         }
 
         _activeRecipeQueue.Remove(recipeIndex);
-        if (recipeIndex < _recipeProgresses.Length) _recipeProgresses[recipeIndex] = 0f;
-        if (recipeIndex < _recipeStates.Length) _recipeStates[recipeIndex] = RecipeState.Idle;
+        if (_recipeProgresses != null && recipeIndex >= 0 && recipeIndex < _recipeProgresses.Length)
+        {
+            _recipeProgresses[recipeIndex] = 0f;
+        }
+        if (_recipeStates != null && recipeIndex >= 0 && recipeIndex < _recipeStates.Length)
+        {
+            _recipeStates[recipeIndex] = RecipeState.Idle;
+        }
 
         SaveManager.Instance.SaveGameData();
         return true;
@@ -317,15 +408,27 @@ public class CraftingController : SingletonBase<CraftingController>
         }
 
         CraftingRecipeSO recipe = recipeDatabase[recipeIndex];
-        if (!TrySpendRecipeMaterials(recipe)) return false;
+        if (recipe == null) return false;
 
-        int finalAmount = recipe.outputAmount * OutputAmount;
-        if (ConsumableItemManager.Instance != null)
+        int maxExpectedAmount = recipe.outputAmount * OutputAmount;
+        int availableCapacity = recipe.resultItem == null || InventoryGridManager.Instance == null
+            ? maxExpectedAmount
+            : InventoryGridManager.Instance.GetAvailableCapacityForItem(recipe.resultItem);
+
+        if (availableCapacity <= 0)
         {
-            ConsumableItemManager.Instance.AddConsumable(recipe.resultType, finalAmount);
+            return false;
         }
 
-        SaveManager.Instance.SaveGameData();
+        if (!TrySpendRecipeMaterials(recipe)) return false;
+
+        int finalAmount = Mathf.Min(maxExpectedAmount, availableCapacity);
+        if (recipe.resultItem != null && finalAmount > 0)
+        {
+            InventoryGridManager.Instance?.AddItem(recipe.resultItem, finalAmount);
+        }
+
+        SaveManager.Instance?.SaveGameData();
         return true;
     }
 
@@ -337,6 +440,8 @@ public class CraftingController : SingletonBase<CraftingController>
     public float GetRecipeNormalizedProgress(int recipeIndex)
     {
         if (recipeIndex < 0 || recipeIndex >= recipeDatabase.Count || recipeDatabase[recipeIndex] == null) return 0f;
+        if (_recipeProgresses == null || recipeIndex >= _recipeProgresses.Length) return 0f;
+
         float baseTime = recipeDatabase[recipeIndex].baseCraftingTime;
         if (baseTime <= 0f) return 0f;
         return Mathf.Clamp01(_recipeProgresses[recipeIndex] / baseTime);
@@ -346,6 +451,8 @@ public class CraftingController : SingletonBase<CraftingController>
     public float GetRecipeRemainingTime(int recipeIndex)
     {
         if (recipeIndex < 0 || recipeIndex >= recipeDatabase.Count || recipeDatabase[recipeIndex] == null) return 0f;
+        if (_recipeProgresses == null || recipeIndex >= _recipeProgresses.Length) return 0f;
+
         float baseTime = recipeDatabase[recipeIndex].baseCraftingTime;
         float speed = SpeedMultiplier;
         float remainingProgress = Mathf.Max(0f, baseTime - _recipeProgresses[recipeIndex]);
@@ -355,7 +462,7 @@ public class CraftingController : SingletonBase<CraftingController>
     // 특정 레시피의 실시간 제작 상태 반환
     public RecipeState GetRecipeState(int recipeIndex)
     {
-        if (recipeIndex < 0 || recipeIndex >= _recipeStates.Length) return RecipeState.Idle;
+        if (_recipeStates == null || recipeIndex < 0 || recipeIndex >= _recipeStates.Length) return RecipeState.Idle;
         return _recipeStates[recipeIndex];
     }
 
@@ -382,7 +489,8 @@ public class CraftingController : SingletonBase<CraftingController>
         {
             cm.GetGold(10000, applyModifiers: false);
             cm.GetWaveStone(50);
-            cm.GetStageStone(50);
+            cm.GetDungeonStone(50);
+            cm.GetRaidStone(50);
         }
     }
 
@@ -399,16 +507,29 @@ public class CraftingController : SingletonBase<CraftingController>
             evt.saveData.crafting = new CraftingSaveData();
         }
 
+        EnsureArrayCapacity(recipeDatabase.Count);
+
         evt.saveData.crafting.factoryLevel = _factoryLevel;
         evt.saveData.crafting.isGlobalAutoEnabled = _isGlobalAutoEnabled;
         evt.saveData.crafting.queuedRecipeIndices = new List<int>(_activeRecipeQueue);
-        Array.Copy(_recipeProgresses, evt.saveData.crafting.recipeProgresses, Mathf.Min(_recipeProgresses.Length, evt.saveData.crafting.recipeProgresses.Length));
+
+        if (evt.saveData.crafting.recipeProgresses == null)
+        {
+            evt.saveData.crafting.recipeProgresses = new List<float>();
+        }
+        evt.saveData.crafting.recipeProgresses.Clear();
+        if (_recipeProgresses != null)
+        {
+            evt.saveData.crafting.recipeProgresses.AddRange(_recipeProgresses);
+        }
     }
 
     // 세이브 데이터 로드 처리
     private void OnLoad(DataLoadEvent evt)
     {
         if (evt.saveData == null || evt.saveData.crafting == null) return;
+
+        EnsureArrayCapacity(recipeDatabase.Count);
 
         _factoryLevel = Mathf.Clamp(evt.saveData.crafting.factoryLevel, 1, FactoryUpgradeProcessor.MaxFactoryLevel);
         _isGlobalAutoEnabled = evt.saveData.crafting.isGlobalAutoEnabled;
@@ -425,10 +546,13 @@ public class CraftingController : SingletonBase<CraftingController>
             }
         }
 
-        if (evt.saveData.crafting.recipeProgresses != null)
+        if (evt.saveData.crafting.recipeProgresses != null && _recipeProgresses != null)
         {
-            int len = Mathf.Min(_recipeProgresses.Length, evt.saveData.crafting.recipeProgresses.Length);
-            Array.Copy(evt.saveData.crafting.recipeProgresses, _recipeProgresses, len);
+            int count = Mathf.Min(_recipeProgresses.Length, evt.saveData.crafting.recipeProgresses.Count);
+            for (int i = 0; i < count; i++)
+            {
+                _recipeProgresses[i] = evt.saveData.crafting.recipeProgresses[i];
+            }
         }
     }
 
@@ -438,8 +562,9 @@ public class CraftingController : SingletonBase<CraftingController>
         _factoryLevel = 1;
         _isGlobalAutoEnabled = false;
         _activeRecipeQueue.Clear();
-        Array.Clear(_recipeProgresses, 0, _recipeProgresses.Length);
-        Array.Clear(_recipeStates, 0, _recipeStates.Length);
+        EnsureArrayCapacity(recipeDatabase.Count);
+        if (_recipeProgresses != null) Array.Clear(_recipeProgresses, 0, _recipeProgresses.Length);
+        if (_recipeStates != null) Array.Clear(_recipeStates, 0, _recipeStates.Length);
     }
 
     #endregion

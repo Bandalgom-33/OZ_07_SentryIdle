@@ -86,11 +86,11 @@ public static class FactoryUpgradeProcessor
     }
 
     // 다음 레벨 업그레이드 필요 재화 비용 조회
-    public static bool GetUpgradeCost(int currentLevel, out long goldCost, out long waveStoneCost, out long stageStoneCost)
+    public static bool GetUpgradeCost(int currentLevel, out long goldCost, out long waveStoneCost, out long dungeonStoneCost)
     {
         goldCost = 0;
         waveStoneCost = 0;
-        stageStoneCost = 0;
+        dungeonStoneCost = 0;
 
         if (currentLevel >= MaxFactoryLevel)
         {
@@ -102,22 +102,22 @@ public static class FactoryUpgradeProcessor
             case 1: // Lv.1 ➔ Lv.2 (슬롯 1개 증가)
                 goldCost = 1000;
                 waveStoneCost = 5;
-                stageStoneCost = 0;
+                dungeonStoneCost = 0;
                 break;
             case 2: // Lv.2 ➔ Lv.3 (1회 제작 수량 증가)
                 goldCost = 3000;
                 waveStoneCost = 0;
-                stageStoneCost = 5;
+                dungeonStoneCost = 5;
                 break;
             case 3: // Lv.3 ➔ Lv.4 (제작 속도 증가)
                 goldCost = 10000;
                 waveStoneCost = 15;
-                stageStoneCost = 10;
+                dungeonStoneCost = 10;
                 break;
             case 4: // Lv.4 ➔ Lv.5 (전체 대폭 업그레이드)
                 goldCost = 30000;
                 waveStoneCost = 30;
-                stageStoneCost = 30;
+                dungeonStoneCost = 30;
                 break;
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 // 스테이지 및 웨이브 진행 데이터의 단일 진실 공급원(SSOT) 및 세이브/로드를 총괄 관리하는 싱글톤 매니저
@@ -18,7 +19,7 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
 
     #endregion
 
-    #region 프로퍼티
+    #region 프로퍼티 및 내부 기록 필드
 
     // 현재 진행 중인 스테이지 번호
     public int CurrentStage { get; private set; } = 1;
@@ -31,6 +32,16 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
 
     // 스테이지당 총 웨이브 수
     public int WavesPerStage => wavesPerStage;
+
+    // 최근 5개 웨이브 클리어 소요 시간 기록 캐시 (최대 5개 유지)
+    private readonly List<float> _recentWaveDurations = new List<float>();
+    private const int MaxWaveDurationHistoryCount = 5;
+
+    // 최근 5개 웨이브 클리어 시간 이동 평균 (기본값 15.0초)
+    public float AverageWaveDuration { get; private set; } = 15.0f;
+
+    // 외부 조회용 읽기 전용 컬렉션
+    public IReadOnlyList<float> RecentWaveDurations => _recentWaveDurations;
 
     #endregion
 
@@ -63,7 +74,30 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
 
     #endregion
 
-    #region 스테이지 진행 제어 API
+    #region 스테이지 진행 및 웨이브 클리어 시간 기록 API
+
+    // 웨이브 1개 클리어 소요 시간 기록 및 최근 5개 평균 갱신 연산
+    public void RecordWaveClearDuration(float durationSeconds)
+    {
+        // 비정상적인 초단기/음수 값 방지 (최소 1초 보정)
+        float validDuration = Mathf.Max(1.0f, durationSeconds);
+
+        if (_recentWaveDurations.Count >= MaxWaveDurationHistoryCount)
+        {
+            _recentWaveDurations.RemoveAt(0);
+        }
+        _recentWaveDurations.Add(validDuration);
+
+        // 최근 기록들의 산술 평균 산출
+        float sum = 0f;
+        for (int i = 0; i < _recentWaveDurations.Count; i++)
+        {
+            sum += _recentWaveDurations[i];
+        }
+        AverageWaveDuration = sum / _recentWaveDurations.Count;
+
+        Debug.Log($"[StageProgressManager] 웨이브 클리어 시간 기록: {validDuration:F1}초 (최근 {_recentWaveDurations.Count}개 평균: {AverageWaveDuration:F1}초)");
+    }
 
     // 스테이지 및 웨이브 수치 동시 설정 연산
     public void SetStageAndWave(int stage, int wave, bool autoSave = false)
@@ -116,6 +150,8 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
         CurrentStage = defaultStage;
         CurrentWave = defaultWave;
         MaxWave = defaultWave;
+        _recentWaveDurations.Clear();
+        AverageWaveDuration = 15.0f;
 
         PublishStageWaveChanged();
     }
@@ -142,6 +178,8 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
         evt.saveData.stage.currentStage = CurrentStage;
         evt.saveData.stage.currentWave = CurrentWave;
         evt.saveData.stage.maxWave = MaxWave;
+        evt.saveData.stage.recentWaveDurations = new List<float>(_recentWaveDurations);
+        evt.saveData.stage.averageWaveDuration = AverageWaveDuration;
     }
 
     // 세이브 데이터 로드 처리
@@ -156,6 +194,14 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
         CurrentStage = Mathf.Max(1, evt.saveData.stage.currentStage);
         CurrentWave = Mathf.Max(1, evt.saveData.stage.currentWave);
         MaxWave = Mathf.Max(1, evt.saveData.stage.maxWave);
+
+        _recentWaveDurations.Clear();
+        if (evt.saveData.stage.recentWaveDurations != null && evt.saveData.stage.recentWaveDurations.Count > 0)
+        {
+            _recentWaveDurations.AddRange(evt.saveData.stage.recentWaveDurations);
+        }
+
+        AverageWaveDuration = evt.saveData.stage.averageWaveDuration > 0f ? evt.saveData.stage.averageWaveDuration : 15.0f;
 
         PublishStageWaveChanged();
     }

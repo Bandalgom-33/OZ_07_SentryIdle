@@ -106,18 +106,32 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // 3. 적 유닛 제거 (전투 레지스트리 및 디스폰 매니저 연동)
+        // 3. 적 유닛 및 적 소환물 제거 (소환물은 SummonService.Release를 통해 풀로 안전 회수)
         var activeEnemies = new List<EnemyRuntimeState>(CombatRegistry.Enemies);
         foreach (var enemy in activeEnemies)
         {
             if (enemy != null)
             {
-                SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
-                Destroy(enemy.gameObject);
+                var enemySummon = enemy.GetComponent<EnemySummonRuntime>();
+                if (enemySummon != null)
+                {
+                    SummonService.Release(enemy.gameObject);
+                }
+                else
+                {
+                    SpawnedEnemyManager.Instance.UnregisterEnemy(enemy);
+                    Destroy(enemy.gameObject);
+                }
             }
         }
 
-        // 4. 아군 유닛 제거 (MapUnitSummonManager 추적 딕셔너리 및 이벤트 일괄 초기화)
+        // 4. 아군 유닛 제거 (DeckUnitReceiver 추적 컬렉션 및 타일 점유 일괄 초기화)
+        var deckReceiver = FindFirstObjectByType<DeckUnitReceiver>();
+        if (deckReceiver != null)
+        {
+            deckReceiver.ClearAllUnits();
+        }
+
         var summonManager = FindFirstObjectByType<EndlessGuard.Map.MapUnitSummonManager>();
         if (summonManager != null)
         {
@@ -129,7 +143,15 @@ public class MapGenerator : MonoBehaviour
         {
             if (unit != null)
             {
-                Destroy(unit.gameObject);
+                var unitSummon = unit.GetComponent<UnitSummonRuntime>();
+                if (unitSummon != null)
+                {
+                    SummonService.Release(unit.gameObject);
+                }
+                else
+                {
+                    Destroy(unit.gameObject);
+                }
             }
         }
     }
@@ -520,10 +542,13 @@ public class MapGenerator : MonoBehaviour
 
     public void RegenerateMap()
     {
+        // 1. 이전 맵의 모든 아군/적 유닛 및 소환물 안전 회수
+        ClearAllUnitsAndEnemies();
+
         if (mapRenderer == null) return;
-        //맵 삭제
+        // 2. 기존 타일 삭제
         mapRenderer.ClearMap();
-        //맵 생성
+        // 3. 새로운 맵 생성 및 렌더링
         GenerateMap();
     }
 

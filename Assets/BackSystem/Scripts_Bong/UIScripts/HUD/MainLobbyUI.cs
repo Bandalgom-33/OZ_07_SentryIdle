@@ -30,6 +30,9 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("오프라인 보상 팝업 닫기/수령 확인 버튼")]
     [SerializeField] private Button closeOfflineRewardButton;
 
+    [Tooltip("오프라인 방치 경과 시간 및 획득 보상 내역 표시 단일 통합 TMP 텍스트")]
+    [SerializeField] private TMP_Text offlineRewardInfoText;
+
     [Header("--- 상단 HUD 정보 텍스트 ---")]
     [Tooltip("현재 스테이지 정보 표시 TMP 텍스트")]
     [SerializeField] private TMP_Text stageInfoText;
@@ -162,6 +165,7 @@ public class MainLobbyUI : MonoBehaviour
         CurrencyManager.OnDiamondChange += UpdateDiamondUI;
         EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
+        EventBus.Subscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
 
         RefreshAllHUD();
     }
@@ -173,6 +177,7 @@ public class MainLobbyUI : MonoBehaviour
         CurrencyManager.OnDiamondChange -= UpdateDiamondUI;
         EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
+        EventBus.Unsubscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
     }
 
     // 첫 실행 여부에 따른 초기 메인 패널 표시 및 HUD 갱신
@@ -188,6 +193,101 @@ public class MainLobbyUI : MonoBehaviour
         if (Instance == this)
         {
             Instance = null;
+        }
+    }
+
+    #endregion
+
+    #region 오프라인 방치 보상 이벤트 핸들러 및 텍스트 빌더
+
+    // 레이드 토벌 성공 보상 안내 텍스트 조립 헬퍼
+    private string BuildRaidRewardText(long raidStone)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine("<size=120%><color=#FFD700><b>[ 레이드 토벌 성공! ]</b></color></size>");
+        sb.AppendLine();
+        sb.AppendLine("강력한 레이드 보스를 성공적으로 격퇴했습니다!");
+        sb.AppendLine();
+        sb.AppendLine("[획득 보상]");
+        sb.AppendLine($"• 레이드 마석: <color=#00FFFF>+{raidStone:N0}개</color>");
+        sb.AppendLine();
+        sb.AppendLine("<color=#AAAAAA>획득한 마석으로 공방에서 고급 아이템을 제작할 수 있습니다.</color>");
+        return sb.ToString();
+    }
+
+    // 오프라인 방치 시간 및 보상 상세 내역을 단일 문자열로 조립하는 헬퍼 메서드
+    private string BuildOfflineRewardText(OfflineRewardReportData report)
+    {
+        if (report == null)
+        {
+            return "오프라인 보상 데이터가 없습니다.";
+        }
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine($"방치 시간: <color=#00FFFF>{report.FormattedDuration}</color>");
+        sb.AppendLine();
+
+        if (report.HasAnyReward)
+        {
+            sb.AppendLine("[오프라인 획득 보상]");
+
+            if (report.GainedGold > 0)
+            {
+                sb.AppendLine($"• 골드: <color=#FFD700>+{report.GainedGold:N0}</color>");
+            }
+
+            if (report.GainedWaveStone > 0)
+            {
+                sb.AppendLine($"• 웨이브 마석: <color=#00FFFF>+{report.GainedWaveStone:N0}</color>");
+            }
+
+            if (report.GainedConsumables != null && report.GainedConsumables.Count > 0)
+            {
+                foreach (var pair in report.GainedConsumables)
+                {
+                    if (pair.Value > 0)
+                    {
+                        sb.AppendLine($"• {pair.Key}: <color=#00FF00>+{pair.Value}개</color>");
+                    }
+                }
+            }
+
+            if (report.DungeonCompletedCycles != null && report.DungeonCompletedCycles.Count > 0)
+            {
+                foreach (var pair in report.DungeonCompletedCycles)
+                {
+                    if (pair.Value > 0)
+                    {
+                        sb.AppendLine($"• 던전 [{pair.Key}]: <color=#FFA500>{pair.Value}회 완료</color>");
+                    }
+                }
+            }
+        }
+        else
+        {
+            sb.AppendLine("획득한 오프라인 보상이 없습니다.");
+        }
+
+        return sb.ToString();
+    }
+
+    // 오프라인 방치 보상 수신 및 텍스트 바인딩 연산 (타이틀 진입 시에만 바인딩, 레이드 보상 대기 중일 때는 무시)
+    private void OnOfflineRewardReported(OfflineRewardReportEvent evt)
+    {
+        // [기술적 근거] 레이드 보상 팝업이 대기 중이거나 이미 타이틀을 지나 로비/인게임 중일 때는 덮어쓰기 차단
+        if (CurrencyManager.Instance != null && CurrencyManager.Instance.HasPendingRaidRewardReport)
+        {
+            return;
+        }
+
+        if (!_isFirstLaunch)
+        {
+            return;
+        }
+
+        if (offlineRewardInfoText != null && evt.reportData != null)
+        {
+            offlineRewardInfoText.text = BuildOfflineRewardText(evt.reportData);
         }
     }
 
@@ -215,32 +315,59 @@ public class MainLobbyUI : MonoBehaviour
         {
             if (startPanel != null) startPanel.SetActive(false);
             if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
+
+            // [규칙 2] 레이드 등 전투 씬에서 로비로 복귀했을 때는 오직 레이드 보상만 검사하여 노출
+            if (CurrencyManager.Instance != null && CurrencyManager.Instance.HasPendingRaidRewardReport)
+            {
+                if (offlineRewardInfoText != null)
+                {
+                    offlineRewardInfoText.text = BuildRaidRewardText(CurrencyManager.Instance.LastRewardedRaidStone);
+                }
+                ShowOfflineRewardPopup();
+            }
         }
     }
 
-    // 시작 패널에서 메인 로비 패널로 전환
+    // 시작 패널에서 메인 로비 패널로 전환 (타이틀 시작 시에만 오프라인 보상 팝업 노출)
     public void OnStartGameClicked()
     {
         _isFirstLaunch = false;
 
         if (startPanel != null) startPanel.SetActive(false);
         if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
+
+        // [규칙 1] 타이틀에서 게임 시작을 눌렀을 때만 오프라인 방치 보상 팝업 오픈
+        bool isExistingUser = SaveManager.Instance != null && SaveManager.Instance.HasExistingSaveFile;
+        if (isExistingUser && OfflineRewardManager.Instance != null && OfflineRewardManager.Instance.LastReportData != null)
+        {
+            if (offlineRewardInfoText != null)
+            {
+                offlineRewardInfoText.text = BuildOfflineRewardText(OfflineRewardManager.Instance.LastReportData);
+            }
+            ShowOfflineRewardPopup();
+        }
     }
 
     #endregion
 
-    #region 오프라인 보상 팝업 제어
+    #region 오프라인 / 레이드 보상 팝업 제어
 
-    // 오프라인 보상 팝업 패널 오픈
+    // 보상 팝업 패널 오픈
     public void ShowOfflineRewardPopup()
     {
         SetOfflineRewardPanelActive(true);
     }
 
-    // 오프라인 보상 팝업 패널 닫기
+    // 보상 팝업 패널 닫기 및 대기 리포트 초기화
     public void CloseOfflineRewardPopup()
     {
         SetOfflineRewardPanelActive(false);
+
+        // 레이드 보상 팝업 대기 상태 초기화
+        if (CurrencyManager.Instance != null)
+        {
+            CurrencyManager.Instance.ClearPendingRaidRewardReport();
+        }
     }
 
     // 오프라인 보상 패널 활성화 상태 설정
