@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
 
@@ -60,39 +60,37 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
     // 특정 소모품의 현재 보유 수량 반환
     public int GetItemCount(ConsumableType type)
     {
-        int index = (int)type;
-        if (index >= 0 && index < _itemCounts.Length)
+        if (InventoryGridManager.Instance != null)
         {
-            return _itemCounts[index];
+            return InventoryGridManager.Instance.GetConsumableCount(type);
         }
         return 0;
     }
 
-    // 소모품 획득 및 수량 가산 처리
+    // 소모품 획득 및 인벤토리 가산 처리
     public void AddConsumable(ConsumableType type, int amount = 1)
     {
-        if (amount <= 0) return;
+        if (amount <= 0 || InventoryGridManager.Instance == null) return;
 
-        int index = (int)type;
-        if (index >= 0 && index < _itemCounts.Length)
+        ItemDataSO itemData = InventoryGridManager.Instance.GetConsumableItemData(type);
+        if (itemData != null)
         {
-            _itemCounts[index] += amount;
-            OnConsumableCountChanged?.Invoke(type, _itemCounts[index]);
+            InventoryGridManager.Instance.AddItem(itemData, amount);
+            OnConsumableCountChanged?.Invoke(type, GetItemCount(type));
         }
     }
 
-    // 소모품 보유 검증 및 차감 처리
+    // 소모품 인벤토리 보유 검증 및 차감 처리
     public bool TrySpendConsumable(ConsumableType type, int amount = 1)
     {
-        int index = (int)type;
-        if (index < 0 || index >= _itemCounts.Length || _itemCounts[index] < amount)
-        {
-            return false;
-        }
+        if (InventoryGridManager.Instance == null) return false;
 
-        _itemCounts[index] -= amount;
-        OnConsumableCountChanged?.Invoke(type, _itemCounts[index]);
-        return true;
+        bool spent = InventoryGridManager.Instance.TrySpendConsumable(type, amount);
+        if (spent)
+        {
+            OnConsumableCountChanged?.Invoke(type, GetItemCount(type));
+        }
+        return spent;
     }
 
     #endregion
@@ -114,19 +112,20 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
             return false;
         }
 
-        if (!TrySpendConsumable(type, 1))
-        {
-            Debug.LogWarning($"[ConsumableItemManager] {type} 보유 수량이 부족합니다.");
-            return false;
-        }
-
-        float healRatio = type switch
+        ItemDataSO itemData = InventoryGridManager.Instance?.GetConsumableItemData(type);
+        float healRatio = itemData != null && itemData.RecoveryRatio > 0f ? itemData.RecoveryRatio : type switch
         {
             ConsumableType.HealthPotion_Low => 0.25f,
             ConsumableType.HealthPotion_Mid => 0.50f,
             ConsumableType.HealthPotion_High => 1.00f,
             _ => 0.25f
         };
+
+        if (!TrySpendConsumable(type, 1))
+        {
+            Debug.LogWarning($"[ConsumableItemManager] {type} 보유 수량이 부족합니다.");
+            return false;
+        }
 
         foreach (UnitRuntimeState unit in CombatRegistry.Units)
         {
@@ -141,7 +140,7 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
         }
 
         _potionCooldownTimer = PotionCooldownDuration;
-        SaveManager.Instance.SaveGameData();
+        SaveManager.Instance?.SaveGameData();
         return true;
     }
 
@@ -164,7 +163,8 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
             return false;
         }
 
-        long expReward = type switch
+        ItemDataSO itemData = InventoryGridManager.Instance?.GetConsumableItemData(type);
+        long expReward = itemData != null && itemData.ExpAmount > 0L ? itemData.ExpAmount : type switch
         {
             ConsumableType.ExpBook_Low => 100L,
             ConsumableType.ExpBook_Mid => 1000L,
@@ -176,7 +176,7 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
 
         if (success)
         {
-            SaveManager.Instance.SaveGameData();
+            SaveManager.Instance?.SaveGameData();
         }
         else
         {
