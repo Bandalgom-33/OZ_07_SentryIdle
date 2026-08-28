@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class SoundManager : MonoBehaviour
@@ -13,7 +14,17 @@ public class SoundManager : MonoBehaviour
     
     [Header("Common UI Sound")]
     [SerializeField] private AudioClip uiClickSound;
+    
+    [Header("Audio Mixer")]
+    [SerializeField] private AudioMixer audioMixer;
 
+    //볼륨을 저장할 키 생성
+    private const string BGM_VOLUME_KEY = "BGMVolume";
+    private const string SFX_VOLUME_KEY = "SFXVolume";
+    
+    public float BGMVolume { get; private set; } = 1f;
+    public float SFXVolume { get; private set; } = 1f;
+    
 
     private void Awake()
     {
@@ -26,6 +37,8 @@ public class SoundManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+        //저장한 볼륨 호출
+        LoadVolumeSettings();
     }
     
     private void OnEnable()
@@ -108,6 +121,70 @@ public class SoundManager : MonoBehaviour
             button.gameObject.AddComponent<UIButtonSound>();
         }
     }
+    
+    //마스터, BGM, SFX 볼륨 UI슬라이더로 조절하기
+   /*
+    public void SetMasterVolume(float value)
+    {
+        float db = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+        audioMixer.SetFloat("MasterVolume", db);
+    }
+    */
+
+   
+   //볼륨 설정하기
+   public void SetBGMVolume(float value)
+   {
+       BGMVolume = value;
+
+       ApplyBGMVolume(value);
+
+       PlayerPrefs.SetFloat(BGM_VOLUME_KEY, value);
+       PlayerPrefs.Save();
+   }
+
+   public void SetSFXVolume(float value)
+   {
+       SFXVolume = value;
+
+       ApplySFXVolume(value);
+
+       PlayerPrefs.SetFloat(SFX_VOLUME_KEY, value);
+       PlayerPrefs.Save();
+   }
+    
+    
+    //볼륨 불러오기
+    private void LoadVolumeSettings()
+    {
+        BGMVolume = PlayerPrefs.GetFloat(BGM_VOLUME_KEY, 1f);
+        SFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+
+        ApplyBGMVolume(BGMVolume);
+        ApplySFXVolume(SFXVolume);
+    }
+    
+    //Mixer 적용 담당 메서드
+    private void ApplyBGMVolume(float value)
+    {
+        if (audioMixer == null) return;
+
+        float db =
+            Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+
+        audioMixer.SetFloat("BGMVolume", db);
+    }
+
+    private void ApplySFXVolume(float value)
+    {
+        if (audioMixer == null) return;
+
+        float db =
+            Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+
+        audioMixer.SetFloat("SFXVolume", db);
+    }
+    
     
    
 }
