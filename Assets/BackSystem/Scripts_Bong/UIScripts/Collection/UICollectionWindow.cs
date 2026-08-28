@@ -30,16 +30,15 @@ public class UICollectionWindow : MonoBehaviour
     [Tooltip("페이지 번호 표기 텍스트 (예: 1 / 2)")]
     [SerializeField] private TMP_Text pageText;
 
-    [Header("--- 하단 제어 버튼 ---")]
-    [Tooltip("일반 덱 유닛 추가/해제 액션 버튼 (기존 필터 버튼 전환)")]
-    [FormerlySerializedAs("filterButton")]
-    [SerializeField] private Button deckActionButton;
+    [Header("장비 관리 버튼")]
+    [Tooltip("선택된 캐릭터 장비창 오픈 버튼")]
+    [SerializeField] private Button equipActionButton;
 
-    [Tooltip("덱 액션 버튼 내부 텍스트 라벨 (예: 덱 장착 / 덱 해제)")]
-    [SerializeField] private TMP_Text deckActionButtonText;
+    [Tooltip("장비 관리 버튼 텍스트")]
+    [SerializeField] private TMP_Text equipActionButtonText;
 
-    [Tooltip("세부 정보 버튼")]
-    [SerializeField] private Button detailButton;
+    [Tooltip("장비 인벤토리 패널 오브젝트")]
+    [SerializeField] private GameObject equipmentInventoryPanel;
 
     #endregion
 
@@ -72,15 +71,14 @@ public class UICollectionWindow : MonoBehaviour
         if (prevPageButton != null) prevPageButton.onClick.AddListener(OnPrevPageClicked);
         if (nextPageButton != null) nextPageButton.onClick.AddListener(OnNextPageClicked);
 
-        // 덱 액션(장착/해제) 버튼 리스너 등록
-        if (deckActionButton != null)
+        // 장비 관리 버튼 리스너 등록
+        if (equipActionButton != null)
         {
-            deckActionButton.onClick.AddListener(OnDeckActionButtonClicked);
+            equipActionButton.onClick.AddListener(OnEquipActionButtonClicked);
 
-            // 텍스트 컴포넌트가 인스펙터에 미할당된 경우 자식 오브젝트에서 자동 탐색하여 널 참조 방지
-            if (deckActionButtonText == null)
+            if (equipActionButtonText == null)
             {
-                deckActionButtonText = deckActionButton.GetComponentInChildren<TMP_Text>();
+                equipActionButtonText = equipActionButton.GetComponentInChildren<TMP_Text>();
             }
         }
 
@@ -147,62 +145,56 @@ public class UICollectionWindow : MonoBehaviour
         // 현재 화면에 노출된 슬롯들의 선택 하이라이트 동기화
         UpdateCardSlotsSelection();
 
-        // 선택된 유닛의 상태에 맞추어 덱 추가/해제 버튼 상태 갱신
-        UpdateDeckActionButtonState();
+        // 선택된 유닛의 상태에 맞추어 장비 관리 버튼 상태 갱신
+        UpdateEquipActionButtonState();
     }
 
-    // 덱 추가/해제 버튼 클릭 시 실행되는 분기 로직
-    private void OnDeckActionButtonClicked()
+    // 장비 관리 버튼 클릭 시 유효성 검사 및 장비 UI 오픈 처리
+    private void OnEquipActionButtonClicked()
     {
-        // 유닛이 선택되지 않았거나 미보유 유닛인 경우 동작 중단 (유효성 검사)
-        if (_selectedViewModel == null || !_selectedViewModel.IsOwned) return;
-        if (DeckManager.Instance == null) return;
-
-        int unitId = UnitIdHelper.ParseUnitId(_selectedViewModel.UnitId);
-        if (unitId <= 0) return;
-
-        // 이미 일반 덱에 편성되어 있는 경우 -> 덱에서 유닛 해제 처리
-        if (_selectedViewModel.IsInDeck)
+        if (_selectedViewModel == null)
         {
-            DeckManager.Instance.RemoveUnit(DeckType.Normal, unitId);
-        }
-        // 일반 덱에 미편성 상태인 경우 -> 첫 번째 빈 슬롯에 자동 추가 시도
-        else
-        {
-            bool added = DeckManager.Instance.TryAddUnitToDeck(DeckType.Normal, unitId, out int assignedSlot);
-            if (!added)
-            {
-                // 덱 슬롯이 가득 차서 추가할 수 없는 경우 디버그 경고 로그 출력
-                Debug.LogWarning($"[UICollectionWindow] 일반 덱 용량이 가득 차서 유닛(ID: {unitId})을 추가할 수 없습니다.");
-            }
+            Debug.LogWarning("[UICollectionWindow] 장착할 대상 유닛이 선택되지 않았습니다.");
+            return;
         }
 
-        // DeckManager의 동작 결과로 NormalDeckChangedEvent가 발행되어 RefreshCollectionUI가 자동 호출됨
+        if (!_selectedViewModel.IsOwned)
+        {
+            Debug.LogWarning($"[UICollectionWindow] 미보유 유닛({_selectedViewModel.DisplayName})은 장비를 장착할 수 없습니다.");
+            return;
+        }
+
+        if (EquipmentManager.Instance != null)
+        {
+            EquipmentManager.Instance.SetCurrentUnit(_selectedViewModel.UnitId);
+        }
+
+        if (equipmentInventoryPanel != null)
+        {
+            equipmentInventoryPanel.SetActive(true);
+        }
     }
 
-    // 현재 선택된 유닛 상태에 따른 하단 액션 버튼 활성화 및 텍스트 갱신
-    private void UpdateDeckActionButtonState()
+    // 유닛 선택 상태에 따른 장비 버튼 활성화 및 텍스트 갱신 처리
+    private void UpdateEquipActionButtonState()
     {
-        if (deckActionButton == null) return;
+        if (equipActionButton == null) return;
 
-        // 1. 선택된 유닛이 없거나 미보유 유닛인 경우: 버튼 비활성화
         if (_selectedViewModel == null || !_selectedViewModel.IsOwned)
         {
-            deckActionButton.interactable = false;
-            if (deckActionButtonText != null)
+            equipActionButton.interactable = false;
+            if (equipActionButtonText != null)
             {
-                deckActionButtonText.text = (_selectedViewModel == null) ? "선택 필요" : "미보유";
+                equipActionButtonText.text = (_selectedViewModel == null) ? "선택 필요" : "미보유";
             }
             return;
         }
 
-        // 2. 보유 유닛이 선택된 경우: 버튼 활성화
-        deckActionButton.interactable = true;
+        equipActionButton.interactable = true;
 
-        if (deckActionButtonText != null)
+        if (equipActionButtonText != null)
         {
-            // 이미 덱에 포함된 경우 '덱 해제', 미포함인 경우 '덱 장착' 텍스트 표시
-            deckActionButtonText.text = _selectedViewModel.IsInDeck ? "덱 해제" : "덱 장착";
+            equipActionButtonText.text = "장비 관리";
         }
     }
 
@@ -253,8 +245,8 @@ public class UICollectionWindow : MonoBehaviour
         // 현재 페이지 카드 슬롯 렌더링
         RenderCurrentPage();
 
-        // 덱 액션 버튼 상태 동기화
-        UpdateDeckActionButtonState();
+        // 장비 관리 버튼 상태 동기화
+        UpdateEquipActionButtonState();
     }
 
     // 현재 페이지 슬롯 렌더링

@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using EndlessGuard.Unit.Raid.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // 골드, 다이아, DP 코스트, 마석 등 게임 내 재화의 보유량 관리, 획득/소모 및 자동 회복을 총괄하는 싱글톤 매니저
 public class CurrencyManager : SingletonBase<CurrencyManager>
@@ -55,6 +57,10 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     [Tooltip("최대 DP 상한 1레벨당 증가 수량")]
     [SerializeField] private int maxDpCostIncrease = 10;
 
+    [Space(5f), Header("--- 레이드 보상 설정 ---")]
+    [Tooltip("레이드 보스 처치 승리 시 지급할 레이드 마석 수량")]
+    [SerializeField] private long raidVictoryStoneReward = 100;
+
     #endregion
 
     #region 프로퍼티
@@ -86,6 +92,17 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
     // 레이드 마석 보유 여부 검증
     public bool HasRaidStone(long amount) => RaidStone >= amount;
+
+    // 로비 씬 진입 시 레이드 보상 팝업 노출을 위한 대기 리포트 프로퍼티
+    public bool HasPendingRaidRewardReport { get; private set; } = false;
+    public long LastRewardedRaidStone { get; private set; } = 0;
+
+    // 로비 팝업 닫기 시 레이드 보상 대기 상태 초기화
+    public void ClearPendingRaidRewardReport()
+    {
+        HasPendingRaidRewardReport = false;
+        LastRewardedRaidStone = 0;
+    }
 
     // 통합 재화 잔액 보유 검사
     public bool HasEnoughCurrency(CurrencyType type, long amount)
@@ -119,6 +136,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public static event Action<int> OnDpCostChange;
     public static event Action<float> OnDpCostSliderChange;
     public static event Action<long> OnWaveStoneChange;
+    public static event Action<long> OnDungeonStoneChange;
     public static event Action<long> OnStageStoneChange;
     public static event Action<long> OnRaidStoneChange;
 
@@ -126,7 +144,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
     #region 라이프 사이클
 
-    // 이벤트 버스 구독 등록
+    // 이벤트 버스 및 씬 로드 이벤트 구독 등록
     private void OnEnable()
     {
         EventBus.Subscribe<GameSpeedChangedEvent>(GameSpeedChange);
@@ -136,6 +154,10 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
         EventBus.Subscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
         EventBus.Subscribe<GameStateChangedEvent>(OnGameStateChanged);
+
+        // 레이드 씬 진입 시 레이드 전투 이벤트 바인딩을 위한 씬 로드 구독
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+        BindActiveRaidBattles();
     }
 
     // DP 회복 루프 시작
@@ -145,7 +167,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         RegenDpCost(this.GetCancellationTokenOnDestroy()).Forget();
     }
 
-    // 이벤트 버스 구독 해제
+    // 이벤트 버스 및 씬 로드 이벤트 구독 해제
     private void OnDisable()
     {
         EventBus.Unsubscribe<GameSpeedChangedEvent>(GameSpeedChange);
@@ -155,6 +177,58 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
         EventBus.Unsubscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
         EventBus.Unsubscribe<GameStateChangedEvent>(OnGameStateChanged);
+
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+        UnbindActiveRaidBattles();
+    }
+
+    // 새로운 씬 로드 시 레이드 전투 컨트롤러 탐색 및 이벤트 바인딩
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BindActiveRaidBattles();
+    }
+
+    // 활성화된 레이드 전투 컨트롤러의 승리/종료 이벤트 구독
+    private void BindActiveRaidBattles()
+    {
+        RaidBattleController[] battles = FindObjectsByType<RaidBattleController>(FindObjectsSortMode.None);
+        for (int i = 0; i < battles.Length; i++)
+        {
+            if (battles[i] != null)
+            {
+                battles[i].OnRaidEnded -= HandleRaidEnded;
+                battles[i].OnRaidEnded += HandleRaidEnded;
+            }
+        }
+    }
+
+    // 레이드 전투 컨트롤러 이벤트 구독 해제
+    private void UnbindActiveRaidBattles()
+    {
+        RaidBattleController[] battles = FindObjectsByType<RaidBattleController>(FindObjectsSortMode.None);
+        for (int i = 0; i < battles.Length; i++)
+        {
+            if (battles[i] != null)
+            {
+                battles[i].OnRaidEnded -= HandleRaidEnded;
+            }
+        }
+    }
+
+    // 레이드 전투 종료 시 승리 보상(레이드 마석) 지급 처리
+    private void HandleRaidEnded(RaidBattleResult result)
+    {
+        if (result == RaidBattleResult.Victory)
+        {
+            // 레이드 승리 시 설정된 레이드 마석 보상 지급
+            GetRaidStone(raidVictoryStoneReward);
+            HasPendingRaidRewardReport = true;
+            LastRewardedRaidStone = raidVictoryStoneReward;
+            Debug.Log($"[CurrencyManager] 레이드 승리! 레이드 마석 {raidVictoryStoneReward:N0}개 지급 완료 (현재 보유 마석: {RaidStone:N0})");
+
+            // 보상 지급 후 즉시 세이브 파일 갱신
+            SaveManager.Instance?.SaveGameData(force: true);
+        }
     }
 
     // 씬 전환 완료 이벤트 수신 처리
@@ -357,6 +431,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public void GetDungeonStone(long amount)
     {
         DungeonStone += amount;
+        OnDungeonStoneChange?.Invoke(DungeonStone);
         OnStageStoneChange?.Invoke(DungeonStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, amount));
     }
@@ -368,6 +443,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     {
         if (DungeonStone < amount) return false;
         DungeonStone -= amount;
+        OnDungeonStoneChange?.Invoke(DungeonStone);
         OnStageStoneChange?.Invoke(DungeonStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, -amount));
         return true;
@@ -488,7 +564,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
                 OnDpCostSliderChange?.Invoke(sliderValue);
                 if (sliderValue >= 1)
                 {
-                    int dpCost = baseDpCost + dpCostBonus;
+                    // 1초(리젠 주기)마다 기본 1 DP (+ 업그레이드 보너스) 회복
+                    int dpCost = 1 + dpCostBonus;
                     if (dpCost <= 0) dpCost = 1;
                     GetDpCost(dpCost);
                     timer = 0;

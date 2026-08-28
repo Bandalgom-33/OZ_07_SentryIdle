@@ -7,22 +7,15 @@ public class CraftingRecipeSO : ScriptableObject
 {
     #region 레시피 기본 식별 및 결과 아이템
 
-    [Header("1. 레시피 기본 식별")]
+    [Header("1. 레시피 기본 식별 및 결과 아이템")]
     [Tooltip("레시피 고유 식별자 문자열 (예: RECIPE_POTION_LOW)")]
     public string recipeId = "RECIPE_001";
 
-    [Tooltip("조합 결과로 생성되는 소모품 아이템 종류")]
-    public ConsumableType resultType = ConsumableType.HealthPotion_Low;
+    [Tooltip("레시피 카테고리 (소모품 vs 장비)")]
+    public ItemCategory itemCategory = ItemCategory.Consumable;
 
-    [Tooltip("공방 UI에 표시될 아이템 이름")]
-    public string displayName = "하급 체력포션";
-
-    [Tooltip("공방 UI에 표시될 아이템 상세 설명 및 효과")]
-    [TextArea(2, 4)]
-    public string description = "필드 위 전체 아군 유닛의 HP를 25% 회복합니다.";
-
-    [Tooltip("레시피 선택 버튼 및 제작 목록 슬롯에 표시될 대표 아이콘 스프라이트")]
-    public Sprite recipeIcon;
+    [Tooltip("조합 결과로 생성되는 ItemDataSO 에셋 (소모품/장비 공통)")]
+    public ItemDataSO resultItem;
 
     #endregion
 
@@ -33,15 +26,18 @@ public class CraftingRecipeSO : ScriptableObject
     public float baseCraftingTime = 4.0f;
 
     [Tooltip("1회 생산 시 소모되는 골드 수량")]
-    public long goldCost = 100;
+    public long goldCost = 0;
 
-    [Tooltip("1회 생산 시 소모되는 마석 종류 (WaveStone 또는 StageStone)")]
-    public CurrencyType requiredStoneType = CurrencyType.WaveStone;
+    [Tooltip("1회 생산 시 소모되는 다이아 수량")]
+    public long diamondCost = 0;
+
+    [Tooltip("1회 생산 시 소모되는 마석 종류 (WaveStone, DungeonStone, RaidStone 3종 전용)")]
+    public StoneType requiredStoneType = StoneType.WaveStone;
 
     [Tooltip("1회 생산 시 소모되는 마석 수량")]
     public long stoneCost = 1;
 
-    [Tooltip("1회 생산 시 획득하는 기본 소모품 수량")]
+    [Tooltip("1회 생산 시 획득하는 기본 수량")]
     public int outputAmount = 1;
 
     #endregion
@@ -52,6 +48,19 @@ public class CraftingRecipeSO : ScriptableObject
     [Tooltip("이 레시피를 해금하고 생산하기 위해 필요한 최소 공방 레벨 (1 ~ 5)")]
     [Range(1, 5)]
     public int unlockFactoryLevel = 1;
+
+    #endregion
+
+    #region 널 안전 프로퍼티
+
+    // 레시피 표시 이름 반환 프로퍼티
+    public string DisplayName => resultItem != null ? resultItem.ItemName : recipeId;
+
+    // 레시피 상세 설명 반환 프로퍼티
+    public string Description => resultItem != null ? resultItem.Description : string.Empty;
+
+    // 레시피 대표 아이콘 반환 프로퍼티
+    public Sprite RecipeIcon => resultItem != null ? resultItem.ItemIcon : null;
 
     #endregion
 }

@@ -80,12 +80,16 @@ public class UIDungeonFormationModal : MonoBehaviour
     {
         if (unitCatalog == null)
         {
-            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            unitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.UnitCatalog 
+                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
 
         if (portraitCatalog == null)
         {
-            portraitCatalog = Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
+            portraitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.PortraitCatalog 
+                : Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
         }
 
         if (autoAssignButton != null)

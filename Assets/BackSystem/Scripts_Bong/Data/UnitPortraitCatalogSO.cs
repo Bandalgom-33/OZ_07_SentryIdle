@@ -118,6 +118,22 @@ namespace EndlessGuard.Unit.Data
             return null;
         }
 
+        // 유닛 ID 기반 UnitDataSO 에셋 데이터 조회
+        public UnitDataSO GetUnitDataByUnitId(string unitId)
+        {
+            if (string.IsNullOrEmpty(unitId)) return null;
+
+            for (int i = 0; i < portraitMappings.Count; i++)
+            {
+                if (portraitMappings[i].unitData != null && string.Equals(portraitMappings[i].unitData.UnitId, unitId, StringComparison.Ordinal))
+                {
+                    return portraitMappings[i].unitData;
+                }
+            }
+
+            return null;
+        }
+
         #endregion
     }
 }
