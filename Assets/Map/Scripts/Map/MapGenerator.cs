@@ -549,5 +549,15 @@ public class MapGenerator : MonoBehaviour
         //최소 갯수 이상이면 ㄱㄱ
         return count >= minimumCount;
     }
+    
+    public bool IsInPathA(Vector2Int position)
+    {
+        return pathPosition.Contains(position);
+    }
+
+    public bool IsInPathB(Vector2Int position)
+    {
+        return pathPositionB.Contains(position);
+    }
 
 }
