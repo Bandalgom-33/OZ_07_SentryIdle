@@ -41,6 +41,24 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
     // 보유 중인 모든 유닛의 성장/돌파 세이브 데이터 목록 (단일 중앙 저장소)
     private readonly List<UnitSaveData> _cachedOwnedUnits = new List<UnitSaveData>();
 
+    public UnitCatalog UnitCatalog => GetUnitCatalogSafe();
+    public UnitPortraitCatalogSO PortraitCatalog => GetPortraitCatalogSafe();
+
+    // 싱글톤 초기화 전후 시점과 무관하게 안전하게 카탈로그 반환
+    public UnitCatalog GetUnitCatalogSafe()
+    {
+        if (unitCatalog != null) return unitCatalog;
+        unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+        return unitCatalog;
+    }
+
+    public UnitPortraitCatalogSO GetPortraitCatalogSafe()
+    {
+        if (portraitCatalog != null) return portraitCatalog;
+        portraitCatalog = Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
+        return portraitCatalog;
+    }
+
     #endregion
 
     #region 라이프 사이클

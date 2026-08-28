@@ -11,6 +11,9 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
     [Tooltip("인벤토리 최대 슬롯 수 (기본값: 50)")]
     [SerializeField] private int maxSlotCount = 50;
 
+    [Tooltip("사전 등록된 전체 ItemDataSO 목록 (인스펙터 할당 시 Resources.LoadAll 디스크 스캔 생략)")]
+    [SerializeField] private List<ItemDataSO> predefinedItemDatabase = new List<ItemDataSO>();
+
     private readonly List<InventorySlotData> slots = new List<InventorySlotData>();
     private readonly Dictionary<string, ItemDataSO> _itemDatabase = new Dictionary<string, ItemDataSO>();
 
@@ -43,10 +46,26 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
         EventBus.Unsubscribe<DataResetEvent>(OnReset);
     }
 
-    // Resources 경로 내 전체 ItemDataSO 에셋 캐싱
+    // ItemDataSO 데이터베이스 캐싱 (인스펙터 사전 등록 우선, 없을 시 1회 안전 로드)
     private void InitializeItemDatabase()
     {
         _itemDatabase.Clear();
+
+        // 1. 인스펙터에 사전 바인딩된 목록이 있는 경우: 디스크 탐색 비용 없이 O(N) 즉시 매핑
+        if (predefinedItemDatabase != null && predefinedItemDatabase.Count > 0)
+        {
+            for (int i = 0; i < predefinedItemDatabase.Count; i++)
+            {
+                ItemDataSO item = predefinedItemDatabase[i];
+                if (item != null && !string.IsNullOrEmpty(item.ItemID))
+                {
+                    _itemDatabase[item.ItemID] = item;
+                }
+            }
+            return;
+        }
+
+        // 2. 인스펙터가 비어있을 때의 안전 Fallback: Resources 1회 탐색
         ItemDataSO[] loadedItems = Resources.LoadAll<ItemDataSO>("");
         if (loadedItems != null)
         {
@@ -152,6 +171,161 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
             if (slots[i] == null) return false;
         }
         return true;
+    }
+
+    // 특정 아이템 ID의 인벤토리 총 보유 수량 조회
+    public int GetItemCount(string itemId)
+    {
+        if (string.IsNullOrEmpty(itemId)) return 0;
+        int total = 0;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemData != null && slots[i].itemData.ItemID == itemId)
+            {
+                total += slots[i].quantity;
+            }
+        }
+        return total;
+    }
+
+    // 특정 ItemDataSO의 인벤토리 총 보유 수량 조회
+    public int GetItemCount(ItemDataSO itemData)
+    {
+        if (itemData == null) return 0;
+        int total = 0;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemData == itemData)
+            {
+                total += slots[i].quantity;
+            }
+        }
+        return total;
+    }
+
+    // 소모품 타입별 인벤토리 총 보유 수량 조회
+    public int GetConsumableCount(ConsumableType type)
+    {
+        int total = 0;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemData != null &&
+                slots[i].itemData.ItemCategory == ItemCategory.Consumable &&
+                slots[i].itemData.ConsumableType == type)
+            {
+                total += slots[i].quantity;
+            }
+        }
+        return total;
+    }
+
+    // 소모품 타입에 해당하는 ItemDataSO 조회
+    public ItemDataSO GetConsumableItemData(ConsumableType type)
+    {
+        // 1. 인벤토리 슬롯 우선 탐색
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemData != null &&
+                slots[i].itemData.ItemCategory == ItemCategory.Consumable &&
+                slots[i].itemData.ConsumableType == type)
+            {
+                return slots[i].itemData;
+            }
+        }
+
+        // 2. 캐시된 아이템 데이터베이스 탐색
+        foreach (var item in _itemDatabase.Values)
+        {
+            if (item != null && item.ItemCategory == ItemCategory.Consumable && item.ConsumableType == type)
+            {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    // 특정 아이템을 지정 수량만큼 인벤토리에서 차감 소비
+    public bool TrySpendItem(ItemDataSO itemData, int quantity)
+    {
+        if (itemData == null || quantity <= 0) return false;
+        if (GetItemCount(itemData) < quantity) return false;
+
+        int remainToSpend = quantity;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemData == itemData)
+            {
+                if (slots[i].quantity <= remainToSpend)
+                {
+                    remainToSpend -= slots[i].quantity;
+                    slots[i] = null;
+                }
+                else
+                {
+                    slots[i].quantity -= remainToSpend;
+                    remainToSpend = 0;
+                }
+
+                if (remainToSpend <= 0) break;
+            }
+        }
+
+        OnInventoryChanged?.Invoke();
+        SaveManager.Instance?.SaveGameData();
+        return true;
+    }
+
+    // 소모품 타입 아이템을 지정 수량만큼 인벤토리에서 차감 소비
+    public bool TrySpendConsumable(ConsumableType type, int quantity)
+    {
+        if (quantity <= 0) return false;
+        if (GetConsumableCount(type) < quantity) return false;
+
+        int remainToSpend = quantity;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] != null && slots[i].itemData != null &&
+                slots[i].itemData.ItemCategory == ItemCategory.Consumable &&
+                slots[i].itemData.ConsumableType == type)
+            {
+                if (slots[i].quantity <= remainToSpend)
+                {
+                    remainToSpend -= slots[i].quantity;
+                    slots[i] = null;
+                }
+                else
+                {
+                    slots[i].quantity -= remainToSpend;
+                    remainToSpend = 0;
+                }
+
+                if (remainToSpend <= 0) break;
+            }
+        }
+
+        OnInventoryChanged?.Invoke();
+        SaveManager.Instance?.SaveGameData();
+        return true;
+    }
+
+    // 특정 아이템의 추가 수용 가능 최대 수량 계산
+    public int GetAvailableCapacityForItem(ItemDataSO itemData)
+    {
+        if (itemData == null) return 0;
+
+        int capacity = 0;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i] == null)
+            {
+                capacity += itemData.MaxStack;
+            }
+            else if (slots[i].itemData == itemData)
+            {
+                capacity += Mathf.Max(0, itemData.MaxStack - slots[i].quantity);
+            }
+        }
+        return capacity;
     }
 
     #endregion

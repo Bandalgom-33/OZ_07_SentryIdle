@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -48,7 +48,9 @@ public class GachaDataProvider : MonoBehaviour
 
         if (unitCatalog == null)
         {
-            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            unitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.UnitCatalog 
+                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
 
         if (unitCatalog == null || unitCatalog.Units == null)

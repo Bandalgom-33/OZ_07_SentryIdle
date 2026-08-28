@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using EndlessGuard.Unit.Data;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 // 캐릭터별 4부위(머리, 갑옷, 무기, 장신구) 장비 장착 관리, 스탯 합산 및 세이브/로드 연동 싱글톤 매니저
 public class EquipmentManager : SingletonBase<EquipmentManager>
@@ -15,10 +18,13 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
 
     [Header("캐릭터 카드 UI")]
     [Tooltip("현재 선택된 캐릭터의 카드/초상화 이미지")]
-    [SerializeField] private UnityEngine.UI.Image characterCardImage;
+    [SerializeField] private Image characterCardImage;
+
+    [Tooltip("현재 선택된 캐릭터의 이름 텍스트")]
+    [SerializeField] private TMP_Text characterNameText;
 
     [Tooltip("유닛 초상화 카탈로그 데이터")]
-    [SerializeField] private EndlessGuard.Unit.Data.UnitPortraitCatalogSO portraitCatalog;
+    [SerializeField] private UnitPortraitCatalogSO portraitCatalog;
 
     #endregion
 
@@ -268,16 +274,33 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
         RecalculateEquipmentStats();
     }
 
-    // 현재 선택된 캐릭터의 카드 이미지 갱신 처리
+    // 현재 선택된 캐릭터의 카드 이미지 및 이름 텍스트 갱신 처리
     private void UpdateCharacterCardUI()
     {
-        if (characterCardImage == null || string.IsNullOrEmpty(currentUnitId)) return;
+        if (string.IsNullOrEmpty(currentUnitId)) return;
 
         if (portraitCatalog != null)
         {
             Sprite portrait = portraitCatalog.GetPortraitByUnitId(currentUnitId);
-            characterCardImage.sprite = portrait;
-            characterCardImage.enabled = portrait != null;
+            if (characterCardImage != null)
+            {
+                characterCardImage.sprite = portrait;
+                characterCardImage.enabled = portrait != null;
+            }
+
+            // 카탈로그에서 유닛 데이터를 조회하여 표시 이름 반영
+            UnitDataSO unitData = portraitCatalog.GetUnitDataByUnitId(currentUnitId);
+            if (characterNameText != null)
+            {
+                characterNameText.text = unitData != null ? unitData.DisplayName : currentUnitId;
+            }
+        }
+        else
+        {
+            if (characterNameText != null)
+            {
+                characterNameText.text = currentUnitId;
+            }
         }
     }
 

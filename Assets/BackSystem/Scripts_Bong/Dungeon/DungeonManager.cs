@@ -59,7 +59,9 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
         if (unitCatalog == null)
         {
-            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            unitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.UnitCatalog 
+                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
 
         if (dungeonList == null || dungeonList.Count == 0)

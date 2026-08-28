@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e8d06538e6fa1244a8c460831c35d9c, type: 3}
+  m_Name: CraftingRecipe_Equip_Acc_03
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipeSO
+  recipeId: RECIPE_EQUIP_ACC_03
+  itemCategory: 0
+  resultItem: {fileID: 11400000, guid: b431fa5f08a0ca746a3315689f7ba9a5, type: 2}
+  baseCraftingTime: 30
+  goldCost: 15000
+  diamondCost: 0
+  requiredStoneType: 2
+  stoneCost: 50
+  outputAmount: 1
+  unlockFactoryLevel: 5

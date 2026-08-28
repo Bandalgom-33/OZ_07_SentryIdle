@@ -22,6 +22,13 @@ public class ItemDataSO : ScriptableObject
     [Header("장비 정보")]
     [SerializeField] private EquipmentType equipmentType;
 
+    [Header("소모품 정보")]
+    [SerializeField] private ConsumableType consumableType = ConsumableType.HealthPotion_Low;
+    [Tooltip("물약 회복 비율")]
+    [SerializeField, Range(0f, 1f)] private float recoveryRatio = 0.25f;
+    [Tooltip("경험치책 경험치량")]
+    [SerializeField, Min(0)] private long expAmount = 100L;
+
     [Header("장비 능력치")]
     [SerializeField] private int physicalAttack;
     [SerializeField] private int magicAttack;
@@ -40,6 +47,9 @@ public class ItemDataSO : ScriptableObject
     public ItemCategory ItemCategory => itemCategory;
     public int MaxStack => maxStack;
     public EquipmentType EquipmentType => equipmentType;
+    public ConsumableType ConsumableType => consumableType;
+    public float RecoveryRatio => recoveryRatio;
+    public long ExpAmount => expAmount;
 
     public int PhysicalAttack => physicalAttack;
     public int MagicAttack => magicAttack;

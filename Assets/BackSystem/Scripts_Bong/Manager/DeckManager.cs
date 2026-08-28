@@ -116,15 +116,9 @@ public class DeckManager : SingletonBase<DeckManager>
 
         if (unitCatalog == null)
         {
-            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
-            if (unitCatalog == null)
-            {
-                UnitCatalog[] allCatalogs = Resources.LoadAll<UnitCatalog>("");
-                if (allCatalogs != null && allCatalogs.Length > 0)
-                {
-                    unitCatalog = allCatalogs[0];
-                }
-            }
+            unitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.UnitCatalog 
+                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
 
         // 1번 슬롯 루카(2), 2번 슬롯 김하진(4)을 기본값으로 배열 초기화

@@ -71,7 +71,9 @@ public class GachaUI : MonoBehaviour
 
         if (unitCatalog == null)
         {
-            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            unitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.UnitCatalog 
+                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
     }
 

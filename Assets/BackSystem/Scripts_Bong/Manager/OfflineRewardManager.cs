@@ -148,7 +148,7 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
         CurrencyManager cm = CurrencyManager.Instance;
         ConsumableItemManager cim = ConsumableItemManager.Instance;
 
-        if (controller == null || cm == null || cim == null) return;
+        if (controller == null || cm == null) return;
 
         List<CraftingRecipeSO> recipes = controller.RecipeDatabase;
         if (recipes == null || recipes.Count == 0) return;
@@ -161,7 +161,7 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
             if (recipeIndex < 0 || recipeIndex >= recipes.Count) continue;
 
             CraftingRecipeSO recipe = recipes[recipeIndex];
-            if (recipe == null) continue;
+            if (recipe == null || recipe.resultItem == null) continue;
 
             float effectiveTime = recipe.baseCraftingTime / speedMultiplier;
             if (effectiveTime <= 0f) effectiveTime = 1f;
@@ -170,40 +170,56 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
             int theoreticalCount = Mathf.FloorToInt((float)(validSeconds / effectiveTime) * OfflineEfficiency);
             if (theoreticalCount <= 0) continue;
 
-            // 유저 보유 골드 및 마석 잔액 내에서 지불 가능한 최대 제작 횟수 검증
+            // 유저 보유 재화(골드/다이아/3종 마석) 잔액 내에서 지불 가능한 최대 제작 횟수 검증
             int affordableByGold = recipe.goldCost > 0 ? (int)(cm.Gold / recipe.goldCost) : theoreticalCount;
+            int affordableByDiamond = recipe.diamondCost > 0 ? (int)(cm.Diamond / recipe.diamondCost) : theoreticalCount;
             int affordableByStone = theoreticalCount;
 
-            if (recipe.requiredStoneType == CurrencyType.WaveStone && recipe.stoneCost > 0)
+            if (recipe.requiredStoneType == StoneType.WaveStone && recipe.stoneCost > 0)
             {
                 affordableByStone = (int)(cm.WaveStone / recipe.stoneCost);
             }
-            else if ((recipe.requiredStoneType == CurrencyType.StageStone || recipe.requiredStoneType == CurrencyType.DungeonStone) && recipe.stoneCost > 0)
+            else if (recipe.requiredStoneType == StoneType.DungeonStone && recipe.stoneCost > 0)
             {
-                affordableByStone = (int)(cm.StageStone / recipe.stoneCost);
+                affordableByStone = (int)(cm.DungeonStone / recipe.stoneCost);
+            }
+            else if (recipe.requiredStoneType == StoneType.RaidStone && recipe.stoneCost > 0)
+            {
+                affordableByStone = (int)(cm.RaidStone / recipe.stoneCost);
             }
 
-            int finalCraftCount = Mathf.Min(theoreticalCount, Mathf.Min(affordableByGold, affordableByStone));
+            // 인벤토리 수용 가능 수량에 따른 최대 제작 횟수 캡핑
+            int outputPerCraft = FactoryUpgradeProcessor.GetCraftingOutputAmount(crafting.factoryLevel);
+            int unitOutput = recipe.outputAmount * outputPerCraft;
+            int maxAvailableCapacity = InventoryGridManager.Instance != null
+                ? InventoryGridManager.Instance.GetAvailableCapacityForItem(recipe.resultItem)
+                : int.MaxValue;
+
+            int affordableByCapacity = unitOutput > 0 ? maxAvailableCapacity / unitOutput : 0;
+            int finalCraftCount = Mathf.Min(theoreticalCount, Mathf.Min(affordableByGold, Mathf.Min(affordableByDiamond, Mathf.Min(affordableByStone, affordableByCapacity))));
 
             if (finalCraftCount > 0)
             {
-                long totalGoldCost = recipe.goldCost * finalCraftCount;
+                if (recipe.goldCost > 0) cm.TrySpendGold(recipe.goldCost * finalCraftCount);
+                if (recipe.diamondCost > 0) cm.TrySpendDiamond(recipe.diamondCost * finalCraftCount);
+
                 long totalStoneCost = recipe.stoneCost * finalCraftCount;
+                if (recipe.requiredStoneType == StoneType.WaveStone) cm.TrySpendWaveStone(totalStoneCost);
+                else if (recipe.requiredStoneType == StoneType.DungeonStone) cm.TrySpendDungeonStone(totalStoneCost);
+                else if (recipe.requiredStoneType == StoneType.RaidStone) cm.TrySpendRaidStone(totalStoneCost);
 
-                cm.TrySpendGold(totalGoldCost);
-                if (recipe.requiredStoneType == CurrencyType.WaveStone) cm.TrySpendWaveStone(totalStoneCost);
-                if (recipe.requiredStoneType == CurrencyType.StageStone || recipe.requiredStoneType == CurrencyType.DungeonStone) cm.TrySpendStageStone(totalStoneCost);
+                int totalOutput = unitOutput * finalCraftCount;
+                InventoryGridManager.Instance?.AddItem(recipe.resultItem, totalOutput);
 
-                int outputPerCraft = FactoryUpgradeProcessor.GetCraftingOutputAmount(crafting.factoryLevel);
-                int totalOutput = recipe.outputAmount * outputPerCraft * finalCraftCount;
-                
-                cim.AddConsumable(recipe.resultType, totalOutput);
-
-                if (!report.GainedConsumables.ContainsKey(recipe.resultType))
+                if (recipe.itemCategory == ItemCategory.Consumable)
                 {
-                    report.GainedConsumables[recipe.resultType] = 0;
+                    ConsumableType cType = recipe.resultItem.ConsumableType;
+                    if (!report.GainedConsumables.ContainsKey(cType))
+                    {
+                        report.GainedConsumables[cType] = 0;
+                    }
+                    report.GainedConsumables[cType] += totalOutput;
                 }
-                report.GainedConsumables[recipe.resultType] += totalOutput;
             }
         }
     }

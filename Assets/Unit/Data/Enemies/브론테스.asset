@@ -21,7 +21,7 @@ MonoBehaviour:
   movementType: 1
   size: 2
   role: 1
-  attackRule: 1
+  attackRule: 2
   inRangeFireDuration: 0
   inRangeAdvanceDuration: 0
   baseStats:
@@ -40,7 +40,7 @@ MonoBehaviour:
     attackTarget: 1
     attackRange: 1
     targetCount: 1
-    rangeRotationMode: 0
+    rangeRotationMode: 1
     basicAttackRange:
       horizontalRadius: 3
       forwardDistance: 3

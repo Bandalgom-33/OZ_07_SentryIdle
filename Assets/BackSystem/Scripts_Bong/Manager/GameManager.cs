@@ -231,8 +231,13 @@ public class GameManager : SingletonBase<GameManager>
     // 게임 상태 전환 연산
     public void ChangeState(GameState newState)
     {
+        if (_currentState == newState) return;
+
         GameState oldState = _currentState;
         _currentState = newState;
+
+        // 상태 변경 이벤트를 먼저 발행하여 시스템 간 동기화 순서 보장
+        EventBus.Publish(new GameStateChangedEvent(oldState, newState));
 
         switch (newState)
         {
@@ -249,8 +254,6 @@ public class GameManager : SingletonBase<GameManager>
                 HandleGameOver();
                 break;
         }
-
-        EventBus.Publish(new GameStateChangedEvent(oldState, newState));
     }
 
     // 라이프 수치 초기화
