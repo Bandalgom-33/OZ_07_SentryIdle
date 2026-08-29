@@ -107,24 +107,23 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
 
     #region 세이브/로드 및 가챠 이벤트 처리
 
-    // 가챠 완료 시 유닛 획득 및 보유 목록 동기화 처리
+    // 가챠 완료 시 유닛 획득 및 보유 목록 동기화 처리 (단일 진실 공급원 역할 수행)
     private void OnGachaDrawCompleted(GachaDrawCompletedEvent evt)
     {
         if (evt.resultItems == null) return;
 
         foreach (var item in evt.resultItems)
         {
-            if (item == null || string.IsNullOrEmpty(item.RewardId)) continue;
+            if (item == null || item.UnitId <= 0) continue;
 
-            int parsedId = UnitIdHelper.ParseUnitId(item.RewardId);
-            if (parsedId <= 0) continue;
-
-            UnitSaveData existing = FindSaveDataByUnitId(parsedId);
+            int unitId = item.UnitId;
+            UnitSaveData existing = FindSaveDataByUnitId(unitId);
             if (existing == null)
             {
+                // 신규 유닛 등록 (초기 레벨 1, 0 경험치, 가챠에서 계산된 돌파 단계)
                 _cachedOwnedUnits.Add(new UnitSaveData
                 {
-                    unitId = parsedId,
+                    unitId = unitId,
                     level = 1,
                     currentExp = 0L,
                     breakThroughStep = item.CurrentBreakthroughStep,
@@ -133,6 +132,7 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
             }
             else
             {
+                // 기존 보유 유닛의 돌파 단계만 최신 상태로 동기화
                 existing.breakThroughStep = item.CurrentBreakthroughStep;
             }
         }

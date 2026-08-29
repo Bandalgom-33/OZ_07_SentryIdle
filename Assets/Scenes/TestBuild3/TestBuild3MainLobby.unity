@@ -4360,9 +4360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a7dd2a03d75f044894cc6a62b6f2ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GachaController
-  singleDrawCost: 300
-  tenDrawCost: 3000
-  pityThreshold: 100
+  gachaConfig: {fileID: 11400000, guid: 753f330cf2785944f94aa640a80ec8a9, type: 2}
 --- !u!114 &1523250912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4376,6 +4374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GachaDataProvider
   unitCatalog: {fileID: 11400000, guid: 8009f11140c0429409c98b0cf3b3b803, type: 2}
+  gachaConfig: {fileID: 11400000, guid: 753f330cf2785944f94aa640a80ec8a9, type: 2}
 --- !u!1 &1603043003 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1346289709851562002, guid: 0b3155a431a01044bba900c6d0e07dee, type: 3}

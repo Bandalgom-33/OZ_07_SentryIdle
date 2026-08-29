@@ -249,11 +249,13 @@ public readonly struct DataResetEvent
 
 public readonly struct GachaDrawCompletedEvent
 {
-    public readonly System.Collections.Generic.List<IGachaRewardItem> resultItems;
+    // 가챠 추첨 결과 DTO 리스트
+    public readonly System.Collections.Generic.List<GachaRewardItem> resultItems;
+    // 추첨 완료 후 최종 잔여 천장 스택
     public readonly int currentPityStack;
 
     // 가챠 완료 이벤트 생성자
-    public GachaDrawCompletedEvent(System.Collections.Generic.List<IGachaRewardItem> resultItems, int currentPityStack)
+    public GachaDrawCompletedEvent(System.Collections.Generic.List<GachaRewardItem> resultItems, int currentPityStack)
     {
         this.resultItems = resultItems;
         this.currentPityStack = currentPityStack;
