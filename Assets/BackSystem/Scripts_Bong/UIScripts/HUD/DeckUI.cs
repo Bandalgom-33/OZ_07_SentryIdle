@@ -44,7 +44,9 @@ public class DeckUI : MonoBehaviour
     {
         if (portraitCatalog == null)
         {
-            portraitCatalog = Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
+            portraitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.PortraitCatalog 
+                : Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
         }
 
         InitializeSlotObjectsAndImages();

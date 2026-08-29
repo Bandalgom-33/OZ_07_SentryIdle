@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using EndlessGuard.Unit.Data;
@@ -47,7 +47,9 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
 
         if (unitCatalog == null)
         {
-            unitCatalog = Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            unitCatalog = CollectionDataProvider.Instance != null 
+                ? CollectionDataProvider.Instance.UnitCatalog 
+                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
         }
     }
 
@@ -192,6 +194,9 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
 
         if (runtimeUnit != null)
         {
+            int beforeLevel = runtimeUnit.CurrentLevel;
+            long beforeExp = runtimeUnit.Progress != null ? runtimeUnit.Progress.CurrentExp : 0L;
+
             if (runtimeUnit.AddExperience(exp, out UnitLevelResult result))
             {
                 if (CollectionDataProvider.Instance != null)
@@ -203,7 +208,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
 
                 string unitName = (runtimeUnit.DataLink != null && runtimeUnit.DataLink.HasData) ? runtimeUnit.DataLink.UnitData.DisplayName : unitId;
                 string levelUpTag = result.DidLevelUp ? $" [★ LEVEL UP! Lv.{result.PreviousLevel} -> Lv.{result.CurrentLevel}]" : string.Empty;
-                Debug.Log($"[ExperienceManager] 소모품 경험치 지급 (필드 유닛): [{unitId}] {unitName} +{exp} EXP (Lv.{result.CurrentLevel}, EXP: {result.CurrentExp}){levelUpTag}");
+                Debug.Log($"[ExperienceManager] 소모품 경험치 지급 (필드 유닛): [{unitId}] {unitName} +{exp:#,##0} EXP | [전] Lv.{result.PreviousLevel} (EXP: {result.PreviousExp:#,##0}) ➔ [후] Lv.{result.CurrentLevel} (EXP: {result.CurrentExp:#,##0}){levelUpTag}");
                 return true;
             }
 
@@ -224,6 +229,9 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
             return false;
         }
 
+        int prevLevel = savedUnit.level;
+        long prevExp = savedUnit.currentExp;
+
         UnitProgressData progress = UnitProgressData.Create(unitData, savedUnit.level, savedUnit.currentExp, savedUnit.breakThroughStep);
         if (UnitProgressionService.TryAddExperience(unitData, progress, exp, out UnitLevelResult saveResult))
         {
@@ -234,8 +242,8 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
 
             RefreshDeckUnitsInspectorView();
 
-            string levelUpTag = saveResult.DidLevelUp ? $" [★ LEVEL UP! Lv.{saveResult.PreviousLevel} -> Lv.{saveResult.CurrentLevel}]" : string.Empty;
-            Debug.Log($"[ExperienceManager] 소모품 경험치 지급 (보관함 유닛): [{unitId}] {unitData.DisplayName} +{exp} EXP (Lv.{saveResult.CurrentLevel}, EXP: {saveResult.CurrentExp}){levelUpTag}");
+            string levelUpTag = saveResult.DidLevelUp ? $" [★ LEVEL UP! Lv.{prevLevel} -> Lv.{saveResult.CurrentLevel}]" : string.Empty;
+            Debug.Log($"[ExperienceManager] 소모품 경험치 지급 (보관함 유닛): [{unitId}] {unitData.DisplayName} +{exp:#,##0} EXP | [전] Lv.{prevLevel} (EXP: {prevExp:#,##0}) ➔ [후] Lv.{saveResult.CurrentLevel} (EXP: {saveResult.CurrentExp:#,##0}){levelUpTag}");
             return true;
         }
 

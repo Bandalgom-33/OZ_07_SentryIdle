@@ -73,14 +73,15 @@ public class UIWorkshopRecipeSelectButton : MonoBehaviour
 
         if (recipeImage != null && recipeSO != null)
         {
-            if (recipeSO.recipeIcon != null)
+            Sprite icon = recipeSO.RecipeIcon;
+            if (icon != null)
             {
-                recipeImage.sprite = recipeSO.recipeIcon;
+                recipeImage.sprite = icon;
                 recipeImage.enabled = true;
             }
             else
             {
-                recipeImage.enabled = true;
+                recipeImage.enabled = false;
             }
         }
     }

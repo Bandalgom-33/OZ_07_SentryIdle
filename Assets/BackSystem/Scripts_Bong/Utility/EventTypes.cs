@@ -8,10 +8,16 @@ public enum CurrencyType
     Gold,
     Diamond,
     DpCost,
-    WaveStone,     // 일반 스테이지 및 웨이브 클리어 마석
-    DungeonStone,  // 던전 파견 생산 마석 (기존 StageStone 개편)
-    StageStone = DungeonStone, // 기존 코드 호환성용 별칭
-    RaidStone      // 레이드 콘텐츠 마석
+    WaveStone,
+    DungeonStone,
+    RaidStone
+}
+
+public enum StoneType
+{
+    WaveStone = 0,
+    DungeonStone = 1,
+    RaidStone = 2
 }
 
 // 게임 내 주요 씬 종류 열거형

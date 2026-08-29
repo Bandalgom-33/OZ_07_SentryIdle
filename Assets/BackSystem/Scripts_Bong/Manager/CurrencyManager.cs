@@ -136,6 +136,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public static event Action<int> OnDpCostChange;
     public static event Action<float> OnDpCostSliderChange;
     public static event Action<long> OnWaveStoneChange;
+    public static event Action<long> OnDungeonStoneChange;
     public static event Action<long> OnStageStoneChange;
     public static event Action<long> OnRaidStoneChange;
 
@@ -430,6 +431,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public void GetDungeonStone(long amount)
     {
         DungeonStone += amount;
+        OnDungeonStoneChange?.Invoke(DungeonStone);
         OnStageStoneChange?.Invoke(DungeonStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, amount));
     }
@@ -441,6 +443,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     {
         if (DungeonStone < amount) return false;
         DungeonStone -= amount;
+        OnDungeonStoneChange?.Invoke(DungeonStone);
         OnStageStoneChange?.Invoke(DungeonStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, -amount));
         return true;

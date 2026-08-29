@@ -17,8 +17,11 @@ MonoBehaviour:
   itemIcon: {fileID: 4112433134889043799, guid: 3916a5832ceb44e7cb3f2c2c7f4c7e07, type: 3}
   description: 
   itemCategory: 0
-  maxStack: 1
+  maxStack: 999
   equipmentType: 1
+  consumableType: 0
+  recoveryRatio: 0.25
+  expAmount: 100
   physicalAttack: 0
   magicAttack: 0
   physicalDefense: 5
