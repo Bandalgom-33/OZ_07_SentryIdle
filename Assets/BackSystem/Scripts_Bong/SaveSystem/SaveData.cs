@@ -1,10 +1,17 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 // 게임 세이브 데이터 전체 종합 클래스
 [Serializable]
 public class SaveData
 {
+    // ─────────────────────────────────────────────────────────────────────────
+    // 세이브 포맷 버전 (SaveManager.requiredSaveVersion과 비교하여 불일치 시 초기화)
+    // 필드 추가/구조 변경 시 버전을 올려 구버전 데이터와 충돌을 방지
+    // ─────────────────────────────────────────────────────────────────────────
+    public int saveVersion = 0;
+
     // 보유 재화 데이터
     public CurrencyData currency = new CurrencyData();
     // 재화 및 스탯 업그레이드 레벨 데이터
@@ -27,6 +34,192 @@ public class SaveData
     public EquipmentSaveData equipment = new EquipmentSaveData();
     // 마지막 저장 일시 타임스탬프 (오프라인 보상 계산용)
     public string lastSaveTimestamp = string.Empty;
+
+    // 세이브 데이터 무결성 검증 및 비정상 수치 보정
+    public void Validate()
+    {
+        ValidateCurrency();
+        ValidateUpgrade();
+        ValidateStage();
+        ValidateGacha();
+        ValidateUnits();
+        ValidateCrafting();
+        ValidateConsumable();
+        ValidateInventory();
+    }
+
+    // 보유 재화 데이터 유효 범위 검증
+    private void ValidateCurrency()
+    {
+        if (currency == null) { currency = new CurrencyData(); return; }
+
+        currency.gold = ClampMin(currency.gold, 0L, "currency.gold");
+        currency.diamond = ClampMin(currency.diamond, 0L, "currency.diamond");
+        currency.waveStone = ClampMin(currency.waveStone, 0L, "currency.waveStone");
+        currency.stageStone = ClampMin(currency.stageStone, 0L, "currency.stageStone");
+        currency.raidStone = ClampMin(currency.raidStone, 0L, "currency.raidStone");
+    }
+
+    // 업그레이드 레벨 유효 범위 검증
+    private void ValidateUpgrade()
+    {
+        if (statUpgrade == null) { statUpgrade = new CurrencyUpgradeData(); return; }
+        const int maxLevel = 9999;
+
+        statUpgrade.goldBonusLevel = ClampRange(statUpgrade.goldBonusLevel, 0, maxLevel, "statUpgrade.goldBonusLevel");
+        statUpgrade.goldMagnificationLevel = ClampRange(statUpgrade.goldMagnificationLevel, 0, maxLevel, "statUpgrade.goldMagnificationLevel");
+        statUpgrade.diamondBonusLevel = ClampRange(statUpgrade.diamondBonusLevel, 0, maxLevel, "statUpgrade.diamondBonusLevel");
+        statUpgrade.diamondMagnificationLevel = ClampRange(statUpgrade.diamondMagnificationLevel, 0, maxLevel, "statUpgrade.diamondMagnificationLevel");
+        statUpgrade.dpCostBonusLevel = ClampRange(statUpgrade.dpCostBonusLevel, 0, maxLevel, "statUpgrade.dpCostBonusLevel");
+        statUpgrade.maxDpCostLevel = ClampRange(statUpgrade.maxDpCostLevel, 0, maxLevel, "statUpgrade.maxDpCostLevel");
+        statUpgrade.physicalAttackLevel = ClampRange(statUpgrade.physicalAttackLevel, 0, maxLevel, "statUpgrade.physicalAttackLevel");
+        statUpgrade.magicalAttackLevel = ClampRange(statUpgrade.magicalAttackLevel, 0, maxLevel, "statUpgrade.magicalAttackLevel");
+        statUpgrade.maxHpLevel = ClampRange(statUpgrade.maxHpLevel, 0, maxLevel, "statUpgrade.maxHpLevel");
+        statUpgrade.hpRegenLevel = ClampRange(statUpgrade.hpRegenLevel, 0, maxLevel, "statUpgrade.hpRegenLevel");
+        statUpgrade.physicalDefenseLevel = ClampRange(statUpgrade.physicalDefenseLevel, 0, maxLevel, "statUpgrade.physicalDefenseLevel");
+        statUpgrade.magicalDefenseLevel = ClampRange(statUpgrade.magicalDefenseLevel, 0, maxLevel, "statUpgrade.magicalDefenseLevel");
+        statUpgrade.attackSpeedLevel = ClampRange(statUpgrade.attackSpeedLevel, 0, 100, "statUpgrade.attackSpeedLevel");
+        statUpgrade.accuracyLevel = ClampRange(statUpgrade.accuracyLevel, 0, maxLevel, "statUpgrade.accuracyLevel");
+        statUpgrade.evasionLevel = ClampRange(statUpgrade.evasionLevel, 0, maxLevel, "statUpgrade.evasionLevel");
+        statUpgrade.criticalChanceLevel = ClampRange(statUpgrade.criticalChanceLevel, 0, 100, "statUpgrade.criticalChanceLevel");
+        statUpgrade.criticalDamageLevel = ClampRange(statUpgrade.criticalDamageLevel, 0, 200, "statUpgrade.criticalDamageLevel");
+    }
+
+    // 스테이지 진행 데이터 유효 범위 검증
+    private void ValidateStage()
+    {
+        if (stage == null) { stage = new StageData(); return; }
+
+        stage.currentStage = ClampMin(stage.currentStage, 1, "stage.currentStage");
+        stage.currentWave = ClampMin(stage.currentWave, 1, "stage.currentWave");
+        stage.maxWave = ClampMin(stage.maxWave, 1, "stage.maxWave");
+        if (stage.averageWaveDuration <= 0f)
+        {
+            Debug.LogWarning("[SaveData] 무결성 보정: stage.averageWaveDuration <= 0 → 15.0 으로 복구");
+            stage.averageWaveDuration = 15.0f;
+        }
+    }
+
+    // 가챠 천장 스택 유효 범위 검증
+    private void ValidateGacha()
+    {
+        if (gacha == null) { gacha = new GachaData(); return; }
+
+        gacha.pityStackCount = ClampRange(gacha.pityStackCount, 0, 100, "gacha.pityStackCount");
+    }
+
+    // 보유 유닛 성장 데이터 유효 범위 검증
+    private void ValidateUnits()
+    {
+        if (unitDeck == null) { unitDeck = new UnitDeckData(); return; }
+        if (unitDeck.ownedUnits == null) return;
+
+        for (int i = 0; i < unitDeck.ownedUnits.Count; i++)
+        {
+            UnitSaveData u = unitDeck.ownedUnits[i];
+            if (u == null) continue;
+
+            u.level = ClampMin(u.level, 1, $"ownedUnits[{i}].level");
+            u.currentExp = ClampMin(u.currentExp, 0L, $"ownedUnits[{i}].currentExp");
+            u.breakThroughStep = ClampMin(u.breakThroughStep, 0, $"ownedUnits[{i}].breakThroughStep");
+            u.fragmentCount = ClampMin(u.fragmentCount, 0, $"ownedUnits[{i}].fragmentCount");
+        }
+    }
+
+    // 공방 상태 데이터 유효 범위 검증
+    private void ValidateCrafting()
+    {
+        if (crafting == null) { crafting = new CraftingSaveData(); return; }
+
+        crafting.factoryLevel = ClampRange(crafting.factoryLevel, 1, 5, "crafting.factoryLevel");
+
+        if (crafting.progressEntries != null)
+        {
+            for (int i = 0; i < crafting.progressEntries.Count; i++)
+            {
+                if (crafting.progressEntries[i] != null && crafting.progressEntries[i].progress < 0f)
+                {
+                    crafting.progressEntries[i].progress = 0f;
+                }
+            }
+        }
+    }
+
+    // 소모품 수량 데이터 유효 범위 검증
+    private void ValidateConsumable()
+    {
+        if (consumable == null) { consumable = new ConsumableSaveData(); return; }
+
+        consumable.healthPotionLow = ClampMin(consumable.healthPotionLow, 0, "consumable.healthPotionLow");
+        consumable.healthPotionMid = ClampMin(consumable.healthPotionMid, 0, "consumable.healthPotionMid");
+        consumable.healthPotionHigh = ClampMin(consumable.healthPotionHigh, 0, "consumable.healthPotionHigh");
+        consumable.expBookLow = ClampMin(consumable.expBookLow, 0, "consumable.expBookLow");
+        consumable.expBookMid = ClampMin(consumable.expBookMid, 0, "consumable.expBookMid");
+        consumable.expBookHigh = ClampMin(consumable.expBookHigh, 0, "consumable.expBookHigh");
+    }
+
+    // 인벤토리 슬롯 및 수량 유효 범위 검증
+    private void ValidateInventory()
+    {
+        if (inventory == null) { inventory = new InventorySaveData(); return; }
+        if (inventory.slots == null) return;
+
+        for (int i = inventory.slots.Count - 1; i >= 0; i--)
+        {
+            InventorySlotSaveEntry slot = inventory.slots[i];
+            if (slot == null) { inventory.slots.RemoveAt(i); continue; }
+
+            if (slot.slotIndex < 0 || slot.slotIndex >= 50)
+            {
+                Debug.LogWarning($"[SaveData] 무결성 보정: inventory.slots[{i}].slotIndex={slot.slotIndex} 범위 이탈 → 항목 제거");
+                inventory.slots.RemoveAt(i);
+                continue;
+            }
+            if (slot.quantity < 0)
+            {
+                Debug.LogWarning($"[SaveData] 무결성 보정: inventory.slots[{i}].quantity={slot.quantity} 음수 → 0");
+                slot.quantity = 0;
+            }
+        }
+    }
+
+    // 정수형(long) 최소값 하한 보정
+    private static long ClampMin(long value, long min, string fieldName)
+    {
+        if (value < min)
+        {
+            Debug.LogWarning($"[SaveData] 무결성 보정: {fieldName} = {value} → {min}");
+            return min;
+        }
+        return value;
+    }
+
+    // 정수형(int) 최소값 하한 보정
+    private static int ClampMin(int value, int min, string fieldName)
+    {
+        if (value < min)
+        {
+            Debug.LogWarning($"[SaveData] 무결성 보정: {fieldName} = {value} → {min}");
+            return min;
+        }
+        return value;
+    }
+
+    // 정수형(int) 유효 범위(최소~최대) 보정
+    private static int ClampRange(int value, int min, int max, string fieldName)
+    {
+        if (value < min)
+        {
+            Debug.LogWarning($"[SaveData] 무결성 보정: {fieldName} = {value} → {min}");
+            return min;
+        }
+        if (value > max)
+        {
+            Debug.LogWarning($"[SaveData] 무결성 보정: {fieldName} = {value} → {max}");
+            return max;
+        }
+        return value;
+    }
 }
 
 // 보유 재화 수량 저장 구조
@@ -205,17 +398,23 @@ public class ConsumableSaveData
     public int expBookHigh;
 }
 
-// 공방(아이템 조합 공장) 상태 저장 데이터
+// 개별 레시피 진행도 저장 데이터 DTO
+[Serializable]
+public class RecipeProgressSaveEntry
+{
+    public string recipeId = string.Empty;
+    public float progress = 0.0f;
+}
+
+// 공방 상태 저장 데이터
 [Serializable]
 public class CraftingSaveData
 {
-    // 공장 현재 레벨 (Lv.1 ~ Lv.5)
     public int factoryLevel = 1;
-    // 전역 자동 전환 토글 활성화 여부
     public bool isGlobalAutoEnabled = false;
-    // 현재 제작 목록에 등록된 레시피 인덱스 목록
     public List<int> queuedRecipeIndices = new List<int>();
-    // 레시피별 현재 생산 진행 시간 (초, 가변 크기 지원)
+    public List<string> queuedRecipeIds = new List<string>();
+    public List<RecipeProgressSaveEntry> progressEntries = new List<RecipeProgressSaveEntry>();
     public List<float> recipeProgresses = new List<float>();
 }
 
