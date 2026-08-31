@@ -1,10 +1,17 @@
 using System;
 using UnityEngine;
 
-// 공방 레벨업(Lv.1 ~ Lv.5) 처리 및 레벨별 특화 혜택(슬롯/수량/속도/해금) 연산기
+public enum FactoryUpgradeResult
+{
+    Success,
+    MaxLevelReached,
+    InvalidLevel,
+    NotEnoughCurrency,
+    AlreadyUpgrading
+}
+
 public static class FactoryUpgradeProcessor
 {
-    // 공장 최대 레벨 상한
     public const int MaxFactoryLevel = 5;
 
     // 레벨별 최대 동시 활성화 슬롯 수 반환
@@ -13,10 +20,10 @@ public static class FactoryUpgradeProcessor
         return level switch
         {
             1 => 1,
-            2 => 2, // Lv.2 특화: 제작 목록 1개 증가
+            2 => 2,
             3 => 2,
             4 => 2,
-            5 => 3, // Lv.5 특화: 전체 업그레이드 (슬롯 3개 확장)
+            5 => 3,
             _ => 1
         };
     }
@@ -28,9 +35,9 @@ public static class FactoryUpgradeProcessor
         {
             1 => 1,
             2 => 1,
-            3 => 2, // Lv.3 특화: 1회 제작 수량 2개로 증가
+            3 => 2,
             4 => 2,
-            5 => 3, // Lv.5 특화: 1회 제작 수량 3개로 증가
+            5 => 3,
             _ => 1
         };
     }
@@ -43,8 +50,8 @@ public static class FactoryUpgradeProcessor
             1 => 1.0f,
             2 => 1.0f,
             3 => 1.0f,
-            4 => 1.5f, // Lv.4 특화: 제작 속도 +50% 증가 (1.5배)
-            5 => 2.0f, // Lv.5 특화: 제작 속도 +100% 증가 (2.0배)
+            4 => 1.5f,
+            5 => 2.0f,
             _ => 1.0f
         };
     }
@@ -63,7 +70,7 @@ public static class FactoryUpgradeProcessor
         };
     }
 
-    // 특정 레시피 인덱스의 공방 레벨별 해금 여부 확인
+    // 특정 레시피의 공방 레벨별 해금 여부 확인
     public static bool IsRecipeUnlocked(int level, int recipeIndex)
     {
         int unlockedCount = GetUnlockedRecipeCount(level);
@@ -92,36 +99,36 @@ public static class FactoryUpgradeProcessor
         waveStoneCost = 0;
         dungeonStoneCost = 0;
 
-        if (currentLevel >= MaxFactoryLevel)
+        if (currentLevel < 1 || currentLevel >= MaxFactoryLevel)
         {
             return false;
         }
 
         switch (currentLevel)
         {
-            case 1: // Lv.1 ➔ Lv.2 (슬롯 1개 증가)
+            case 1:
                 goldCost = 1000;
                 waveStoneCost = 5;
                 dungeonStoneCost = 0;
-                break;
-            case 2: // Lv.2 ➔ Lv.3 (1회 제작 수량 증가)
+                return true;
+            case 2:
                 goldCost = 3000;
                 waveStoneCost = 0;
                 dungeonStoneCost = 5;
-                break;
-            case 3: // Lv.3 ➔ Lv.4 (제작 속도 증가)
+                return true;
+            case 3:
                 goldCost = 10000;
                 waveStoneCost = 15;
                 dungeonStoneCost = 10;
-                break;
-            case 4: // Lv.4 ➔ Lv.5 (전체 대폭 업그레이드)
+                return true;
+            case 4:
                 goldCost = 30000;
                 waveStoneCost = 30;
                 dungeonStoneCost = 30;
-                break;
+                return true;
+            default:
+                return false;
         }
-
-        return true;
     }
 
     // 다음 레벨 특화 혜택 안내 문구 생성
@@ -137,36 +144,42 @@ public static class FactoryUpgradeProcessor
         };
     }
 
-    // 공장 레벨업 실행 및 재화 차감 처리
-    public static bool TryUpgradeFactory(ref int currentLevel)
+    // 공장 레벨업 실행 및 재화 후불 차감 처리
+    public static FactoryUpgradeResult TryUpgradeFactory(ref int currentLevel)
     {
+        if (currentLevel < 1)
+        {
+            Debug.LogWarning($"[FactoryUpgradeProcessor] 비정상적인 공장 레벨({currentLevel})입니다.");
+            return FactoryUpgradeResult.InvalidLevel;
+        }
+
         if (currentLevel >= MaxFactoryLevel)
         {
             Debug.LogWarning("[FactoryUpgradeProcessor] 공장이 이미 최고 레벨(Lv.5)입니다.");
-            return false;
+            return FactoryUpgradeResult.MaxLevelReached;
         }
 
         if (!GetUpgradeCost(currentLevel, out long goldCost, out long waveCost, out long stageCost))
         {
-            return false;
+            return FactoryUpgradeResult.InvalidLevel;
         }
 
         CurrencyManager cm = CurrencyManager.Instance;
-        if (cm == null) return false;
+        if (cm == null) return FactoryUpgradeResult.NotEnoughCurrency;
 
         if (!cm.HasGold(goldCost) || !cm.HasWaveStone(waveCost) || !cm.HasStageStone(stageCost))
         {
             Debug.LogWarning("[FactoryUpgradeProcessor] 공장 업그레이드에 필요한 재화가 부족합니다.");
-            return false;
+            return FactoryUpgradeResult.NotEnoughCurrency;
         }
 
-        cm.TrySpendGold(goldCost);
-        if (waveCost > 0) cm.TrySpendWaveStone(waveCost);
-        if (stageCost > 0) cm.TrySpendStageStone(stageCost);
+        if (goldCost > 0 && !cm.TrySpendGold(goldCost)) return FactoryUpgradeResult.NotEnoughCurrency;
+        if (waveCost > 0 && !cm.TrySpendWaveStone(waveCost)) return FactoryUpgradeResult.NotEnoughCurrency;
+        if (stageCost > 0 && !cm.TrySpendStageStone(stageCost)) return FactoryUpgradeResult.NotEnoughCurrency;
 
         currentLevel++;
         Debug.Log($"[FactoryUpgradeProcessor] 공장 레벨업 성공! 현재 레벨: Lv.{currentLevel}");
 
-        return true;
+        return FactoryUpgradeResult.Success;
     }
 }

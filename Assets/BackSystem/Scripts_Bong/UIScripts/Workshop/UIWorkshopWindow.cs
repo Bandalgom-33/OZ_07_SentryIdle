@@ -530,20 +530,27 @@ public class UIWorkshopWindow : MonoBehaviour
         if (cc != null)
         {
             bool success = cc.UpgradeFactory();
-            if (success)
-            {
-                RefreshAllUI();
-            }
+            RefreshAllUI();
         }
     }
 
-    // 공방 팝업 패널 활성화/비활성화 토글
+    // 공방 팝업 패널 활성화 및 비활성화
     public void SetPanelActive(bool active)
     {
         if (workshopPanel != null)
         {
             workshopPanel.SetActive(active);
-            if (active) RefreshAllUI();
+            if (active)
+            {
+                RefreshAllUI();
+            }
+            else
+            {
+                if (CraftingController.Instance != null)
+                {
+                    CraftingController.Instance.SaveIfDirty();
+                }
+            }
         }
     }
 
