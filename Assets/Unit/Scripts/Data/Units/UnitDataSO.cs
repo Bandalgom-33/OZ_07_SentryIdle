@@ -85,6 +85,10 @@ namespace EndlessGuard.Unit.Data
         [Min(0f)]
         [SerializeField] private float skillGaugePerAttack;
 
+        [Header("SP 스킬 설정")]
+        [Tooltip("SP가 준비됐을 때 자동으로 사용하는 캐릭터별 액티브 스킬 설정입니다. 대상 범위, 피해 계산, 다단히트, VFX를 이 데이터에서 조정합니다.")]
+        [SerializeField] private UnitSkillSettings skillSettings = new UnitSkillSettings();
+
         [Header("패시브 능력")]
         [Tooltip("이 캐릭터가 사용하는 재사용 가능한 패시브 데이터 목록입니다.")]
         [SerializeField] private List<PassiveDataSO> passives = new List<PassiveDataSO>();
@@ -117,6 +121,7 @@ namespace EndlessGuard.Unit.Data
         public float MaxSkillGauge => maxSkillGauge;
         public float SkillGaugeRegenPerSecond => skillGaugeRegenPerSecond;
         public float SkillGaugePerAttack => skillGaugePerAttack;
+        public UnitSkillSettings SkillSettings => skillSettings;
         public IReadOnlyList<PassiveDataSO> Passives => passives;
         public IReadOnlyList<PassiveTuning> PassiveTunings => passiveTunings;
         public GameObject UnitPrefab => unitPrefab;

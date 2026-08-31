@@ -139,7 +139,8 @@ namespace EndlessGuard.Unit.Runtime
                 unit.StepHealthRegeneration(deltaTime);
                 unit.StepSkillGaugeRegeneration(deltaTime);
 
-                if (unit.Attack != null)
+                bool skillBlocksBasicAttack = unit.StepSkillRuntime(deltaTime);
+                if (!skillBlocksBasicAttack && unit.Attack != null)
                 {
                     unit.Attack.Step(deltaTime);
                 }
