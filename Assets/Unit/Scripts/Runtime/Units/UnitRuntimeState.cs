@@ -24,6 +24,9 @@ namespace EndlessGuard.Unit.Runtime
         [Tooltip("UnitDataSO에 설정된 패시브를 현재 전투에서 실행·관리하는 런타임 상태입니다.")]
         [SerializeField] private UnitPassiveRuntime passiveRuntime = new UnitPassiveRuntime();
 
+        [Tooltip("UnitDataSO의 SP 스킬 설정을 읽어 자동 발동, 타겟 선택, 피해와 다단히트를 실행하는 런타임 상태입니다.")]
+        [SerializeField] private UnitSkillRuntime skillRuntime = new UnitSkillRuntime();
+
         [Tooltip("레벨/승급 진행도에 따라 상위 분류 성장 프로필을 RuntimeStats에 적용하는 상태입니다.")]
         [SerializeField] private UnitGrowthRuntime growthRuntime = new UnitGrowthRuntime();
 
@@ -62,6 +65,7 @@ namespace EndlessGuard.Unit.Runtime
         public UnitAttack Attack => attack;
         public RuntimeStats Stats => runtimeStats;
         public UnitPassiveRuntime Passives => passiveRuntime;
+        public UnitSkillRuntime Skill => skillRuntime;
         public UnitGrowthRuntime Growth => growthRuntime;
         public CommonGrowthRuntime CommonGrowth => commonGrowthRuntime;
         public PassiveStatusRuntime Statuses => passiveStatuses;
@@ -72,6 +76,10 @@ namespace EndlessGuard.Unit.Runtime
         public int MaxLevel => dataLink != null && dataLink.HasData ? UnitProgressionService.GetMaxLevel(dataLink.UnitData, progressData) : 1;
         public float CurrentSkillGauge => currentSkillGauge;
         public float MaxSkillGauge => dataLink != null && dataLink.HasData ? dataLink.UnitData.MaxSkillGauge : 0f;
+        public float SkillGaugeCost => dataLink != null && dataLink.HasData && dataLink.UnitData.SkillSettings != null
+            ? dataLink.UnitData.SkillSettings.ResolveGaugeCost(MaxSkillGauge)
+            : MaxSkillGauge;
+        public bool IsSkillReady => dataLink != null && dataLink.HasData && dataLink.UnitData.SkillSettings != null && dataLink.UnitData.SkillSettings.Enabled && SkillGaugeCost > 0f && currentSkillGauge + 0.0001f >= SkillGaugeCost;
         public float NormalizedSkillGauge => MaxSkillGauge > 0f ? currentSkillGauge / MaxSkillGauge : 0f;
         public float AttackProgress => attackProgress.Progress;
         public int ReadyAttackCount => attackProgress.ReadyAttackCount;
@@ -117,6 +125,11 @@ namespace EndlessGuard.Unit.Runtime
             if (passiveRuntime != null)
             {
                 passiveRuntime.Deactivate();
+            }
+
+            if (skillRuntime != null)
+            {
+                skillRuntime.Deactivate();
             }
 
             if (passiveStatuses != null)
@@ -165,6 +178,11 @@ namespace EndlessGuard.Unit.Runtime
             if (passiveRuntime == null)
             {
                 passiveRuntime = new UnitPassiveRuntime();
+            }
+
+            if (skillRuntime == null)
+            {
+                skillRuntime = new UnitSkillRuntime();
             }
 
             if (growthRuntime == null)
@@ -222,6 +240,7 @@ namespace EndlessGuard.Unit.Runtime
             isInitialized = true;
 
             passiveRuntime.Initialize(this, dataLink.UnitData.Passives);
+            skillRuntime.Initialize(this);
 
             OnSkillGaugeChanged?.Invoke(this);
         }
@@ -366,6 +385,16 @@ namespace EndlessGuard.Unit.Runtime
             healthRegenElapsed -= regenDuration;
 
             Heal(runtimeStats.HpRegenPerSecond * regenDuration);
+        }
+
+        internal bool StepSkillRuntime(float deltaTime)
+        {
+            if (!isInitialized || deltaTime <= 0f || health == null || health.IsDead || skillRuntime == null)
+            {
+                return false;
+            }
+
+            return skillRuntime.Step(deltaTime);
         }
 
         internal void StepSkillGaugeRegeneration(float deltaTime)

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 9ae2234c010f46569a26d6f8a8b2938c
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 249785
+  packageName: 2D Explosion URP
+  packageVersion: 1.0
+  assetPath: Assets/Vendor/CartoonVFX9X/UIEffectCollecion_Megapack/Shader/CartoonVFX9X_Shader1_Addictive.shadergraph
+  uploadId: 570541

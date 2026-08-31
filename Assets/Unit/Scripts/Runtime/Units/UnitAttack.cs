@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
@@ -31,6 +32,8 @@ namespace EndlessGuard.Unit.Runtime
         public bool HasCombatTarget => hasCombatTarget;
         public AttackImpactVfxTemplate AttackImpactTemplate => attackImpactTemplate;
         public AttackHitSoundTemplate AttackHitSoundTemplate => attackHitSoundTemplate;
+
+        public event Action<UnitAttack> OnAttackExecuted;
 
         private void Awake()
         {
@@ -136,6 +139,7 @@ namespace EndlessGuard.Unit.Runtime
                 }
             }
 
+            OnAttackExecuted?.Invoke(this);
             return true;
         }
 

@@ -33,7 +33,7 @@ MonoBehaviour:
   raidCombatNumberScale: 0.72
   raidCriticalNumberScale: 0.95
   raidBossDamageNumberScale: 1.4
-  startingCost: 30
+  startingCost: 100
   costMax: 100
   costRegenPerSecond: 1
   developmentRoster:
