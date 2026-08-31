@@ -215,7 +215,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             HasPendingRaidRewardReport = true;
             LastRewardedRaidStone = raidVictoryStoneReward;
             Debug.Log($"[CurrencyManager] 레이드 승리! 레이드 마석 {raidVictoryStoneReward:N0}개 지급 완료 (현재 보유 마석: {RaidStone:N0})");
-            SaveManager.Instance?.SaveGameData(force: true);
+            EventBus.Publish(new RequestSaveGameEvent(force: true));
         }
     }
 

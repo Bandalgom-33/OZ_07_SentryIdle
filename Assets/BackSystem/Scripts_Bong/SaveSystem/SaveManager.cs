@@ -51,17 +51,35 @@ public class SaveManager : SingletonBase<SaveManager>
         LoadGameData();
     }
 
+    // 전역 이벤트 구독 등록
+    private void OnEnable()
+    {
+        EventBus.Subscribe<RequestSaveGameEvent>(OnRequestSaveGame);
+    }
+
+    // 전역 이벤트 구독 해제
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe<RequestSaveGameEvent>(OnRequestSaveGame);
+    }
+
+    // 외부 저장 요청 이벤트 수신 처리
+    private void OnRequestSaveGame(RequestSaveGameEvent evt)
+    {
+        SaveGameData(evt.force);
+    }
+
     #endregion
 
     #region 애플리케이션 라이프사이클 훅
 
-    // 애플리케이션 종료 시 자동 저장
+    // 애플리케이션 종료 시 단일 강제 저장
     private void OnApplicationQuit()
     {
         SaveGameData(force: true);
     }
 
-    // 모바일 백그라운드 전환 시 자동 저장
+    // 모바일 백그라운드 전환 시 단일 강제 저장
     private void OnApplicationPause(bool pauseStatus)
     {
         if (pauseStatus)
@@ -70,7 +88,7 @@ public class SaveManager : SingletonBase<SaveManager>
         }
     }
 
-    // 윈도우 포커스 이탈 시 자동 저장
+    // 윈도우 포커스 이탈 시 쿨다운 준수 저장
     private void OnApplicationFocus(bool hasFocus)
     {
         if (!hasFocus)

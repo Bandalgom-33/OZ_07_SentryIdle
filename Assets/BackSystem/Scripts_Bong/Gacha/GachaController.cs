@@ -82,21 +82,6 @@ public class GachaController : SingletonBase<GachaController>
         EventBus.Unsubscribe<DataResetEvent>(OnReset);
     }
 
-    // 애플리케이션 종료 시 자동 저장
-    private void OnApplicationQuit()
-    {
-        SaveIfDirty();
-    }
-
-    // 모바일 백그라운드 전환 시 자동 저장
-    private void OnApplicationPause(bool pauseStatus)
-    {
-        if (pauseStatus)
-        {
-            SaveIfDirty();
-        }
-    }
-
     #endregion
 
     #region 가챠 실행 및 확률 조회 연산
@@ -257,15 +242,12 @@ public class GachaController : SingletonBase<GachaController>
 
     #region 세이브 및 로드 연동
 
-    // 가챠 변경사항 발생 시 디스크 저장 수행
+    // 가챠 변경사항 발생 시 저장 요청 발행
     public void SaveIfDirty()
     {
         if (_isGachaDirty)
         {
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SaveGameData();
-            }
+            EventBus.Publish(new RequestSaveGameEvent(force: false));
             _isGachaDirty = false;
         }
     }

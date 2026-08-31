@@ -238,6 +238,17 @@ public readonly struct DataLoadEvent
     }
 }
 
+public readonly struct RequestSaveGameEvent
+{
+    public readonly bool force;
+
+    // 게임 데이터 저장 요청 이벤트 생성자
+    public RequestSaveGameEvent(bool force = false)
+    {
+        this.force = force;
+    }
+}
+
 public readonly struct DataResetEvent
 {
     

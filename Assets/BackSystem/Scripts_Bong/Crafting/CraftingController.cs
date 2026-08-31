@@ -133,21 +133,6 @@ public class CraftingController : SingletonBase<CraftingController>
         EventBus.Unsubscribe<DataResetEvent>(OnReset);
     }
 
-    // 애플리케이션 종료 시 자동 저장
-    private void OnApplicationQuit()
-    {
-        SaveIfDirty();
-    }
-
-    // 모바일 백그라운드 전환 시 자동 저장
-    private void OnApplicationPause(bool pauseStatus)
-    {
-        if (pauseStatus)
-        {
-            SaveIfDirty();
-        }
-    }
-
     // 매 프레임 제작 틱 루프 갱신
     private void Update()
     {
@@ -460,15 +445,12 @@ public class CraftingController : SingletonBase<CraftingController>
         }
     }
 
-    // 변경사항 존재 시 디스크 저장 수행
+    // 변경사항 존재 시 저장 요청 발행
     public void SaveIfDirty()
     {
         if (_isDirty)
         {
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SaveGameData();
-            }
+            EventBus.Publish(new RequestSaveGameEvent(force: false));
             _isDirty = false;
         }
     }

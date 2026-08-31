@@ -913,6 +913,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc81ecb39136cc14680576768936f499, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
+  requiredSaveVersion: 1
+  saveCooldownSeconds: 5
 --- !u!114 &308169157 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 44880858904704650, guid: 665215d966d8fc348ac1976c84dcb202, type: 3}
@@ -1214,6 +1216,26 @@ PrefabInstance:
     - target: {fileID: 97784495441542060, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1418943211139808452, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1418943211139808452, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1418943211139808452, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5294852414976648574, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5294852414976648574, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6310005214118262755, guid: a3ad97654df71c540990e1c0b1e57948, type: 3}
       propertyPath: m_Name

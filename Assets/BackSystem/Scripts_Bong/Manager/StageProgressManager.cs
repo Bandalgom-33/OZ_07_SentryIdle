@@ -111,9 +111,9 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
 
         PublishStageWaveChanged();
 
-        if (autoSave && SaveManager.Instance != null)
+        if (autoSave)
         {
-            SaveManager.Instance.SaveGameData();
+            EventBus.Publish(new RequestSaveGameEvent(force: false));
         }
     }
 
@@ -125,11 +125,7 @@ public class StageProgressManager : SingletonBase<StageProgressManager>
         Debug.Log($"[StageProgressManager] 다음 스테이지 진입: Stage {CurrentStage}");
 
         PublishStageWaveChanged();
-
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.SaveGameData();
-        }
+        EventBus.Publish(new RequestSaveGameEvent(force: false));
     }
 
     // 현재 웨이브 진행도 갱신 연산

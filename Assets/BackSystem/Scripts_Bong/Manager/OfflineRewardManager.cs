@@ -92,11 +92,7 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
         if (LastReportData.HasAnyReward)
         {
             Debug.Log($"[OfflineRewardManager] 오프라인 보상 정산 완료: 시간={LastReportData.FormattedDuration}, Gold=+{LastReportData.GainedGold:N0}, WaveStone=+{LastReportData.GainedWaveStone:N0}");
-            
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SaveGameData();
-            }
+            EventBus.Publish(new RequestSaveGameEvent(force: false));
         }
     }
 

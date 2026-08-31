@@ -24,6 +24,9 @@ public class GameManager : SingletonBase<GameManager>
     [Tooltip("옵션/환경설정 팝업 패널 오브젝트")]
     [SerializeField] private GameObject optionPanel;
 
+    [Tooltip("게임 오버 팝업 패널 오브젝트 (미할당 시 2초 대기 후 로비 씬 자동 전환)")]
+    [SerializeField] private GameObject gameOverPanel;
+
     [Header("--- 플레이어 라이프 설정 ---")]
     [Tooltip("플레이어 기지 최대 라이프 수치")]
     [SerializeField] private int maxLife = 20;
@@ -134,17 +137,16 @@ public class GameManager : SingletonBase<GameManager>
     // 보스 사망 연출을 위해 2초 대기 후 로비 씬으로 비동기 페이드 전환
     private async UniTaskVoid ReturnToLobbyAfterDelayAsync()
     {
-        // 1. 보스 사망 연출 및 승리 여운을 위해 2초간 비동기 대기
         await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: this.GetCancellationTokenOnDestroy());
 
-        // 2. SceneLoader 싱글톤을 통해 로비 씬으로 페이드아웃 효과와 함께 전환
         if (SceneLoader.Instance != null)
         {
             SceneLoader.Instance.LoadScene(SceneType.Lobby, useFade: true);
         }
         else
         {
-            _ = SceneManager.LoadSceneAsync("TestBuild2MainLobby");
+            string fallbackLobbyName = SceneLoader.Instance != null ? SceneLoader.Instance.GetSceneName(SceneType.Lobby) : "BackSystem2";
+            _ = SceneManager.LoadSceneAsync(fallbackLobbyName);
         }
     }
 
@@ -236,7 +238,6 @@ public class GameManager : SingletonBase<GameManager>
         GameState oldState = _currentState;
         _currentState = newState;
 
-        // 상태 변경 이벤트를 먼저 발행하여 시스템 간 동기화 순서 보장
         EventBus.Publish(new GameStateChangedEvent(oldState, newState));
 
         switch (newState)
@@ -263,22 +264,37 @@ public class GameManager : SingletonBase<GameManager>
         UpdateLifeUI();
     }
 
-    // 게임 오버 처리 및 재시작
+    // 게임 오버 처리 (팝업 활성화 또는 2초 대기 후 로비 씬 전환)
     private void HandleGameOver()
     {
-        MapGenerator mapGenerator = FindFirstObjectByType<MapGenerator>();
-        if (mapGenerator != null)
-        {
-            mapGenerator.RestartWave();
-        }
+        SetGameSpeed(0);
 
-        if (CurrencyManager.Instance != null)
+        if (gameOverPanel != null)
         {
-            CurrencyManager.Instance.SetDpCost(50);
+            gameOverPanel.SetActive(true);
         }
+        else
+        {
+            HandleGameOverFallbackAsync().Forget();
+        }
+    }
+
+    // 게임 오버 팝업 미할당 시 2초 대기 후 로비 씬 전환 루틴
+    private async UniTaskVoid HandleGameOverFallbackAsync()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(2.0f), cancellationToken: this.GetCancellationTokenOnDestroy());
 
         ResetLife();
-        ChangeState(GameState.InGame);
+
+        if (SceneLoader.Instance != null)
+        {
+            SceneLoader.Instance.LoadScene(SceneType.Lobby, useFade: true);
+        }
+        else
+        {
+            string fallbackLobbyName = SceneLoader.Instance != null ? SceneLoader.Instance.GetSceneName(SceneType.Lobby) : "BackSystem2";
+            _ = SceneManager.LoadSceneAsync(fallbackLobbyName);
+        }
     }
 
     // 게임 속도 설정 및 배속 변경
