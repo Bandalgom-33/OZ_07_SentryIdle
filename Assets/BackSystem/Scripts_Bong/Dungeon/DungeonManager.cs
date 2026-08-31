@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
-// 던전별 실시간 가동 상태 및 전투력 인스펙터 모니터링 구조체
 [Serializable]
 public struct DungeonInspectorState
 {
@@ -25,13 +24,14 @@ public struct DungeonInspectorState
     public float progressRatio;
 }
 
-// 던전 방치형 자동 생산 주기 연산 및 유닛 파견 편성을 총괄하는 매니저
 public class DungeonManager : SingletonBase<DungeonManager>
 {
-    #region 직렬화 변수 (인스펙터 바인딩 및 모니터링)
+    public const int SlotsPerDungeon = 3;
+
+    #region 직렬화 변수
 
     [Header("--- 카탈로그 참조 ---")]
-    [Tooltip("던전 3종 ScriptableObject 리스트")]
+    [Tooltip("던전 ScriptableObject 리스트")]
     [SerializeField] private List<DungeonDataSO> dungeonList = new List<DungeonDataSO>();
 
     [Tooltip("유닛 메타데이터 조회를 위한 UnitCatalog")]
@@ -231,6 +231,20 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return 0;
     }
 
+    // 유닛 성급(등급) 정수 배율 조회 연산
+    public int GetUnitGradeMultiplier(int unitId)
+    {
+        if (unitId <= 0) return 1;
+
+        string unitKey = UnitIdHelper.ToUnitKey(unitId);
+        if (unitCatalog != null && unitCatalog.TryGetById(unitKey, out UnitDataSO so) && so != null)
+        {
+            return Mathf.Max(1, (int)so.Grade);
+        }
+
+        return 1;
+    }
+
     // 유닛 보유 여부 판정 연산
     public bool IsUnitOwned(int unitId)
     {
@@ -245,15 +259,16 @@ public class DungeonManager : SingletonBase<DungeonManager>
         return IsUnitOwned(unitId);
     }
 
-    // 유닛 런타임 실시간 전투력 계산 연산
+    // 유닛 런타임 실시간 전투력 계산 연산 (레벨 x (돌파+1) x 성급)
     public int GetUnitCombatPower(int unitId)
     {
         if (unitId <= 0 || !IsUnitOwned(unitId)) return 0;
 
         int level = GetUnitRuntimeLevel(unitId);
         int breakthroughMultiplier = GetUnitRuntimeBreakthrough(unitId) + 1;
+        int gradeMultiplier = GetUnitGradeMultiplier(unitId);
 
-        return Mathf.Max(1, level * breakthroughMultiplier);
+        return Mathf.Max(1, level * breakthroughMultiplier * gradeMultiplier);
     }
 
     // 문자열 키 기반 유닛 전투력 계산 연산
@@ -309,10 +324,10 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #region 유닛 파견 편성 조작 API
 
-    // 던전 슬롯 유닛 배치 연산
+    // 던전 슬롯 유닛 배치 연산 (다른 던전에 파견된 경우 자동 해제 후 이동)
     public bool AssignUnitToSlot(string targetDungeonId, int targetSlotIndex, int unitId)
     {
-        if (string.IsNullOrEmpty(targetDungeonId) || targetSlotIndex < 0 || targetSlotIndex >= 3 || unitId <= 0)
+        if (string.IsNullOrEmpty(targetDungeonId) || targetSlotIndex < 0 || targetSlotIndex >= SlotsPerDungeon || unitId <= 0)
         {
             return false;
         }
@@ -358,7 +373,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
     // 던전 슬롯 유닛 해제 연산
     public bool RemoveUnitFromSlot(string dungeonId, int slotIndex)
     {
-        if (string.IsNullOrEmpty(dungeonId) || slotIndex < 0 || slotIndex >= 3) return false;
+        if (string.IsNullOrEmpty(dungeonId) || slotIndex < 0 || slotIndex >= SlotsPerDungeon) return false;
 
         if (_assignedUnitsMap.TryGetValue(dungeonId, out int[] slots))
         {
@@ -427,7 +442,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
         candidates.Sort((a, b) => b.combatPower.CompareTo(a.combatPower));
 
-        int assignCount = Mathf.Min(3, candidates.Count);
+        int assignCount = Mathf.Min(SlotsPerDungeon, candidates.Count);
         for (int i = 0; i < assignCount; i++)
         {
             AssignUnitToSlot(dungeonId, i, candidates[i].unitId);
@@ -453,7 +468,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
         {
             return (int[])slots.Clone();
         }
-        return new int[3] { -1, -1, -1 };
+        return new int[SlotsPerDungeon] { -1, -1, -1 };
     }
 
     public float GetCurrentCycleTimer(string dungeonId)
@@ -463,9 +478,9 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
     #endregion
 
-    #region 세이브 / 로드 및 오프라인 방치 정산
+    #region 세이브 / 로드 연동
 
-    // 세이브 데이터 로드 및 오프라인 보상 정산 연산
+    // 세이브 데이터 로드 및 런타임 맵 구성
     private void OnLoad(DataLoadEvent evt)
     {
         if (evt.saveData == null) return;
@@ -477,7 +492,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
                 DungeonSlotSaveData slotSave = evt.saveData.dungeon.dungeonSlots[i];
                 if (slotSave == null || string.IsNullOrEmpty(slotSave.dungeonId)) continue;
 
-                if (slotSave.assignedUnitIds != null && slotSave.assignedUnitIds.Length == 3)
+                if (slotSave.assignedUnitIds != null && slotSave.assignedUnitIds.Length == SlotsPerDungeon)
                 {
                     _assignedUnitsMap[slotSave.dungeonId] = (int[])slotSave.assignedUnitIds.Clone();
                 }
@@ -494,48 +509,6 @@ public class DungeonManager : SingletonBase<DungeonManager>
             }
         }
         RefreshInspectorViews();
-    }
-
-    // 오프라인 누적 생산 보상 일괄 지급 연산
-    private void ProcessOfflineDungeonRewards(string lastSaveTimestamp)
-    {
-        if (string.IsNullOrEmpty(lastSaveTimestamp)) return;
-
-        if (!DateTime.TryParse(lastSaveTimestamp, out DateTime lastSaveTime))
-        {
-            return;
-        }
-
-        TimeSpan elapsed = DateTime.UtcNow - lastSaveTime;
-        float offlineSeconds = (float)elapsed.TotalSeconds;
-        if (offlineSeconds <= 0.0f) return;
-
-        for (int i = 0; i < dungeonList.Count; i++)
-        {
-            DungeonDataSO dataSO = dungeonList[i];
-            if (dataSO == null) continue;
-
-            string dId = dataSO.DungeonId;
-            int totalPower = GetDungeonTotalPower(dId);
-            bool isRunning = totalPower >= dataSO.RequiredMinCombatPower;
-
-            if (isRunning)
-            {
-                float prevTimer = _cycleTimerMap.TryGetValue(dId, out float t) ? t : 0.0f;
-                float totalAccumulatedTime = prevTimer + offlineSeconds;
-                float cycleDuration = dataSO.BaseCycleSeconds;
-
-                int offlineCycles = (int)(totalAccumulatedTime / cycleDuration);
-                float remainingTimer = totalAccumulatedTime % cycleDuration;
-
-                if (offlineCycles > 0)
-                {
-                    GrantDungeonReward(dataSO, totalPower, offlineCycles);
-                }
-
-                _cycleTimerMap[dId] = remainingTimer;
-            }
-        }
     }
 
     // 던전 진행 상태 데이터 저장 처리
@@ -598,7 +571,7 @@ public class DungeonManager : SingletonBase<DungeonManager>
 
             if (!_assignedUnitsMap.ContainsKey(dId))
             {
-                _assignedUnitsMap[dId] = new int[3] { -1, -1, -1 };
+                _assignedUnitsMap[dId] = new int[SlotsPerDungeon] { -1, -1, -1 };
             }
 
             if (!_cycleTimerMap.ContainsKey(dId))

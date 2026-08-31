@@ -1,6 +1,6 @@
+using System;
 using UnityEngine;
 
-// 가챠 뽑기 비용, 등급별 확률 가중치, 천장 스택 기준값 및 구간별 확률을 통합 관리하는 ScriptableObject 설정 에셋
 [CreateAssetMenu(fileName = "GachaConfig", menuName = "EndlessGuard/Gacha/GachaConfig", order = 1)]
 public class GachaConfigSO : ScriptableObject
 {
@@ -50,9 +50,6 @@ public class GachaConfigSO : ScriptableObject
     [Tooltip("기본 6성 확률 (0.1% = 0.001f)")]
     [SerializeField] private float baseSixStarRate = 0.001f;
 
-    [Tooltip("소프트 천장 진입 시 6성 확률 (10.0% = 0.10f)")]
-    [SerializeField] private float softPityRate = 0.10f;
-
     [Tooltip("하드 천장 진입 시 6성 확정 확률 (100.0% = 1.0f)")]
     [SerializeField] private float hardPityRate = 1.0f;
 
@@ -70,20 +67,34 @@ public class GachaConfigSO : ScriptableObject
     public float FiveStarWeight => fiveStarWeight;
     public float SixStarWeight => sixStarWeight;
 
-    // 1성~5성 비(非)6성 등급의 가중치 총합 반환 (정규화 연산의 분모로 활용)
     public float NonSixStarWeightTotal => oneStarWeight + twoStarWeight + threeStarWeight + fourStarWeight + fiveStarWeight;
+    public float TotalWeight => NonSixStarWeightTotal + sixStarWeight;
 
     public int SoftPityThreshold => softPityThreshold;
     public int HardPityThreshold => hardPityThreshold;
     public float BaseSixStarRate => baseSixStarRate;
-    public float SoftPityRate => softPityRate;
     public float HardPityRate => hardPityRate;
 
     #endregion
 
-    #region 헬퍼 메서드
+    #region 유효성 검사 및 헬퍼
 
-    // 1성~5성 기본 가중치를 배열 형태로 반환 (인덱스 0: 1성 ~ 인덱스 4: 5성)
+    // 등급별 가중치 합계 100% 유효성 검증
+    private void OnValidate()
+    {
+        float total = TotalWeight;
+        if (Mathf.Abs(total - 100.0f) > 0.001f)
+        {
+            Debug.LogWarning($"[GachaConfigSO] 등급별 가중치 총합이 100%가 아닙니다! (현재 총합: {total:F2}%)");
+        }
+
+        if (softPityThreshold >= hardPityThreshold)
+        {
+            Debug.LogWarning($"[GachaConfigSO] 소프트 천장 기준값({softPityThreshold})은 하드 천장 기준값({hardPityThreshold})보다 작아야 합니다.");
+        }
+    }
+
+    // 1성~5성 기본 가중치 배열 반환
     public float[] GetNonSixStarBaseWeights()
     {
         return new float[] { oneStarWeight, twoStarWeight, threeStarWeight, fourStarWeight, fiveStarWeight };

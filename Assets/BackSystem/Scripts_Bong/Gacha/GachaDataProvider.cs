@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
 using UnityEngine;
 
-// 가챠 유닛 ID 풀 적재 및 2단계 추첨(등급 판정 -> 유닛 선택)을 담당하는 데이터 프로바이더
 public class GachaDataProvider : MonoBehaviour
 {
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- 필수 설정 및 카탈로그 참조 ---")]
     [Tooltip("게임 내 전체 유닛 카탈로그 SO 참조")]
@@ -19,13 +18,9 @@ public class GachaDataProvider : MonoBehaviour
 
     #region 내부 캐시 변수
 
-    // 등급별 유닛 정수 ID 목록 풀 (박싱 및 중복 인스턴스 생성을 방지하기 위해 정수 ID 리스트로 경량 관리)
     private readonly Dictionary<UnitGrade, List<int>> _rewardIdPool = new Dictionary<UnitGrade, List<int>>();
-
-    // UnitCatalog 빠른 조회를 위한 내부 캐시 맵 (ID -> UnitDataSO)
     private readonly Dictionary<int, UnitDataSO> _unitDataMap = new Dictionary<int, UnitDataSO>();
 
-    // 정상 초기화 완료 여부 플래그
     public bool IsInitialized { get; private set; } = false;
 
     public UnitCatalog UnitCatalog => unitCatalog;
@@ -35,30 +30,27 @@ public class GachaDataProvider : MonoBehaviour
 
     #region 라이프 사이클 및 초기화
 
-    // 보상 풀 및 카탈로그 캐시 초기화
+    // 컴포넌트 초기화 및 유닛 풀 구성
     private void Awake()
     {
         InitializePoolFromCatalog();
     }
 
-    // 카탈로그 기반 등급별 보상 풀 구성 연산
+    // 카탈로그 기반 등급별 보상 풀 구성
     public bool InitializePoolFromCatalog()
     {
         _rewardIdPool.Clear();
         _unitDataMap.Clear();
         IsInitialized = false;
 
-        // 1성부터 6성까지 각 등급별 빈 리스트 사전 생성
         foreach (UnitGrade grade in Enum.GetValues(typeof(UnitGrade)))
         {
             if (grade == UnitGrade.None) continue;
             _rewardIdPool[grade] = new List<int>();
         }
 
-        // 인스펙터 참조가 누락된 경우 명시적 에러 로그 출력 후 초기화 중단 (묵시적 Resources.Load 폴백 방지)
         if (unitCatalog == null)
         {
-            // CollectionDataProvider의 카탈로그를 우선 안전하게 확인
             if (CollectionDataProvider.Instance != null && CollectionDataProvider.Instance.UnitCatalog != null)
             {
                 unitCatalog = CollectionDataProvider.Instance.UnitCatalog;
@@ -76,7 +68,6 @@ public class GachaDataProvider : MonoBehaviour
             return false;
         }
 
-        // 카탈로그 내 유닛 순회 및 정수 ID 기반 풀 적재
         foreach (UnitDataSO unitData in unitCatalog.Units)
         {
             if (unitData == null || unitData.Grade == UnitGrade.None) continue;
@@ -102,12 +93,11 @@ public class GachaDataProvider : MonoBehaviour
 
     #endregion
 
-    #region 2단계 추첨 핵심 메서드
+    #region 추첨 및 확률 계산 메서드
 
-    // 확률 기반 성 등급 추첨 연산 (GachaConfigSO 가중치 기반 정규화 연산)
+    // 확률 기반 성 등급 무작위 추첨
     public UnitGrade RollGrade(float sixStarProbability)
     {
-        // 6성 확률이 100%(1.0f) 이상이면 하드 천장으로 즉시 6성 반환
         if (sixStarProbability >= 1.0f)
         {
             return UnitGrade.SixStar;
@@ -116,17 +106,14 @@ public class GachaDataProvider : MonoBehaviour
         float randomVal = UnityEngine.Random.Range(0f, 100.0f);
         float sixStarPercent = Mathf.Clamp(sixStarProbability * 100.0f, 0f, 100f);
 
-        // 6성 당첨 판정
         if (randomVal < sixStarPercent)
         {
             return UnitGrade.SixStar;
         }
 
-        // 6성을 제외한 나머지 1성~5성에 대해 남은 확률 가중치(100% - 6성%)를 비례 분배
         float remainingWeight = 100.0f - sixStarPercent;
         float accumulated = sixStarPercent;
 
-        // Config가 있을 경우 Config 가중치 사용, 없을 경우 기본 가중치 적용
         float[] baseWeights = (gachaConfig != null)
             ? gachaConfig.GetNonSixStarBaseWeights()
             : new float[] { 30.0f, 30.0f, 25.0f, 12.0f, 2.9f };
@@ -147,7 +134,32 @@ public class GachaDataProvider : MonoBehaviour
         return UnitGrade.OneStar;
     }
 
-    // 지정 등급 내 무작위 유닛 정수 ID 추첨 연산
+    // 6성 확률 기준 전체 등급별 실시간 확률표(%) 계산 및 반환
+    public Dictionary<UnitGrade, float> CalculateGradeProbabilities(float sixStarProbability)
+    {
+        Dictionary<UnitGrade, float> result = new Dictionary<UnitGrade, float>();
+        float sixStarPercent = Mathf.Clamp(sixStarProbability * 100.0f, 0f, 100f);
+        result[UnitGrade.SixStar] = sixStarPercent;
+
+        float remainingWeight = 100.0f - sixStarPercent;
+        float[] baseWeights = (gachaConfig != null)
+            ? gachaConfig.GetNonSixStarBaseWeights()
+            : new float[] { 30.0f, 30.0f, 25.0f, 12.0f, 2.9f };
+
+        float nonSixStarTotal = (gachaConfig != null) ? gachaConfig.NonSixStarWeightTotal : 99.9f;
+        if (nonSixStarTotal <= 0f) nonSixStarTotal = 99.9f;
+
+        for (int i = 0; i < baseWeights.Length; i++)
+        {
+            UnitGrade grade = (UnitGrade)(i + 1);
+            float rate = (baseWeights[i] / nonSixStarTotal) * remainingWeight;
+            result[grade] = rate;
+        }
+
+        return result;
+    }
+
+    // 지정 등급 내 무작위 유닛 정수 ID 추첨
     public int GetRandomUnitIdByGrade(UnitGrade grade)
     {
         if (_rewardIdPool.TryGetValue(grade, out List<int> idList) && idList.Count > 0)
@@ -156,7 +168,6 @@ public class GachaDataProvider : MonoBehaviour
             return idList[randomIndex];
         }
 
-        // 해당 등급의 유닛 풀이 비어있을 경우 전체 풀에서 대체 탐색
         foreach (var pair in _rewardIdPool)
         {
             if (pair.Value.Count > 0)
@@ -170,7 +181,7 @@ public class GachaDataProvider : MonoBehaviour
         return -1;
     }
 
-    // 유닛 정수 ID로 원본 UnitDataSO 조회 연산 (캐시 맵 활용으로 O(1) 초고속 조회)
+    // 유닛 정수 ID 기반 UnitDataSO 조회
     public UnitDataSO GetUnitData(int unitId)
     {
         if (_unitDataMap.TryGetValue(unitId, out UnitDataSO dataSO))
@@ -178,7 +189,6 @@ public class GachaDataProvider : MonoBehaviour
             return dataSO;
         }
 
-        // 캐시 맵에 없을 경우 카탈로그에서 추가 검색
         if (unitCatalog != null)
         {
             string unitKey = UnitIdHelper.ToUnitKey(unitId);
