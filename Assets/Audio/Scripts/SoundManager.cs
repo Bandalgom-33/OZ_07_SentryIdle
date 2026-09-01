@@ -17,6 +17,9 @@ public class SoundManager : MonoBehaviour
     
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
+    
+    [Header("Game Progress Audio")]
+    [SerializeField] private GameProgressAudioDataSo gameProgressAudioData;
 
     //볼륨을 저장할 키 생성
     private const string BGM_VOLUME_KEY = "BGMVolume";
@@ -195,6 +198,46 @@ public class SoundManager : MonoBehaviour
             Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
 
         audioMixer.SetFloat("SFXVolume", db);
+    }
+    
+    //웨이브 시작 사운드
+    public void PlayWaveStartSound()
+    {
+        if (gameProgressAudioData == null) return;
+
+        PlaySFX( gameProgressAudioData.WaveStartSound, gameProgressAudioData.WaveStartVolume);
+    }
+
+    //웨이브 클리어 사운드
+    public void PlayWaveClearSound()
+    {
+        if (gameProgressAudioData == null) return;
+
+        PlaySFX( gameProgressAudioData.WaveClearSound, gameProgressAudioData.WaveClearVolume );
+    }
+
+    //스테이지 클리어사운드
+    public void PlayStageClearSound()
+    {
+        if (gameProgressAudioData == null) return;
+
+        PlaySFX(gameProgressAudioData.StageClearSound, gameProgressAudioData.StageClearVolume );
+    }
+
+    //스테이지 실패 사운드
+    public void PlayStageFailSound()
+    {
+        if (gameProgressAudioData == null) return;
+
+        PlaySFX( gameProgressAudioData.StageFailSound, gameProgressAudioData.StageFailVolume );
+    }
+
+    //보상 사운드
+    public void PlayRewardSound()
+    {
+        if (gameProgressAudioData == null) return;
+
+        PlaySFX(gameProgressAudioData.RewardSound, gameProgressAudioData.RewardVolume);
     }
     
     
