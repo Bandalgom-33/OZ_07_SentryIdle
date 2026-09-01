@@ -214,10 +214,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 1.2, z: 0.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
   m_Children:
-  - {fileID: 8200000000000000302}
-  - {fileID: 8300000000000000302}
+  - {fileID: 9037801550896890159}
+  - {fileID: 9217735006009557295}
   m_Father: {fileID: 2533625430446137516}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7913468090534655991
@@ -361,6 +360,12 @@ MonoBehaviour:
     appliedPassiveCount: 0
     unsupportedPassiveCount: 0
     rejectedPassiveCount: 0
+  skillRuntime:
+    isCasting: 0
+    currentHitIndex: 0
+    totalHitCount: 0
+    nextHitRemainingSeconds: 0
+    castLockRemainingSeconds: 0
   growthRuntime:
     appliedLevel: 1
     appliedPromotionStage: 0
@@ -435,8 +440,38 @@ MonoBehaviour:
   shakeDistance: 0.05
   shakeCycles: 2.5
   reactionDuration: 0.12
+  useBackwardRecoil: 0
+  recoilDistance: 0.1
   scaleUp: 1.07
   scaleDown: 0.96
+--- !u!114 &8100000000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7913468090534655991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f7a4d6e93384b25a3f0b9ef62e7b914, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.UnitAnimationBridge
+  animator: {fileID: 0}
+  autoFindAnimator: 1
+  idleStateName: IDLE
+  moveBoolParameter: 1_Move
+  attackTriggerParameter: 2_Attack
+  damagedTriggerParameter: 3_Damaged
+  deathTriggerParameter: 4_Death
+  buffTriggerParameter: 6_Other
+  summonTriggerParameter: 6_Other
+  skillTriggerParameter: 6_Other
+  deathBoolParameter: isDeath
+  playDamagedWhenHit: 0
+  useDeathClipLength: 1
+  deathClipNameHint: DEATH
+  deathAnimationFallbackSeconds: 0.7
+  deathHoldSeconds: 0.35
 --- !u!1001 &220245373918331401
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -642,36 +677,34 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2237612764621211872, guid: 5af04ac31442c724980b933ce24d510a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8972438536876358474}
   m_SourcePrefab: {fileID: 100100000, guid: 5af04ac31442c724980b933ce24d510a, type: 3}
 --- !u!224 &129545071286576463 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5717255882960625128, guid: 5af04ac31442c724980b933ce24d510a, type: 3}
   m_PrefabInstance: {fileID: 5664395153462343847}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8100000000000000003
+--- !u!1 &5878993657258946631 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2237612764621211872, guid: 5af04ac31442c724980b933ce24d510a, type: 3}
+  m_PrefabInstance: {fileID: 5664395153462343847}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8972438536876358474
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7913468090534655991}
+  m_GameObject: {fileID: 5878993657258946631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f7a4d6e93384b25a3f0b9ef62e7b914, type: 3}
+  m_Script: {fileID: 11500000, guid: f5f1cf3490c485c4096584c5168dd4ee, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.UnitAnimationBridge
-  animator: {fileID: 0}
-  autoFindAnimator: 1
-  idleStateName: IDLE
-  moveBoolParameter: 1_Move
-  attackTriggerParameter: 2_Attack
-  damagedTriggerParameter: 3_Damaged
-  deathTriggerParameter: 4_Death
-  buffTriggerParameter: 6_Other
-  summonTriggerParameter: 6_Other
-  deathBoolParameter: isDeath
-  playDamagedWhenHit: 0
+  m_EditorClassIdentifier: Assembly-CSharp::UnitAudioPlayer
+  audioData: {fileID: 11400000, guid: 4f1833e92481a8a45b7fb4dc8b9fc331, type: 2}
 --- !u!1001 &8200000000000000301
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -687,6 +720,18 @@ PrefabInstance:
     - target: {fileID: 910000000000000001, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
       propertyPath: m_LocalPosition.x
@@ -716,24 +761,12 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
---- !u!4 &8200000000000000302 stripped
+--- !u!4 &9037801550896890159 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 910000000000000002, guid: 620be5ad4c1b4fa6b5754bc83934c128, type: 3}
   m_PrefabInstance: {fileID: 8200000000000000301}
@@ -755,6 +788,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -782,24 +827,12 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
---- !u!4 &8300000000000000302 stripped
+--- !u!4 &9217735006009557295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 920000000000000002, guid: e678a22195dc456d8b4e11cf067534dd, type: 3}
   m_PrefabInstance: {fileID: 8300000000000000301}
