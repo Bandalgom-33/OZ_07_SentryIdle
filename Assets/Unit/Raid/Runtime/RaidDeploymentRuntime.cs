@@ -431,7 +431,15 @@ namespace EndlessGuard.Unit.Raid.Runtime
 
             deployedByTile.Remove(deadTile);
             OnUnitRemoved?.Invoke(deadUnit);
-            Destroy(deadUnit.gameObject, 0.05f);
+
+            float despawnDelay = 0.05f;
+            UnitAnimationBridge animationBridge = deadUnit.GetComponent<UnitAnimationBridge>();
+            if (animationBridge != null)
+            {
+                despawnDelay = Mathf.Max(despawnDelay, animationBridge.DeathPresentationDuration);
+            }
+
+            Destroy(deadUnit.gameObject, despawnDelay);
         }
 
         private void RemoveUnit(UnitRuntimeState unit)

@@ -43,6 +43,7 @@ namespace EndlessGuard.Unit.Runtime
 
                 UnitRuntimeState ally = allies[UnityEngine.Random.Range(0, allies.Count)];
                 int effectIndex = UnityEngine.Random.Range(0, 3);
+                bool effectApplied = false;
 
                 switch (effectIndex)
                 {
@@ -54,6 +55,7 @@ namespace EndlessGuard.Unit.Runtime
                             if (appliedAmount > 0f)
                             {
                                 AidEffect.ShowShield(ally);
+                                effectApplied = true;
                             }
 
                             break;
@@ -67,6 +69,7 @@ namespace EndlessGuard.Unit.Runtime
                             if (appliedAmount > 0f)
                             {
                                 AidEffect.ShowHeal(ally);
+                                effectApplied = true;
                             }
 
                             break;
@@ -80,10 +83,16 @@ namespace EndlessGuard.Unit.Runtime
                             if (appliedAmount > 0f)
                             {
                                 AidEffect.ShowSkill(ally);
+                                effectApplied = true;
                             }
 
                             break;
                         }
+                }
+
+                if (effectApplied)
+                {
+                    UnitAnimationCueEvents.NotifyBuff(owner);
                 }
             }
             finally

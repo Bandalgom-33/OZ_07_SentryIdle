@@ -57,6 +57,44 @@ MonoBehaviour:
   maxSkillGauge: 100
   skillGaugeRegenPerSecond: 1
   skillGaugePerAttack: 5
+  skillSettings:
+    enabled: 1
+    autoCastWhenReady: 1
+    skillGaugeCost: 100
+    targetScope: 0
+    attackTarget: 1
+    targetPriority: 0
+    areaTileRange:
+      horizontalRadius: 2
+      forwardDistance: 2
+      backwardDistance: 2
+      affectedTiles:
+      - {x: -1, y: 1}
+      - {x: 0, y: 1}
+      - {x: 1, y: 1}
+      - {x: -1, y: 0}
+      - {x: 1, y: 0}
+      - {x: -1, y: -1}
+      - {x: 0, y: -1}
+      - {x: 1, y: -1}
+    areaTargetLimit: 0
+    damageType: 1
+    attackPowerSource: 0
+    attackPowerPercent: 250
+    flatDamage: 0
+    applyDefense: 1
+    applyPassiveDamageModifiers: 1
+    canCritical: 0
+    hitMode: 0
+    hitCount: 3
+    hitIntervalSeconds: 0.15
+    multiHitDamageMode: 0
+    castLockSeconds: 0.45
+    vfxPrefab: {fileID: 5528647067547571432, guid: 1633fb12d8b0440db58d3a98878a19f6, type: 3}
+    vfxSpawnMode: 0
+    vfxOffset: {x: 0, y: 0, z: 0}
+    vfxScale: 0.55
+    playVfxEveryHit: 1
   passives:
   - {fileID: 11400000, guid: ba92199b29043884e8533e9e69e36f75, type: 2}
   passiveTunings:
