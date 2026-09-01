@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ScriptableObject 기반 제작 레시피 관리 및 실시간 공방 생산 틱 제어 컨트롤러
 public class CraftingController : SingletonBase<CraftingController>
 {
     #region 레시피 상태 열거형
@@ -26,7 +27,7 @@ public class CraftingController : SingletonBase<CraftingController>
     #region 내부 변수 및 프로퍼티
 
     private int _factoryLevel = 1;
-    private bool _isGlobalAutoEnabled = false;
+    private bool _isGlobalAutoEnabled = true;
     private bool _isDirty = false;
     private bool _isUpgrading = false;
     private FactoryUpgradeResult _lastUpgradeResult = FactoryUpgradeResult.Success;
@@ -136,14 +137,15 @@ public class CraftingController : SingletonBase<CraftingController>
     // 매 프레임 제작 틱 루프 갱신
     private void Update()
     {
-        UpdateCraftingProgress(Time.deltaTime);
+        float safeUnscaledDeltaTime = Mathf.Min(Time.unscaledDeltaTime, 0.1f);
+        UpdateCraftingProgress(safeUnscaledDeltaTime);
     }
 
     #endregion
 
     #region 자동 제작 틱 루프
 
-    // 제작 진행도 갱신 및 완료 처리
+    // 델타 타임 기반 공방 제작 진행도 갱신 및 완료 처리
     private void UpdateCraftingProgress(float deltaTime)
     {
         CurrencyManager cm = CurrencyManager.Instance;
@@ -239,7 +241,7 @@ public class CraftingController : SingletonBase<CraftingController>
         };
     }
 
-    // 레시피 제작 소모 재화 차감
+    // 레시피 제작 소모 재화 차감 처리
     private bool TrySpendRecipeMaterials(CraftingRecipeSO recipe)
     {
         if (!HasCraftingMaterials(recipe)) return false;
@@ -275,7 +277,7 @@ public class CraftingController : SingletonBase<CraftingController>
         return _activeRecipeQueue.Contains(recipeIndex);
     }
 
-    // 레시피 큐 등록
+    // 레시피 큐 등록 처리
     public bool AddRecipeToQueue(int recipeIndex)
     {
         if (recipeIndex < 0 || recipeIndex >= recipeDatabase.Count) return false;
@@ -304,7 +306,7 @@ public class CraftingController : SingletonBase<CraftingController>
         return true;
     }
 
-    // 레시피 큐 해제
+    // 레시피 큐 해제 처리
     public bool RemoveRecipeFromQueue(int recipeIndex)
     {
         if (!_activeRecipeQueue.Contains(recipeIndex))
@@ -342,7 +344,7 @@ public class CraftingController : SingletonBase<CraftingController>
     // 레시피 토글 상태 제어
     public bool SetRecipeToggle(int recipeIndex, bool isEnabled) => isEnabled ? AddRecipeToQueue(recipeIndex) : RemoveRecipeFromQueue(recipeIndex);
 
-    // 레시피 1회 수동 즉시 제작
+    // 레시피 1회 수동 즉시 제작 처리
     public bool CraftOnce(int recipeIndex)
     {
         if (recipeIndex < 0 || recipeIndex >= recipeDatabase.Count) return false;
@@ -418,7 +420,7 @@ public class CraftingController : SingletonBase<CraftingController>
 
     #region 공장 업그레이드 및 디스크 저장
 
-    // 공장 레벨업 실행
+    // 공장 레벨업 실행 처리
     public bool UpgradeFactory()
     {
         if (_isUpgrading)
@@ -455,7 +457,7 @@ public class CraftingController : SingletonBase<CraftingController>
         }
     }
 
-    // 테스트용 재료 충전
+    // 테스트용 재료 충전 처리
     public void AddTestMaterials()
     {
         CurrencyManager cm = CurrencyManager.Instance;
@@ -570,7 +572,7 @@ public class CraftingController : SingletonBase<CraftingController>
     private void OnReset(DataResetEvent evt)
     {
         _factoryLevel = 1;
-        _isGlobalAutoEnabled = false;
+        _isGlobalAutoEnabled = true;
         _activeRecipeQueue.Clear();
         _recipeProgressMap.Clear();
         EnsureArrayCapacity(recipeDatabase.Count);

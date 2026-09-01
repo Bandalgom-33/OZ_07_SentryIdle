@@ -4,85 +4,162 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// ScriptableObject 기반 레시피 버튼 및 제작 목록 슬롯을 동적으로 생성하는 공방 메인 팝업 UI 창 컨트롤러
+#region 공방 UI 직렬화 보조 구조체
+
+// 실시간 제작 슬롯 UI 매핑 구조체
+[Serializable]
+public struct WorkshopCraftingSlotUI
+{
+    [Tooltip("슬롯 루트 오브젝트")]
+    public GameObject rootObject;
+
+    [Tooltip("슬롯 활성화 컨테이너 (아이템 정보 및 진행도 바 포함)")]
+    public GameObject activeContainer;
+
+    [Tooltip("슬롯 비활성화/잠금 컨테이너 (미해금 또는 미등록 오버레이)")]
+    public GameObject disabledContainer;
+
+    [Tooltip("제작 중인 아이템 대표 아이콘 이미지")]
+    public Image itemIconImage;
+
+    [Tooltip("제작 중인 아이템 이름 텍스트")]
+    public TMP_Text itemNameText;
+
+    [Tooltip("실시간 제작 진행도 슬라이더")]
+    public Slider progressSlider;
+}
+
+// 선택된 레시피의 요구 재료 슬롯 UI 매핑 구조체
+[Serializable]
+public struct WorkshopCostSlotUI
+{
+    [Tooltip("재료 슬롯 루트 오브젝트 (필요 없으면 비활성화)")]
+    public GameObject slotObject;
+
+    [Tooltip("소모 재화/마석 대표 아이콘 이미지")]
+    public Image costIconImage;
+
+    [Tooltip("소모 요구량 텍스트 (예: 500 / 100)")]
+    public TMP_Text costAmountText;
+}
+
+#endregion
+
+// ScriptableObject 기반 레시피 목록, 고정 슬롯 3개 및 재화/스탯을 렌더링하는 공방 메인 팝업 UI 창 컨트롤러
 public class UIWorkshopWindow : MonoBehaviour
 {
+    #region 단위 포맷팅 상수
+
+    private static readonly string[] NumFormats = { "", "K", "M", "B", "T", "Qa", "Qi" };
+
+    #endregion
+
     #region 인스펙터 바인딩 필드
 
-    [Header("1. 기본 패널 및 제목")]
+    [Header("1. 패널 기본 및 헤더")]
     [Tooltip("공방 메인 팝업 패널 오브젝트")]
     [SerializeField] private GameObject workshopPanel;
 
-    [Tooltip("어떤 공방인지 알 수 있는 제목 설명 텍스트 (예: 소모품 공장)")]
+    [Tooltip("공방 타이틀 텍스트")]
     [SerializeField] private TMP_Text titleText;
+
+    [Tooltip("현재 공방 레벨 표기 텍스트 (예: Lv.1)")]
+    [SerializeField] private TMP_Text levelText;
 
     [Tooltip("공방 패널 닫기 [X] 버튼")]
     [SerializeField] private Button closePanelButton;
 
-    [Tooltip("테스트용 마석/골드 지급 치트 버튼")]
-    [SerializeField] private Button addTestMaterialsButton;
+    [Header("2. 재화 표시 텍스트 (5종 - 1000단위 축약 포맷 적용)")]
+    [Tooltip("골드 수량 표기 텍스트")]
+    [SerializeField] private TMP_Text goldText;
 
-    [Header("2. 공장 상태 및 업그레이드")]
-    [Tooltip("현재 적용 중인 공장 능력치 텍스트 (제작 속도, 제작 슬롯, 동시 제작 개수)")]
-    [SerializeField] private TMP_Text factoryStatusText;
+    [Tooltip("다이아 수량 표기 텍스트")]
+    [SerializeField] private TMP_Text diamondText;
 
-    [Tooltip("다음 업그레이드 시 변경되는 업그레이드 내용 및 비용 안내 텍스트")]
-    [SerializeField] private TMP_Text factoryUpgradeBenefitText;
+    [Tooltip("웨이브 마석 수량 표기 텍스트")]
+    [SerializeField] private TMP_Text waveStoneCountText;
+
+    [Tooltip("던전 마석 수량 표기 텍스트")]
+    [SerializeField] private TMP_Text dungeonStoneCountText;
+
+    [Tooltip("레이드 마석 수량 표기 텍스트")]
+    [SerializeField] private TMP_Text raidStoneCountText;
+
+    [Header("3. 공방 스탯 표시 및 강화 (설명 + 수치 표기)")]
+    [Tooltip("제작 속도 스탯 텍스트 (예: 제작 속도: x1.0)")]
+    [SerializeField] private TMP_Text statSpeedText;
+
+    [Tooltip("제작 슬롯 수 스탯 텍스트 (예: 제작 슬롯: 1/1개)")]
+    [SerializeField] private TMP_Text statSlotsText;
+
+    [Tooltip("1회 제작 수량 스탯 텍스트 (예: 1회 제작량: 1개)")]
+    [SerializeField] private TMP_Text statOutputAmountText;
 
     [Tooltip("공방 레벨업 실행 버튼")]
     [SerializeField] private Button upgradeFactoryButton;
 
-    [Tooltip("전역 자동 전환 토글 버튼 (켜면 등록된 레시피를 자동 생산)")]
-    [SerializeField] private Toggle autoCraftToggle;
+    [Tooltip("공방 업그레이드 비용/혜택 안내 텍스트 (선택 사항)")]
+    [SerializeField] private TMP_Text factoryUpgradeBenefitText;
 
-    [Header("3. 재화 갯수 텍스트 (3종 분리)")]
-    [Tooltip("웨이브 마석 수량 표기용 텍스트")]
-    [SerializeField] private TMP_Text waveStoneCountText;
+    [Header("4. 카테고리 탭 버튼")]
+    [Tooltip("소모품 레시피 카테고리 선택 탭 버튼")]
+    [SerializeField] private Button consumableTabButton;
 
-    [Tooltip("던전 마석 수량 표기용 텍스트")]
-    [SerializeField] private TMP_Text stageStoneCountText;
+    [Tooltip("장비 레시피 카테고리 선택 탭 버튼")]
+    [SerializeField] private Button equipmentTabButton;
 
-    [Tooltip("레이드 마석 수량 표기용 텍스트")]
-    [SerializeField] private TMP_Text raidStoneCountText;
+    [Header("5. 레시피 스크롤 목록 및 동적 생성")]
+    [Tooltip("레시피 버튼들이 생성될 부모 Content Transform (GridLayoutGroup 부착)")]
+    [SerializeField] private Transform recipeButtonContainerTransform;
 
-    [Header("4. 현재 선택된 레시피 공용 정보창 & 등록/해제 버튼")]
-    [Tooltip("현재 선택된 레시피의 이름을 공용으로 표시하는 텍스트")]
+    [Tooltip("동적 생성될 레시피 선택 버튼 프리팹 (UIWorkshopRecipeSelectButton 부착)")]
+    [SerializeField] private GameObject recipeSelectButtonPrefab;
+
+    [Header("6. 선택된 레시피 상세 정보창")]
+    [Tooltip("현재 선택된 레시피의 대표 아이콘 이미지")]
+    [SerializeField] private Image selectedRecipeIconImage;
+
+    [Tooltip("현재 선택된 레시피 이름 텍스트")]
     [SerializeField] private TMP_Text selectedRecipeNameText;
 
-    [Tooltip("현재 선택된 레시피의 설명 및 자원/재화 소모량을 공용으로 표시하는 텍스트")]
+    [Tooltip("현재 선택된 레시피 설명 텍스트")]
     [SerializeField] private TMP_Text selectedRecipeDescriptionText;
+
+    [Tooltip("요구 재료/재화 슬롯 3종 배열")]
+    [SerializeField] private WorkshopCostSlotUI[] costSlots = new WorkshopCostSlotUI[3];
 
     [Tooltip("선택한 레시피를 제작 목록에 등록/해제하는 공용 버튼")]
     [SerializeField] private Button recipeQueueActionButton;
 
-    [Tooltip("등록/해제 버튼 내부의 텍스트 ([제작 목록에 등록] ↔ [제작 목록에서 해제])")]
+    [Tooltip("등록/해제 버튼 내부 텍스트")]
     [SerializeField] private TMP_Text recipeQueueActionText;
 
-    [Header("5. 제작 목록 동적 컨테이너 & 슬롯 프리팹")]
-    [Tooltip("제작 목록 프리팹들이 자식으로 추가될 부모 구역 오브젝트 (Layout Group 등)")]
-    [SerializeField] private Transform queueContainerTransform;
+    [Header("7. 실시간 자동 제작 슬롯 (3종 고정)")]
+    [Tooltip("자동 제작 슬롯 3개 UI 매핑 (자동 제작1, 자동 제작2, 자동 제작3)")]
+    [SerializeField] private WorkshopCraftingSlotUI[] craftingSlots = new WorkshopCraftingSlotUI[3];
 
-    [Tooltip("제작 목록에 동적으로 추가될 슬롯 프리팹 (UIWorkshopQueueItemSlot 포함)")]
-    [SerializeField] private GameObject queueItemSlotPrefab;
+    [Header("8. 재화 아이콘 스프라이트 (요구 재료 슬롯 표시용)")]
+    [Tooltip("골드 기본 아이콘 스프라이트")]
+    [SerializeField] private Sprite goldIconSprite;
 
-    [Header("6. 제작 레시피 선택 목록 동적 컨테이너 & 버튼 프리팹")]
-    [Tooltip("레이어/레이아웃 정리 컴포넌트(GridLayoutGroup 등)가 부착된 레시피 버튼 컨테이너 오브젝트")]
-    [SerializeField] private Transform recipeButtonContainerTransform;
+    [Tooltip("다이아 기본 아이콘 스프라이트")]
+    [SerializeField] private Sprite diamondIconSprite;
 
-    [Tooltip("등록된 SO 개수만큼 생성될 레시피 선택 버튼 프리팹 (UIWorkshopRecipeSelectButton 포함)")]
-    [SerializeField] private GameObject recipeSelectButtonPrefab;
+    [Tooltip("웨이브 마석 기본 아이콘 스프라이트")]
+    [SerializeField] private Sprite waveStoneIconSprite;
+
+    [Tooltip("던전 마석 기본 아이콘 스프라이트")]
+    [SerializeField] private Sprite dungeonStoneIconSprite;
+
+    [Tooltip("레이드 마석 기본 아이콘 스프라이트")]
+    [SerializeField] private Sprite raidStoneIconSprite;
 
     #endregion
 
     #region 내부 변수
 
-    // 현재 선택된 레시피 인덱스
+    private ItemCategory _currentCategory = ItemCategory.Consumable;
     private int _currentSelectedRecipeIndex = 0;
-
-    // 동적 생성된 제작 목록 슬롯 인스턴스 목록
-    private readonly List<UIWorkshopQueueItemSlot> _spawnedQueueSlots = new List<UIWorkshopQueueItemSlot>();
-
-    // 동적 생성된 레시피 선택 버튼 인스턴스 목록
     private readonly List<UIWorkshopRecipeSelectButton> _spawnedRecipeButtons = new List<UIWorkshopRecipeSelectButton>();
 
     #endregion
@@ -97,24 +174,24 @@ public class UIWorkshopWindow : MonoBehaviour
             closePanelButton.onClick.AddListener(() => SetPanelActive(false));
         }
 
-        if (addTestMaterialsButton != null)
-        {
-            addTestMaterialsButton.onClick.AddListener(OnClickAddTestMaterials);
-        }
-
         if (upgradeFactoryButton != null)
         {
             upgradeFactoryButton.onClick.AddListener(OnClickUpgradeFactory);
         }
 
-        if (autoCraftToggle != null)
-        {
-            autoCraftToggle.onValueChanged.AddListener(OnToggleAutoCraft);
-        }
-
         if (recipeQueueActionButton != null)
         {
             recipeQueueActionButton.onClick.AddListener(OnClickQueueAction);
+        }
+
+        if (consumableTabButton != null)
+        {
+            consumableTabButton.onClick.AddListener(() => SetCategory(ItemCategory.Consumable));
+        }
+
+        if (equipmentTabButton != null)
+        {
+            equipmentTabButton.onClick.AddListener(() => SetCategory(ItemCategory.Equipment));
         }
     }
 
@@ -135,7 +212,7 @@ public class UIWorkshopWindow : MonoBehaviour
         ConsumableItemManager.OnConsumableCountChanged -= HandleConsumableCountChanged;
     }
 
-    // 슬롯별 실시간 진행도 슬라이더 갱신
+    // 슬롯별 실시간 진행도 슬라이더 갱신 루프
     private void Update()
     {
         RefreshRealtimeProgress();
@@ -143,9 +220,62 @@ public class UIWorkshopWindow : MonoBehaviour
 
     #endregion
 
-    #region 레시피 선택 버튼 동적 생성 (SO 기반)
+    #region 유틸리티 메서드
 
-    // 레시피 SO 목록 순회 및 버튼 프리팹 동적 생성
+    // 1000 단위 대용량 재화 포맷팅 처리
+    private string FormatCurrencyNumber(double value)
+    {
+        if (value < 1000)
+        {
+            return value.ToString("N0");
+        }
+
+        int formatIndex = 0;
+        while (value >= 1000 && formatIndex < NumFormats.Length - 1)
+        {
+            value /= 1000;
+            formatIndex++;
+        }
+
+        return value.ToString("N1") + NumFormats[formatIndex];
+    }
+
+    #endregion
+
+    #region 카테고리 탭 전환 및 레시피 버튼 동적 생성
+
+    // 카테고리 탭 변경 처리
+    public void SetCategory(ItemCategory category)
+    {
+        _currentCategory = category;
+        InitializeRecipeButtons();
+
+        CraftingController cc = CraftingController.Instance;
+        if (cc != null && cc.Recipes != null)
+        {
+            int firstIdx = -1;
+            for (int i = 0; i < cc.Recipes.Count; i++)
+            {
+                if (cc.Recipes[i] != null && cc.Recipes[i].itemCategory == _currentCategory)
+                {
+                    firstIdx = i;
+                    break;
+                }
+            }
+
+            if (firstIdx >= 0)
+            {
+                SelectRecipe(firstIdx);
+            }
+            else
+            {
+                _currentSelectedRecipeIndex = -1;
+                RefreshSelectedRecipeDetail();
+            }
+        }
+    }
+
+    // 레시피 SO 목록 순회 및 현재 카테고리 버튼 동적 생성
     private void InitializeRecipeButtons()
     {
         CraftingController cc = CraftingController.Instance;
@@ -168,15 +298,20 @@ public class UIWorkshopWindow : MonoBehaviour
             CraftingRecipeSO recipeSO = recipes[i];
             if (recipeSO == null) continue;
 
+            if (recipeSO.itemCategory != _currentCategory) continue;
+
             GameObject btnObj = Instantiate(recipeSelectButtonPrefab, recipeButtonContainerTransform);
             UIWorkshopRecipeSelectButton selectBtn = btnObj.GetComponent<UIWorkshopRecipeSelectButton>();
 
             if (selectBtn != null)
             {
-                selectBtn.BindRecipeSO(recipeSO, i, SelectRecipe);
+                int index = i;
+                selectBtn.BindRecipeSO(recipeSO, index, SelectRecipe);
                 _spawnedRecipeButtons.Add(selectBtn);
             }
         }
+
+        RefreshRecipeSelectButtons();
     }
 
     #endregion
@@ -187,13 +322,13 @@ public class UIWorkshopWindow : MonoBehaviour
     public void RefreshAllUI()
     {
         RefreshHeaderAndCurrencies();
-        RefreshFactoryUpgradePanel();
+        RefreshFactoryStatsAndUpgrade();
         RefreshSelectedRecipeDetail();
-        RefreshQueueSlots();
+        RefreshFixedCraftingSlots();
         RefreshRecipeSelectButtons();
     }
 
-    // 소모품 보유 수량 변경 이벤트 핸들러
+    // 소모품 수량 변경 이벤트 수신 처리
     private void HandleConsumableCountChanged(ConsumableType type, int newCount)
     {
         CraftingController cc = CraftingController.Instance;
@@ -206,47 +341,25 @@ public class UIWorkshopWindow : MonoBehaviour
         }
     }
 
-    // 상단 헤더, 공장 상태 및 재화 수량 텍스트 갱신
+    // 상단 헤더, 레벨 및 5종 재화 텍스트 갱신
     private void RefreshHeaderAndCurrencies()
     {
         CraftingController cc = CraftingController.Instance;
         CurrencyManager cm = CurrencyManager.Instance;
         if (cc == null || cm == null) return;
 
-        if (titleText != null) titleText.text = "공방 (제작소)";
+        if (titleText != null) titleText.text = "공방";
+        if (levelText != null) levelText.text = $"Lv.{cc.FactoryLevel}";
 
-        if (waveStoneCountText != null)
-        {
-            waveStoneCountText.text = $"웨이브 마석: <color=#00FFFF>{cm.WaveStone:#,##0}</color>개";
-        }
-
-        if (stageStoneCountText != null)
-        {
-            stageStoneCountText.text = $"던전 마석: <color=#CC33FF>{cm.DungeonStone:#,##0}</color>개";
-        }
-
-        if (raidStoneCountText != null)
-        {
-            raidStoneCountText.text = $"레이드 마석: <color=#FF5500>{cm.RaidStone:#,##0}</color>개";
-        }
-
-        if (autoCraftToggle != null)
-        {
-            autoCraftToggle.SetIsOnWithoutNotify(cc.IsGlobalAutoEnabled);
-        }
-
-        if (factoryStatusText != null)
-        {
-            float speedBonus = (cc.SpeedMultiplier - 1.0f) * 100.0f;
-            factoryStatusText.text = $"[ 공장 상태 (Lv.{cc.FactoryLevel}) ]\n" +
-                                     $"• 제작 속도: <color=#00FF00>x{cc.SpeedMultiplier:F1} (+{speedBonus:F0}%)</color> | " +
-                                     $"• 제작 슬롯: <color=#00FFFF>{cc.CurrentQueueCount} / {cc.MaxActiveSlots}개</color> | " +
-                                     $"• 1회 제작 수량: <color=#FFD700>{cc.OutputAmount}개</color>";
-        }
+        if (goldText != null) goldText.text = FormatCurrencyNumber(cm.Gold);
+        if (diamondText != null) diamondText.text = FormatCurrencyNumber(cm.Diamond);
+        if (waveStoneCountText != null) waveStoneCountText.text = FormatCurrencyNumber(cm.WaveStone);
+        if (dungeonStoneCountText != null) dungeonStoneCountText.text = FormatCurrencyNumber(cm.DungeonStone);
+        if (raidStoneCountText != null) raidStoneCountText.text = FormatCurrencyNumber(cm.RaidStone);
     }
 
-    // 공장 업그레이드 패널 텍스트 및 버튼 활성화 갱신
-    private void RefreshFactoryUpgradePanel()
+    // 공방 3종 스탯 및 레벨업 버튼 갱신
+    private void RefreshFactoryStatsAndUpgrade()
     {
         CraftingController cc = CraftingController.Instance;
         CurrencyManager cm = CurrencyManager.Instance;
@@ -254,11 +367,26 @@ public class UIWorkshopWindow : MonoBehaviour
 
         int currentLevel = cc.FactoryLevel;
 
+        if (statSpeedText != null)
+        {
+            statSpeedText.text = $"제작 속도: x{cc.SpeedMultiplier:F1}";
+        }
+
+        if (statSlotsText != null)
+        {
+            statSlotsText.text = $"제작 슬롯: {cc.CurrentQueueCount} / {cc.MaxActiveSlots}개";
+        }
+
+        if (statOutputAmountText != null)
+        {
+            statOutputAmountText.text = $"1회 제작량: {cc.OutputAmount}개";
+        }
+
         if (currentLevel >= FactoryUpgradeProcessor.MaxFactoryLevel)
         {
             if (factoryUpgradeBenefitText != null)
             {
-                factoryUpgradeBenefitText.text = "<color=#00FF00>공장이 최고 레벨(MAX Lv.5)에 도달하여 최대 강화가 완료되었습니다.</color>";
+                factoryUpgradeBenefitText.text = "<color=#00FF00>공장이 최고 레벨(MAX Lv.5)에 도달하였습니다.</color>";
             }
             if (upgradeFactoryButton != null)
             {
@@ -270,20 +398,18 @@ public class UIWorkshopWindow : MonoBehaviour
         int nextLevel = currentLevel + 1;
         string benefitDesc = FactoryUpgradeProcessor.GetNextLevelBenefitDescription(nextLevel);
 
-        if (FactoryUpgradeProcessor.GetUpgradeCost(currentLevel, out long goldCost, out long waveCost, out long stageCost))
+        if (FactoryUpgradeProcessor.GetUpgradeCost(currentLevel, out long goldCost, out long waveCost, out long dungeonCost))
         {
-            string costStr = $"{goldCost:#,##0} Gold";
-            if (waveCost > 0) costStr += $" + 웨이브 마석 {waveCost}개";
-            if (stageCost > 0) costStr += $" + 던전 마석 {stageCost}개";
-
             if (factoryUpgradeBenefitText != null)
             {
-                factoryUpgradeBenefitText.text = $"[ 다음 업그레이드 (Lv.{nextLevel}) ]\n" +
-                                                 $"{benefitDesc}\n" +
-                                                 $"• 필요 비용: <color=#FFD700>{costStr}</color>";
+                string costStr = $"{FormatCurrencyNumber(goldCost)} Gold";
+                if (waveCost > 0) costStr += $" + 웨이브 마석 {FormatCurrencyNumber(waveCost)}개";
+                if (dungeonCost > 0) costStr += $" + 던전 마석 {FormatCurrencyNumber(dungeonCost)}개";
+
+                factoryUpgradeBenefitText.text = $"[ Lv.{nextLevel} ] {benefitDesc}\n비용: {costStr}";
             }
 
-            bool canAfford = cm.HasGold(goldCost) && cm.HasWaveStone(waveCost) && cm.HasStageStone(stageCost);
+            bool canAfford = cm.HasGold(goldCost) && cm.HasWaveStone(waveCost) && cm.HasDungeonStone(dungeonCost);
             if (upgradeFactoryButton != null)
             {
                 upgradeFactoryButton.interactable = canAfford;
@@ -291,18 +417,35 @@ public class UIWorkshopWindow : MonoBehaviour
         }
     }
 
-    // 선택된 레시피 공용 상세 정보창 갱신
+    // 선택된 레시피의 상세 정보창 갱신
     private void RefreshSelectedRecipeDetail()
     {
         CraftingController cc = CraftingController.Instance;
         ConsumableItemManager cim = ConsumableItemManager.Instance;
-        if (cc == null || _currentSelectedRecipeIndex < 0 || _currentSelectedRecipeIndex >= cc.Recipes.Count) return;
+        if (cc == null) return;
+
+        if (_currentSelectedRecipeIndex < 0 || _currentSelectedRecipeIndex >= cc.Recipes.Count)
+        {
+            ClearRecipeDetail();
+            return;
+        }
 
         CraftingRecipeSO recipe = cc.Recipes[_currentSelectedRecipeIndex];
-        if (recipe == null) return;
+        if (recipe == null)
+        {
+            ClearRecipeDetail();
+            return;
+        }
 
         bool isUnlocked = cc.IsRecipeUnlocked(_currentSelectedRecipeIndex);
         int reqLevel = recipe.unlockFactoryLevel;
+
+        if (selectedRecipeIconImage != null)
+        {
+            Sprite icon = recipe.RecipeIcon;
+            selectedRecipeIconImage.sprite = icon;
+            selectedRecipeIconImage.enabled = (icon != null);
+        }
 
         if (selectedRecipeNameText != null)
         {
@@ -318,11 +461,11 @@ public class UIWorkshopWindow : MonoBehaviour
                     ownedCount = cim.GetItemCount(recipe.resultItem.ConsumableType);
                 }
 
-                selectedRecipeNameText.text = $"{recipe.DisplayName} <color=#00FFFF>(보유: {ownedCount:#,##0}개)</color>";
+                selectedRecipeNameText.text = $"{recipe.DisplayName} <size=70%><color=#00FFFF>({FormatCurrencyNumber(ownedCount)}개 보유)</color></size>";
             }
             else
             {
-                selectedRecipeNameText.text = $"{recipe.DisplayName} <color=#FF4444>[🔒 미해금 (공방 Lv.{reqLevel} 필요)]</color>";
+                selectedRecipeNameText.text = $"{recipe.DisplayName} <size=70%><color=#FF4444>[Lv.{reqLevel} 해금]</color></size>";
             }
         }
 
@@ -330,31 +473,15 @@ public class UIWorkshopWindow : MonoBehaviour
         {
             if (isUnlocked)
             {
-                string stoneName = recipe.requiredStoneType switch
-                {
-                    StoneType.WaveStone => "웨이브 마석",
-                    StoneType.DungeonStone => "던전 마석",
-                    StoneType.RaidStone => "레이드 마석",
-                    _ => "던전 마석"
-                };
-
-                List<string> costList = new List<string>();
-                if (recipe.goldCost > 0) costList.Add($"<color=#FFD700>{recipe.goldCost:#,##0} Gold</color>");
-                if (recipe.diamondCost > 0) costList.Add($"<color=#00BFFF>{recipe.diamondCost:#,##0} Diamond</color>");
-                if (recipe.stoneCost > 0) costList.Add($"<color=#00FFFF>{stoneName} {recipe.stoneCost}개</color>");
-
-                string costText = costList.Count > 0 ? string.Join(" + ", costList) : "소모 없음";
-
-                selectedRecipeDescriptionText.text = $"• 효과: {recipe.Description}\n" +
-                                                     $"• 기본 소요 시간: {recipe.baseCraftingTime:F1}초 (1회 제작: {cc.OutputAmount}개)\n" +
-                                                     $"• 소모 재료: {costText}";
+                selectedRecipeDescriptionText.text = $"{recipe.Description}\n<color=#AAAAAA>기본 소요 시간: {recipe.baseCraftingTime:F1}초 (1회: {cc.OutputAmount}개)</color>";
             }
             else
             {
-                selectedRecipeDescriptionText.text = $"<color=#AAAAAA>• 해당 레시피는 공방을 <color=#FFFF00>Lv.{reqLevel}</color> 이상으로 업그레이드하면 해금됩니다.</color>\n" +
-                                                     $"• 효과: {recipe.Description}";
+                selectedRecipeDescriptionText.text = $"<color=#AAAAAA>해당 레시피는 공방을 <color=#FFFF00>Lv.{reqLevel}</color> 이상으로 업그레이드하면 해금됩니다.\n{recipe.Description}</color>";
             }
         }
+
+        BindCostSlots(recipe);
 
         bool isInQueue = cc.IsRecipeInQueue(_currentSelectedRecipeIndex);
 
@@ -362,11 +489,11 @@ public class UIWorkshopWindow : MonoBehaviour
         {
             if (!isUnlocked)
             {
-                recipeQueueActionText.text = "<color=#888888>미해금 레시피</color>";
+                recipeQueueActionText.text = "미해금";
             }
             else
             {
-                recipeQueueActionText.text = isInQueue ? "<color=#FF6666>제작 목록에서 해제</color>" : "<color=#00FF00>제작 목록에 등록</color>";
+                recipeQueueActionText.text = isInQueue ? "제작 해제" : "제작 등록";
             }
         }
 
@@ -384,49 +511,146 @@ public class UIWorkshopWindow : MonoBehaviour
         }
     }
 
-    // 제작 목록 큐 슬롯 프리팹 동적 생성 및 갱신
-    private void RefreshQueueSlots()
+    // 상세 정보창 초기화
+    private void ClearRecipeDetail()
     {
-        CraftingController cc = CraftingController.Instance;
-        if (cc == null || queueContainerTransform == null) return;
+        if (selectedRecipeIconImage != null) selectedRecipeIconImage.enabled = false;
+        if (selectedRecipeNameText != null) selectedRecipeNameText.text = string.Empty;
+        if (selectedRecipeDescriptionText != null) selectedRecipeDescriptionText.text = string.Empty;
 
-        for (int i = 0; i < _spawnedQueueSlots.Count; i++)
+        for (int i = 0; i < costSlots.Length; i++)
         {
-            if (_spawnedQueueSlots[i] != null)
+            if (costSlots[i].slotObject != null)
             {
-                Destroy(_spawnedQueueSlots[i].gameObject);
+                costSlots[i].slotObject.SetActive(false);
             }
         }
-        _spawnedQueueSlots.Clear();
 
-        if (queueItemSlotPrefab == null) return;
+        if (recipeQueueActionButton != null) recipeQueueActionButton.interactable = false;
+        if (recipeQueueActionText != null) recipeQueueActionText.text = "-";
+    }
 
-        IReadOnlyList<int> queue = cc.ActiveRecipeQueue;
+    // 선택된 레시피의 요구 재화/마석 목록을 요구 슬롯 3종에 순차 매핑
+    private void BindCostSlots(CraftingRecipeSO recipe)
+    {
+        if (costSlots == null || costSlots.Length == 0) return;
 
-        for (int i = 0; i < queue.Count; i++)
+        CurrencyManager cm = CurrencyManager.Instance;
+
+        List<(Sprite icon, long cost, long owned)> requirements = new List<(Sprite, long, long)>();
+
+        if (recipe.goldCost > 0)
         {
-            int recipeIdx = queue[i];
-            if (recipeIdx < 0 || recipeIdx >= cc.Recipes.Count) continue;
+            requirements.Add((goldIconSprite, recipe.goldCost, cm != null ? cm.Gold : 0));
+        }
 
-            CraftingRecipeSO recipeSO = cc.Recipes[recipeIdx];
-            if (recipeSO == null) continue;
+        if (recipe.diamondCost > 0)
+        {
+            requirements.Add((diamondIconSprite, recipe.diamondCost, cm != null ? cm.Diamond : 0));
+        }
 
-            GameObject slotObj = Instantiate(queueItemSlotPrefab, queueContainerTransform);
-            UIWorkshopQueueItemSlot slot = slotObj.GetComponent<UIWorkshopQueueItemSlot>();
-
-            if (slot != null)
+        if (recipe.stoneCost > 0)
+        {
+            Sprite stoneIcon = recipe.requiredStoneType switch
             {
-                slot.BindRecipe(recipeSO, recipeIdx, HandleSlotRemove);
-                _spawnedQueueSlots.Add(slot);
+                StoneType.WaveStone => waveStoneIconSprite,
+                StoneType.DungeonStone => dungeonStoneIconSprite,
+                StoneType.RaidStone => raidStoneIconSprite,
+                _ => dungeonStoneIconSprite
+            };
+
+            long ownedStone = cm != null ? (recipe.requiredStoneType switch
+            {
+                StoneType.WaveStone => cm.WaveStone,
+                StoneType.DungeonStone => cm.DungeonStone,
+                StoneType.RaidStone => cm.RaidStone,
+                _ => 0
+            }) : 0;
+
+            requirements.Add((stoneIcon, recipe.stoneCost, ownedStone));
+        }
+
+        for (int i = 0; i < costSlots.Length; i++)
+        {
+            if (i < requirements.Count)
+            {
+                var req = requirements[i];
+
+                if (costSlots[i].slotObject != null)
+                {
+                    costSlots[i].slotObject.SetActive(true);
+                }
+
+                if (costSlots[i].costIconImage != null)
+                {
+                    costSlots[i].costIconImage.sprite = req.icon;
+                    costSlots[i].costIconImage.enabled = (req.icon != null);
+                }
+
+                if (costSlots[i].costAmountText != null)
+                {
+                    bool hasEnough = req.owned >= req.cost;
+                    string colorTag = hasEnough ? "<color=#FFFFFF>" : "<color=#FF4444>";
+                    costSlots[i].costAmountText.text = $"{colorTag}{FormatCurrencyNumber(req.cost)}</color>";
+                }
+            }
+            else
+            {
+                if (costSlots[i].slotObject != null)
+                {
+                    costSlots[i].slotObject.SetActive(false);
+                }
             }
         }
     }
 
-    // 슬롯 [X] 버튼 클릭 시 제작 목록 해제 처리
-    private void HandleSlotRemove(int recipeIndex)
+    // 3개 고정 제작 슬롯의 활성화/비활성화 및 아이템 정보 렌더링
+    private void RefreshFixedCraftingSlots()
     {
-        CraftingController.Instance?.RemoveRecipeFromQueue(recipeIndex);
-        RefreshAllUI();
+        CraftingController cc = CraftingController.Instance;
+        if (cc == null || craftingSlots == null) return;
+
+        int maxSlots = cc.MaxActiveSlots;
+        IReadOnlyList<int> queue = cc.ActiveRecipeQueue;
+
+        for (int i = 0; i < craftingSlots.Length; i++)
+        {
+            WorkshopCraftingSlotUI slot = craftingSlots[i];
+            if (slot.rootObject == null) continue;
+
+            bool isSlotUnlocked = (i < maxSlots);
+            bool hasAssignedRecipe = (i < queue.Count);
+
+            if (isSlotUnlocked && hasAssignedRecipe)
+            {
+                if (slot.activeContainer != null) slot.activeContainer.SetActive(true);
+                if (slot.disabledContainer != null) slot.disabledContainer.SetActive(false);
+
+                int recipeIdx = queue[i];
+                if (recipeIdx >= 0 && recipeIdx < cc.Recipes.Count)
+                {
+                    CraftingRecipeSO recipe = cc.Recipes[recipeIdx];
+                    if (recipe != null)
+                    {
+                        if (slot.itemIconImage != null)
+                        {
+                            slot.itemIconImage.sprite = recipe.RecipeIcon;
+                            slot.itemIconImage.enabled = (recipe.RecipeIcon != null);
+                        }
+
+                        if (slot.itemNameText != null)
+                        {
+                            slot.itemNameText.text = recipe.DisplayName;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (slot.activeContainer != null) slot.activeContainer.SetActive(false);
+                if (slot.disabledContainer != null) slot.disabledContainer.SetActive(true);
+            }
+        }
     }
 
     // 레시피 선택 버튼 하이라이트 및 잠금 상태 갱신
@@ -437,36 +661,39 @@ public class UIWorkshopWindow : MonoBehaviour
 
         for (int i = 0; i < _spawnedRecipeButtons.Count; i++)
         {
-            if (_spawnedRecipeButtons[i] != null)
+            UIWorkshopRecipeSelectButton btn = _spawnedRecipeButtons[i];
+            if (btn != null)
             {
-                _spawnedRecipeButtons[i].SetSelected(i == _currentSelectedRecipeIndex);
+                int rIdx = btn.RecipeIndex;
+                btn.SetSelected(rIdx == _currentSelectedRecipeIndex);
 
-                bool isUnlocked = cc.IsRecipeUnlocked(i);
-                int reqLevel = cc.GetRequiredLevel(i);
-                _spawnedRecipeButtons[i].SetLocked(!isUnlocked, reqLevel);
+                bool isUnlocked = cc.IsRecipeUnlocked(rIdx);
+                int reqLevel = cc.GetRequiredLevel(rIdx);
+                btn.SetLocked(!isUnlocked, reqLevel);
             }
         }
     }
 
-    // 제작 목록 슬롯별 진행도 슬라이더 실시간 갱신
+    // 3개 고정 슬롯의 실시간 진행률 슬라이더 갱신
     private void RefreshRealtimeProgress()
     {
         CraftingController cc = CraftingController.Instance;
-        if (cc == null || _spawnedQueueSlots.Count == 0) return;
+        if (cc == null || craftingSlots == null) return;
 
-        for (int i = 0; i < _spawnedQueueSlots.Count; i++)
+        IReadOnlyList<int> queue = cc.ActiveRecipeQueue;
+
+        for (int i = 0; i < craftingSlots.Length; i++)
         {
-            UIWorkshopQueueItemSlot slot = _spawnedQueueSlots[i];
-            if (slot == null) continue;
+            if (i >= queue.Count) continue;
 
-            int recipeIdx = slot.BoundRecipeIndex;
+            WorkshopCraftingSlotUI slot = craftingSlots[i];
+            if (slot.progressSlider == null) continue;
+
+            int recipeIdx = queue[i];
             if (recipeIdx >= 0 && recipeIdx < cc.Recipes.Count)
             {
-                float normalized = cc.GetRecipeNormalizedProgress(recipeIdx);
-                float remaining = cc.GetRecipeRemainingTime(recipeIdx);
-                CraftingController.RecipeState state = cc.GetRecipeState(recipeIdx);
-
-                slot.UpdateProgress(normalized, remaining, state);
+                float progress = cc.GetRecipeNormalizedProgress(recipeIdx);
+                slot.progressSlider.value = progress;
             }
         }
     }
@@ -475,7 +702,7 @@ public class UIWorkshopWindow : MonoBehaviour
 
     #region 사용자 조작 이벤트 핸들러
 
-    // 레시피 선택 이벤트 처리
+    // 레시피 선택 처리
     public void SelectRecipe(int recipeIndex)
     {
         _currentSelectedRecipeIndex = recipeIndex;
@@ -483,11 +710,11 @@ public class UIWorkshopWindow : MonoBehaviour
         RefreshRecipeSelectButtons();
     }
 
-    // 등록/해제 공용 버튼 클릭 이벤트 처리
+    // 등록/해제 공용 버튼 클릭 처리
     private void OnClickQueueAction()
     {
         CraftingController cc = CraftingController.Instance;
-        if (cc == null) return;
+        if (cc == null || _currentSelectedRecipeIndex < 0) return;
 
         if (cc.IsRecipeInQueue(_currentSelectedRecipeIndex))
         {
@@ -501,35 +728,17 @@ public class UIWorkshopWindow : MonoBehaviour
         RefreshAllUI();
     }
 
-    // 전역 자동 전환 토글 변경 이벤트 처리
-    private void OnToggleAutoCraft(bool isOn)
-    {
-        CraftingController cc = CraftingController.Instance;
-        if (cc != null)
-        {
-            cc.SetGlobalAuto(isOn);
-            RefreshHeaderAndCurrencies();
-        }
-    }
-
-    // 테스트용 재료 충전 버튼 클릭 이벤트 처리
-    private void OnClickAddTestMaterials()
-    {
-        CraftingController cc = CraftingController.Instance;
-        if (cc != null)
-        {
-            cc.AddTestMaterials();
-            RefreshAllUI();
-        }
-    }
-
-    // 공방 업그레이드 버튼 클릭 이벤트 처리
+    // 공방 레벨업 버튼 클릭 처리
     private void OnClickUpgradeFactory()
     {
         CraftingController cc = CraftingController.Instance;
         if (cc != null)
         {
             bool success = cc.UpgradeFactory();
+            if (success)
+            {
+                Debug.Log($"[UIWorkshopWindow] 공방 강화 성공! 현재 Lv.{cc.FactoryLevel}");
+            }
             RefreshAllUI();
         }
     }
@@ -546,19 +755,17 @@ public class UIWorkshopWindow : MonoBehaviour
             }
             else
             {
-                if (CraftingController.Instance != null)
-                {
-                    CraftingController.Instance.SaveIfDirty();
-                }
+                CraftingController.Instance?.SaveIfDirty();
             }
         }
     }
 
-    // 재화 변경 수신 시 UI 동기화
+    // 재화 변경 수신 시 전체 수치 및 버튼 상태 갱신
     private void OnCurrencyChanged(CurrencyChangedEvent evt)
     {
         RefreshHeaderAndCurrencies();
-        RefreshFactoryUpgradePanel();
+        RefreshFactoryStatsAndUpgrade();
+        RefreshSelectedRecipeDetail();
     }
 
     #endregion
