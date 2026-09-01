@@ -736,7 +736,6 @@ GameObject:
   - component: {fileID: 206666537}
   - component: {fileID: 206666536}
   - component: {fileID: 206666535}
-  - component: {fileID: 206666538}
   m_Layer: 0
   m_Name: MapSystem
   m_TagString: Untagged
@@ -1910,6 +1909,9 @@ MonoBehaviour:
   armorSlot: {fileID: 1428150189}
   weaponSlot: {fileID: 1491945781}
   accessorySlot: {fileID: 1491519758}
+  characterCardImage: {fileID: 0}
+  characterNameText: {fileID: 0}
+  portraitCatalog: {fileID: 0}
 --- !u!4 &475286204
 Transform:
   m_ObjectHideFlags: 0
@@ -2961,6 +2963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeckUnitReceiver
   groundUnitHeight: 0.5
   highGroundUnitHeight: 0.8
+  respawnCooldown: 5
   mapGenerator: {fileID: 1705623438}
 --- !u!4 &818359002
 Transform:
@@ -4657,11 +4660,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeckManager
   unitCatalog: {fileID: 11400000, guid: 8009f11140c0429409c98b0cf3b3b803, type: 2}
   normalDeckCapacity: 10
-  raid1DeckCapacity: 10
-  raid2DeckCapacity: 10
+  raid1DeckCapacity: 8
+  raid2DeckCapacity: 8
   normalDeckSlots: 0800000005000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-  raid1DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-  raid2DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  raid1DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  raid2DeckSlots: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   normalDeckInspectorView:
   - slotIndex: 1
     unitId: UNIT_0008
@@ -4736,14 +4739,6 @@ MonoBehaviour:
     unitId: '-'
     unitName: None
     isEquipped: 0
-  - slotIndex: 9
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
-  - slotIndex: 10
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
   raid2DeckInspectorView:
   - slotIndex: 1
     unitId: '-'
@@ -4774,14 +4769,6 @@ MonoBehaviour:
     unitName: None
     isEquipped: 0
   - slotIndex: 8
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
-  - slotIndex: 9
-    unitId: '-'
-    unitName: None
-    isEquipped: 0
-  - slotIndex: 10
     unitId: '-'
     unitName: None
     isEquipped: 0
@@ -5945,6 +5932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryGridManager
   maxSlotCount: 50
+  predefinedItemDatabase: []
 --- !u!4 &1691899583
 Transform:
   m_ObjectHideFlags: 0
