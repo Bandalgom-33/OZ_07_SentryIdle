@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 using EndlessGuard.Unit.Data;
 using UnityEditor;
@@ -41,6 +41,7 @@ namespace EndlessGuard.Unit.Editor
         private SerializedProperty maxSkillGauge;
         private SerializedProperty skillGaugeRegenPerSecond;
         private SerializedProperty skillGaugePerAttack;
+        private SerializedProperty skillSettings;
         private SerializedProperty passives;
         private SerializedProperty passiveTunings;
         private SerializedProperty unitPrefab;
@@ -68,6 +69,7 @@ namespace EndlessGuard.Unit.Editor
             maxSkillGauge = serializedObject.FindProperty("maxSkillGauge");
             skillGaugeRegenPerSecond = serializedObject.FindProperty("skillGaugeRegenPerSecond");
             skillGaugePerAttack = serializedObject.FindProperty("skillGaugePerAttack");
+            skillSettings = serializedObject.FindProperty("skillSettings");
             passives = serializedObject.FindProperty("passives");
             passiveTunings = serializedObject.FindProperty("passiveTunings");
             unitPrefab = serializedObject.FindProperty("unitPrefab");
@@ -117,9 +119,11 @@ namespace EndlessGuard.Unit.Editor
             EditorGUILayout.PropertyField(criticalChancePercent, new GUIContent("치명타 확률 (%)", "25를 입력하면 25%를 의미합니다."));
             EditorGUILayout.PropertyField(criticalDamageBonusPercent, new GUIContent("치명타 추가 피해 (%)", "50을 입력하면 기본 피해에 50%가 추가됩니다."));
 
-            EditorGUILayout.PropertyField(maxSkillGauge, new GUIContent("최대 스킬게이지", "캐릭터가 보유할 수 있는 최대 스킬게이지입니다."));
-            EditorGUILayout.PropertyField(skillGaugeRegenPerSecond, new GUIContent("초당 스킬게이지 회복량", "전투 중 매초 자연 회복하는 스킬게이지입니다."));
-            EditorGUILayout.PropertyField(skillGaugePerAttack, new GUIContent("공격당 스킬게이지 획득량", "기본 공격을 한 번 완료할 때 획득하는 스킬게이지입니다."));
+            EditorGUILayout.PropertyField(maxSkillGauge, new GUIContent("최대 스킬게이지 (SP)", "캐릭터가 보유할 수 있는 최대 SP입니다."));
+            EditorGUILayout.PropertyField(skillGaugeRegenPerSecond, new GUIContent("초당 SP 회복량", "전투 중 매초 자연 회복하는 SP입니다."));
+            EditorGUILayout.PropertyField(skillGaugePerAttack, new GUIContent("공격당 SP 획득량", "기본 공격을 한 번 완료할 때 획득하는 SP입니다."));
+
+            UnitSkillSettingsEditorGUI.Draw(skillSettings, maxSkillGauge);
 
             DrawFilteredPassiveList();
             PassiveTuningEditorGUI.Draw(passives, passiveTunings, targets.Length > 1, "캐릭터");

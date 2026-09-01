@@ -20,6 +20,9 @@ public class TileView : MonoBehaviour
     [Header("타일 Visual")]
     [SerializeField] private Transform visualRoot;
 
+[Header("타일 비주얼 크기 보정")]
+[SerializeField] private Vector3 visualScale = Vector3.one;
+
     private GameObject currentVisual;
 
     private TileNode node;
@@ -48,19 +51,30 @@ public class TileView : MonoBehaviour
         ApplyVisual(visualSet);
     }
 
-   /*
+   
     private void OnMouseDown()
     {
-        if(node == null) return;
+        if (node == null) return;
+
+        MapGenerator mapGenerator =
+            FindFirstObjectByType<MapGenerator>();
+
+        bool inPathA =
+            mapGenerator != null &&
+            mapGenerator.IsInPathA(node.GridPosition);
+
+        bool inPathB =
+            mapGenerator != null &&
+            mapGenerator.IsInPathB(node.GridPosition);
 
         Debug.Log(
-           $"좌표: {node.GridPosition} / " +
-           $"타입: {node.TileType} / " +
-           $"이동 가능: {node.IsWalkable} / " +
-           $"배치 가능: {node.IsDeployable}"
-       );
+            $"좌표: {node.GridPosition} / " +
+            $"타입: {node.TileType} / " +
+            $"PathA: {inPathA} / " +
+            $"PathB: {inPathB}"
+        );
     }
-    */
+    
 
     private void ApplyMaterial()
     {
@@ -118,19 +132,92 @@ public class TileView : MonoBehaviour
         if (visualSet == null) return;
         if (visualRoot == null) return;
 
-        GameObject visualPrefab =
-            visualSet.GetRandomVisual(node.TileType);
+        // Obstacle 타일은
+        // 1. 기본 바닥 생성
+        // 2. 그 위에 장애물 비주얼 추가 생성
+        if (node.TileType == TileType.Obstacle)
+        {
+            TileVisualEntry floorEntry = visualSet.GetRandomFloorVisual();
 
-        if (visualPrefab == null) return;
+            CreateVisual( floorEntry, true);
 
-        currentVisual = Instantiate(
-            visualPrefab,
-            visualRoot
-        );
+            TileVisualEntry obstacleEntry = visualSet.GetRandomVisual(TileType.Obstacle);
 
-        currentVisual.transform.localPosition = new Vector3(0f, visualYOffset, 0f);
+            CreateVisual( obstacleEntry, false);
 
-        currentVisual.transform.localRotation = Quaternion.identity;
+            return;
+        }
+
+        // 그 외 타일은 기존처럼 비주얼 하나만 생성
+        TileVisualEntry visualEntry = visualSet.GetRandomVisual(node.TileType);
+        
+        if (visualEntry != null && visualEntry.prefab != null)
+        {
+            Debug.Log(
+                $"[Tile Visual] {gameObject.name} / " +
+                $"Type: {node.TileType} / " +
+                $"Prefab: {visualEntry.prefab.name}"
+            );
+        }
+
+        currentVisual = CreateVisual(visualEntry, true );
+    }
+    
+    
+    //에셋 프리팹 생성 위치 보정하기
+    private GameObject CreateVisual( TileVisualEntry entry, bool fitToTile )
+    {
+        if (entry == null) return null;
+        if (entry.prefab == null) return null;
+        if (visualRoot == null) return null;
+
+        GameObject visual = Instantiate(entry.prefab, visualRoot );
+        visual.transform.localPosition = new Vector3(0f, visualYOffset, 0f) + entry.positionOffset;
+        visual.transform.localRotation = Quaternion.identity;
+        visual.transform.localScale = entry.scale;
+
+        if (fitToTile)
+        {
+            FitVisualToTile(visual);
+        }
+
+        return visual;
+    }
+    
+    
+    private void FitVisualToTile(GameObject visual)
+    {
+        if (visual == null) return;
+    
+        Renderer[] renderers =
+            visual.GetComponentsInChildren<Renderer>();
+    
+        if (renderers == null || renderers.Length == 0)
+            return;
+    
+        Bounds bounds = renderers[0].bounds;
+    
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            bounds.Encapsulate(renderers[i].bounds);
+        }
+    
+        float width = bounds.size.x;
+        float depth = bounds.size.z;
+    
+        if (width <= 0f || depth <= 0f)
+            return;
+    
+        // 한 칸보다 살짝 작게 만들어서 옆 타일과 겹치지 않도록 함
+        const float targetSize = 0.95f;
+    
+        float scaleFactor =
+            Mathf.Min(
+                targetSize / width,
+                targetSize / depth
+            );
+    
+        visual.transform.localScale *= scaleFactor;
     }
 
 }

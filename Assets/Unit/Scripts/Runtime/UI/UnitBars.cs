@@ -276,7 +276,7 @@ namespace EndlessGuard.Unit.Runtime
                 return;
             }
 
-            bool readyNow = unit.CurrentSkillGauge >= unit.MaxSkillGauge;
+            bool readyNow = unit.IsSkillReady;
 
             if (readyNow)
             {
