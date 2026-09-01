@@ -77,13 +77,25 @@ public class SoundManager : MonoBehaviour
     }
 
     //효과음 재생 시키기
+    // 기본 효과음 재생
     public void PlaySFX(AudioClip clip)
     {
         if (clip == null) return;
         if (sfxSource == null) return;
 
-        //여러 효과음도 PlayOneShot으로 재생 가능
         sfxSource.PlayOneShot(clip);
+    }
+
+    // 볼륨 지정 효과음 재생
+    public void PlaySFX(AudioClip clip, float volumeScale)
+    {
+        if (clip == null) return;
+        if (sfxSource == null) return;
+
+        sfxSource.PlayOneShot(
+            clip,
+            Mathf.Clamp01(volumeScale)
+        );
     }
     
     //클릭시 사운드 출력시키기
