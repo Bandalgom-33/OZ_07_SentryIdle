@@ -20,6 +20,9 @@ public class SoundManager : MonoBehaviour
     
     [Header("Game Progress Audio")]
     [SerializeField] private GameProgressAudioDataSo gameProgressAudioData;
+    
+    [Header("Special UI Audio")]
+    [SerializeField] private SpecialUIAudioDataSo specialUIAudioData;
 
     //볼륨을 저장할 키 생성
     private const string BGM_VOLUME_KEY = "BGMVolume";
@@ -240,6 +243,15 @@ public class SoundManager : MonoBehaviour
         PlaySFX(gameProgressAudioData.RewardSound, gameProgressAudioData.RewardVolume);
     }
     
-    
+    //가쳐 사운드 재생
+    public void PlayGachaSound()
+    {
+        if (specialUIAudioData == null) return;
+
+        PlaySFX(
+            specialUIAudioData.GachaSound,
+            specialUIAudioData.GachaVolume
+        );
+    }
    
 }
