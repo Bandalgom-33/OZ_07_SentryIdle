@@ -414,9 +414,14 @@ public class MapGenerator : MonoBehaviour
 
                 //25 : 75 비율 생성
                 float terrainRoll = Random.value;
-                if (terrainRoll < 0.25)
+
+                if (terrainRoll < 0.20f)
                 {
                     node.SetTileType(TileType.HighGround);
+                }
+                else if (terrainRoll < 0.35f)
+                {
+                    node.SetTileType(TileType.Obstacle);
                 }
                 else
                 {
@@ -568,6 +573,16 @@ public class MapGenerator : MonoBehaviour
         }
         //최소 갯수 이상이면 ㄱㄱ
         return count >= minimumCount;
+    }
+    
+    public bool IsInPathA(Vector2Int position)
+    {
+        return pathPosition.Contains(position);
+    }
+
+    public bool IsInPathB(Vector2Int position)
+    {
+        return pathPositionB.Contains(position);
     }
 
 }
