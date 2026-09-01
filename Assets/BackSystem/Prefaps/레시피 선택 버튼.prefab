@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5495207317802398287
 RectTransform:
   m_ObjectHideFlags: 0
@@ -274,3 +274,5 @@ MonoBehaviour:
   recipeIndex: 0
   recipeImage: {fileID: 4276370911369945523}
   selectedHighlightObject: {fileID: 0}
+  lockedOverlayObject: {fileID: 0}
+  lockedLevelText: {fileID: 0}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EndlessGuard.Unit.Data;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
@@ -63,12 +63,12 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [Tooltip("다이아 배율 레벨당 비용 증가 가중치 배율")]
     [SerializeField] private float diamondMagnificationIncreaseMultiplier = 2.5f;
 
-    [Space(5f), Header("--- 소환 코스트 업그레이드 설정 값 ---")]
-    [Tooltip("DP 코스트 보너스 1레벨 업그레이드 소모 비용")]
-    [SerializeField] private int dpCostBonusUpgradeCost = 5;
+    [Space(5f), Header("--- 소환 코스트 업그레이드 설정 값 (골드 소모) ---")]
+    [Tooltip("DP 코스트 보너스 1레벨 업그레이드 소모 골드 비용")]
+    [SerializeField] private long dpCostBonusUpgradeCost = 1000;
 
-    [Tooltip("최대 DP 상한 1레벨 업그레이드 소모 비용")]
-    [SerializeField] private float maxDpCostUpgradeCost = 5;
+    [Tooltip("최대 DP 상한 1레벨 업그레이드 소모 골드 비용")]
+    [SerializeField] private long maxDpCostUpgradeCost = 1000;
 
     [Tooltip("DP 코스트 보너스 레벨당 비용 증가 가중치 배율")]
     [SerializeField] private float dpCostBonusIncreaseMultiplier = 1.5f;
@@ -301,9 +301,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
 
         return (UpgradeType)type switch
         {
-            UpgradeType.GoldBonus or UpgradeType.GoldMagnification => CurrencyManager.Instance.Gold,
             UpgradeType.DiamondBonus or UpgradeType.DiamondMagnification => CurrencyManager.Instance.Diamond,
-            UpgradeType.DpCostBonus or UpgradeType.MaxDpCost => CurrencyManager.Instance.DpCost,
             _ => CurrencyManager.Instance.Gold
         };
     }
@@ -391,9 +389,8 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
 
         CurrencyType currencyType = type switch
         {
-            UpgradeType.GoldBonus or UpgradeType.GoldMagnification => CurrencyType.Gold,
             UpgradeType.DiamondBonus or UpgradeType.DiamondMagnification => CurrencyType.Diamond,
-            _ => CurrencyType.DpCost
+            _ => CurrencyType.Gold
         };
 
         if (!CurrencyManager.Instance.ConsumeCurrency(currencyType, (long)totalCost)) return;

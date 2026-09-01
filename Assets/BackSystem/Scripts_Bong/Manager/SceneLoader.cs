@@ -252,10 +252,7 @@ public class SceneLoader : SingletonBase<SceneLoader>
             Debug.Log($"[SceneLoader] 씬 전환 시작: {CurrentSceneType} -> {targetScene} ('{sceneName}')");
 
             // 1. 씬 전환 직전 현재 데이터 디스크에 자동 저장 (강제 저장 보장)
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SaveGameData(force: true);
-            }
+            EventBus.Publish(new RequestSaveGameEvent(force: true));
 
             // 2. 게임 배속 1.0f 원복 및 잔여 적 목록 클리어
             Time.timeScale = 1.0f;

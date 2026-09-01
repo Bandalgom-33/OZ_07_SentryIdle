@@ -1,65 +1,84 @@
-﻿using System;
 using System.Collections.Generic;
 using EndlessGuard.Unit.Data;
-using UnityEngine;
 
-// 가챠 획득 유닛의 신규 해금, 한계돌파 승급 및 풀돌 상태를 판정하는 처리기
 public static class BreakthroughProcessor
 {
     public const int MaxBreakthroughLimit = 6;
 
-    // 가챠 보상 유닛의 신규/돌파/풀돌 상태 판정 및 결과 갱신 연산
-    public static void ProcessGachaUnit(ref IGachaRewardItem rewardItem)
+    // 가챠 보상 유닛의 돌파 및 상태 판정
+    public static void ProcessGachaUnit(GachaRewardItem rewardItem, Dictionary<int, UnitSaveData> batchContext)
     {
         if (rewardItem == null || rewardItem.TargetUnitData == null)
         {
             return;
         }
 
-        int numericId = UnitIdHelper.ParseUnitId(rewardItem.RewardId);
-        if (numericId <= 0) return;
+        int unitId = rewardItem.UnitId;
+        if (unitId <= 0) return;
 
-        UnitSaveData existingSave = CollectionDataProvider.Instance != null ? CollectionDataProvider.Instance.GetOwnedUnitSaveData(numericId) : null;
-
-        // 1. 신규 미보유 캐릭터 획득 처리
-        if (existingSave == null)
+        UnitSaveData currentStatus = null;
+        if (batchContext != null && batchContext.TryGetValue(unitId, out UnitSaveData batchUnit))
         {
-            if (CollectionDataProvider.Instance != null)
+            currentStatus = batchUnit;
+        }
+        else if (CollectionDataProvider.Instance != null)
+        {
+            UnitSaveData saved = CollectionDataProvider.Instance.GetOwnedUnitSaveData(unitId);
+            if (saved != null)
             {
-                CollectionDataProvider.Instance.AddOrUpdateOwnedUnit(numericId, 1, 0L, 0, 0);
+                currentStatus = new UnitSaveData
+                {
+                    unitId = saved.unitId,
+                    level = saved.level,
+                    currentExp = saved.currentExp,
+                    breakThroughStep = saved.breakThroughStep,
+                    fragmentCount = saved.fragmentCount
+                };
             }
+        }
 
+        if (currentStatus == null)
+        {
             rewardItem.IsOwned = false;
             rewardItem.ResultType = GachaResultType.NewUnlock;
             rewardItem.PreviousBreakthroughStep = 0;
             rewardItem.CurrentBreakthroughStep = 0;
+
+            if (batchContext != null)
+            {
+                batchContext[unitId] = new UnitSaveData
+                {
+                    unitId = unitId,
+                    level = 1,
+                    currentExp = 0L,
+                    breakThroughStep = 0,
+                    fragmentCount = 0
+                };
+            }
             return;
         }
 
-        // 2. 이미 보유 중인 캐릭터 중복 획득 처리
         rewardItem.IsOwned = true;
-        int previousStep = existingSave.breakThroughStep;
+        int previousStep = currentStatus.breakThroughStep;
         rewardItem.PreviousBreakthroughStep = previousStep;
 
         if (previousStep < MaxBreakthroughLimit)
         {
-            existingSave.breakThroughStep++;
-            rewardItem.CurrentBreakthroughStep = existingSave.breakThroughStep;
+            int nextStep = previousStep + 1;
+            rewardItem.CurrentBreakthroughStep = nextStep;
             rewardItem.ResultType = GachaResultType.Breakthrough;
+
+            currentStatus.breakThroughStep = nextStep;
         }
         else
         {
             rewardItem.CurrentBreakthroughStep = previousStep;
             rewardItem.ResultType = GachaResultType.MaxBreakthroughReached;
         }
-    }
 
-    // [하위 호환] 리스트 직접 전달 방식 가챠 유닛 처리 연산
-    public static void ProcessGachaUnit(
-        ref IGachaRewardItem rewardItem,
-        List<UnitSaveData> ownedUnitsList,
-        HashSet<string> ownedUnitIdSet)
-    {
-        ProcessGachaUnit(ref rewardItem);
+        if (batchContext != null)
+        {
+            batchContext[unitId] = currentStatus;
+        }
     }
 }

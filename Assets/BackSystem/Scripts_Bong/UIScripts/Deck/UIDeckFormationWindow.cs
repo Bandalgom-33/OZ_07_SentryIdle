@@ -379,11 +379,7 @@ public class UIDeckFormationWindow : MonoBehaviour
     // 덱 편성 창 닫기 및 세이브 데이터 디스크 저장
     public void CloseWindow()
     {
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.SaveGameData(force: true);
-        }
-
+        EventBus.Publish(new RequestSaveGameEvent(force: true));
         gameObject.SetActive(false);
     }
 

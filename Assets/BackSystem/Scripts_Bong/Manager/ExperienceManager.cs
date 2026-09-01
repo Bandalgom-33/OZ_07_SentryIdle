@@ -4,8 +4,8 @@ using System.Text;
 using EndlessGuard.Unit.Data;
 using EndlessGuard.Unit.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-// 인스펙터에서 덱 편성 유닛 상태를 확인하기 위한 디버그 데이터 구조체
 [Serializable]
 public struct DeckUnitInspectorInfo
 {
@@ -23,7 +23,6 @@ public struct DeckUnitInspectorInfo
     public bool isFieldSpawned;
 }
 
-// 게임 내 몬스터 처치 경험치 분배 및 소모품 경험치 지급을 전담하는 싱글톤 매니저
 public class ExperienceManager : SingletonBase<ExperienceManager>
 {
     #region 직렬화 변수 (인스펙터 바인딩)
@@ -58,6 +57,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
     {
         EventBus.Subscribe<EnemyDiedEvent>(OnEnemyDied);
         EventBus.Subscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
+        EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
 
         RefreshDeckUnitsInspectorView();
     }
@@ -67,6 +67,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
     {
         EventBus.Unsubscribe<EnemyDiedEvent>(OnEnemyDied);
         EventBus.Unsubscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
+        EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
     }
 
     #endregion
@@ -75,6 +76,12 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
 
     // 일반 덱 슬롯 변경 이벤트 수신 시 인스펙터 모니터링 갱신
     private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
+    {
+        RefreshDeckUnitsInspectorView();
+    }
+
+    // 레이드 덱 슬롯 변경 이벤트 수신 시 인스펙터 모니터링 갱신
+    private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
         RefreshDeckUnitsInspectorView();
     }
@@ -91,92 +98,62 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
             return;
         }
 
-        AddExperienceToDeckUnits(eventMessage.rewardExp);
+        DistributeBattleExperience(eventMessage.rewardExp);
     }
 
-    // 현재 덱에 등록된 모든 유닛들에게 경험치 일괄 지급 연산
-    public void AddExperienceToDeckUnits(long exp)
+    // 전투 상황(일반 스테이지 vs 레이드)에 따른 출전 유닛(100%) 및 비출전 보유 유닛(10%) 경험치 분배 연산
+    public void DistributeBattleExperience(long baseExp)
     {
-        if (exp <= 0L || DeckManager.Instance == null)
+        if (baseExp <= 0L || DeckManager.Instance == null)
         {
             return;
         }
 
-        IReadOnlyList<int> currentSlots = DeckManager.Instance.DeckSlots;
-        if (currentSlots == null)
+        List<int> activeDeckUnitIds = GetActiveBattleDeckUnitIds();
+        HashSet<int> activeDeckUnitIdSet = new HashSet<int>(activeDeckUnitIds);
+
+        int processedMainCount = 0;
+        int processedSubCount = 0;
+
+        for (int i = 0; i < activeDeckUnitIds.Count; i++)
         {
-            return;
-        }
-
-        StringBuilder logBuilder = new StringBuilder();
-        logBuilder.AppendLine($"[ExperienceManager] 몬스터 처치 경험치 획득: +{exp} EXP");
-
-        int processedCount = 0;
-
-        for (int i = 0; i < currentSlots.Count; i++)
-        {
-            int rawId = currentSlots[i];
-            if (rawId <= 0) continue;
-
-            string unitIdStr = UnitIdHelper.ToUnitKey(rawId);
-
-            // 1. 해당 덱 유닛이 현재 필드에 스폰되어 있는지 확인
-            UnitRuntimeState runtimeUnit = FindRuntimeUnitById(unitIdStr);
-
-            if (runtimeUnit != null)
+            int unitId = activeDeckUnitIds[i];
+            if (unitId > 0 && ApplyExperienceToUnitInternal(unitId, baseExp, out _))
             {
-                if (runtimeUnit.AddExperience(exp, out UnitLevelResult result))
-                {
-                    processedCount++;
-
-                    if (CollectionDataProvider.Instance != null)
-                    {
-                        CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, result.CurrentLevel, result.CurrentExp);
-                    }
-
-                    string unitName = (runtimeUnit.DataLink != null && runtimeUnit.DataLink.HasData) ? runtimeUnit.DataLink.UnitData.DisplayName : unitIdStr;
-                    string levelUpTag = result.DidLevelUp ? $" [★ LEVEL UP! Lv.{result.PreviousLevel} -> Lv.{result.CurrentLevel}]" : string.Empty;
-                    string maxLevelTag = result.ReachedMaxLevel ? " [MAX LEVEL]" : string.Empty;
-                    string discardedTag = result.DiscardedExp > 0L ? $" (초과 소멸: -{result.DiscardedExp} EXP)" : string.Empty;
-
-                    logBuilder.AppendLine($"  - [Slot {i + 1}] [{unitIdStr}] {unitName} : Lv.{result.CurrentLevel} | EXP: {result.PreviousExp} -> {result.CurrentExp} (소모: {result.ConsumedExp}){levelUpTag}{maxLevelTag}{discardedTag}");
-                }
+                processedMainCount++;
             }
-            else
+        }
+
+        long subExp = Math.Max(1L, (long)Math.Floor(baseExp * 0.1f));
+        if (CollectionDataProvider.Instance != null)
+        {
+            var allOwned = CollectionDataProvider.Instance.GetAllOwnedUnits();
+            if (allOwned != null)
             {
-                // 2. 필드에 아직 스폰되지 않은 덱 유닛은 CollectionDataProvider의 데이터에서 계산
-                UnitSaveData savedUnit = CollectionDataProvider.Instance != null ? CollectionDataProvider.Instance.GetOwnedUnitSaveData(rawId) : null;
-                int currentLvl = savedUnit != null ? savedUnit.level : 1;
-                long currentE = savedUnit != null ? savedUnit.currentExp : 0L;
-                int bStep = savedUnit != null ? savedUnit.breakThroughStep : 0;
-
-                if (unitCatalog != null && unitCatalog.TryGetById(unitIdStr, out UnitDataSO unitData) && unitData != null)
+                for (int i = 0; i < allOwned.Count; i++)
                 {
-                    UnitProgressData progress = UnitProgressData.Create(unitData, currentLvl, currentE, bStep);
-                    if (UnitProgressionService.TryAddExperience(unitData, progress, exp, out UnitLevelResult saveResult))
+                    int unitId = allOwned[i].unitId;
+                    if (unitId > 0 && !activeDeckUnitIdSet.Contains(unitId))
                     {
-                        processedCount++;
-
-                        if (CollectionDataProvider.Instance != null)
+                        if (ApplyExperienceToUnitInternal(unitId, subExp, out _))
                         {
-                            CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, progress.CurrentLevel, progress.CurrentExp);
+                            processedSubCount++;
                         }
-
-                        string levelUpTag = saveResult.DidLevelUp ? $" [★ LEVEL UP! Lv.{saveResult.PreviousLevel} -> Lv.{saveResult.CurrentLevel}]" : string.Empty;
-                        string maxLevelTag = saveResult.ReachedMaxLevel ? " [MAX LEVEL]" : string.Empty;
-                        string discardedTag = saveResult.DiscardedExp > 0L ? $" (초과 소멸: -{saveResult.DiscardedExp} EXP)" : string.Empty;
-
-                        logBuilder.AppendLine($"  - [Slot {i + 1}] [{unitIdStr}] {unitData.DisplayName} (보관함) : Lv.{saveResult.CurrentLevel} | EXP: {saveResult.PreviousExp} -> {saveResult.CurrentExp} (소모: {saveResult.ConsumedExp}){levelUpTag}{maxLevelTag}{discardedTag}");
                     }
                 }
             }
         }
 
-        if (processedCount > 0)
+        if (processedMainCount > 0 || processedSubCount > 0)
         {
-            Debug.Log(logBuilder.ToString());
             RefreshDeckUnitsInspectorView();
         }
+    }
+
+    // 기존 호환용 덱 경험치 지급 연산
+    public void AddExperienceToDeckUnits(long exp)
+    {
+        DistributeBattleExperience(exp);
     }
 
     // 소모품 아이템 등을 통해 특정 단일 유닛에게 경험치 지급 연산 (문자열 ID 기반)
@@ -188,66 +165,14 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
         }
 
         int rawId = UnitIdHelper.ParseUnitId(unitId);
+        bool success = ApplyExperienceToUnitInternal(rawId, exp, out bool didLevelUp);
 
-        // 1. 현재 필드에 스폰되어 활성화된 런타임 유닛 탐색
-        UnitRuntimeState runtimeUnit = FindRuntimeUnitById(unitId);
-
-        if (runtimeUnit != null)
+        if (success)
         {
-            int beforeLevel = runtimeUnit.CurrentLevel;
-            long beforeExp = runtimeUnit.Progress != null ? runtimeUnit.Progress.CurrentExp : 0L;
-
-            if (runtimeUnit.AddExperience(exp, out UnitLevelResult result))
-            {
-                if (CollectionDataProvider.Instance != null)
-                {
-                    CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, result.CurrentLevel, result.CurrentExp);
-                }
-
-                RefreshDeckUnitsInspectorView();
-
-                string unitName = (runtimeUnit.DataLink != null && runtimeUnit.DataLink.HasData) ? runtimeUnit.DataLink.UnitData.DisplayName : unitId;
-                string levelUpTag = result.DidLevelUp ? $" [★ LEVEL UP! Lv.{result.PreviousLevel} -> Lv.{result.CurrentLevel}]" : string.Empty;
-                Debug.Log($"[ExperienceManager] 소모품 경험치 지급 (필드 유닛): [{unitId}] {unitName} +{exp:#,##0} EXP | [전] Lv.{result.PreviousLevel} (EXP: {result.PreviousExp:#,##0}) ➔ [후] Lv.{result.CurrentLevel} (EXP: {result.CurrentExp:#,##0}){levelUpTag}");
-                return true;
-            }
-
-            return false;
-        }
-
-        // 2. 필드에 없는 유닛인 경우 CollectionDataProvider 데이터에서 계산
-        UnitSaveData savedUnit = CollectionDataProvider.Instance != null ? CollectionDataProvider.Instance.GetOwnedUnitSaveData(rawId) : null;
-        if (savedUnit == null)
-        {
-            Debug.LogWarning($"[ExperienceManager] 소모품 경험치 지급 실패: 보유하지 않은 유닛 ID ({unitId})");
-            return false;
-        }
-
-        if (unitCatalog == null || !unitCatalog.TryGetById(unitId, out UnitDataSO unitData) || unitData == null)
-        {
-            Debug.LogWarning($"[ExperienceManager] 소모품 경험치 지급 실패: 카탈로그에서 유닛 정보를 찾을 수 없습니다 ({unitId})");
-            return false;
-        }
-
-        int prevLevel = savedUnit.level;
-        long prevExp = savedUnit.currentExp;
-
-        UnitProgressData progress = UnitProgressData.Create(unitData, savedUnit.level, savedUnit.currentExp, savedUnit.breakThroughStep);
-        if (UnitProgressionService.TryAddExperience(unitData, progress, exp, out UnitLevelResult saveResult))
-        {
-            if (CollectionDataProvider.Instance != null)
-            {
-                CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, progress.CurrentLevel, progress.CurrentExp);
-            }
-
             RefreshDeckUnitsInspectorView();
-
-            string levelUpTag = saveResult.DidLevelUp ? $" [★ LEVEL UP! Lv.{prevLevel} -> Lv.{saveResult.CurrentLevel}]" : string.Empty;
-            Debug.Log($"[ExperienceManager] 소모품 경험치 지급 (보관함 유닛): [{unitId}] {unitData.DisplayName} +{exp:#,##0} EXP | [전] Lv.{prevLevel} (EXP: {prevExp:#,##0}) ➔ [후] Lv.{saveResult.CurrentLevel} (EXP: {saveResult.CurrentExp:#,##0}){levelUpTag}");
-            return true;
         }
 
-        return false;
+        return success;
     }
 
     // 소모품 아이템 등을 통해 특정 단일 유닛에게 경험치 지급 연산 (정수 ID 오버로딩)
@@ -255,6 +180,95 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
     {
         string unitIdStr = UnitIdHelper.ToUnitKey(unitId);
         return AddExperienceToUnit(unitIdStr, exp);
+    }
+
+    // 단일 유닛 경험치 주입 및 레벨업 내부 공용 처리 연산
+    private bool ApplyExperienceToUnitInternal(int rawId, long exp, out bool didLevelUp)
+    {
+        didLevelUp = false;
+        if (rawId <= 0 || exp <= 0L) return false;
+
+        string unitIdStr = UnitIdHelper.ToUnitKey(rawId);
+        UnitRuntimeState runtimeUnit = FindRuntimeUnitById(unitIdStr);
+
+        if (runtimeUnit != null)
+        {
+            if (runtimeUnit.AddExperience(exp, out UnitLevelResult result))
+            {
+                didLevelUp = result.DidLevelUp;
+                if (CollectionDataProvider.Instance != null)
+                {
+                    CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, result.CurrentLevel, result.CurrentExp);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        UnitSaveData savedUnit = CollectionDataProvider.Instance != null ? CollectionDataProvider.Instance.GetOwnedUnitSaveData(rawId) : null;
+        if (savedUnit == null) return false;
+
+        if (unitCatalog != null && unitCatalog.TryGetById(unitIdStr, out UnitDataSO unitData) && unitData != null)
+        {
+            UnitProgressData progress = UnitProgressData.Create(unitData, savedUnit.level, savedUnit.currentExp, savedUnit.breakThroughStep);
+            if (UnitProgressionService.TryAddExperience(unitData, progress, exp, out UnitLevelResult saveResult))
+            {
+                didLevelUp = saveResult.DidLevelUp;
+                if (CollectionDataProvider.Instance != null)
+                {
+                    CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, progress.CurrentLevel, progress.CurrentExp);
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // 현재 전투 씬에 따른 출전 덱 유닛 ID 리스트 조회 연산
+    private List<int> GetActiveBattleDeckUnitIds()
+    {
+        List<int> result = new List<int>();
+        if (DeckManager.Instance == null) return result;
+
+        bool isRaidScene = false;
+        if (SceneLoader.Instance != null)
+        {
+            isRaidScene = SceneLoader.Instance.CurrentSceneType == SceneType.Raid;
+        }
+        else
+        {
+            Scene activeScene = SceneManager.GetActiveScene();
+            if (activeScene.name != null && activeScene.name.IndexOf("Raid", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                isRaidScene = true;
+            }
+        }
+
+        if (isRaidScene)
+        {
+            int[] r1 = DeckManager.Instance.GetDeckSlotsCopy(DeckType.Raid1);
+            int[] r2 = DeckManager.Instance.GetDeckSlotsCopy(DeckType.Raid2);
+
+            if (r1 != null)
+            {
+                for (int i = 0; i < r1.Length; i++) if (r1[i] > 0) result.Add(r1[i]);
+            }
+            if (r2 != null)
+            {
+                for (int i = 0; i < r2.Length; i++) if (r2[i] > 0) result.Add(r2[i]);
+            }
+        }
+        else
+        {
+            int[] normal = DeckManager.Instance.GetDeckSlotsCopy(DeckType.Normal);
+            if (normal != null)
+            {
+                for (int i = 0; i < normal.Length; i++) if (normal[i] > 0) result.Add(normal[i]);
+            }
+        }
+
+        return result;
     }
 
     #endregion
@@ -289,6 +303,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
     // 현재 덱에 편성된 유닛들의 정보를 인스펙터 디버그 리스트에 실시간 반영
     public void RefreshDeckUnitsInspectorView()
     {
+#if UNITY_EDITOR
         currentDeckUnits.Clear();
 
         IReadOnlyList<int> currentSlots = (DeckManager.Instance != null) ? DeckManager.Instance.DeckSlots : null;
@@ -341,6 +356,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
                 isFieldSpawned = isFieldSpawned
             });
         }
+#endif
     }
 
     #endregion

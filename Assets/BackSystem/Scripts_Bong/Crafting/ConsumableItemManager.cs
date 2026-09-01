@@ -140,7 +140,7 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
         }
 
         _potionCooldownTimer = PotionCooldownDuration;
-        SaveManager.Instance?.SaveGameData();
+        EventBus.Publish(new RequestSaveGameEvent(force: false));
         return true;
     }
 
@@ -176,7 +176,7 @@ public class ConsumableItemManager : SingletonBase<ConsumableItemManager>
 
         if (success)
         {
-            SaveManager.Instance?.SaveGameData();
+            EventBus.Publish(new RequestSaveGameEvent(force: false));
         }
         else
         {
