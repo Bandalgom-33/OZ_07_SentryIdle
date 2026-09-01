@@ -20,6 +20,6 @@ MonoBehaviour:
   dungeonIcon: {fileID: 0}
   requiredMinCombatPower: 400
   baseCycleSeconds: 120
-  baseRewardGold: 8000
-  baseRewardDiamond: 10
+  baseRewardGold: 80000
+  baseRewardDiamond: 1000
   baseRewardStageStone: 5

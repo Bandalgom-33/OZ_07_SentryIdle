@@ -5,46 +5,40 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 던전 슬롯 UI 바인딩 데이터 구조
-[Serializable]
-public class DungeonModalSlotView
-{
-    [Tooltip("슬롯 루트 오브젝트")]
-    public GameObject slotRoot;
-    [Tooltip("장착된 유닛이 있을 때 활성화될 루트")]
-    public GameObject occupiedRoot;
-    [Tooltip("빈 슬롯일 때 활성화될 [+] 루트")]
-    public GameObject emptyRoot;
-    [Tooltip("유닛 초상화 이미지")]
-    public Image portraitImage;
-    [Tooltip("유닛 이름 텍스트")]
-    public TMP_Text unitNameText;
-    [Tooltip("유닛 스탯 텍스트 (Lv.30 / 2돌 / 전투력 90)")]
-    public TMP_Text statInfoText;
-    [Tooltip("슬롯 해제 [X] 버튼")]
-    public Button removeButton;
-}
-
-// 던전 유닛 일괄 편성 및 최강 자동 배치 팝업 컨트롤러
+// 던전 유닛 파견 편성 모달 팝업 컨트롤러
 public class UIDungeonFormationModal : MonoBehaviour
 {
     #region 직렬화 변수 (인스펙터 바인딩)
 
-    [Header("--- 헤더 및 상태 정보 ---")]
-    [Tooltip("던전 이름 텍스트")]
+    [Header("--- 상단: 던전 헤더 및 상태 정보 ---")]
+    [Tooltip("던전 이름 텍스트 (타이틀)")]
     [SerializeField] private TMP_Text dungeonTitleText;
 
-    [Tooltip("총 전투력 / 요구 전투력 텍스트 (예: 140 / 50)")]
-    [SerializeField] private TMP_Text combatPowerText;
+    [Tooltip("던전 아이콘 이미지")]
+    [SerializeField] private Image dungeonIconImage;
 
-    [Tooltip("가동 상태 및 보너스 배율 텍스트 (예: 생산 가동 중 (+180% 보너스))")]
+    [Tooltip("던전 보너스 텍스트")]
     [SerializeField] private TMP_Text bonusStatusText;
 
-    [Header("--- 상단 3개 던전 슬롯 뷰 ---")]
-    [SerializeField] private DungeonModalSlotView[] slotViews = new DungeonModalSlotView[3];
+    [Tooltip("던전 설명 텍스트")]
+    [SerializeField] private TMP_Text dungeonDescText;
 
-    [Header("--- 제어 버튼 ---")]
-    [Tooltip("⚡ 최강 전투력 자동 배치 버튼")]
+    [Header("--- 중앙: 상단 3개 던전 유닛 슬롯 뷰 ---")]
+    [Tooltip("상단에 배치된 3개 유닛 슬롯 컴포넌트 배열")]
+    [SerializeField] private UIDungeonSelectedUnitSlot[] selectedUnitSlots = new UIDungeonSelectedUnitSlot[3];
+
+    [Header("--- 하단: 전투력 및 보유 유닛 목록 스크롤 뷰 ---")]
+    [Tooltip("총 전투력 / 요구 전투력 텍스트")]
+    [SerializeField] private TMP_Text combatPowerText;
+
+    [Tooltip("유닛 카드들이 생성될 컨테이너 (Content)")]
+    [SerializeField] private Transform unitCardContainer;
+
+    [Tooltip("보유 유닛 카드 프리팹")]
+    [SerializeField] private UIDungeonFormationUnitCard unitCardPrefab;
+
+    [Header("--- 제어 버튼 (옵셔널) ---")]
+    [Tooltip("최강 전투력 자동 배치 버튼")]
     [SerializeField] private Button autoAssignButton;
 
     [Tooltip("전체 슬롯 비우기 버튼")]
@@ -52,17 +46,6 @@ public class UIDungeonFormationModal : MonoBehaviour
 
     [Tooltip("팝업 닫기 버튼")]
     [SerializeField] private Button closeButton;
-
-    [Header("--- 하단 보유 유닛 목록 스크롤 뷰 ---")]
-    [Tooltip("유닛 카드들이 인스턴스화될 컨테이너 트랜스폼")]
-    [SerializeField] private Transform unitCardContainer;
-
-    [Tooltip("보유 유닛 카드 프리팹")]
-    [SerializeField] private UIDungeonFormationUnitCard unitCardPrefab;
-
-    [Header("--- 유닛 카탈로그 및 초상화 참조 ---")]
-    [SerializeField] private UnitCatalog unitCatalog;
-    [SerializeField] private UnitPortraitCatalogSO portraitCatalog;
 
     #endregion
 
@@ -73,25 +56,11 @@ public class UIDungeonFormationModal : MonoBehaviour
 
     #endregion
 
-    #region 라이프사이클 및 이벤트 등록
+    #region 유니티 생명주기 및 이벤트 등록
 
-    // 카탈로그 로드 및 버튼 리스너 등록
+    // 버튼 리스너 등록
     private void Awake()
     {
-        if (unitCatalog == null)
-        {
-            unitCatalog = CollectionDataProvider.Instance != null 
-                ? CollectionDataProvider.Instance.UnitCatalog 
-                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
-        }
-
-        if (portraitCatalog == null)
-        {
-            portraitCatalog = CollectionDataProvider.Instance != null 
-                ? CollectionDataProvider.Instance.PortraitCatalog 
-                : Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
-        }
-
         if (autoAssignButton != null)
         {
             autoAssignButton.onClick.AddListener(OnClickAutoAssign);
@@ -106,24 +75,15 @@ public class UIDungeonFormationModal : MonoBehaviour
         {
             closeButton.onClick.AddListener(CloseModal);
         }
-
-        for (int i = 0; i < slotViews.Length; i++)
-        {
-            int slotIdx = i;
-            if (slotViews[slotIdx] != null && slotViews[slotIdx].removeButton != null)
-            {
-                slotViews[slotIdx].removeButton.onClick.AddListener(() => OnClickRemoveSlot(slotIdx));
-            }
-        }
     }
 
-    // 편성 변경 이벤트 구독 등록
+    // 던전 편성 변경 이벤트 구독 등록
     private void OnEnable()
     {
         EventBus.Subscribe<DungeonFormationChangedEvent>(OnDungeonFormationChanged);
     }
 
-    // 편성 변경 이벤트 구독 해제
+    // 던전 편성 변경 이벤트 구독 해제
     private void OnDisable()
     {
         EventBus.Unsubscribe<DungeonFormationChangedEvent>(OnDungeonFormationChanged);
@@ -151,7 +111,7 @@ public class UIDungeonFormationModal : MonoBehaviour
 
     #region 이벤트 수신 및 UI 갱신
 
-    // 편성 변경 이벤트 수신 갱신 처리
+    // 편성 변경 이벤트 수신 시 UI 리프레시 처리
     private void OnDungeonFormationChanged(DungeonFormationChangedEvent evt)
     {
         if (gameObject.activeSelf)
@@ -160,7 +120,7 @@ public class UIDungeonFormationModal : MonoBehaviour
         }
     }
 
-    // 상단 3개 슬롯 및 하단 유닛 목록 전체 갱신
+    // 던전 상세 패널 전체 정보 갱신
     public void RefreshUI()
     {
         if (string.IsNullOrEmpty(_currentDungeonId) || DungeonManager.Instance == null) return;
@@ -168,9 +128,28 @@ public class UIDungeonFormationModal : MonoBehaviour
         DungeonDataSO dataSO = DungeonManager.Instance.GetDungeonData(_currentDungeonId);
         if (dataSO == null) return;
 
+        UnitCatalog unitCatalog = CollectionDataProvider.Instance != null 
+            ? CollectionDataProvider.Instance.UnitCatalog 
+            : null;
+
+        UnitPortraitCatalogSO portraitCatalog = CollectionDataProvider.Instance != null 
+            ? CollectionDataProvider.Instance.PortraitCatalog 
+            : null;
+
         if (dungeonTitleText != null)
         {
             dungeonTitleText.text = $"{dataSO.DungeonName} - 유닛 파견 편성";
+        }
+
+        if (dungeonIconImage != null && dataSO.DungeonIcon != null)
+        {
+            dungeonIconImage.sprite = dataSO.DungeonIcon;
+            dungeonIconImage.enabled = true;
+        }
+
+        if (dungeonDescText != null)
+        {
+            dungeonDescText.text = dataSO.Description;
         }
 
         int totalPower = DungeonManager.Instance.GetDungeonTotalPower(_currentDungeonId);
@@ -199,22 +178,23 @@ public class UIDungeonFormationModal : MonoBehaviour
         }
 
         int[] assignedUnits = DungeonManager.Instance.GetAssignedUnitIds(_currentDungeonId);
-        for (int i = 0; i < slotViews.Length; i++)
+        for (int i = 0; i < selectedUnitSlots.Length; i++)
         {
-            DungeonModalSlotView sv = slotViews[i];
-            if (sv == null) continue;
+            UIDungeonSelectedUnitSlot slot = selectedUnitSlots[i];
+            if (slot == null) continue;
 
+            int slotIdx = i;
             int unitId = (assignedUnits != null && i < assignedUnits.Length) ? assignedUnits[i] : -1;
             bool isOccupied = unitId > 0;
-
-            if (sv.occupiedRoot != null) sv.occupiedRoot.SetActive(isOccupied);
-            if (sv.emptyRoot != null) sv.emptyRoot.SetActive(!isOccupied);
 
             if (isOccupied)
             {
                 string unitKey = $"UNIT_{unitId:D4}";
                 string uName = unitKey;
                 Sprite icon = (portraitCatalog != null) ? portraitCatalog.GetPortraitByUnitId(unitKey) : null;
+
+                int level = 1;
+                int starGrade = 1;
 
                 if (unitCatalog != null && unitCatalog.TryGetById(unitKey, out UnitDataSO so) && so != null)
                 {
@@ -223,28 +203,40 @@ public class UIDungeonFormationModal : MonoBehaviour
 
                 int power = DungeonManager.Instance.GetUnitCombatPower(unitId);
 
-                if (sv.portraitImage != null && icon != null)
-                {
-                    sv.portraitImage.sprite = icon;
-                    sv.portraitImage.enabled = true;
-                }
-                else if (sv.portraitImage != null)
-                {
-                    sv.portraitImage.enabled = false;
-                }
-
-                if (sv.unitNameText != null) sv.unitNameText.text = uName;
-                if (sv.statInfoText != null) sv.statInfoText.text = $"전투력: {power}";
+                slot.Bind(
+                    slotIdx,
+                    unitId,
+                    uName,
+                    level,
+                    starGrade,
+                    power,
+                    icon,
+                    OnClickRemoveSlot
+                );
+            }
+            else
+            {
+                slot.SetEmpty(slotIdx, OnClickRemoveSlot);
             }
         }
 
         RefreshUnitCardList();
     }
 
-    // 보유 유닛 목록 전투력 순 정렬 및 카드 렌더링
+    // 보유 유닛 목록 정렬 및 카드 렌더링
     private void RefreshUnitCardList()
     {
-        if (unitCardContainer == null || unitCardPrefab == null || unitCatalog == null) return;
+        if (unitCardContainer == null || unitCardPrefab == null) return;
+
+        UnitCatalog unitCatalog = CollectionDataProvider.Instance != null 
+            ? CollectionDataProvider.Instance.UnitCatalog 
+            : null;
+
+        UnitPortraitCatalogSO portraitCatalog = CollectionDataProvider.Instance != null 
+            ? CollectionDataProvider.Instance.PortraitCatalog 
+            : null;
+
+        if (unitCatalog == null) return;
 
         IReadOnlyList<UnitDataSO> allUnits = unitCatalog.Units;
         if (allUnits == null || allUnits.Count == 0) return;
@@ -259,7 +251,6 @@ public class UIDungeonFormationModal : MonoBehaviour
             int uId = ParseUnitId(so.UnitId);
             if (uId <= 0) continue;
 
-            // 미보유 유닛은 던전 파견 편성 목록에서 제외 (보유 유닛만 노출)
             if (DungeonManager.Instance != null && !DungeonManager.Instance.IsUnitOwned(uId))
             {
                 continue;
@@ -323,7 +314,7 @@ public class UIDungeonFormationModal : MonoBehaviour
 
     #region 유저 조작 핸들러
 
-    // 보유 유닛 카드 클릭 시 장착 및 해제 처리
+    // 보유 유닛 카드 클릭 시 배치 및 해제 처리
     private void OnClickUnitCard(int unitId)
     {
         if (string.IsNullOrEmpty(_currentDungeonId) || DungeonManager.Instance == null) return;
@@ -375,7 +366,7 @@ public class UIDungeonFormationModal : MonoBehaviour
 
     #region 내부 헬퍼
 
-    // 유닛 문자열 키 정수 ID 변환
+    // 유닛 문자열 키를 정수 ID로 변환
     private int ParseUnitId(string unitKey)
     {
         if (string.IsNullOrEmpty(unitKey)) return -1;
