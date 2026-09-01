@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 742cf5ade27941d7a044a7aea123fbc4, type: 3}
+  m_Name: UnitReadyEffectConfig
+  m_EditorClassIdentifier: Assembly-CSharp::EndlessGuard.Unit.Runtime.UnitReadyEffectConfigSO
+  auraMaterial: {fileID: 2100000, guid: 76037670a83f414ca57335c4968a1b94, type: 2}
+  localPosition: {x: 0, y: 1.1, z: 0}
+  auraSize: {x: 1.7, y: 2.3}
+  sortingOrder: -20
+  coreLayerScale: 1
+  outerLayerScale: 1.2
+  outerLayerAlpha: 0.5
