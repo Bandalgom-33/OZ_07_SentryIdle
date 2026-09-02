@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 메인 로비 UI 상태 제어 및 서브 시스템 패널 중계 컴포넌트
 public class MainLobbyUI : MonoBehaviour
 {
     #region 싱글톤 인스턴스
@@ -11,7 +12,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #endregion
 
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- 메인 화면 패널 구성 ---")]
     [Tooltip("게임 최초 실행 시 표시되는 시작/타이틀 패널")]
@@ -170,7 +171,7 @@ public class MainLobbyUI : MonoBehaviour
         RefreshAllHUD();
     }
 
-    // 이벤트 버스 구독 해제
+    // 전역 이벤트 구독 해제
     private void OnDisable()
     {
         CurrencyManager.OnGoldChange -= UpdateGoldUI;
@@ -180,14 +181,14 @@ public class MainLobbyUI : MonoBehaviour
         EventBus.Unsubscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
     }
 
-    // 첫 실행 여부에 따른 초기 메인 패널 표시 및 HUD 갱신
+    // 첫 실행 여부에 따른 패널 상태 초기화 및 HUD 갱신
     private void Start()
     {
         ApplyInitialPanelState();
         RefreshAllHUD();
     }
 
-    // 인스턴스 파괴 시 싱글톤 참조 해제
+    // 싱글톤 참조 해제
     private void OnDestroy()
     {
         if (Instance == this)
@@ -200,7 +201,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 오프라인 방치 보상 이벤트 핸들러 및 텍스트 빌더
 
-    // 레이드 토벌 성공 보상 안내 텍스트 조립 헬퍼
+    // 레이드 토벌 성공 보상 안내 텍스트 조립
     private string BuildRaidRewardText(long raidStone)
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -215,7 +216,7 @@ public class MainLobbyUI : MonoBehaviour
         return sb.ToString();
     }
 
-    // 오프라인 방치 시간 및 보상 상세 내역을 단일 문자열로 조립하는 헬퍼 메서드
+    // 오프라인 방치 시간 및 보상 내역 문자열 조립
     private string BuildOfflineRewardText(OfflineRewardReportData report)
     {
         if (report == null)
@@ -271,10 +272,9 @@ public class MainLobbyUI : MonoBehaviour
         return sb.ToString();
     }
 
-    // 오프라인 방치 보상 수신 및 텍스트 바인딩 연산 (타이틀 진입 시에만 바인딩, 레이드 보상 대기 중일 때는 무시)
+    // 오프라인 방치 보상 이벤트 수신 처리
     private void OnOfflineRewardReported(OfflineRewardReportEvent evt)
     {
-        // [기술적 근거] 레이드 보상 팝업이 대기 중이거나 이미 타이틀을 지나 로비/인게임 중일 때는 덮어쓰기 차단
         if (CurrencyManager.Instance != null && CurrencyManager.Instance.HasPendingRaidRewardReport)
         {
             return;
@@ -316,7 +316,6 @@ public class MainLobbyUI : MonoBehaviour
             if (startPanel != null) startPanel.SetActive(false);
             if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
 
-            // [규칙 2] 레이드 등 전투 씬에서 로비로 복귀했을 때는 오직 레이드 보상만 검사하여 노출
             if (CurrencyManager.Instance != null && CurrencyManager.Instance.HasPendingRaidRewardReport)
             {
                 if (offlineRewardInfoText != null)
@@ -328,7 +327,7 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 시작 패널에서 메인 로비 패널로 전환 (타이틀 시작 시에만 오프라인 보상 팝업 노출)
+    // 게임 시작 버튼 클릭 이벤트 처리
     public void OnStartGameClicked()
     {
         _isFirstLaunch = false;
@@ -336,7 +335,6 @@ public class MainLobbyUI : MonoBehaviour
         if (startPanel != null) startPanel.SetActive(false);
         if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
 
-        // [규칙 1] 타이틀에서 게임 시작을 눌렀을 때만 오프라인 방치 보상 팝업 오픈
         bool isExistingUser = SaveManager.Instance != null && SaveManager.Instance.HasExistingSaveFile;
         if (isExistingUser && OfflineRewardManager.Instance != null && OfflineRewardManager.Instance.LastReportData != null)
         {
@@ -352,7 +350,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 오프라인 / 레이드 보상 팝업 제어
 
-    // 보상 팝업 패널 오픈
+    // 보상 팝업 패널 활성화
     public void ShowOfflineRewardPopup()
     {
         SetOfflineRewardPanelActive(true);
@@ -363,7 +361,6 @@ public class MainLobbyUI : MonoBehaviour
     {
         SetOfflineRewardPanelActive(false);
 
-        // 레이드 보상 팝업 대기 상태 초기화
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.ClearPendingRaidRewardReport();
@@ -386,7 +383,6 @@ public class MainLobbyUI : MonoBehaviour
     // 버튼 클릭 리스너 일괄 바인딩
     private void InitializeButtonListeners()
     {
-        // 1. 시작 패널 및 오프라인 보상 버튼
         if (startGameButton != null)
         {
             startGameButton.onClick.AddListener(OnStartGameClicked);
@@ -397,7 +393,6 @@ public class MainLobbyUI : MonoBehaviour
             closeOfflineRewardButton.onClick.AddListener(CloseOfflineRewardPopup);
         }
 
-        // 2. 씬 전환 버튼
         if (enterGamePlayButton != null)
         {
             enterGamePlayButton.onClick.AddListener(OnEnterGamePlayClicked);
@@ -408,7 +403,6 @@ public class MainLobbyUI : MonoBehaviour
             enterRaidButton.onClick.AddListener(OnEnterRaidClicked);
         }
 
-        // 3. 메인 로비 서브 시스템 그룹 버튼
         if (unitDeckMenuButton != null)
         {
             unitDeckMenuButton.onClick.AddListener(() => ToggleSelectPanel(unitDeckSelectPanel));
@@ -429,7 +423,6 @@ public class MainLobbyUI : MonoBehaviour
             dungeonButton.onClick.AddListener(() => OpenSubPanel(dungeonWindowPanel));
         }
 
-        // 4. 중간 선택 패널 내 서브 시스템 진입 버튼
         if (openCollectionButton != null)
         {
             openCollectionButton.onClick.AddListener(() => OpenSubPanel(collectionWindowPanel));
@@ -460,7 +453,6 @@ public class MainLobbyUI : MonoBehaviour
             openWorkshopButton.onClick.AddListener(() => OpenSubPanel(workshopWindowPanel));
         }
 
-        // 5. 중간 선택 패널 닫기 버튼
         if (closeUnitDeckSelectButton != null)
         {
             closeUnitDeckSelectButton.onClick.AddListener(() => CloseSelectPanel(unitDeckSelectPanel));
@@ -476,7 +468,6 @@ public class MainLobbyUI : MonoBehaviour
             closeInventoryWorkshopSelectButton.onClick.AddListener(() => CloseSelectPanel(inventoryWorkshopSelectPanel));
         }
 
-        // 6. 게임 종료 버튼
         if (titleQuitButton != null)
         {
             titleQuitButton.onClick.AddListener(QuitGame);
@@ -492,7 +483,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 씬 전환 이벤트 핸들러
 
-    // 일반 스테이지 게임플레이 씬 전환
+    // 일반 스테이지 게임플레이 씬 전환 요청
     public void OnEnterGamePlayClicked()
     {
         if (SceneLoader.Instance != null)
@@ -505,7 +496,7 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 레이드 씬 전환
+    // 레이드 씬 전환 요청
     public void OnEnterRaidClicked()
     {
         if (SceneLoader.Instance != null)
@@ -533,7 +524,7 @@ public class MainLobbyUI : MonoBehaviour
         targetPanel.SetActive(!isActive);
     }
 
-    // 지정 중간 선택 패널 오픈
+    // 지정 중간 선택 패널 활성화
     public void OpenSelectPanel(GameObject targetPanel)
     {
         if (targetPanel == null) return;
@@ -543,7 +534,7 @@ public class MainLobbyUI : MonoBehaviour
         targetPanel.SetActive(true);
     }
 
-    // 지정 중간 선택 패널 닫기
+    // 지정 중간 선택 패널 비활성화
     public void CloseSelectPanel(GameObject targetPanel)
     {
         if (targetPanel != null)
@@ -552,7 +543,7 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 모든 중간 선택 패널 일괄 닫기
+    // 모든 중간 선택 패널 일괄 비활성화
     public void CloseAllSelectPanels()
     {
         if (unitDeckSelectPanel != null) unitDeckSelectPanel.SetActive(false);
@@ -560,7 +551,7 @@ public class MainLobbyUI : MonoBehaviour
         if (inventoryWorkshopSelectPanel != null) inventoryWorkshopSelectPanel.SetActive(false);
     }
 
-    // 지정 최종 서브 윈도우 패널 단독 오픈
+    // 지정 최종 서브 윈도우 패널 활성화
     public void OpenSubPanel(GameObject targetPanel)
     {
         if (targetPanel == null) return;
@@ -581,7 +572,7 @@ public class MainLobbyUI : MonoBehaviour
         targetPanel.SetActive(!isActive);
     }
 
-    // 모든 최종 서브 윈도우 패널 일괄 닫기
+    // 모든 최종 서브 윈도우 패널 일괄 비활성화
     public void CloseAllSubPanels()
     {
         if (collectionWindowPanel != null) collectionWindowPanel.SetActive(false);
@@ -597,7 +588,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 게임 종료
 
-    // 애플리케이션 종료
+    // 애플리케이션 종료 처리
     public void QuitGame()
     {
         Debug.Log("[MainLobbyUI] 게임 종료를 요청합니다.");
@@ -627,13 +618,13 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 데이터 로드 완료 이벤트 처리
+    // 데이터 로드 완료 이벤트 수신 처리
     private void OnDataLoaded(DataLoadEvent evt)
     {
         RefreshAllHUD();
     }
 
-    // 스테이지 변경 이벤트 처리
+    // 스테이지 변경 이벤트 수신 처리
     private void OnStageWaveChanged(StageWaveChangedEvent evt)
     {
         UpdateStageInfoUI(evt.stageNumber, evt.waveNumber);
@@ -670,7 +661,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 유틸리티
 
-    // 대용량 재화 단위 축약 포맷팅
+    // 대용량 숫자 단위 축약 포맷팅
     private string FormatCurrencyNumber(double value)
     {
         if (value < 1000)

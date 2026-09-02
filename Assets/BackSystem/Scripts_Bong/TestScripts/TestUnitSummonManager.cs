@@ -8,10 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace EndlessGuard.TestBattle
 {
-    /// <summary>
-    /// 플레이어의 덱(DeckManager) 및 보유 DP(CurrencyManager)와 연동하여,
-    /// 격자 타일에 아군 유닛을 자동으로 소환 및 배치하고 사망 시 정리하는 소환 매니저 클래스
-    /// </summary>
+    // 플레이어 덱 및 보유 DP 연동 기반 아군 유닛 자동 소환 및 격자 배치 매니저
     public class TestUnitSummonManager : MonoBehaviour
     {
         #region 인스펙터 직렬화 필드
@@ -52,29 +49,23 @@ namespace EndlessGuard.TestBattle
 
         #region 내부 런타임 캐시 필드
 
-        // 현재 소환되어 필드에 배치된 아군 유닛 및 타일 추적 매핑 (사망 시 점유 해제용)
         private readonly Dictionary<CombatHealth, TileNode> _occupiedTilesByUnit = new Dictionary<CombatHealth, TileNode>();
-
-        // 현재 필드에 생존 중인 유닛 식별자 목록 (중복 소환 방지 및 HUD 명암 연동용)
         private readonly HashSet<string> _activeUnitIds = new HashSet<string>();
-
-        // 자동 소환 코루틴 참조
         private Coroutine _autoSpawnCoroutine;
 
         #endregion
 
         #region 프로퍼티
 
-        // 현재 필드에 배치된 아군 유닛 수
         public int CurrentFieldUnitCount => _occupiedTilesByUnit.Count;
 
         #endregion
 
         #region 라이프사이클
 
+        // 참조 캐싱 및 예비 카탈로그 로드
         private void Awake()
         {
-            // 인스펙터 미연결 시 씬 내 TestMapGenerator 컴포넌트 자동 탐색
             if (mapGenerator == null)
             {
                 mapGenerator = FindFirstObjectByType<TestMapGenerator>();
@@ -86,12 +77,13 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 전역 이벤트 리스너 등록
         private void OnEnable()
         {
-            // EventBus의 덱 편성 변경 이벤트 구독 (덱 변경 시 필요 시 즉시 반응)
             EventBus.Subscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
         }
 
+        // 이벤트 구독 해제 및 아군 유닛 정리
         private void OnDisable()
         {
             EventBus.Unsubscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
@@ -103,25 +95,19 @@ namespace EndlessGuard.TestBattle
 
         #region 소환 초기화 및 루프 제어
 
-        /// <summary>
-        /// 맵 생성 완료 후 초기 유닛 배치 및 자동 소환 코루틴을 시작합니다.
-        /// </summary>
+        // 초기 아군 배치 및 자동 소환 루프 시작
         public void InitializeSummoning()
         {
-            // 1. 기존 잔존 유닛 정리
             ClearAllUnits();
-
-            // 2. 초기 아군 로스터 소환
             SpawnInitialUnits();
 
-            // 3. 자동 소환 루프 가동
             if (autoSpawnEnabled)
             {
                 StartAutoSpawn();
             }
         }
 
-        // 초기 유닛 스폰 루프
+        // 초기 지정 수량 아군 유닛 일괄 배치
         private void SpawnInitialUnits()
         {
             for (int i = 0; i < initialSpawnCount; i++)
@@ -135,9 +121,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
-        /// <summary>
-        /// 자동 지속 소환 코루틴 가동
-        /// </summary>
+        // 자동 지속 소환 코루틴 가동
         public void StartAutoSpawn()
         {
             if (_autoSpawnCoroutine != null)
@@ -147,9 +131,7 @@ namespace EndlessGuard.TestBattle
             _autoSpawnCoroutine = StartCoroutine(AutoSpawnRoutine());
         }
 
-        /// <summary>
-        /// 자동 소환 코루틴 중단
-        /// </summary>
+        // 자동 지속 소환 코루틴 중단
         public void StopAutoSpawn()
         {
             if (_autoSpawnCoroutine != null)
@@ -159,7 +141,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
-        // 주기적으로 DP 잔액과 빈 타일을 검사하여 아군을 소환하는 루틴
+        // 주기적 DP 확인 및 자동 추가 소환 코루틴
         private IEnumerator AutoSpawnRoutine()
         {
             while (autoSpawnEnabled)
@@ -177,33 +159,25 @@ namespace EndlessGuard.TestBattle
 
         #region 아군 유닛 소환 핵심 로직
 
-        /// <summary>
-        /// DeckManager의 편성 덱(또는 UnitCatalog)에서 유닛을 선정하고,
-        /// DP 코스트 및 빈 타일을 검증하여 필드에 안전하게 소환합니다.
-        /// </summary>
+        // 덱 또는 카탈로그 기반 아군 유닛 선별 및 소환 시도
         public bool TrySpawnNextDeckUnit(bool ignoreDpCost = false)
         {
-            // 1. 필드 최대 유닛 수(10기) 한도 검사
             if (CurrentFieldUnitCount >= maxFieldUnitCount || mapGenerator == null || !mapGenerator.IsMapGenerated)
             {
                 return false;
             }
 
-            // 2. 소환할 UnitDataSO 후보 선별 (DeckManager 일반 덱 우선 -> 미편성 시 UnitCatalog 폴백)
             UnitDataSO targetUnitData = PickDeployableUnitData();
             if (targetUnitData == null || targetUnitData.UnitPrefab == null)
             {
                 return false;
             }
 
-            // 3. 유닛의 배치 적성(Placement)에 따른 타일 타입 선정
             TileType targetTileType = DetermineTargetTileType(targetUnitData.Placement);
 
-            // 4. 배치 가능한 빈 타일 검색
             TileNode candidateTile = mapGenerator.FindRandomDeployableTile(targetTileType);
             if (candidateTile == null)
             {
-                // 주 타일이 꽉 찼고 복합 배치가 가능한 경우 보조 타일 타입 재검색
                 if (targetUnitData.Placement == UnitPlacement.GroundAndHighGround)
                 {
                     TileType altType = targetTileType == TileType.Path ? TileType.HighGround : TileType.Path;
@@ -213,10 +187,9 @@ namespace EndlessGuard.TestBattle
 
             if (candidateTile == null)
             {
-                return false; // 빈 배치 타일 없음
+                return false;
             }
 
-            // 5. CurrencyManager 보유 DP 검증 및 차감
             int summonCost = Mathf.Max(0, targetUnitData.SummonCost);
             if (!ignoreDpCost)
             {
@@ -224,18 +197,15 @@ namespace EndlessGuard.TestBattle
                 {
                     if (!CurrencyManager.Instance.HasDpCost(summonCost) || !CurrencyManager.Instance.TrySpendDpCost(summonCost))
                     {
-                        return false; // DP 부족
+                        return false;
                     }
                 }
             }
 
-            // 6. 유닛 인스턴스화 및 런타임 초기화 실행
             return SpawnUnitOnTile(targetUnitData, candidateTile);
         }
 
-        /// <summary>
-        /// 지정된 타일에 유닛 프리팹을 생성하고 전투 컴포넌트 및 사망 이벤트를 바인딩합니다.
-        /// </summary>
+        // 지정 타일 기반 유닛 인스턴스화 및 컴포넌트 초기화
         private bool SpawnUnitOnTile(UnitDataSO unitData, TileNode tileNode)
         {
             if (unitData == null || unitData.UnitPrefab == null || mapGenerator == null || mapGenerator.MapRenderer == null)
@@ -243,18 +213,14 @@ namespace EndlessGuard.TestBattle
                 return false;
             }
 
-            // 1. 월드 좌표 및 타일 높이 오프셋 계산
             Vector3 worldPos = mapGenerator.MapRenderer.GridToWorld(tileNode.GridPosition);
             worldPos.y += (tileNode.TileType == TileType.HighGround) ? highGroundUnitHeight : groundUnitHeight;
 
-            // 2. 프리팹 인스턴스 생성
             GameObject instance = Instantiate(unitData.UnitPrefab, worldPos, unitData.UnitPrefab.transform.rotation);
             instance.name = $"Ally_{unitData.DisplayName}_{tileNode.GridPosition.x}_{tileNode.GridPosition.y}";
 
-            // 3. UnitDataLink 확인 (프리팹에 기본 연결되어 있음)
             UnitDataLink dataLink = instance.GetComponent<UnitDataLink>();
 
-            // 4. UnitRuntimeState 초기화
             UnitRuntimeState runtimeState = instance.GetComponent<UnitRuntimeState>();
             if (runtimeState == null)
             {
@@ -265,23 +231,18 @@ namespace EndlessGuard.TestBattle
 
             runtimeState.InitializeRuntime();
 
-            // 5. 바라보는 방향(GridFacingDirection) 자동 계산 (적이 다가오는 경로를 마주보도록 설정)
             GridFacingDirection facing = CalculateOptimalFacingDirection(tileNode.GridPosition);
 
-            // 6. CombatGridPosition 초기화 (이 시점에 CombatRegistry에 좌표 등록됨)
             if (runtimeState.GridPosition != null)
             {
                 runtimeState.GridPosition.Initialize(tileNode.GridPosition, facing, CombatTargetLayer.Ground);
             }
 
-            // 7. 타일 점유(Occupied) 상태 확정
             tileNode.SetOccupied(true);
 
-            // 8. 중복 소환 방지 목록 등록 및 HUD 덱 슬롯 명암 변경 이벤트 발행
             _activeUnitIds.Add(unitData.UnitId);
             EventBus.Publish(new UnitFieldSpawnStateChangedEvent(unitData.UnitId, true));
 
-            // 9. 사망 시 타일 해제 및 디스폰을 위한 이벤트 바인딩
             RegisterUnitDeath(runtimeState, tileNode);
 
             Debug.Log($"[TestUnitSummonManager] 아군 소환 완료: {unitData.DisplayName} -> 타일 {tileNode.GridPosition} (방향: {facing})");
@@ -292,7 +253,7 @@ namespace EndlessGuard.TestBattle
 
         #region 방향 산출 및 데이터 선별 헬퍼
 
-        // DeckManager에서 아직 필드에 소환되지 않은 유닛을 우선 선별 (중복 소환 방지)
+        // 미소환 유닛 중 배치 대상 선별
         private UnitDataSO PickDeployableUnitData()
         {
             if (DeckManager.Instance != null)
@@ -300,7 +261,6 @@ namespace EndlessGuard.TestBattle
                 List<UnitDataSO> deckUnits = DeckManager.Instance.GetRegisteredUnitData(DeckType.Normal);
                 if (deckUnits != null && deckUnits.Count > 0)
                 {
-                    // 필드에 이미 생존 중인 유닛(_activeUnitIds)은 제외하고 후보 필터링
                     List<UnitDataSO> availableUnits = new List<UnitDataSO>();
                     for (int i = 0; i < deckUnits.Count; i++)
                     {
@@ -315,12 +275,10 @@ namespace EndlessGuard.TestBattle
                         return availableUnits[Random.Range(0, availableUnits.Count)];
                     }
 
-                    // 덱의 모든 유닛이 이미 필드에 소환된 경우 추가 소환 불가
                     return null;
                 }
             }
 
-            // 예비 카탈로그 폴백 (덱이 비어있는 테스트 환경)
             if (unitCatalog != null && unitCatalog.Units.Count > 0)
             {
                 List<UnitDataSO> availableUnits = new List<UnitDataSO>();
@@ -341,7 +299,7 @@ namespace EndlessGuard.TestBattle
             return null;
         }
 
-        // 유닛 배치 적성에 따른 최적 타일 타입 결정
+        // 유닛 배치 적성에 따른 타일 타입 결정
         private TileType DetermineTargetTileType(UnitPlacement placement)
         {
             switch (placement)
@@ -357,13 +315,11 @@ namespace EndlessGuard.TestBattle
             }
         }
 
-        // 소환 타일 주변의 적 이동 경로를 분석하여 적을 정면으로 마주보도록 방향 계산
+        // 소환 타일 기준 최적 시선 방향 산출
         private GridFacingDirection CalculateOptimalFacingDirection(Vector2Int tileCoord)
         {
             if (mapGenerator == null) return GridFacingDirection.West;
 
-            // 스폰 지점(X=0)에서 골(X=width-1)로 이동하므로 기본적으로 왼쪽(West, 적이 오는 방향)을 바라봄
-            // 타일이 경로상에 있는 경우 경로의 역방향(이전 노드 방향)을 계산
             IReadOnlyList<Vector2Int> path = mapGenerator.PathPositionA;
             if (path != null && path.Count > 0)
             {
@@ -377,7 +333,6 @@ namespace EndlessGuard.TestBattle
                     }
                 }
 
-                // 경로 타일인 경우: 적이 이전 노드에서 오므로 이전 노드(index-1)를 바라봄
                 if (index > 0)
                 {
                     Vector2Int deltaToPrev = path[index - 1] - tileCoord;
@@ -385,7 +340,6 @@ namespace EndlessGuard.TestBattle
                 }
             }
 
-            // 기본 방향은 서쪽(West: 입구 방향)
             return GridFacingDirection.West;
         }
 
@@ -393,7 +347,7 @@ namespace EndlessGuard.TestBattle
 
         #region 사망 처리 및 정리 로직
 
-        // 유닛 사망 이벤트 바인딩
+        // 유닛 사망 이벤트 리스너 바인딩
         private void RegisterUnitDeath(UnitRuntimeState unitState, TileNode tileNode)
         {
             if (unitState == null || unitState.Health == null) return;
@@ -405,12 +359,11 @@ namespace EndlessGuard.TestBattle
             health.OnDied += HandleUnitDied;
         }
 
-        // 아군 유닛 사망 콜백: 점유 타일 즉시 해제, 이펙트 회수 및 게임오브젝트 파괴
+        // 유닛 사망 이벤트 콜백
         private void HandleUnitDied(CombatHealth health)
         {
             if (health == null) return;
 
-            // 1. 점유 타일 해제
             if (_occupiedTilesByUnit.TryGetValue(health, out TileNode tile))
             {
                 if (tile != null)
@@ -420,10 +373,8 @@ namespace EndlessGuard.TestBattle
                 _occupiedTilesByUnit.Remove(health);
             }
 
-            // 2. 핸들러 해제
             health.OnDied -= HandleUnitDied;
 
-            // 3. ReadyEffect 이펙트 풀링 회수 및 소환 해제 이벤트 발행
             UnitRuntimeState unitState = health.GetComponent<UnitRuntimeState>();
             if (unitState != null)
             {
@@ -437,16 +388,13 @@ namespace EndlessGuard.TestBattle
                 }
             }
 
-            // 4. 오브젝트 제거
             if (health.gameObject != null)
             {
                 Destroy(health.gameObject);
             }
         }
 
-        /// <summary>
-        /// 필드의 모든 아군 유닛을 파괴하고 타일 점유 상태를 일괄 초기화합니다.
-        /// </summary>
+        // 필드 상의 모든 아군 유닛 일괄 정리
         public void ClearAllUnits()
         {
             foreach (KeyValuePair<CombatHealth, TileNode> pair in _occupiedTilesByUnit)
@@ -475,7 +423,6 @@ namespace EndlessGuard.TestBattle
 
             _occupiedTilesByUnit.Clear();
 
-            // 필드 생존 유닛 목록 일괄 초기화 및 HUD 비활성화 해제 알림
             foreach (string unitId in _activeUnitIds)
             {
                 EventBus.Publish(new UnitFieldSpawnStateChangedEvent(unitId, false));
@@ -483,6 +430,7 @@ namespace EndlessGuard.TestBattle
             _activeUnitIds.Clear();
         }
 
+        // 일반 덱 변경 이벤트 콜백
         private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
         {
             Debug.Log($"[TestUnitSummonManager] 일반 덱 변경 감지 (장착 유닛 수: {evt.activeUnits.Count})");
