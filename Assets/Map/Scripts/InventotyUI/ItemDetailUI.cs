@@ -2,11 +2,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// 아이템 상세 정보 표시 및 소모품 사용 컨트롤러
+// 아이템 상세 정보 표시 및 장착/사용 관리 UI 컴포넌트
 public class ItemDetailUI : MonoBehaviour
 {
-    [Header("--- UI 패널 ---")]
-    [Tooltip("아이템 상세 정보 팝업 패널")]
+    #region 싱글톤 인스턴스
+
+    public static ItemDetailUI Instance { get; private set; }
+
+    #endregion
+
+    #region 직렬화 변수
+
+    [Header("--- 패널 참조 ---")]
+    [Tooltip("아이템 상세 정보 팝업 패널 오브젝트")]
     [SerializeField] private GameObject detailPanel;
 
     [Header("--- 아이템 정보 UI ---")]
@@ -17,61 +25,167 @@ public class ItemDetailUI : MonoBehaviour
     [SerializeField] private TMP_Text itemNameText;
 
     [Tooltip("아이템 설명 텍스트")]
-    [SerializeField] private TMP_Text categoryText;
+    [SerializeField] private TMP_Text itemDescriptionText;
 
-    [Tooltip("보조 정보 텍스트")]
+    [Tooltip("장비 장착 부위 텍스트")]
     [SerializeField] private TMP_Text equipmentTypeText;
-    
+
+    [Tooltip("장비 장착 부위 표시용 오브젝트 그룹 (장비 아이템일 때만 활성화)")]
+    [SerializeField] private GameObject equipmentTypeGroup;
+
+    [Header("--- 조작 버튼 ---")]
+    [Tooltip("사용 또는 장착 버튼 오브젝트")]
+    [SerializeField] private GameObject equipButton;
+
+    [Tooltip("장비 장착 해제 버튼 오브젝트")]
+    [SerializeField] private GameObject unequipButton;
+
     [Header("--- 매니저 참조 ---")]
     [Tooltip("장비 관리 매니저 참조")]
     [SerializeField] private EquipmentManager equipmentManager;
-    
-    [Header("--- 조작 버튼 ---")]
-    [Tooltip("장착 또는 사용 버튼")]
-    [SerializeField] private GameObject equipButton;
 
-    [Tooltip("장착 해제 버튼")]
-    [SerializeField] private GameObject unequipButton;
-    
+    #endregion
+
     private ItemDataSO currentItem;
 
-    // 아이템 상세 창 표시 및 정보 바인딩
+    #region 라이프사이클
+
+    // 싱글톤 인스턴스 초기화 및 버튼 클릭 리스너 자동 바인딩
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        BindButtonListeners();
+    }
+
+    // 인스펙터 버튼 컴포넌트 이벤트 자동 등록
+    private void BindButtonListeners()
+    {
+        if (equipButton != null)
+        {
+            Button btn = equipButton.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.onClick.RemoveListener(EquipCurrentItem);
+                btn.onClick.AddListener(EquipCurrentItem);
+            }
+        }
+
+        if (unequipButton != null)
+        {
+            Button btn = unequipButton.GetComponent<Button>();
+            if (btn != null)
+            {
+                btn.onClick.RemoveListener(UnequipCurrentItem);
+                btn.onClick.AddListener(UnequipCurrentItem);
+            }
+        }
+    }
+
+    // 싱글톤 참조 해제
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    #endregion
+
+    // 아이템 상세 정보 팝업 표시 및 데이터 바인딩
     public void ShowItem(ItemDataSO itemData)
     {
         if (itemData == null) return;
 
         currentItem = itemData;
 
-        detailPanel.SetActive(true);
-
-        itemIcon.sprite = itemData.ItemIcon;
-        itemNameText.text = itemData.ItemName;
-
-        string desc = !string.IsNullOrEmpty(itemData.Description) 
-            ? itemData.Description 
-            : $"[{itemData.ItemCategory}] {itemData.EquipmentType}";
-
-        if (categoryText != null)
+        if (detailPanel != null)
         {
-            categoryText.text = desc;
+            detailPanel.SetActive(true);
+        }
+
+        if (itemIcon != null)
+        {
+            itemIcon.sprite = itemData.ItemIcon;
+        }
+
+        if (itemNameText != null)
+        {
+            itemNameText.text = itemData.ItemName;
+        }
+
+        if (itemDescriptionText != null)
+        {
+            itemDescriptionText.text = itemData.Description;
+        }
+
+        UpdateEquipmentTypeDisplay(itemData);
+        UpdateButtonState();
+    }
+
+    // 장비 장착 부위 UI 표시 갱신
+    private void UpdateEquipmentTypeDisplay(ItemDataSO itemData)
+    {
+        bool isEquipment = itemData.ItemCategory == ItemCategory.Equipment;
+
+        if (equipmentTypeGroup != null)
+        {
+            equipmentTypeGroup.SetActive(isEquipment);
         }
 
         if (equipmentTypeText != null)
         {
-            equipmentTypeText.text = string.Empty;
+            if (isEquipment)
+            {
+                equipmentTypeText.gameObject.SetActive(true);
+                equipmentTypeText.text = GetEquipmentTypeName(itemData.EquipmentType);
+            }
+            else
+            {
+                equipmentTypeText.text = string.Empty;
+                if (equipmentTypeGroup == null)
+                {
+                    equipmentTypeText.gameObject.SetActive(false);
+                }
+            }
         }
-
-        UpdateButtonState();
     }
-    
-    // 장비 매니저 참조 반환
+
+    // 장비 부위 타입의 한글 명칭 변환
+    private string GetEquipmentTypeName(EquipmentType type)
+    {
+        switch (type)
+        {
+            case EquipmentType.Head:
+                return "머리";
+            case EquipmentType.Armor:
+                return "갑옷";
+            case EquipmentType.Weapon:
+                return "무기";
+            case EquipmentType.Accessory:
+                return "장신구";
+            default:
+                return type.ToString();
+        }
+    }
+
+    // 장비 매니저 인스턴스 반환
     private EquipmentManager GetEquipmentManager()
     {
         if (equipmentManager != null) return equipmentManager;
         return EquipmentManager.Instance;
     }
 
-    // 아이템 장착 또는 경험치책 사용 처리
+    // 현재 아이템 장착 또는 소모품 사용 처리
     public void EquipCurrentItem()
     {
         if (currentItem == null) return;
@@ -100,8 +214,8 @@ public class ItemDetailUI : MonoBehaviour
         manager.EquipItem(currentItem);
         UpdateButtonState();
     }
-    
-    // 아이템 장착 여부 확인
+
+    // 현재 아이템 장착 상태 확인
     private bool IsEquipped(ItemDataSO itemData)
     {
         if (itemData == null) return false;
@@ -125,8 +239,8 @@ public class ItemDetailUI : MonoBehaviour
 
         return false;
     }
-    
-    // 버튼 텍스트 라벨 갱신
+
+    // 버튼 라벨 텍스트 변경
     private void SetButtonLabel(GameObject buttonObj, string label)
     {
         if (buttonObj == null) return;
@@ -137,7 +251,7 @@ public class ItemDetailUI : MonoBehaviour
         }
     }
 
-    // 버튼 표시 상태 및 상호작용 갱신
+    // 아이템 종류 및 상태에 따른 버튼 활성화 갱신
     private void UpdateButtonState()
     {
         if (currentItem == null) return;
@@ -184,8 +298,8 @@ public class ItemDetailUI : MonoBehaviour
             SetButtonLabel(unequipButton, "해제");
         }
     }
-    
-    // 장비 아이템 장착 해제 처리
+
+    // 장착 중인 장비 아이템 해제 처리
     public void UnequipCurrentItem()
     {
         if (currentItem == null) return;
@@ -214,9 +328,12 @@ public class ItemDetailUI : MonoBehaviour
                type == ConsumableType.ExpBook_High;
     }
 
-    // 상세 정보 창 닫기
+    // 아이템 상세 패널 닫기
     public void Close()
     {
-        detailPanel.SetActive(false);
+        if (detailPanel != null)
+        {
+            detailPanel.SetActive(false);
+        }
     }
 }

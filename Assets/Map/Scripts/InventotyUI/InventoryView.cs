@@ -1,19 +1,32 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 가방 내 50칸 그리드 슬롯 UI 생성 및 실시간 동기화 뷰 컴포넌트
 public class InventoryView : MonoBehaviour
 {
-    //실제 인벤토리 데이터를 가지고 있는 객체
+    #region 직렬화 변수
+
+    [Header("--- 데이터 및 슬롯 프리팹 ---")]
+    [Tooltip("인벤토리 데이터 매니저 참조")]
     [SerializeField] private InventoryGridManager inventoryGridManager;
-    //만든 ItemSlot Prefab
+
+    [Tooltip("인벤토리 개별 슬롯 프리팹")]
     [SerializeField] private InventorySlotUI itemSlotPrefab;
-    //슬롯들이 생성될 부모
+
+    [Tooltip("슬롯 인스턴스들이 배치될 부모 트랜스폼 (GridLayoutGroup 부착 오브젝트)")]
     [SerializeField] private Transform itemSlotRoot;
-    
-    // 생성한 50개의 슬롯 UI 인스턴스 목록
+
+    #endregion
+
+    #region 내부 변수
+
     private readonly List<InventorySlotUI> slotUIs = new List<InventorySlotUI>();
-    
+
+    #endregion
+
+    #region 라이프사이클
+
+    // 매니저 인스턴스 초기화
     private void Awake()
     {
         if (inventoryGridManager == null)
@@ -22,56 +35,82 @@ public class InventoryView : MonoBehaviour
         }
     }
 
+    // 초기 슬롯 생성 및 최초 갱신
     private void Start()
     {
-        if (inventoryGridManager == null)
+        EnsureManagerReference();
+        CreateSlots();
+        Refresh();
+    }
+
+    // 패널 활성화 시 이벤트 구독 및 새로고침
+    private void OnEnable()
+    {
+        EnsureManagerReference();
+
+        if (inventoryGridManager != null)
         {
-            inventoryGridManager = InventoryGridManager.Instance;
+            inventoryGridManager.OnInventoryChanged -= Refresh;
+            inventoryGridManager.OnInventoryChanged += Refresh;
         }
 
         CreateSlots();
         Refresh();
     }
 
-    private void OnEnable()
-    {
-        if (inventoryGridManager == null)
-        {
-            inventoryGridManager = InventoryGridManager.Instance;
-        }
-
-        if (inventoryGridManager != null) 
-            inventoryGridManager.OnInventoryChanged += Refresh;
-
-        Refresh();
-    }
-
+    // 패널 비활성화 시 이벤트 구독 해제
     private void OnDisable()
     {
         if (inventoryGridManager != null)
+        {
             inventoryGridManager.OnInventoryChanged -= Refresh;
+        }
     }
 
+    #endregion
+
+    #region 슬롯 생성 및 갱신 로직
+
+    // 인벤토리 매니저 참조 확보
+    private void EnsureManagerReference()
+    {
+        if (inventoryGridManager == null)
+        {
+            inventoryGridManager = InventoryGridManager.Instance != null ? InventoryGridManager.Instance : FindFirstObjectByType<InventoryGridManager>();
+        }
+    }
+
+    // 그리드 슬롯 인스턴스 생성
     private void CreateSlots()
-    { 
+    {
+        EnsureManagerReference();
         if (inventoryGridManager == null || itemSlotPrefab == null || itemSlotRoot == null) return;
-        if (slotUIs.Count > 0) return; // 이미 생성된 경우 중복 생성 방지
-        
+        if (slotUIs.Count > 0) return;
+
         for (int i = 0; i < inventoryGridManager.Slots.Count; i++)
         {
             InventorySlotUI slotUI = Instantiate(itemSlotPrefab, itemSlotRoot);
-
             slotUIs.Add(slotUI);
         }
     }
-    
+
+    // 전체 슬롯 UI 데이터 동기화 갱신
     public void Refresh()
     {
-        for (int i = 0; i < slotUIs.Count; i++)
+        EnsureManagerReference();
+        if (inventoryGridManager == null) return;
+
+        if (slotUIs.Count == 0)
         {
-            slotUIs[i].SetSlot(
-                inventoryGridManager.Slots[i]
-            );
+            CreateSlots();
+        }
+
+        int count = Mathf.Min(slotUIs.Count, inventoryGridManager.Slots.Count);
+        for (int i = 0; i < count; i++)
+        {
+            slotUIs[i].SetSlot(inventoryGridManager.Slots[i]);
         }
     }
+
+    #endregion
 }
