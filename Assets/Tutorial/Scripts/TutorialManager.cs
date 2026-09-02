@@ -8,10 +8,8 @@ public class TutorialManager : MonoBehaviour
     {
         Intro,
 
-        Special,
         Gacha,
-        Upgrade,
-        CardBattle,
+        Deck,
         Inventory,
         Dungeon,
         AutoBattle,
@@ -40,5 +38,12 @@ public class TutorialManager : MonoBehaviour
         currentStep = step;
 
         Debug.Log($"[Tutorial] Step 변경: {currentStep}");
+    }
+    
+    public void NextStep()
+    {
+        currentStep++;
+
+        Debug.Log($"[Tutorial] 현재 단계: {currentStep}");
     }
 }
