@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: 9ca6237b190db3b4b96c554bddc64ad5
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 617
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44738fbb686c21f4b90501c2379d1f21
+      internalID: -256018322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_1
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 614
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f07b033bc111bae449f60e622c3e8d96
+      internalID: 1593120345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_2
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 616
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29f8f86b09c0c8146be3863f543c0a7d
+      internalID: -302401679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_3
+      rect:
+        serializedVersion: 2
+        x: 758
+        y: 616
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18a260c21623ff74f957d546d305d285
+      internalID: -527756742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_4
+      rect:
+        serializedVersion: 2
+        x: 1010
+        y: 617
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8de1cf44bb750e49b31b2a0ed75fb8d
+      internalID: 1588181406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_5
+      rect:
+        serializedVersion: 2
+        x: 1255
+        y: 617
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f372809019d2424588695620c8c3463
+      internalID: 300056712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_6
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 323
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff259f87769345a4dba743d36bb002d9
+      internalID: -406855597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_7
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 325
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67213460d245191458d1c480466afc8b
+      internalID: 234878062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_8
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 322
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 449dd53cf00ba3e4f83e59595b9af6f6
+      internalID: 507751621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_9
+      rect:
+        serializedVersion: 2
+        x: 759
+        y: 321
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a625f932e692da745a22738b320207f7
+      internalID: 1945262918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_10
+      rect:
+        serializedVersion: 2
+        x: 1010
+        y: 323
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1218527e8f52344689a3d86ed4e601f
+      internalID: 651435794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_11
+      rect:
+        serializedVersion: 2
+        x: 1253
+        y: 319
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3cc8f1dd9142a734c82f58da6dc57e13
+      internalID: -1624849100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_12
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 18
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cb984ed4f9765548b2b67ae2aa8ac6b
+      internalID: 1751016998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_13
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 18
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 799cc346fefc32840a15f1d7f344a3c8
+      internalID: 1813798011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_14
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 21
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce1f8717ebe2add429627ca4055c4b52
+      internalID: 1514145656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_15
+      rect:
+        serializedVersion: 2
+        x: 758
+        y: 18
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 011dc224955ed88458ad5de3d20d6496
+      internalID: -1353987555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_16
+      rect:
+        serializedVersion: 2
+        x: 1010
+        y: 21
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d89fe6b761e6ad34196d4cb43725fb04
+      internalID: 1642029129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Meshy_AI_fantasy-icons-clean-bg_17
+      rect:
+        serializedVersion: 2
+        x: 1255
+        y: 22
+        width: 229
+        height: 272
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f25528f3c1f93ca4384a90d9dc35c410
+      internalID: 2130484989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 92ca9e64508771c479fd3a306e132e0d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":6.0,"y":3.0},"gridSpriteSize":{"x":229.0,"y":272.0},"gridSpriteOffset":{"x":15.0,"y":5.0},"gridSpritePadding":{"x":20.0,"y":35.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Meshy_AI_fantasy-icons-clean-bg_0: -256018322
+      Meshy_AI_fantasy-icons-clean-bg_1: 1593120345
+      Meshy_AI_fantasy-icons-clean-bg_10: 651435794
+      Meshy_AI_fantasy-icons-clean-bg_11: -1624849100
+      Meshy_AI_fantasy-icons-clean-bg_12: 1751016998
+      Meshy_AI_fantasy-icons-clean-bg_13: 1813798011
+      Meshy_AI_fantasy-icons-clean-bg_14: 1514145656
+      Meshy_AI_fantasy-icons-clean-bg_15: -1353987555
+      Meshy_AI_fantasy-icons-clean-bg_16: 1642029129
+      Meshy_AI_fantasy-icons-clean-bg_17: 2130484989
+      Meshy_AI_fantasy-icons-clean-bg_2: -302401679
+      Meshy_AI_fantasy-icons-clean-bg_3: -527756742
+      Meshy_AI_fantasy-icons-clean-bg_4: 1588181406
+      Meshy_AI_fantasy-icons-clean-bg_5: 300056712
+      Meshy_AI_fantasy-icons-clean-bg_6: -406855597
+      Meshy_AI_fantasy-icons-clean-bg_7: 234878062
+      Meshy_AI_fantasy-icons-clean-bg_8: 507751621
+      Meshy_AI_fantasy-icons-clean-bg_9: 1945262918
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

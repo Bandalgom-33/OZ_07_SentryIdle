@@ -205,6 +205,12 @@ MonoBehaviour:
     appliedPassiveCount: 0
     unsupportedPassiveCount: 0
     rejectedPassiveCount: 0
+  skillRuntime:
+    isCasting: 0
+    currentHitIndex: 0
+    totalHitCount: 0
+    nextHitRemainingSeconds: 0
+    castLockRemainingSeconds: 0
   growthRuntime:
     appliedLevel: 1
     appliedPromotionStage: 0
@@ -746,7 +752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4884028101897107199, guid: 6df2062273a362c4bb4d91251936e3eb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4884028101897107199, guid: 6df2062273a362c4bb4d91251936e3eb, type: 3}
       propertyPath: m_LocalRotation.w

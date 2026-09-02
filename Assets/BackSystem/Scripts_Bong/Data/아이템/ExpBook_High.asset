@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
   itemId: ExpBook_High
   itemName: "\uACE0\uAE09 \uACBD\uD5D8\uCE58\uCC45"
-  itemIcon: {fileID: 514268681, guid: 1a0f02a615b59b54890fb243e0e58b6f, type: 3}
+  itemIcon: {fileID: 2130484989, guid: 9ca6237b190db3b4b96c554bddc64ad5, type: 3}
   description: "\uC9C0\uC815\uB41C \uC720\uB2DB\uC5D0\uAC8C \uACBD\uD5D8\uCE58 10,000
     EXP\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   itemCategory: 1
