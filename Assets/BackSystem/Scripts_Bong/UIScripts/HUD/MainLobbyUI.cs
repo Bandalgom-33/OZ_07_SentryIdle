@@ -51,35 +51,22 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("레이드 씬 전환 버튼")]
     [SerializeField] private Button enterRaidButton;
 
-    [Header("--- 서브 시스템 메인 메뉴 버튼 (3개 그룹 + 던전) ---")]
-    [Tooltip("유닛 보관함 / 덱 편성 선택 패널 오픈 버튼")]
-    [SerializeField] private Button unitDeckMenuButton;
+    [Header("--- 레이드 진입 버튼 상태 및 스프라이트 ---")]
+    [Tooltip("레이드 진입 버튼의 Image 컴포넌트")]
+    [SerializeField] private Image raidButtonImage;
 
-    [Tooltip("가챠 / 업그레이드 선택 패널 오픈 버튼")]
-    [SerializeField] private Button gachaUpgradeMenuButton;
+    [Tooltip("레이드 덱 조건 충족(16명 완편성) 시 활성화 스프라이트")]
+    [SerializeField] private Sprite raidButtonUnlockedSprite;
 
-    [Tooltip("인벤토리 / 공방 선택 패널 오픈 버튼")]
-    [SerializeField] private Button inventoryWorkshopMenuButton;
+    [Tooltip("레이드 덱 조건 미충족(빈 슬롯 존재) 시 잠금 스프라이트")]
+    [SerializeField] private Sprite raidButtonLockedSprite;
 
-    [Tooltip("던전(파견) 패널 오픈 버튼")]
-    [SerializeField] private Button dungeonButton;
-
-    [Header("--- 1. 유닛 & 덱 편성 중간 선택 패널 ---")]
-    [Tooltip("유닛/덱 편성 2선택 중간 패널 오브젝트")]
-    [SerializeField] private GameObject unitDeckSelectPanel;
-
+    [Header("--- 서브 시스템 직접 오픈 버튼 (7종) ---")]
     [Tooltip("유닛 보관함 윈도우 오픈 버튼")]
     [SerializeField] private Button openCollectionButton;
 
     [Tooltip("덱 편성 윈도우 오픈 버튼")]
     [SerializeField] private Button openDeckButton;
-
-    [Tooltip("유닛/덱 편성 선택 패널 닫기 버튼")]
-    [SerializeField] private Button closeUnitDeckSelectButton;
-
-    [Header("--- 2. 가챠 & 업그레이드 중간 선택 패널 ---")]
-    [Tooltip("가챠/업그레이드 2선택 중간 패널 오브젝트")]
-    [SerializeField] private GameObject gachaUpgradeSelectPanel;
 
     [Tooltip("가챠 윈도우 오픈 버튼")]
     [SerializeField] private Button openGachaButton;
@@ -87,21 +74,14 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("업그레이드 윈도우 오픈 버튼")]
     [SerializeField] private Button openUpgradeButton;
 
-    [Tooltip("가챠/업그레이드 선택 패널 닫기 버튼")]
-    [SerializeField] private Button closeGachaUpgradeSelectButton;
-
-    [Header("--- 3. 인벤토리 & 공방 중간 선택 패널 ---")]
-    [Tooltip("인벤토리/공방 2선택 중간 패널 오브젝트")]
-    [SerializeField] private GameObject inventoryWorkshopSelectPanel;
-
     [Tooltip("인벤토리 윈도우 오픈 버튼")]
     [SerializeField] private Button openInventoryButton;
 
     [Tooltip("공방 윈도우 오픈 버튼")]
     [SerializeField] private Button openWorkshopButton;
 
-    [Tooltip("인벤토리/공방 선택 패널 닫기 버튼")]
-    [SerializeField] private Button closeInventoryWorkshopSelectButton;
+    [Tooltip("던전 윈도우 오픈 버튼")]
+    [SerializeField] private Button openDungeonButton;
 
     [Header("--- 최종 서브 시스템 윈도우 패널 오브젝트 ---")]
     [Tooltip("유닛 보관함(컬렉션) 윈도우 패널")]
@@ -129,8 +109,8 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("게임 시작/타이틀 화면의 게임 종료 버튼")]
     [SerializeField] private Button titleQuitButton;
 
-    [Tooltip("인게임/옵션 팝업 내의 게임 종료 버튼")]
-    [SerializeField] private Button optionQuitButton;
+    [Tooltip("메인 로비 화면의 게임 종료 버튼")]
+    [SerializeField] private Button lobbyQuitButton;
 
     #endregion
 
@@ -167,8 +147,10 @@ public class MainLobbyUI : MonoBehaviour
         EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
         EventBus.Subscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
+        EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
 
         RefreshAllHUD();
+        UpdateRaidButtonState();
     }
 
     // 전역 이벤트 구독 해제
@@ -179,13 +161,15 @@ public class MainLobbyUI : MonoBehaviour
         EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
         EventBus.Unsubscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
+        EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
     }
 
-    // 첫 실행 여부에 따른 패널 상태 초기화 및 HUD 갱신
+    // 첫 실행 여부에 따른 패널 상태 초기화 및 HUD/레이드 버튼 갱신
     private void Start()
     {
         ApplyInitialPanelState();
         RefreshAllHUD();
+        UpdateRaidButtonState();
     }
 
     // 싱글톤 참조 해제
@@ -298,7 +282,6 @@ public class MainLobbyUI : MonoBehaviour
     // 첫 진입 여부에 따른 시작 패널 및 메인 로비 패널 상태 적용
     private void ApplyInitialPanelState()
     {
-        CloseAllSelectPanels();
         CloseAllSubPanels();
 
         if (offlineRewardPanel != null)
@@ -403,26 +386,6 @@ public class MainLobbyUI : MonoBehaviour
             enterRaidButton.onClick.AddListener(OnEnterRaidClicked);
         }
 
-        if (unitDeckMenuButton != null)
-        {
-            unitDeckMenuButton.onClick.AddListener(() => ToggleSelectPanel(unitDeckSelectPanel));
-        }
-
-        if (gachaUpgradeMenuButton != null)
-        {
-            gachaUpgradeMenuButton.onClick.AddListener(() => ToggleSelectPanel(gachaUpgradeSelectPanel));
-        }
-
-        if (inventoryWorkshopMenuButton != null)
-        {
-            inventoryWorkshopMenuButton.onClick.AddListener(() => ToggleSelectPanel(inventoryWorkshopSelectPanel));
-        }
-
-        if (dungeonButton != null)
-        {
-            dungeonButton.onClick.AddListener(() => OpenSubPanel(dungeonWindowPanel));
-        }
-
         if (openCollectionButton != null)
         {
             openCollectionButton.onClick.AddListener(() => OpenSubPanel(collectionWindowPanel));
@@ -453,19 +416,9 @@ public class MainLobbyUI : MonoBehaviour
             openWorkshopButton.onClick.AddListener(() => OpenSubPanel(workshopWindowPanel));
         }
 
-        if (closeUnitDeckSelectButton != null)
+        if (openDungeonButton != null)
         {
-            closeUnitDeckSelectButton.onClick.AddListener(() => CloseSelectPanel(unitDeckSelectPanel));
-        }
-
-        if (closeGachaUpgradeSelectButton != null)
-        {
-            closeGachaUpgradeSelectButton.onClick.AddListener(() => CloseSelectPanel(gachaUpgradeSelectPanel));
-        }
-
-        if (closeInventoryWorkshopSelectButton != null)
-        {
-            closeInventoryWorkshopSelectButton.onClick.AddListener(() => CloseSelectPanel(inventoryWorkshopSelectPanel));
+            openDungeonButton.onClick.AddListener(() => OpenSubPanel(dungeonWindowPanel));
         }
 
         if (titleQuitButton != null)
@@ -473,15 +426,15 @@ public class MainLobbyUI : MonoBehaviour
             titleQuitButton.onClick.AddListener(QuitGame);
         }
 
-        if (optionQuitButton != null)
+        if (lobbyQuitButton != null)
         {
-            optionQuitButton.onClick.AddListener(QuitGame);
+            lobbyQuitButton.onClick.AddListener(QuitGame);
         }
     }
 
     #endregion
 
-    #region 씬 전환 이벤트 핸들러
+    #region 씬 전환 및 레이드 잠금 제어
 
     // 일반 스테이지 게임플레이 씬 전환 요청
     public void OnEnterGamePlayClicked()
@@ -496,9 +449,15 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 레이드 씬 전환 요청
+    // 레이드 씬 전환 요청 (16명 완편성 검증)
     public void OnEnterRaidClicked()
     {
+        if (DeckManager.Instance != null && !DeckManager.Instance.IsRaidDeckFullyEquipped)
+        {
+            Debug.LogWarning($"[MainLobbyUI] 레이드 덱 미편성 슬롯이 {DeckManager.Instance.RaidTotalEmptySlotCount}개 존재하여 진입할 수 없습니다.");
+            return;
+        }
+
         if (SceneLoader.Instance != null)
         {
             SceneLoader.Instance.LoadScene(SceneType.Raid);
@@ -509,54 +468,44 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region 서브 패널 및 중간 선택 패널 관리
-
-    // 지정 중간 선택 패널 토글
-    public void ToggleSelectPanel(GameObject targetPanel)
+    // 레이드 버튼 활성화 및 잠금 스프라이트 상태 갱신
+    public void UpdateRaidButtonState()
     {
-        if (targetPanel == null) return;
+        bool isRaidReady = DeckManager.Instance != null && DeckManager.Instance.IsRaidDeckFullyEquipped;
 
-        bool isActive = targetPanel.activeSelf;
-        CloseAllSelectPanels();
-        CloseAllSubPanels();
-        targetPanel.SetActive(!isActive);
-    }
-
-    // 지정 중간 선택 패널 활성화
-    public void OpenSelectPanel(GameObject targetPanel)
-    {
-        if (targetPanel == null) return;
-
-        CloseAllSelectPanels();
-        CloseAllSubPanels();
-        targetPanel.SetActive(true);
-    }
-
-    // 지정 중간 선택 패널 비활성화
-    public void CloseSelectPanel(GameObject targetPanel)
-    {
-        if (targetPanel != null)
+        if (enterRaidButton != null)
         {
-            targetPanel.SetActive(false);
+            enterRaidButton.interactable = isRaidReady;
+        }
+
+        if (raidButtonImage != null)
+        {
+            if (isRaidReady && raidButtonUnlockedSprite != null)
+            {
+                raidButtonImage.sprite = raidButtonUnlockedSprite;
+            }
+            else if (!isRaidReady && raidButtonLockedSprite != null)
+            {
+                raidButtonImage.sprite = raidButtonLockedSprite;
+            }
         }
     }
 
-    // 모든 중간 선택 패널 일괄 비활성화
-    public void CloseAllSelectPanels()
+    // 레이드 덱 변경 이벤트 수신 콜백
+    private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
-        if (unitDeckSelectPanel != null) unitDeckSelectPanel.SetActive(false);
-        if (gachaUpgradeSelectPanel != null) gachaUpgradeSelectPanel.SetActive(false);
-        if (inventoryWorkshopSelectPanel != null) inventoryWorkshopSelectPanel.SetActive(false);
+        UpdateRaidButtonState();
     }
+
+    #endregion
+
+    #region 서브 패널 관리
 
     // 지정 최종 서브 윈도우 패널 활성화
     public void OpenSubPanel(GameObject targetPanel)
     {
         if (targetPanel == null) return;
 
-        CloseAllSelectPanels();
         CloseAllSubPanels();
         targetPanel.SetActive(true);
     }
@@ -567,7 +516,6 @@ public class MainLobbyUI : MonoBehaviour
         if (targetPanel == null) return;
 
         bool isActive = targetPanel.activeSelf;
-        CloseAllSelectPanels();
         CloseAllSubPanels();
         targetPanel.SetActive(!isActive);
     }
@@ -603,7 +551,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region HUD 정보 갱신
 
-    // 전체 HUD 텍스트 정보 일괄 갱신
+    // 전체 HUD 텍스트 정보 및 레이드 버튼 상태 일괄 갱신
     public void RefreshAllHUD()
     {
         if (CurrencyManager.Instance != null)
@@ -616,6 +564,8 @@ public class MainLobbyUI : MonoBehaviour
         {
             UpdateStageInfoUI(StageProgressManager.Instance.CurrentStage, StageProgressManager.Instance.CurrentWave);
         }
+
+        UpdateRaidButtonState();
     }
 
     // 데이터 로드 완료 이벤트 수신 처리
