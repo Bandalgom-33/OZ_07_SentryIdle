@@ -219,13 +219,12 @@ public class UIDeckFormationWindow : MonoBehaviour
 
     #region 상단 덱 슬롯 UI 갱신
 
-    // 상단 덱 슬롯 데이터 동기화
+    // 상단 덱 슬롯 데이터 및 타겟 덱 타입 동기화
     private void RefreshTopDeckSlots()
     {
         if (topDeckUI == null || DeckManager.Instance == null) return;
 
-        int[] currentSlots = DeckManager.Instance.GetDeckSlotsCopy(_currentDeckType);
-        topDeckUI.UpdateDeckUI(currentSlots);
+        topDeckUI.SetTargetDeckType(_currentDeckType);
     }
 
     #endregion

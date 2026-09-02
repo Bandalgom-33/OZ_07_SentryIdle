@@ -182,6 +182,13 @@ public class DeckUI : MonoBehaviour
         RefreshUIWithCurrentData();
     }
 
+    // 타겟 덱 종류 동적 변경 및 UI 동기화
+    public void SetTargetDeckType(DeckType newDeckType)
+    {
+        targetDeckType = newDeckType;
+        RefreshUIWithCurrentData();
+    }
+
     // 현재 덱 데이터 기반 UI 갱신 연산
     public void RefreshUIWithCurrentData()
     {
