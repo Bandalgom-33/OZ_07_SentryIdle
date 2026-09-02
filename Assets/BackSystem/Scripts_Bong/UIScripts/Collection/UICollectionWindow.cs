@@ -132,7 +132,7 @@ public class UICollectionWindow : MonoBehaviour
         UpdateEquipActionButtonState();
     }
 
-    // 장비 관리 버튼 클릭 이벤트 처리
+    // 장비 관리 버튼 클릭 처리
     private void OnEquipActionButtonClicked()
     {
         if (_selectedViewModel == null)
@@ -147,14 +147,25 @@ public class UICollectionWindow : MonoBehaviour
             return;
         }
 
-        if (EquipmentManager.Instance != null)
+        if (MainLobbyUI.Instance != null)
         {
-            EquipmentManager.Instance.SetCurrentUnit(_selectedViewModel.UnitId);
+            MainLobbyUI.Instance.OpenEquipmentPopup(_selectedViewModel.UnitId);
         }
-
-        if (equipmentInventoryPanel != null)
+        else if (InventoryUI.Instance != null)
         {
-            equipmentInventoryPanel.SetActive(true);
+            InventoryUI.Instance.OpenEquipment(_selectedViewModel.UnitId);
+        }
+        else
+        {
+            if (EquipmentManager.Instance != null)
+            {
+                EquipmentManager.Instance.SetCurrentUnit(_selectedViewModel.UnitId);
+            }
+
+            if (equipmentInventoryPanel != null)
+            {
+                equipmentInventoryPanel.SetActive(true);
+            }
         }
     }
 

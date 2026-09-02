@@ -408,7 +408,7 @@ public class MainLobbyUI : MonoBehaviour
 
         if (openInventoryButton != null)
         {
-            openInventoryButton.onClick.AddListener(() => OpenSubPanel(inventoryWindowPanel));
+            openInventoryButton.onClick.AddListener(OpenInventoryOnly);
         }
 
         if (openWorkshopButton != null)
@@ -508,6 +508,37 @@ public class MainLobbyUI : MonoBehaviour
 
         CloseAllSubPanels();
         targetPanel.SetActive(true);
+    }
+
+    // 인벤토리 전용 패널 오픈
+    public void OpenInventoryOnly()
+    {
+        CloseAllSubPanels();
+
+        if (inventoryWindowPanel != null)
+        {
+            inventoryWindowPanel.SetActive(true);
+        }
+
+        if (InventoryUI.Instance != null)
+        {
+            InventoryUI.Instance.OpenBagOnly();
+        }
+    }
+
+    // 장비 관리 팝업 오픈
+    public void OpenEquipmentPopup(string unitId)
+    {
+        if (inventoryWindowPanel != null)
+        {
+            inventoryWindowPanel.SetActive(true);
+            inventoryWindowPanel.transform.SetAsLastSibling();
+        }
+
+        if (InventoryUI.Instance != null)
+        {
+            InventoryUI.Instance.OpenEquipment(unitId);
+        }
     }
 
     // 지정 최종 서브 윈도우 패널 토글
