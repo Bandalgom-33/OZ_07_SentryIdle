@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3aeece53b00cab42a17a9b8f9071639, type: 3}
   m_Name: Wave_StageAudio
   m_EditorClassIdentifier: Assembly-CSharp::GameProgressAudioDataSo
-  waveStartSound: {fileID: 0}
+  waveStartSound: {fileID: 8300000, guid: e0b9a229bf028964c86831a616f6b1f1, type: 3}
   waveStartVolume: 1
-  waveClearSound: {fileID: 0}
+  waveClearSound: {fileID: 8300000, guid: a13e9835d30fbe544bd8fb2701582eb7, type: 3}
   waveClearVolume: 1
-  stageClearSound: {fileID: 0}
+  stageClearSound: {fileID: 8300000, guid: 5d2a089da0e12e941ab3b56267f1cc0c, type: 3}
   stageClearVolume: 1
-  stageFailSound: {fileID: 0}
+  stageFailSound: {fileID: 8300000, guid: daf61c9eed913e64f8722fafe9c4cf40, type: 3}
   stageFailVolume: 1
-  rewardSound: {fileID: 0}
+  rewardSound: {fileID: 8300000, guid: 1b5881000bd157c4e8a956219241ca24, type: 3}
   rewardVolume: 1

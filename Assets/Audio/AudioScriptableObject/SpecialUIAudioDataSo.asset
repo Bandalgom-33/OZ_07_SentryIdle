@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48b1d0d98e2508741b9ebc0f9554f745, type: 3}
+  m_Name: SpecialUIAudioDataSo
+  m_EditorClassIdentifier: Assembly-CSharp::SpecialUIAudioDataSo
+  confirmSound: {fileID: 0}
+  confirmVolume: 1
+  cancelSound: {fileID: 0}
+  cancelVolume: 1
+  gachaSound: {fileID: 0}
+  gachaVolume: 1
+  equipSound: {fileID: 0}
+  equipVolume: 1
+  upgradeSound: {fileID: 0}
+  upgradeVolume: 1
+  popupOpenSound: {fileID: 0}
+  popupOpenVolume: 1
+  popupCloseSound: {fileID: 0}
+  popupCloseVolume: 1

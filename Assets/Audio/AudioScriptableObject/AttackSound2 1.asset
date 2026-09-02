@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2cdbed31c8c15e4680c5301d67cc4a5, type: 3}
   m_Name: AttackSound2 1
   m_EditorClassIdentifier: Assembly-CSharp::BattleAudioDataSo
-  attackSound: {fileID: 8300000, guid: 58a1a4c2f82fb324e8aae900c10223ea, type: 3}
+  attackSound: {fileID: 8300000, guid: 9f4226e3547e59d4db2a20a12f458793, type: 3}
   attackVolume: 1
-  hitSound: {fileID: 8300000, guid: d2ba1127ed324dbdba1f2bd763a2f986, type: 3}
+  hitSound: {fileID: 8300000, guid: 9a15bf19346c4c94ab0e9a0d18c6652f, type: 3}
   hitVolume: 1

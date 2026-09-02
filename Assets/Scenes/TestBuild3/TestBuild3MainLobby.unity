@@ -6728,6 +6728,10 @@ PrefabInstance:
       propertyPath: uiClickSound
       value: 
       objectReference: {fileID: 8300000, guid: 728f29b72341dd64f857b5812124f5fa, type: 3}
+    - target: {fileID: 5780356155281590982, guid: 316e0d62241ef1c47869683c2038ad95, type: 3}
+      propertyPath: gameProgressAudioData
+      value: 
+      objectReference: {fileID: 11400000, guid: 3b9e2d16a05e8d642a12eccedd11ea7d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
