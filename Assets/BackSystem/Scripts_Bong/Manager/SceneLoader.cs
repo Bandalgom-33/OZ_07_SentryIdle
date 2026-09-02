@@ -311,7 +311,9 @@ public class SceneLoader : SingletonBase<SceneLoader>
 
             if (GameManager.Instance != null)
             {
-                GameState targetState = (targetScene == SceneType.GamePlay) ? GameState.InGame : GameState.Title;
+                GameState targetState = (targetScene == SceneType.GamePlay)
+                    ? GameState.InGame
+                    : (targetScene == SceneType.Lobby ? GameState.Lobby : GameState.Title);
                 GameManager.Instance.ChangeState(targetState);
             }
 

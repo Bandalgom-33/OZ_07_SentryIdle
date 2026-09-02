@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public enum GameState
 {
     Title,
+    Lobby,
     Tutorial,
     InGame,
     Pause,
@@ -243,6 +244,7 @@ public class GameManager : SingletonBase<GameManager>
         switch (newState)
         {
             case GameState.Title:
+            case GameState.Lobby:
             case GameState.Tutorial:
                 break;
             case GameState.InGame:
