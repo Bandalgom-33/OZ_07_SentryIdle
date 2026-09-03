@@ -10,7 +10,10 @@ public class TutorialManager : MonoBehaviour
 
         Gacha,
         Deck,
+        UnitStorage,
+        Upgrade,
         Inventory,
+        Craft,
         Dungeon,
         AutoBattle,
         Raid,

@@ -13,6 +13,9 @@ public class MainLobbyTutorialUI : MonoBehaviour
     [SerializeField] private RectTransform dungeonButton;
     [SerializeField] private RectTransform autoBattleButton;
     [SerializeField] private RectTransform raidButton;
+    [SerializeField] private RectTransform unitStorageButton;
+    [SerializeField] private RectTransform upgradeButton;
+    [SerializeField] private RectTransform craftButton;
     
     [SerializeField] private GameObject tutorialOverlay;
     
@@ -63,36 +66,51 @@ public class MainLobbyTutorialUI : MonoBehaviour
                     "안녕하세요! 엔드리스 가드에 오신 것을 환영합니다.";
                 break;
             
-
-            case TutorialManager.TutorialStep.Gacha:
-                tutorialText.text =
-                    "가챠에서는 새로운 캐릭터를 뽑아 획득할 수 있습니다.";
-                break;
             
+
+                       case TutorialManager.TutorialStep.Gacha:
+                tutorialText.text =
+                    "캐릭터 뽑기에서는 새로운 캐릭터를 획득할 수 있습니다.";
+                break;
 
             case TutorialManager.TutorialStep.Deck:
                 tutorialText.text =
-                    "이곳에서는 전투에 사용할 캐릭터 덱을 구성하고, 덱에 편성할 캐릭터를 변경할 수 있습니다.";
+                    "덱 편성에서는 전투에 사용할 캐릭터를 선택하고, 편성 구성을 변경할 수 있습니다.";
                 break;
 
             case TutorialManager.TutorialStep.Inventory:
                 tutorialText.text =
-                    "인벤토리에서는 획득한 장비와 아이템을 확인할 수 있습니다.";
+                    "인벤토리에서는 획득한 장비와 아이템을 확인하고 관리할 수 있습니다.";
+                break;
+            
+            case TutorialManager.TutorialStep.UnitStorage:
+                tutorialText.text =
+                    "유닛 보관함에서는 보유하고 있는 캐릭터를 확인할 수 있습니다.";
+                break;
+
+            case TutorialManager.TutorialStep.Upgrade:
+                tutorialText.text =
+                    "업그레이드에서는 캐릭터를 성장시켜 전투 능력을 강화할 수 있습니다.";
+                break;
+
+            case TutorialManager.TutorialStep.Craft:
+                tutorialText.text =
+                    "공방에서는 전투와 성장에 필요한 아이템을 제작할 수 있습니다.";
                 break;
 
             case TutorialManager.TutorialStep.Dungeon:
                 tutorialText.text =
-                    "던전에서는 다양한 전투와 보상을 경험할 수 있습니다.";
+                    "던전에서는 다양한 전투 콘텐츠에 도전하고 보상을 획득할 수 있습니다.";
                 break;
 
             case TutorialManager.TutorialStep.AutoBattle:
                 tutorialText.text =
-                    "자동 전투에서는 편성한 캐릭터들이 자동으로 전투를 진행합니다.";
+                    "자동 전투에서는 편성한 캐릭터들이 자동으로 전투를 진행하며 보상을 획득합니다.";
                 break;
 
             case TutorialManager.TutorialStep.Raid:
                 tutorialText.text =
-                    "레이드에서는 강력한 적을 상대로 전투를 진행할 수 있습니다.";
+                    "레이드에서는 강력한 보스를 상대로 전투를 진행하고 특별한 보상을 획득할 수 있습니다.";
                 break;
 
             case TutorialManager.TutorialStep.Complete:
@@ -118,6 +136,18 @@ public class MainLobbyTutorialUI : MonoBehaviour
 
             case TutorialManager.TutorialStep.Deck:
                 target = deckButton;
+                break;
+            
+            case TutorialManager.TutorialStep.UnitStorage:
+                target = unitStorageButton;
+                break;
+
+            case TutorialManager.TutorialStep.Upgrade:
+                target = upgradeButton;
+                break;
+
+            case TutorialManager.TutorialStep.Craft:
+                target = craftButton;
                 break;
 
             case TutorialManager.TutorialStep.Inventory:
@@ -158,6 +188,6 @@ public class MainLobbyTutorialUI : MonoBehaviour
         Vector2 size = new Vector2(topRight.x - bottomLeft.x, topRight.y - bottomLeft.y );
 
         highlight.anchoredPosition = center;
-        highlight.sizeDelta = size + new Vector2(20f, 20f);
+        highlight.sizeDelta =  size + new Vector2(50f, 30f);
     }
 }
