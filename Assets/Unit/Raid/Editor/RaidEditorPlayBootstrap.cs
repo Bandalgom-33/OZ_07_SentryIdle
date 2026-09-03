@@ -1,4 +1,4 @@
-﻿using EndlessGuard.Unit.Raid.Runtime;
+using EndlessGuard.Unit.Raid.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -89,7 +89,7 @@ namespace EndlessGuard.Unit.Raid.Editor
                 return;
             }
 
-            if (battle.IsRunning || battle.IsTransitioning || battle.State == RaidBattleState.Victory || battle.State == RaidBattleState.Defeat)
+            if (battle.IsRunning || battle.IsPreparing || battle.IsTransitioning || battle.State == RaidBattleState.Victory || battle.State == RaidBattleState.Defeat)
             {
                 CancelAutoStart();
                 return;
