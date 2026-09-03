@@ -106,7 +106,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryGridManager
   maxSlotCount: 50
-  predefinedItemDatabase: []
+  predefinedItemDatabase:
+  - {fileID: 11400000, guid: da381e9327ffb1d4a849dc4bac6f0cd1, type: 2}
+  - {fileID: 11400000, guid: 97e500562318c3d428929d6a1433dd67, type: 2}
+  - {fileID: 11400000, guid: 202d1fc195863874e836ac62db910e5f, type: 2}
+  - {fileID: 11400000, guid: d27645656243a934795673c4fbafe510, type: 2}
+  - {fileID: 11400000, guid: f457de3f485ca8f4ca0f9a305fbebd94, type: 2}
+  - {fileID: 11400000, guid: c5f3420e897b8ce4e9e69d0e64773bc2, type: 2}
+  - {fileID: 11400000, guid: d166661fd4f75c346a8d88d7092ef622, type: 2}
+  - {fileID: 11400000, guid: b0d97461a9a086549a9d2425fd9ba740, type: 2}
+  - {fileID: 11400000, guid: 3f4a24bdf1448ff41aaf24a9038868a4, type: 2}
+  - {fileID: 11400000, guid: 87e0334dd2e72944a9df84e8856a0754, type: 2}
+  - {fileID: 11400000, guid: 76c3addb768523f46bd843e63fc0b0b9, type: 2}
+  - {fileID: 11400000, guid: 3e5fcea8e0a072842be05154808600e7, type: 2}
+  - {fileID: 11400000, guid: 601d4d7b358cbe9489393ecf2caef6e3, type: 2}
+  - {fileID: 11400000, guid: 6df63677ec38f944099c570ca46e7a32, type: 2}
+  - {fileID: 11400000, guid: 38bb07076f50ea348a533f2d48d1a617, type: 2}
+  - {fileID: 11400000, guid: 59034d531445f5c4aa3979a4252ea007, type: 2}
+  - {fileID: 11400000, guid: e980d92f09fe4ec4ea12ae03e87a8823, type: 2}
+  - {fileID: 11400000, guid: 5a710b985e6970d49b207e9e1334c9b0, type: 2}
 --- !u!1 &7582454159245496774
 GameObject:
   m_ObjectHideFlags: 0
