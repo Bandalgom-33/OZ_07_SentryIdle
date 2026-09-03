@@ -104,12 +104,11 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
 
     #region 인벤토리 아이템 조작 API
 
-    // 아이템 추가 연산 (스택 병합 ➔ 빈 슬롯 신규 등록)
+    // 아이템 추가 및 신규 슬롯 할당 시 자동 정렬
     public bool AddItem(ItemDataSO itemData, int quantity)
     {
         if (itemData == null || quantity <= 0) return false;
 
-        // 1. 같은 아이템이 이미 존재하는 슬롯에 수량 가산 시도
         for (int i = 0; i < slots.Count; i++)
         {
             InventorySlotData slot = slots[i];
@@ -132,7 +131,7 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
             }
         }
 
-        // 2. 남은 수량을 빈 슬롯에 신규 배치
+        bool allocatedNewSlot = false;
         for (int i = 0; i < slots.Count; i++)
         {
             if (slots[i] != null) continue;
@@ -140,16 +139,20 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
 
             slots[i] = new InventorySlotData(itemData, amountToAdd);
             quantity -= amountToAdd;
+            allocatedNewSlot = true;
 
             if (quantity <= 0)
             {
-                OnInventoryChanged?.Invoke();
-                SaveManager.Instance?.SaveGameData();
-                return true;
+                break;
             }
         }
 
-        // 빈 슬롯이 부족하여 추가하지 못한 경우
+        if (allocatedNewSlot)
+        {
+            SortInventory();
+            return true;
+        }
+
         return false;
     }
 
@@ -250,6 +253,7 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
         if (itemData == null || quantity <= 0) return false;
         if (GetItemCount(itemData) < quantity) return false;
 
+        bool slotEmptied = false;
         int remainToSpend = quantity;
         for (int i = 0; i < slots.Count; i++)
         {
@@ -259,6 +263,7 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
                 {
                     remainToSpend -= slots[i].quantity;
                     slots[i] = null;
+                    slotEmptied = true;
                 }
                 else
                 {
@@ -270,8 +275,47 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
             }
         }
 
-        OnInventoryChanged?.Invoke();
-        SaveManager.Instance?.SaveGameData();
+        if (slotEmptied)
+        {
+            SortInventory();
+        }
+        else
+        {
+            OnInventoryChanged?.Invoke();
+            SaveManager.Instance?.SaveGameData();
+        }
+
+        return true;
+    }
+
+    // 지정된 슬롯 인덱스의 아이템 차감 및 삭제 처리
+    public bool RemoveItemAt(int slotIndex, int quantity = 1)
+    {
+        if (slotIndex < 0 || slotIndex >= slots.Count || quantity <= 0) return false;
+        InventorySlotData slot = slots[slotIndex];
+        if (slot == null || slot.itemData == null || slot.quantity <= 0) return false;
+
+        bool slotEmptied = false;
+        if (slot.quantity <= quantity)
+        {
+            slots[slotIndex] = null;
+            slotEmptied = true;
+        }
+        else
+        {
+            slot.quantity -= quantity;
+        }
+
+        if (slotEmptied)
+        {
+            SortInventory();
+        }
+        else
+        {
+            OnInventoryChanged?.Invoke();
+            SaveManager.Instance?.SaveGameData();
+        }
+
         return true;
     }
 
@@ -281,6 +325,7 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
         if (quantity <= 0) return false;
         if (GetConsumableCount(type) < quantity) return false;
 
+        bool slotEmptied = false;
         int remainToSpend = quantity;
         for (int i = 0; i < slots.Count; i++)
         {
@@ -292,6 +337,7 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
                 {
                     remainToSpend -= slots[i].quantity;
                     slots[i] = null;
+                    slotEmptied = true;
                 }
                 else
                 {
@@ -303,8 +349,16 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
             }
         }
 
-        OnInventoryChanged?.Invoke();
-        SaveManager.Instance?.SaveGameData();
+        if (slotEmptied)
+        {
+            SortInventory();
+        }
+        else
+        {
+            OnInventoryChanged?.Invoke();
+            SaveManager.Instance?.SaveGameData();
+        }
+
         return true;
     }
 
@@ -328,10 +382,49 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
         return capacity;
     }
 
-    // 인벤토리 아이템 자동 정렬 (스택 병합 및 종류별 우선순위 정렬)
+    // 아이템 정렬 우선순위 가중치 산출
+    private int GetItemSortPriority(ItemDataSO item)
+    {
+        if (item == null) return 999;
+
+        if (item.ItemCategory == ItemCategory.Consumable)
+        {
+            if (item.ConsumableType >= ConsumableType.HealthPotion_Low &&
+                item.ConsumableType <= ConsumableType.HealthPotion_High)
+            {
+                return 100 + (int)item.ConsumableType;
+            }
+
+            if (item.ConsumableType >= ConsumableType.ExpBook_Low &&
+                item.ConsumableType <= ConsumableType.ExpBook_High)
+            {
+                return 200 + (int)item.ConsumableType;
+            }
+
+            return 300;
+        }
+
+        if (item.ItemCategory == ItemCategory.Equipment)
+        {
+            switch (item.EquipmentType)
+            {
+                case EquipmentType.Head:
+                    return 400;
+                case EquipmentType.Armor:
+                    return 500;
+                case EquipmentType.Weapon:
+                    return 600;
+                case EquipmentType.Accessory:
+                    return 700;
+            }
+        }
+
+        return 800;
+    }
+
+    // 인벤토리 아이템 자동 정렬
     public void SortInventory()
     {
-        // 1. 유효한 아이템과 총 수량 수집 및 중복 병합
         Dictionary<ItemDataSO, int> itemTotals = new Dictionary<ItemDataSO, int>();
         for (int i = 0; i < slots.Count; i++)
         {
@@ -349,36 +442,20 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
             }
         }
 
-        // 2. 고유 아이템 목록 추출 및 정렬 규칙 적용
         List<ItemDataSO> sortedItemList = new List<ItemDataSO>(itemTotals.Keys);
         sortedItemList.Sort((a, b) =>
         {
-            // 2-1. 카테고리 우선순위: Equipment(0) -> Consumable(1) -> Etc
-            int categoryComparison = ((int)a.ItemCategory).CompareTo((int)b.ItemCategory);
-            if (categoryComparison != 0) return categoryComparison;
+            int priorityA = GetItemSortPriority(a);
+            int priorityB = GetItemSortPriority(b);
+            int priorityComparison = priorityA.CompareTo(priorityB);
+            if (priorityComparison != 0) return priorityComparison;
 
-            // 2-2. 장비일 경우 부위 타입 순서 (Head -> Armor -> Weapon -> Accessory)
-            if (a.ItemCategory == ItemCategory.Equipment)
-            {
-                int equipComparison = ((int)a.EquipmentType).CompareTo((int)b.EquipmentType);
-                if (equipComparison != 0) return equipComparison;
-            }
-            // 2-3. 소모품일 경우 소모품 타입 순서
-            else if (a.ItemCategory == ItemCategory.Consumable)
-            {
-                int consumableComparison = ((int)a.ConsumableType).CompareTo((int)b.ConsumableType);
-                if (consumableComparison != 0) return consumableComparison;
-            }
-
-            // 2-4. 아이템 ID 문자열 순서
             int idComparison = string.Compare(a.ItemID, b.ItemID, StringComparison.Ordinal);
             if (idComparison != 0) return idComparison;
 
-            // 2-5. 아이템 표시 이름 순서
             return string.Compare(a.ItemName, b.ItemName, StringComparison.Ordinal);
         });
 
-        // 3. 슬롯 목록 초기화 후 정렬된 아이템을 최대 스택 단위로 순차 배치
         InitializeSlots();
 
         int currentSlotIndex = 0;

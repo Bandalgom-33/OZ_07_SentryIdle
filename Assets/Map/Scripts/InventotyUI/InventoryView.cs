@@ -108,7 +108,7 @@ public class InventoryView : MonoBehaviour
         int count = Mathf.Min(slotUIs.Count, inventoryGridManager.Slots.Count);
         for (int i = 0; i < count; i++)
         {
-            slotUIs[i].SetSlot(inventoryGridManager.Slots[i]);
+            slotUIs[i].SetSlot(inventoryGridManager.Slots[i], i);
         }
     }
 

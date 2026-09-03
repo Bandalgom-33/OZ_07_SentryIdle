@@ -81,7 +81,7 @@ public class EquipmentSlotUI : MonoBehaviour
         ItemDetailUI detailUI = itemDetailUI != null ? itemDetailUI : (ItemDetailUI.Instance != null ? ItemDetailUI.Instance : FindFirstObjectByType<ItemDetailUI>());
         if (detailUI == null) return;
 
-        detailUI.ShowItem(equippedItem);
+        detailUI.ShowItem(equippedItem, -1);
     }
 
     #endregion

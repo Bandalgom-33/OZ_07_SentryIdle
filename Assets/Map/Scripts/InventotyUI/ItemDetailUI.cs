@@ -47,6 +47,7 @@ public class ItemDetailUI : MonoBehaviour
     #endregion
 
     private ItemDataSO currentItem;
+    private int currentSlotIndex = -1;
 
     #region 라이프사이클
 
@@ -74,8 +75,8 @@ public class ItemDetailUI : MonoBehaviour
             Button btn = equipButton.GetComponent<Button>();
             if (btn != null)
             {
-                btn.onClick.RemoveListener(EquipCurrentItem);
-                btn.onClick.AddListener(EquipCurrentItem);
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(OnClickMainActionButton);
             }
         }
 
@@ -84,8 +85,8 @@ public class ItemDetailUI : MonoBehaviour
             Button btn = unequipButton.GetComponent<Button>();
             if (btn != null)
             {
-                btn.onClick.RemoveListener(UnequipCurrentItem);
-                btn.onClick.AddListener(UnequipCurrentItem);
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(OnClickDeleteButton);
             }
         }
     }
@@ -102,11 +103,12 @@ public class ItemDetailUI : MonoBehaviour
     #endregion
 
     // 아이템 상세 정보 팝업 표시 및 데이터 바인딩
-    public void ShowItem(ItemDataSO itemData)
+    public void ShowItem(ItemDataSO itemData, int slotIndex = -1)
     {
         if (itemData == null) return;
 
         currentItem = itemData;
+        currentSlotIndex = slotIndex;
 
         if (detailPanel != null)
         {
@@ -256,37 +258,77 @@ public class ItemDetailUI : MonoBehaviour
     {
         if (currentItem == null) return;
 
+        if (currentSlotIndex == -1)
+        {
+            if (equipButton != null)
+            {
+                equipButton.SetActive(true);
+                Button btn = equipButton.GetComponent<Button>();
+                bool isBagFull = InventoryGridManager.Instance != null && InventoryGridManager.Instance.IsInventoryFull();
+
+                if (isBagFull)
+                {
+                    SetButtonLabel(equipButton, "가방 가득 참");
+                    if (btn != null) btn.interactable = false;
+                }
+                else
+                {
+                    SetButtonLabel(equipButton, "해제");
+                    if (btn != null) btn.interactable = true;
+                }
+            }
+
+            if (unequipButton != null)
+            {
+                unequipButton.SetActive(true);
+                SetButtonLabel(unequipButton, "삭제");
+                Button btn = unequipButton.GetComponent<Button>();
+                if (btn != null) btn.interactable = true;
+            }
+            return;
+        }
+
         if (currentItem.ItemCategory == ItemCategory.Consumable && IsHealthPotion(currentItem.ConsumableType))
         {
             if (equipButton != null) equipButton.SetActive(false);
-            if (unequipButton != null) unequipButton.SetActive(false);
+
+            if (unequipButton != null)
+            {
+                unequipButton.SetActive(true);
+                SetButtonLabel(unequipButton, "삭제");
+                Button btn = unequipButton.GetComponent<Button>();
+                if (btn != null) btn.interactable = true;
+            }
             return;
         }
 
         if (currentItem.ItemCategory == ItemCategory.Consumable && IsExpBook(currentItem.ConsumableType))
         {
-            int count = ConsumableItemManager.Instance != null 
-                ? ConsumableItemManager.Instance.GetItemCount(currentItem.ConsumableType) 
+            int count = ConsumableItemManager.Instance != null
+                ? ConsumableItemManager.Instance.GetItemCount(currentItem.ConsumableType)
                 : 0;
 
             if (equipButton != null)
             {
                 equipButton.SetActive(true);
                 SetButtonLabel(equipButton, "사용");
-
                 Button btn = equipButton.GetComponent<Button>();
                 if (btn != null) btn.interactable = count > 0;
             }
 
-            if (unequipButton != null) unequipButton.SetActive(false);
+            if (unequipButton != null)
+            {
+                unequipButton.SetActive(true);
+                SetButtonLabel(unequipButton, "삭제");
+                Button btn = unequipButton.GetComponent<Button>();
+                if (btn != null) btn.interactable = count > 0;
+            }
             return;
         }
 
-        bool isEquipped = IsEquipped(currentItem);
-
         if (equipButton != null)
         {
-            equipButton.SetActive(!isEquipped);
+            equipButton.SetActive(true);
             SetButtonLabel(equipButton, "장착");
             Button btn = equipButton.GetComponent<Button>();
             if (btn != null) btn.interactable = true;
@@ -294,22 +336,70 @@ public class ItemDetailUI : MonoBehaviour
 
         if (unequipButton != null)
         {
-            unequipButton.SetActive(isEquipped);
-            SetButtonLabel(unequipButton, "해제");
+            unequipButton.SetActive(true);
+            SetButtonLabel(unequipButton, "삭제");
+            Button btn = unequipButton.GetComponent<Button>();
+            if (btn != null) btn.interactable = true;
+        }
+    }
+
+    // 메인 액션(장착, 해제, 사용) 버튼 클릭 이벤트 처리
+    private void OnClickMainActionButton()
+    {
+        if (currentItem == null) return;
+
+        if (currentSlotIndex == -1)
+        {
+            UnequipCurrentItem();
+            return;
+        }
+
+        EquipCurrentItem();
+    }
+
+    // 삭제 버튼 클릭 이벤트 처리
+    private void OnClickDeleteButton()
+    {
+        if (currentItem == null) return;
+
+        DeleteCurrentItem();
+    }
+
+    // 현재 선택된 아이템 삭제 처리
+    public void DeleteCurrentItem()
+    {
+        if (currentItem == null) return;
+
+        if (currentSlotIndex == -1)
+        {
+            EquipmentManager em = GetEquipmentManager();
+            if (em != null)
+            {
+                em.RemoveEquippedItem(currentItem.EquipmentType);
+            }
+            Close();
+            return;
+        }
+
+        if (InventoryGridManager.Instance != null && currentSlotIndex >= 0)
+        {
+            InventoryGridManager.Instance.RemoveItemAt(currentSlotIndex, 1);
+            Close();
         }
     }
 
     // 장착 중인 장비 아이템 해제 처리
     public void UnequipCurrentItem()
     {
-        if (currentItem == null) return;
+        if (currentItem == null || currentSlotIndex >= 0) return;
         EquipmentManager em = GetEquipmentManager();
         if (em == null) return;
 
-        em.UnequipItem(currentItem.EquipmentType);
-        UpdateButtonState();
-
-        Debug.Log($"{currentItem.ItemName} 장착 해제");
+        bool success = em.UnequipItem(currentItem.EquipmentType);
+        if (success)
+        {
+            Close();
+        }
     }
 
     // 체력 포션 타입 판별
@@ -331,6 +421,9 @@ public class ItemDetailUI : MonoBehaviour
     // 아이템 상세 패널 닫기
     public void Close()
     {
+        currentItem = null;
+        currentSlotIndex = -1;
+
         if (detailPanel != null)
         {
             detailPanel.SetActive(false);
