@@ -32,6 +32,8 @@ public class SoundManager : MonoBehaviour
     public float SFXVolume { get; private set; } = 1f;
     
 
+    public event Action<float, float> OnVolumeChanged;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -50,11 +52,17 @@ public class SoundManager : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        EventBus.Subscribe<DataSaveEvent>(OnSave);
+        EventBus.Subscribe<DataLoadEvent>(OnLoad);
+        EventBus.Subscribe<DataResetEvent>(OnReset);
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        EventBus.Unsubscribe<DataSaveEvent>(OnSave);
+        EventBus.Unsubscribe<DataLoadEvent>(OnLoad);
+        EventBus.Unsubscribe<DataResetEvent>(OnReset);
     }
 
 
@@ -150,31 +158,76 @@ public class SoundManager : MonoBehaviour
     */
 
    
-   //볼륨 설정하기
-   public void SetBGMVolume(float value)
-   {
-       BGMVolume = value;
+    // 배경음악 볼륨 설정 및 실시간 반영
+    public void SetBGMVolume(float value)
+    {
+        // 볼륨값 0.0~1.0 정규화 범위 보정
+        BGMVolume = Mathf.Clamp01(value);
 
-       ApplyBGMVolume(value);
+        // 오디오 믹서 데시벨 변환 적용
+        ApplyBGMVolume(BGMVolume);
 
-       PlayerPrefs.SetFloat(BGM_VOLUME_KEY, value);
-       PlayerPrefs.Save();
-   }
+        // 빠른 로드를 위한 PlayerPrefs 캐시 기록
+        PlayerPrefs.SetFloat(BGM_VOLUME_KEY, BGMVolume);
+        PlayerPrefs.Save();
 
-   public void SetSFXVolume(float value)
-   {
-       SFXVolume = value;
+        // 볼륨 변경 알림 발행
+        OnVolumeChanged?.Invoke(BGMVolume, SFXVolume);
+    }
 
-       ApplySFXVolume(value);
+    // 효과음 볼륨 설정 및 실시간 반영
+    public void SetSFXVolume(float value)
+    {
+        // 볼륨값 0.0~1.0 정규화 범위 보정
+        SFXVolume = Mathf.Clamp01(value);
 
-       PlayerPrefs.SetFloat(SFX_VOLUME_KEY, value);
-       PlayerPrefs.Save();
-   }
-    
-    
-    //볼륨 불러오기
+        // 오디오 믹서 데시벨 변환 적용
+        ApplySFXVolume(SFXVolume);
+
+        // 빠른 로드를 위한 PlayerPrefs 캐시 기록
+        PlayerPrefs.SetFloat(SFX_VOLUME_KEY, SFXVolume);
+        PlayerPrefs.Save();
+
+        // 볼륨 변경 알림 발행
+        OnVolumeChanged?.Invoke(BGMVolume, SFXVolume);
+    }
+
+    // 오디오 설정 세이브 데이터 저장 처리
+    private void OnSave(DataSaveEvent evt)
+    {
+        if (evt.saveData == null) return;
+        if (evt.saveData.sound == null)
+        {
+            evt.saveData.sound = new SoundSaveData();
+        }
+
+        // 현재 적용된 볼륨 수치 세이브 데이터 기록
+        evt.saveData.sound.bgmVolume = BGMVolume;
+        evt.saveData.sound.sfxVolume = SFXVolume;
+    }
+
+    // 오디오 설정 세이브 데이터 로드 처리
+    private void OnLoad(DataLoadEvent evt)
+    {
+        if (evt.saveData == null || evt.saveData.sound == null) return;
+
+        // 세이브 데이터에 저장된 볼륨값 복원 적용
+        SetBGMVolume(evt.saveData.sound.bgmVolume);
+        SetSFXVolume(evt.saveData.sound.sfxVolume);
+    }
+
+    // 오디오 설정 기본값 초기화 처리
+    private void OnReset(DataResetEvent evt)
+    {
+        // 기본 100% 볼륨으로 복원
+        SetBGMVolume(1f);
+        SetSFXVolume(1f);
+    }
+
+    // 로컬 캐시 볼륨 설정 불러오기
     private void LoadVolumeSettings()
     {
+        // 세이브 파일 로드 전 초기 믹서 적용용 로컬 캐시 조회
         BGMVolume = PlayerPrefs.GetFloat(BGM_VOLUME_KEY, 1f);
         SFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
 
