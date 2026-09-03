@@ -40,6 +40,7 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
 
     // 보유 중인 모든 유닛의 성장/돌파 세이브 데이터 목록 (단일 중앙 저장소)
     private readonly List<UnitSaveData> _cachedOwnedUnits = new List<UnitSaveData>();
+    private readonly Dictionary<int, UnitSaveData> _ownedUnitMap = new Dictionary<int, UnitSaveData>();
 
     public UnitCatalog UnitCatalog => GetUnitCatalogSafe();
     public UnitPortraitCatalogSO PortraitCatalog => GetPortraitCatalogSafe();
@@ -78,7 +79,6 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
             portraitCatalog = Resources.Load<UnitPortraitCatalogSO>("UnitPortraitCatalog");
         }
 
-        // 세이브 데이터가 로드되기 전 기본 유닛(루카, 김하진)을 캐시에 초기화
         if (_cachedOwnedUnits.Count == 0)
         {
             InitDefaultOwnedUnits();
@@ -114,22 +114,22 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
 
         foreach (var item in evt.resultItems)
         {
-            if (item == null || string.IsNullOrEmpty(item.RewardId)) continue;
+            if (item == null || item.UnitId <= 0) continue;
 
-            int parsedId = UnitIdHelper.ParseUnitId(item.RewardId);
-            if (parsedId <= 0) continue;
-
-            UnitSaveData existing = FindSaveDataByUnitId(parsedId);
+            int unitId = item.UnitId;
+            UnitSaveData existing = FindSaveDataByUnitId(unitId);
             if (existing == null)
             {
-                _cachedOwnedUnits.Add(new UnitSaveData
+                var newUnit = new UnitSaveData
                 {
-                    unitId = parsedId,
+                    unitId = unitId,
                     level = 1,
                     currentExp = 0L,
                     breakThroughStep = item.CurrentBreakthroughStep,
                     fragmentCount = 0
-                });
+                };
+                _cachedOwnedUnits.Add(newUnit);
+                _ownedUnitMap[unitId] = newUnit;
             }
             else
             {
@@ -142,18 +142,27 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
     private void OnLoad(DataLoadEvent evt)
     {
         _cachedOwnedUnits.Clear();
+        _ownedUnitMap.Clear();
+
         if (evt.saveData != null && evt.saveData.unitDeck != null && evt.saveData.unitDeck.ownedUnits != null && evt.saveData.unitDeck.ownedUnits.Count > 0)
         {
             _cachedOwnedUnits.AddRange(evt.saveData.unitDeck.ownedUnits);
+            for (int i = 0; i < _cachedOwnedUnits.Count; i++)
+            {
+                var u = _cachedOwnedUnits[i];
+                if (u != null && u.unitId > 0)
+                {
+                    _ownedUnitMap[u.unitId] = u;
+                }
+            }
         }
         else
         {
-            // 세이브 데이터에 보유 유닛이 비어있을 경우 기본 유닛(루카, 김하진) 자동 복원
             InitDefaultOwnedUnits();
         }
     }
 
-    // 세이브 데이터 저장 처리 (단일 원천 데이터 저장)
+    // 세이브 데이터 저장 처리
     private void OnSave(DataSaveEvent evt)
     {
         if (evt.saveData == null) return;
@@ -165,36 +174,39 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
         evt.saveData.unitDeck.ownedUnits = new List<UnitSaveData>(_cachedOwnedUnits);
     }
 
-    // 데이터 초기화 처리 (초기화 시 기본 유닛인 루카와 김하진 재할당)
+    // 데이터 초기화 처리
     private void OnReset(DataResetEvent evt)
     {
         InitDefaultOwnedUnits();
     }
 
-    // 기본 지급 유닛 초기화 헬퍼 (루카: ID 2 1성, 김하진: ID 4 2성, 0돌파)
+    // 기본 지급 유닛 초기화 헬퍼 (루카 ID 2, 김하진 ID 4)
     private void InitDefaultOwnedUnits()
     {
         _cachedOwnedUnits.Clear();
+        _ownedUnitMap.Clear();
 
-        // 1성 뱅가드 루카 (UNIT_0002, 0돌파 기본 보유)
-        _cachedOwnedUnits.Add(new UnitSaveData
+        var luka = new UnitSaveData
         {
             unitId = 2,
             level = 1,
             currentExp = 0L,
             breakThroughStep = 0,
             fragmentCount = 0
-        });
+        };
+        _cachedOwnedUnits.Add(luka);
+        _ownedUnitMap[2] = luka;
 
-        // 2성 가드 김하진 (UNIT_0004, 0돌파 기본 보유)
-        _cachedOwnedUnits.Add(new UnitSaveData
+        var hajin = new UnitSaveData
         {
             unitId = 4,
             level = 1,
             currentExp = 0L,
             breakThroughStep = 0,
             fragmentCount = 0
-        });
+        };
+        _cachedOwnedUnits.Add(hajin);
+        _ownedUnitMap[4] = hajin;
     }
 
     #endregion
@@ -259,14 +271,16 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
         UnitSaveData existing = FindSaveDataByUnitId(unitId);
         if (existing == null)
         {
-            _cachedOwnedUnits.Add(new UnitSaveData
+            var newUnit = new UnitSaveData
             {
                 unitId = unitId,
                 level = Mathf.Max(1, level),
                 currentExp = Math.Max(0L, exp),
                 breakThroughStep = Mathf.Max(0, breakThroughStep),
                 fragmentCount = Mathf.Max(0, fragmentCount)
-            });
+            };
+            _cachedOwnedUnits.Add(newUnit);
+            _ownedUnitMap[unitId] = newUnit;
         }
         else
         {
@@ -304,7 +318,6 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
             int breakThroughStep = isOwned ? savedUnit.breakThroughStep : 0;
             int fragmentCount = isOwned ? savedUnit.fragmentCount : 0;
 
-            // DeckManager를 통해 지정된 덱 내 장착 여부 및 슬롯 인덱스 조회 (Read-Only)
             bool isInDeck = false;
             int deckIndex = -1;
             if (DeckManager.Instance != null)
@@ -336,20 +349,11 @@ public class CollectionDataProvider : SingletonBase<CollectionDataProvider>
 
     #region 내부 헬퍼 메서드
 
-    // 내부 세이브 캐시에서 유닛 ID로 검색
+    // 내부 세이브 캐시에서 유닛 ID로 O(1) 검색
     private UnitSaveData FindSaveDataByUnitId(int unitId)
     {
-        if (unitId <= 0 || _cachedOwnedUnits == null) return null;
-
-        for (int i = 0; i < _cachedOwnedUnits.Count; i++)
-        {
-            if (_cachedOwnedUnits[i] != null && _cachedOwnedUnits[i].unitId == unitId)
-            {
-                return _cachedOwnedUnits[i];
-            }
-        }
-
-        return null;
+        if (unitId <= 0) return null;
+        return _ownedUnitMap.TryGetValue(unitId, out UnitSaveData data) ? data : null;
     }
 
     #endregion

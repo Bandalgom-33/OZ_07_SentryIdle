@@ -396,12 +396,18 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #region 덱 조작 및 편집 API (Command APIs)
 
-    // 특정 덱의 지정 슬롯에 유닛 장착 (동일 덱 내 중복 및 레이드 1팀/2팀 간 상호 중복 방지)
+    // 특정 덱의 지정 슬롯에 유닛 장착 (미보유 유닛 방어, 동일 덱 내 중복 및 레이드 1팀/2팀 간 상호 중복 방지)
     public bool SetSlot(DeckType deckType, int slotIndex, int unitId)
     {
         int[] slots = GetInternalSlots(deckType);
         if (slotIndex < 0 || slotIndex >= slots.Length || unitId <= 0)
         {
+            return false;
+        }
+
+        if (CollectionDataProvider.Instance != null && !CollectionDataProvider.Instance.IsUnitOwned(unitId))
+        {
+            Debug.LogWarning($"[DeckManager] 미보유 유닛(ID: {unitId})은 덱에 편성할 수 없습니다.");
             return false;
         }
 
@@ -436,11 +442,17 @@ public class DeckManager : SingletonBase<DeckManager>
         return SetSlot(deckType, slotIndex, unitId);
     }
 
-    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착 (레이드 1팀/2팀 간 상호 중복 방지 포함)
+    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착 (미보유 유닛 방어, 레이드 1팀/2팀 간 상호 중복 방지 포함)
     public bool TryAddUnitToDeck(DeckType deckType, int unitId, out int assignedSlotIndex)
     {
         assignedSlotIndex = -1;
         if (unitId <= 0) return false;
+
+        if (CollectionDataProvider.Instance != null && !CollectionDataProvider.Instance.IsUnitOwned(unitId))
+        {
+            Debug.LogWarning($"[DeckManager] 미보유 유닛(ID: {unitId})은 덱에 편성할 수 없습니다.");
+            return false;
+        }
 
         // 레이드 덱의 경우 1팀과 2팀 간 캐릭터 중복을 방지하기 위해 반대편 레이드 덱에서 자동 해제
         if (deckType == DeckType.Raid1)
@@ -585,12 +597,10 @@ public class DeckManager : SingletonBase<DeckManager>
     public bool SetSlot(int slotIndex, int unitId) => SetSlot(DeckType.Normal, slotIndex, unitId);
     public bool RemoveSlot(int slotIndex) => RemoveSlot(DeckType.Normal, slotIndex);
     public bool RemoveUnit(int unitId) => RemoveUnit(DeckType.Normal, unitId);
-    public bool RemoveUnit(string unitIdStr) => RemoveUnit(DeckType.Normal, unitIdStr);
     public bool SwapSlots(int slotIndexA, int slotIndexB) => SwapSlots(DeckType.Normal, slotIndexA, slotIndexB);
     public bool ClearDeck() => ClearDeck(DeckType.Normal);
     public int[] GetDeckSlotsCopy() => GetDeckSlotsCopy(DeckType.Normal);
     public bool IsInDeck(int unitId, out int slotIndex) => IsUnitInDeck(DeckType.Normal, unitId, out slotIndex);
-    public bool IsInDeck(string unitIdStr, out int slotIndex) => IsUnitInDeck(DeckType.Normal, unitIdStr, out slotIndex);
 
     #endregion
 

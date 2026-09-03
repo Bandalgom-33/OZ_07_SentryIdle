@@ -5,10 +5,13 @@ using EndlessGuard.Unit.Raid.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-// 골드, 다이아, DP 코스트, 마석 등 게임 내 재화의 보유량 관리, 획득/소모 및 자동 회복을 총괄하는 싱글톤 매니저
 public class CurrencyManager : SingletonBase<CurrencyManager>
 {
-    #region 노출 변수 모음
+    public const long MaxGoldCap = 9_000_000_000_000_000_000L;
+    public const long MaxDiamondCap = 1_000_000_000L;
+    public const long MaxStoneCap = 999_999_999L;
+
+    #region 직렬화 변수
 
     [Header("--- 기본 보유 재화 설정 ---")]
     [Tooltip("기본 생성/초기 보유 골드 수량")]
@@ -74,30 +77,18 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     public long StageStone => DungeonStone;
     public long RaidStone { get; private set; }
 
-    // 골드 보유 여부 검증
-    public bool HasGold(long inputGold) => Gold >= inputGold;
+    public bool HasGold(long inputGold) => inputGold >= 0 && Gold >= inputGold;
+    public bool HasDiamond(long inputDiamond) => inputDiamond >= 0 && Diamond >= inputDiamond;
+    public bool HasDpCost(int inputDpCost) => inputDpCost >= 0 && DpCost >= inputDpCost;
+    public bool HasWaveStone(long amount) => amount >= 0 && WaveStone >= amount;
+    public bool HasStageStone(long amount) => amount >= 0 && StageStone >= amount;
+    public bool HasDungeonStone(long amount) => amount >= 0 && DungeonStone >= amount;
+    public bool HasRaidStone(long amount) => amount >= 0 && RaidStone >= amount;
 
-    // 다이아 보유 여부 검증
-    public bool HasDiamond(long inputDiamond) => Diamond >= inputDiamond;
-
-    // DP 코스트 보유 여부 검증
-    public bool HasDpCost(int inputDpCost) => DpCost >= inputDpCost;
-
-    // 웨이브 마석 보유 여부 검증
-    public bool HasWaveStone(long amount) => WaveStone >= amount;
-
-    // 던전(스테이지) 마석 보유 여부 검증
-    public bool HasStageStone(long amount) => StageStone >= amount;
-    public bool HasDungeonStone(long amount) => DungeonStone >= amount;
-
-    // 레이드 마석 보유 여부 검증
-    public bool HasRaidStone(long amount) => RaidStone >= amount;
-
-    // 로비 씬 진입 시 레이드 보상 팝업 노출을 위한 대기 리포트 프로퍼티
     public bool HasPendingRaidRewardReport { get; private set; } = false;
     public long LastRewardedRaidStone { get; private set; } = 0;
 
-    // 로비 팝업 닫기 시 레이드 보상 대기 상태 초기화
+    // 레이드 보상 대기 상태 초기화
     public void ClearPendingRaidRewardReport()
     {
         HasPendingRaidRewardReport = false;
@@ -107,6 +98,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 통합 재화 잔액 보유 검사
     public bool HasEnoughCurrency(CurrencyType type, long amount)
     {
+        if (amount < 0) return false;
         return type switch
         {
             CurrencyType.Gold => HasGold(amount),
@@ -123,8 +115,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
     #region 비공개 필드
 
-    private bool _isPaused = true; // 기본값: 일시정지 (로비 시작 시 비활성)
-    private bool _isRegenAllowed = false; // 인게임 진입 시에만 true
+    private bool _isPaused = true;
+    private bool _isRegenAllowed = false;
     private float _currentRegenTime;
 
     #endregion
@@ -155,7 +147,6 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         EventBus.Subscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
         EventBus.Subscribe<GameStateChangedEvent>(OnGameStateChanged);
 
-        // 레이드 씬 진입 시 레이드 전투 이벤트 바인딩을 위한 씬 로드 구독
         SceneManager.sceneLoaded += HandleSceneLoaded;
         BindActiveRaidBattles();
     }
@@ -182,13 +173,13 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         UnbindActiveRaidBattles();
     }
 
-    // 새로운 씬 로드 시 레이드 전투 컨트롤러 탐색 및 이벤트 바인딩
+    // 새로운 씬 로드 시 레이드 전투 컨트롤러 탐색 및 바인딩
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         BindActiveRaidBattles();
     }
 
-    // 활성화된 레이드 전투 컨트롤러의 승리/종료 이벤트 구독
+    // 활성화된 레이드 전투 컨트롤러 이벤트 구독
     private void BindActiveRaidBattles()
     {
         RaidBattleController[] battles = FindObjectsByType<RaidBattleController>(FindObjectsSortMode.None);
@@ -220,14 +211,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     {
         if (result == RaidBattleResult.Victory)
         {
-            // 레이드 승리 시 설정된 레이드 마석 보상 지급
             GetRaidStone(raidVictoryStoneReward);
             HasPendingRaidRewardReport = true;
             LastRewardedRaidStone = raidVictoryStoneReward;
             Debug.Log($"[CurrencyManager] 레이드 승리! 레이드 마석 {raidVictoryStoneReward:N0}개 지급 완료 (현재 보유 마석: {RaidStone:N0})");
-
-            // 보상 지급 후 즉시 세이브 파일 갱신
-            SaveManager.Instance?.SaveGameData(force: true);
+            EventBus.Publish(new RequestSaveGameEvent(force: true));
         }
     }
 
@@ -286,6 +274,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 통합 재화 수급 처리
     public void AddCurrency(CurrencyType type, long amount, bool applyModifiers = true)
     {
+        if (amount <= 0) return;
+
         switch (type)
         {
             case CurrencyType.Gold:
@@ -312,6 +302,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 골드 획득 연산
     public void GetGold(long baseAmount, bool applyModifiers = true)
     {
+        if (baseAmount <= 0) return;
+
         long finalGold = baseAmount;
         if (applyModifiers)
         {
@@ -319,7 +311,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             finalGold = (long)Math.Round(calculated);
         }
 
-        Gold += finalGold;
+        if (finalGold <= 0) return;
+
+        long remainingSpace = MaxGoldCap - Gold;
+        Gold = (finalGold >= remainingSpace) ? MaxGoldCap : Gold + finalGold;
+
         OnGoldChange?.Invoke(Gold);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Gold, Gold, finalGold));
     }
@@ -327,7 +323,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 골드 소모 연산
     public bool TrySpendGold(long gold)
     {
-        if (Gold < gold) return false;
+        if (gold <= 0 || Gold < gold) return false;
+
         Gold -= gold;
         OnGoldChange?.Invoke(Gold);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Gold, Gold, -gold));
@@ -337,6 +334,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 다이아 획득 연산
     public void GetDiamond(long baseAmount, bool applyModifiers = true)
     {
+        if (baseAmount <= 0) return;
+
         long finalDiamond = baseAmount;
         if (applyModifiers)
         {
@@ -344,7 +343,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
             finalDiamond = (long)Math.Round(calculated);
         }
 
-        Diamond += finalDiamond;
+        if (finalDiamond <= 0) return;
+
+        long remainingSpace = MaxDiamondCap - Diamond;
+        Diamond = (finalDiamond >= remainingSpace) ? MaxDiamondCap : Diamond + finalDiamond;
+
         OnDiamondChange?.Invoke(Diamond);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Diamond, Diamond, finalDiamond));
     }
@@ -352,7 +355,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 다이아 소모 연산
     public bool TrySpendDiamond(long diamond)
     {
-        if (Diamond < diamond) return false;
+        if (diamond <= 0 || Diamond < diamond) return false;
+
         Diamond -= diamond;
         OnDiamondChange?.Invoke(Diamond);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.Diamond, Diamond, -diamond));
@@ -362,11 +366,13 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // DP 코스트 획득 연산
     public void GetDpCost(int dpCost)
     {
-        if (!_isRegenAllowed && dpCost > 0) return;
+        if (!_isRegenAllowed || dpCost <= 0) return;
 
         int prevDp = DpCost;
-        DpCost = Mathf.Min(DpCost + dpCost, MaxDpCost);
+        int remainingSpace = MaxDpCost - DpCost;
+        DpCost = (dpCost >= remainingSpace) ? MaxDpCost : DpCost + dpCost;
         int change = DpCost - prevDp;
+
         OnDpCostChange?.Invoke(DpCost);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DpCost, DpCost, change));
 
@@ -379,7 +385,7 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // DP 코스트 소모 연산
     public bool TrySpendDpCost(int dpCost)
     {
-        if (DpCost < dpCost) return false;
+        if (dpCost <= 0 || DpCost < dpCost) return false;
 
         DpCost -= dpCost;
         OnDpCostChange?.Invoke(DpCost);
@@ -412,7 +418,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 웨이브 마석 획득 연산
     public void GetWaveStone(long amount)
     {
-        WaveStone += amount;
+        if (amount <= 0) return;
+
+        long remainingSpace = MaxStoneCap - WaveStone;
+        WaveStone = (amount >= remainingSpace) ? MaxStoneCap : WaveStone + amount;
+
         OnWaveStoneChange?.Invoke(WaveStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.WaveStone, WaveStone, amount));
     }
@@ -420,7 +430,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 웨이브 마석 소모 연산
     public bool TrySpendWaveStone(long amount)
     {
-        if (WaveStone < amount) return false;
+        if (amount <= 0 || WaveStone < amount) return false;
+
         WaveStone -= amount;
         OnWaveStoneChange?.Invoke(WaveStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.WaveStone, WaveStone, -amount));
@@ -430,7 +441,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 던전 마석 획득 연산
     public void GetDungeonStone(long amount)
     {
-        DungeonStone += amount;
+        if (amount <= 0) return;
+
+        long remainingSpace = MaxStoneCap - DungeonStone;
+        DungeonStone = (amount >= remainingSpace) ? MaxStoneCap : DungeonStone + amount;
+
         OnDungeonStoneChange?.Invoke(DungeonStone);
         OnStageStoneChange?.Invoke(DungeonStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.DungeonStone, DungeonStone, amount));
@@ -441,7 +456,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 던전 마석 소모 연산
     public bool TrySpendDungeonStone(long amount)
     {
-        if (DungeonStone < amount) return false;
+        if (amount <= 0 || DungeonStone < amount) return false;
+
         DungeonStone -= amount;
         OnDungeonStoneChange?.Invoke(DungeonStone);
         OnStageStoneChange?.Invoke(DungeonStone);
@@ -454,7 +470,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 레이드 마석 획득 연산
     public void GetRaidStone(long amount)
     {
-        RaidStone += amount;
+        if (amount <= 0) return;
+
+        long remainingSpace = MaxStoneCap - RaidStone;
+        RaidStone = (amount >= remainingSpace) ? MaxStoneCap : RaidStone + amount;
+
         OnRaidStoneChange?.Invoke(RaidStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.RaidStone, RaidStone, amount));
     }
@@ -462,7 +482,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 레이드 마석 소모 연산
     public bool TrySpendRaidStone(long amount)
     {
-        if (RaidStone < amount) return false;
+        if (amount <= 0 || RaidStone < amount) return false;
+
         RaidStone -= amount;
         OnRaidStoneChange?.Invoke(RaidStone);
         EventBus.Publish(new CurrencyChangedEvent(CurrencyType.RaidStone, RaidStone, -amount));
@@ -472,6 +493,8 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 통합 재화 소모 연산
     public bool ConsumeCurrency(CurrencyType type, long amount)
     {
+        if (amount <= 0) return false;
+
         return type switch
         {
             CurrencyType.Gold => TrySpendGold(amount),
@@ -491,37 +514,37 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     // 골드 보너스 수치 업그레이드 연산
     public void GoldBonusUpgrade(int level)
     {
-        goldBonus = level * goldBonusIncrease;
+        goldBonus = Math.Max(0, level * goldBonusIncrease);
     }
 
     // 골드 획득 배율 업그레이드 연산
     public void GoldMagnificationUpgrade(int level)
     {
-        goldMagnification = 1.0f + (level * goldMagnificationIncrease);
+        goldMagnification = Math.Max(1.0f, 1.0f + (level * goldMagnificationIncrease));
     }
 
     // 다이아 보너스 수치 업그레이드 연산
     public void DiamondBonusUpgrade(int level)
     {
-        diamondBonus = level * diamondBonusIncrease;
+        diamondBonus = Math.Max(0, level * diamondBonusIncrease);
     }
 
     // 다이아 획득 배율 업그레이드 연산
     public void DiamondMagnificationUpgrade(int level)
     {
-        diamondMagnification = 1.0f + (level * diamondMagnificationIncrease);
+        diamondMagnification = Math.Max(1.0f, 1.0f + (level * diamondMagnificationIncrease));
     }
 
     // DP 코스트 보너스 업그레이드 연산
     public void DpCostBonusUpgrade(int level)
     {
-        dpCostBonus = level * dpCostBonusIncrease;
+        dpCostBonus = Math.Max(0, level * dpCostBonusIncrease);
     }
 
     // 최대 DP 상한 업그레이드 연산
     public void MaxDpCostUpgrade(int level)
     {
-        MaxDpCost = 100 + (level * maxDpCostIncrease);
+        MaxDpCost = Math.Max(100, 100 + (level * maxDpCostIncrease));
 
         if (_isRegenAllowed && DpCost < MaxDpCost)
         {
@@ -564,7 +587,6 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
                 OnDpCostSliderChange?.Invoke(sliderValue);
                 if (sliderValue >= 1)
                 {
-                    // 1초(리젠 주기)마다 기본 1 DP (+ 업그레이드 보너스) 회복
                     int dpCost = 1 + dpCostBonus;
                     if (dpCost <= 0) dpCost = 1;
                     GetDpCost(dpCost);
@@ -622,11 +644,11 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     {
         if (evt.saveData == null || evt.saveData.currency == null) return;
 
-        Gold = evt.saveData.currency.gold;
-        Diamond = evt.saveData.currency.diamond;
-        WaveStone = evt.saveData.currency.waveStone;
-        DungeonStone = evt.saveData.currency.stageStone;
-        RaidStone = evt.saveData.currency.raidStone;
+        Gold = Math.Clamp(evt.saveData.currency.gold, 0, MaxGoldCap);
+        Diamond = Math.Clamp(evt.saveData.currency.diamond, 0, MaxDiamondCap);
+        WaveStone = Math.Clamp(evt.saveData.currency.waveStone, 0, MaxStoneCap);
+        DungeonStone = Math.Clamp(evt.saveData.currency.stageStone, 0, MaxStoneCap);
+        RaidStone = Math.Clamp(evt.saveData.currency.raidStone, 0, MaxStoneCap);
         DpCost = _isRegenAllowed ? baseDpCost : 0;
 
         BroadcastAllCurrencies();

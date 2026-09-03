@@ -92,11 +92,7 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
         if (LastReportData.HasAnyReward)
         {
             Debug.Log($"[OfflineRewardManager] 오프라인 보상 정산 완료: 시간={LastReportData.FormattedDuration}, Gold=+{LastReportData.GainedGold:N0}, WaveStone=+{LastReportData.GainedWaveStone:N0}");
-            
-            if (SaveManager.Instance != null)
-            {
-                SaveManager.Instance.SaveGameData();
-            }
+            EventBus.Publish(new RequestSaveGameEvent(force: false));
         }
     }
 
@@ -233,6 +229,8 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
         List<DungeonDataSO> dList = dm.DungeonList;
         if (dList == null) return;
 
+        const int maxOfflineDungeonCycles = 100;
+
         for (int i = 0; i < dList.Count; i++)
         {
             DungeonDataSO dataSO = dList[i];
@@ -248,7 +246,8 @@ public class OfflineRewardManager : SingletonBase<OfflineRewardManager>
                 float totalAccumulatedTime = prevTimer + validSeconds;
                 float cycleDuration = dataSO.BaseCycleSeconds;
 
-                int offlineCycles = (int)(totalAccumulatedTime / cycleDuration);
+                int theoreticalCycles = (int)(totalAccumulatedTime / cycleDuration);
+                int offlineCycles = Mathf.Min(maxOfflineDungeonCycles, theoreticalCycles);
                 float remainingTimer = totalAccumulatedTime % cycleDuration;
 
                 if (offlineCycles > 0)

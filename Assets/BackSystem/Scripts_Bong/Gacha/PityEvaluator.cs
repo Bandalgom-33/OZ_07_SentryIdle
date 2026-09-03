@@ -1,53 +1,55 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-// 가챠 천장(Pity) 스택 누적 및 구간별 최고 등급 확률을 연산하는 평가 클래스
 public class PityEvaluator
 {
-    private const int SoftPityThreshold = 50;
-    private const int HardPityThreshold = 100;
-    private const float BaseRate = 0.001f;     // 0.1%
-    private const float SoftPityRate = 0.10f;   // 10.0%
-    private const float HardPityRate = 1.0f;    // 100%
+    private readonly GachaConfigSO _config;
 
     public int CurrentPityStack { get; private set; }
 
-    // 천장 연산기 생성자
-    public PityEvaluator(int initialPityStack = 0)
+    // 천장 연산기 인스턴스 생성
+    public PityEvaluator(GachaConfigSO config, int initialPityStack = 0)
     {
+        _config = config;
         CurrentPityStack = Mathf.Max(0, initialPityStack);
     }
 
-    // 천장 스택 직접 설정 연산
+    // 천장 누적 스택 수치 지정
     public void SetPityStack(int stack)
     {
         CurrentPityStack = Mathf.Max(0, stack);
     }
 
-    // 천장 스택 단일 증가 연산
+    // 천장 누적 스택 1 증가
     public void IncreasePity()
     {
         CurrentPityStack++;
     }
 
-    // 천장 스택 초기화 연산
+    // 천장 누적 스택 0으로 초기화
     public void ResetPity()
     {
         CurrentPityStack = 0;
     }
 
-    // 현재 스택 구간별 최고 등급 확률 계산 연산
+    // 현재 누적 스택 기반 6성 최고 등급 확률 연산
     public float GetTopGradeProbability()
     {
-        if (CurrentPityStack >= HardPityThreshold)
+        int softThreshold = _config != null ? _config.SoftPityThreshold : 50;
+        int hardThreshold = _config != null ? _config.HardPityThreshold : 100;
+        float baseRate = _config != null ? _config.BaseSixStarRate : 0.001f;
+        float hardRate = _config != null ? _config.HardPityRate : 1.0f;
+
+        if (CurrentPityStack >= hardThreshold)
         {
-            return HardPityRate;
+            return hardRate;
         }
 
-        if (CurrentPityStack >= SoftPityThreshold)
+        if (CurrentPityStack >= softThreshold)
         {
-            return SoftPityRate;
+            float t = (float)(CurrentPityStack - softThreshold) / (hardThreshold - softThreshold);
+            return Mathf.Lerp(baseRate, hardRate, t);
         }
 
-        return BaseRate;
+        return baseRate;
     }
 }

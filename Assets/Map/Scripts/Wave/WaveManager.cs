@@ -420,6 +420,15 @@ public class WaveManager : MonoBehaviour
         for (int i = 0; i < gridPath.Count; i++)
         {
             Vector2Int gridPosition = gridPath[i];
+            
+            TileNode pathTile = mapGenerator.Grid[gridPosition.x, gridPosition.y];
+
+            if (pathTile != null && pathTile.TileType != TileType.Path && pathTile.TileType != TileType.Spawn && pathTile.TileType != TileType.Goal) {
+                Debug.LogError(
+                    $"[경로 오류] 적 경로 좌표 {gridPosition}의 실제 타입이 " +
+                    $"{pathTile.TileType} 입니다."
+                );
+            }
 
             //Grid 좌표를 월드 좌표로 변환
             Vector3 worldPosition = mapRenderer.GridToWorld(gridPosition);

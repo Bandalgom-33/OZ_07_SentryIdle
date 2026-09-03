@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using EndlessGuard.Unit.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 가챠 뽑기 조작, 천장 스택 확인, 치트 다이아 충전 및 실시간 가챠/돌파 로그 출력을 담당하는 UI 뷰어
+// 가챠 뽑기 조작, 천장 스택 확인, 치트 다이아 충전 및 가챠 로그 출력을 담당하는 UI 뷰어
 public class GachaUI : MonoBehaviour
 {
     #region SerializeFields (인스펙터 바인딩)
@@ -41,10 +42,6 @@ public class GachaUI : MonoBehaviour
     [Tooltip("로그 기록 전체 비우기 버튼")]
     [SerializeField] private Button clearLogButton;
 
-    #endregion
-
-    #region 직렬화 필드 추가
-
     [Header("카탈로그 참조")]
     [Tooltip("로그 복원 시 유닛 이름 및 성급 조회를 위한 카탈로그 SO")]
     [SerializeField] private UnitCatalog unitCatalog;
@@ -53,13 +50,14 @@ public class GachaUI : MonoBehaviour
 
     #region 비공개 필드
 
-    private readonly StringBuilder _logBuilder = new StringBuilder();
+    // 문자열 재할당을 방지하기 위해 용량(4096 바이트)을 미리 할당한 StringBuilder
+    private readonly StringBuilder _logBuilder = new StringBuilder(4096);
 
     #endregion
 
     #region 라이프 사이클
 
-    // 버튼 이벤트 초기화 및 카탈로그 로드
+    // 버튼 이벤트 초기화 및 카탈로그 확인
     private void Awake()
     {
         if (closePanelButton != null) closePanelButton.onClick.AddListener(() => SetPanelActive(false));
@@ -69,11 +67,9 @@ public class GachaUI : MonoBehaviour
         if (addCheatDiamondButton != null) addCheatDiamondButton.onClick.AddListener(OnClickAddDiamond);
         if (clearLogButton != null) clearLogButton.onClick.AddListener(ClearLog);
 
-        if (unitCatalog == null)
+        if (unitCatalog == null && CollectionDataProvider.Instance != null)
         {
-            unitCatalog = CollectionDataProvider.Instance != null 
-                ? CollectionDataProvider.Instance.UnitCatalog 
-                : Resources.Load<UnitCatalog>("Catalogs/UnitCatalog");
+            unitCatalog = CollectionDataProvider.Instance.UnitCatalog;
         }
     }
 
@@ -100,7 +96,7 @@ public class GachaUI : MonoBehaviour
 
     #region UI 패널 토글 및 버튼 이벤트 핸들러
 
-    // 가챠 패널 활성화/비활성화 전환
+    // 가챠 패널 활성화/비활성화 전환 (패널을 닫을 때 변경사항이 있으면 1회 디스크 저장 수행)
     public void SetPanelActive(bool active)
     {
         if (gachaPanel != null)
@@ -111,6 +107,14 @@ public class GachaUI : MonoBehaviour
                 UpdatePityText();
                 UpdateDrawButtonsInteractable();
                 RestoreSavedDrawLogs();
+            }
+            else
+            {
+                // 패널을 닫는 시점에 Dirty Flag가 켜져 있으면 파일 저장 수행
+                if (GachaController.Instance != null)
+                {
+                    GachaController.Instance.SaveIfDirty();
+                }
             }
         }
     }
@@ -148,41 +152,48 @@ public class GachaUI : MonoBehaviour
     // 재화 변동 시 뽑기 버튼 활성화 상태 갱신
     private void OnCurrencyChanged(CurrencyChangedEvent evt)
     {
-        UpdateDrawButtonsInteractable();
+        if (evt.currencyType == CurrencyType.Diamond)
+        {
+            UpdateDrawButtonsInteractable();
+        }
     }
 
-    // 보유 다이아 잔액에 따라 뽑기 버튼 활성화/비활성화 처리
+    // 보유 다이아 잔액 및 가챠 진행 상태에 따라 뽑기 버튼 활성화/비활성화 처리
     private void UpdateDrawButtonsInteractable()
     {
         if (CurrencyManager.Instance == null || GachaController.Instance == null) return;
 
+        bool isDrawing = GachaController.Instance.IsDrawing;
         long currentDiamond = CurrencyManager.Instance.Diamond;
+
         if (drawSingleButton != null)
         {
-            drawSingleButton.interactable = currentDiamond >= GachaController.Instance.SingleDrawCost;
+            drawSingleButton.interactable = !isDrawing && currentDiamond >= GachaController.Instance.SingleDrawCost;
         }
 
         if (drawTenButton != null)
         {
-            drawTenButton.interactable = currentDiamond >= GachaController.Instance.TenDrawCost;
+            drawTenButton.interactable = !isDrawing && currentDiamond >= GachaController.Instance.TenDrawCost;
         }
     }
 
     #endregion
 
-    #region 이벤트 수신 및 로그 뷰어 연산 (시간 및 유닛 정보만 출력)
+    #region 이벤트 수신 및 로그 뷰어 연산
 
-    // 세이브된 가챠 로그 전체를 읽어와 스크롤뷰에 복원 출력
+    // 세이브된 가챠 로그 전체를 링 버퍼에서 읽어와 스크롤뷰에 복원 출력
     public void RestoreSavedDrawLogs()
     {
         _logBuilder.Clear();
 
-        if (GachaController.Instance != null && GachaController.Instance.DrawLogs != null)
+        if (GachaController.Instance != null)
         {
-            var logs = GachaController.Instance.DrawLogs;
+            List<GachaLogEntry> logs = GachaController.Instance.GetOrderedDrawLogs();
             for (int i = 0; i < logs.Count; i++)
             {
-                var entry = logs[i];
+                GachaLogEntry entry = logs[i];
+                if (entry == null) continue;
+
                 string unitKey = UnitIdHelper.ToUnitKey(entry.unitId);
                 string unitName = $"Unit {entry.unitId}";
                 UnitGrade grade = UnitGrade.OneStar;
@@ -202,16 +213,20 @@ public class GachaUI : MonoBehaviour
         UpdateLogDisplay();
     }
 
-    // 가챠 완료 이벤트 수신 및 결과 로그 추가 (돌파 단계 제외, 시간 및 유닛 정보만 기록)
+    // 가챠 완료 이벤트 수신 및 결과 로그 추가 (GachaRewardItem DTO 기반)
     private void OnGachaCompleted(GachaDrawCompletedEvent evt)
     {
         UpdatePityText();
         UpdateDrawButtonsInteractable();
 
+        if (evt.resultItems == null) return;
+
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
         for (int i = 0; i < evt.resultItems.Count; i++)
         {
-            var item = evt.resultItems[i];
+            GachaRewardItem item = evt.resultItems[i];
+            if (item == null) continue;
+
             string colorHex = GetGradeColorHex(item.Grade);
             _logBuilder.AppendLine($"[{timestamp}] <color={colorHex}>[{(int)item.Grade}성] {item.DisplayName}</color>");
         }
@@ -235,7 +250,7 @@ public class GachaUI : MonoBehaviour
         UpdateLogDisplay();
     }
 
-    // ScrollView 텍스트 갱신 및 최하단 스크롤
+    // ScrollView 텍스트 갱신 및 스크롤 위치 이동 (Canvas.ForceUpdateCanvases 호출 제거로 렌더링 부하 절감)
     private void UpdateLogDisplay()
     {
         if (logContentText != null)
@@ -245,7 +260,6 @@ public class GachaUI : MonoBehaviour
 
         if (logScrollRect != null)
         {
-            Canvas.ForceUpdateCanvases();
             logScrollRect.verticalNormalizedPosition = 0f;
         }
     }
@@ -257,6 +271,11 @@ public class GachaUI : MonoBehaviour
         if (logContentText != null)
         {
             logContentText.text = string.Empty;
+        }
+
+        if (GachaController.Instance != null)
+        {
+            GachaController.Instance.ClearDrawLogs();
         }
     }
 
