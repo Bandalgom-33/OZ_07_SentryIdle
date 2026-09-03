@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
   itemId: Weapon_03
   itemName: "\uB9C8\uB825 \uAC80"
-  itemIcon: {fileID: 21300000, guid: 9794293e4605a44d0826e3814ddc8431, type: 3}
+  itemIcon: {fileID: 507751621, guid: 9ca6237b190db3b4b96c554bddc64ad5, type: 3}
   description: 
   itemCategory: 0
   maxStack: 999

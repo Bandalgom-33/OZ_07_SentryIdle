@@ -144,6 +144,12 @@ public class WaveManager : MonoBehaviour
         for (int waveIndex = 0; waveIndex < stageManager.WavesPerStage; waveIndex++)
         {
             currentWave = waveIndex + 1;
+            
+            //웨이브 시작 사운드 재생
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayWaveStartSound();
+            }
 
             // 스테이지 및 웨이브 변경 이벤트 발행과 전역 진행도 매니저 동기화
             if (StageProgressManager.Instance != null)
@@ -163,6 +169,11 @@ public class WaveManager : MonoBehaviour
             {
                 yield return StartCoroutine(RunWave());
             }
+            //웨이브 클리어 소리 재생
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayWaveClearSound();
+            }
             
             GiveWaveClearReward();
             
@@ -173,6 +184,13 @@ public class WaveManager : MonoBehaviour
         }
 
         Debug.Log("모든 웨이브 종료");
+        
+        //스테이지 클리어 BGM 재생
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayStageClearSound();
+        }
+        
         //스테이지 클리어 및 전역 진행도 갱신
         int clearedStage = stageManager.CurrentStage;
         stageManager.ClearStage();
@@ -636,10 +654,14 @@ public class WaveManager : MonoBehaviour
             return;
 
         CurrencyManager.Instance.GetWaveStone(waveClearReward);
+        
+        //웨이브보상 사운드 재생
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayRewardSound();
+        }
 
-        Debug.Log(
-            $"[WaveManager] Stage {stageManager.CurrentStage} / Wave {currentWave} 클리어 보상 지급: WaveStone +{waveClearReward}"
-        );
+        Debug.Log($"[WaveManager] Stage {stageManager.CurrentStage} / Wave {currentWave} 클리어 보상 지급: WaveStone +{waveClearReward}");
     }
     
 }

@@ -367,6 +367,31 @@ public class DeckManager : SingletonBase<DeckManager>
         return (int[])slots.Clone();
     }
 
+    // 특정 덱의 빈 슬롯(-1 또는 0 이하) 개수 계산 및 음수 방어
+    public int GetEmptySlotCount(DeckType deckType)
+    {
+        int[] slots = GetInternalSlots(deckType);
+        int capacity = GetDeckCapacity(deckType);
+        if (slots == null || slots.Length == 0) return capacity;
+
+        int emptyCount = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] <= 0)
+            {
+                emptyCount++;
+            }
+        }
+
+        return Mathf.Clamp(emptyCount, 0, capacity);
+    }
+
+    // 레이드 1팀 및 2팀의 잔여 빈 슬롯 총합 반환
+    public int RaidTotalEmptySlotCount => GetEmptySlotCount(DeckType.Raid1) + GetEmptySlotCount(DeckType.Raid2);
+
+    // 레이드 덱 전체(16명) 완편성 여부 반환
+    public bool IsRaidDeckFullyEquipped => RaidTotalEmptySlotCount == 0;
+
     // 특정 유닛(정수 ID)이 지정 덱에 편성되어 있는지 확인하고 슬롯 인덱스를 반환
     public bool IsUnitInDeck(DeckType deckType, int unitId, out int slotIndex)
     {
@@ -396,12 +421,18 @@ public class DeckManager : SingletonBase<DeckManager>
 
     #region 덱 조작 및 편집 API (Command APIs)
 
-    // 특정 덱의 지정 슬롯에 유닛 장착 (동일 덱 내 중복 및 레이드 1팀/2팀 간 상호 중복 방지)
+    // 특정 덱의 지정 슬롯에 유닛 장착 (미보유 유닛 방어, 동일 덱 내 중복 및 레이드 1팀/2팀 간 상호 중복 방지)
     public bool SetSlot(DeckType deckType, int slotIndex, int unitId)
     {
         int[] slots = GetInternalSlots(deckType);
         if (slotIndex < 0 || slotIndex >= slots.Length || unitId <= 0)
         {
+            return false;
+        }
+
+        if (CollectionDataProvider.Instance != null && !CollectionDataProvider.Instance.IsUnitOwned(unitId))
+        {
+            Debug.LogWarning($"[DeckManager] 미보유 유닛(ID: {unitId})은 덱에 편성할 수 없습니다.");
             return false;
         }
 
@@ -436,11 +467,17 @@ public class DeckManager : SingletonBase<DeckManager>
         return SetSlot(deckType, slotIndex, unitId);
     }
 
-    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착 (레이드 1팀/2팀 간 상호 중복 방지 포함)
+    // 덱의 첫 번째 빈 슬롯에 유닛 자동 장착 (미보유 유닛 방어, 레이드 1팀/2팀 간 상호 중복 방지 포함)
     public bool TryAddUnitToDeck(DeckType deckType, int unitId, out int assignedSlotIndex)
     {
         assignedSlotIndex = -1;
         if (unitId <= 0) return false;
+
+        if (CollectionDataProvider.Instance != null && !CollectionDataProvider.Instance.IsUnitOwned(unitId))
+        {
+            Debug.LogWarning($"[DeckManager] 미보유 유닛(ID: {unitId})은 덱에 편성할 수 없습니다.");
+            return false;
+        }
 
         // 레이드 덱의 경우 1팀과 2팀 간 캐릭터 중복을 방지하기 위해 반대편 레이드 덱에서 자동 해제
         if (deckType == DeckType.Raid1)
@@ -585,12 +622,10 @@ public class DeckManager : SingletonBase<DeckManager>
     public bool SetSlot(int slotIndex, int unitId) => SetSlot(DeckType.Normal, slotIndex, unitId);
     public bool RemoveSlot(int slotIndex) => RemoveSlot(DeckType.Normal, slotIndex);
     public bool RemoveUnit(int unitId) => RemoveUnit(DeckType.Normal, unitId);
-    public bool RemoveUnit(string unitIdStr) => RemoveUnit(DeckType.Normal, unitIdStr);
     public bool SwapSlots(int slotIndexA, int slotIndexB) => SwapSlots(DeckType.Normal, slotIndexA, slotIndexB);
     public bool ClearDeck() => ClearDeck(DeckType.Normal);
     public int[] GetDeckSlotsCopy() => GetDeckSlotsCopy(DeckType.Normal);
     public bool IsInDeck(int unitId, out int slotIndex) => IsUnitInDeck(DeckType.Normal, unitId, out slotIndex);
-    public bool IsInDeck(string unitIdStr, out int slotIndex) => IsUnitInDeck(DeckType.Normal, unitIdStr, out slotIndex);
 
     #endregion
 

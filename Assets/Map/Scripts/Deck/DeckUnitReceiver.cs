@@ -13,6 +13,13 @@ public class DeckUnitReceiver : MonoBehaviour
     [Header("재소환 쿨타임 설정")]
     [SerializeField, Min(0f)] private float respawnCooldown = 5.0f;
     
+    [Header("소환 딜레이 설정")]
+    [Tooltip("맵 생성/진입 후 초기 소환 개시까지의 딜레이(초)")]
+    [SerializeField, Min(0f)] private float initialSpawnDelay = 0.5f;
+
+    [Tooltip("유닛 1기 소환 성공 후 다음 유닛 소환 시도까지의 텀(초)")]
+    [SerializeField, Min(0f)] private float spawnInterval = 0.5f;
+    
     [SerializeField] private MapGenerator mapGenerator;
     
     private readonly List<UnitDataSO> deckUnits = new List<UnitDataSO>();
@@ -31,7 +38,9 @@ public class DeckUnitReceiver : MonoBehaviour
     private readonly HashSet<string> coolingDownUnitIds = new HashSet<string>();
     private readonly Dictionary<string, Coroutine> respawnCoroutines = new Dictionary<string, Coroutine>();
     
-    private bool isCheckingWaitingUnits;
+    private Coroutine initialSpawnRoutine;
+    private Coroutine spawnSequenceRoutine;
+    private bool isSpawningSequence;
 
     private void OnEnable()
     {
@@ -62,7 +71,8 @@ public class DeckUnitReceiver : MonoBehaviour
 
         if (mapGenerator.IsMapGenerated)
         {
-            SpawnCurrentDeck();
+            if (initialSpawnRoutine != null) StopCoroutine(initialSpawnRoutine);
+            initialSpawnRoutine = StartCoroutine(DelayedInitialSpawnRoutine());
         }
     }
 
@@ -88,24 +98,19 @@ public class DeckUnitReceiver : MonoBehaviour
         TrySpawnWaitingDeckUnits();
     }
 
+    // 덱 변경 이벤트 콜백
     private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
     {
-        //새덱의 UnitID 목록 만들기
         HashSet<string> newDeckUnitIds = new HashSet<string>();
 
-        //찾기
         for (int i = 0; i < evt.activeUnits.Count; i++)
         {
             UnitDataSO unitData = evt.activeUnits[i].unitData;
-
-            if (unitData == null) continue;
-
+            if (unitData == null || string.IsNullOrEmpty(unitData.UnitId)) continue;
             newDeckUnitIds.Add(unitData.UnitId);
         }
 
-        // 유닛 찾기
         List<string> removeUnitIds = new List<string>();
-        
         foreach (string spawnedUnitId in spawnedUnitIds)
         {
             if (!newDeckUnitIds.Contains(spawnedUnitId))
@@ -120,25 +125,14 @@ public class DeckUnitReceiver : MonoBehaviour
         }
 
         UpdateDeckUnits(evt.activeUnits);
-
-        for (int i = 0; i < deckUnits.Count; i++)
-        {
-            UnitDataSO unitData = deckUnits[i];
-
-            if (unitData == null) continue;
-
-            if (!spawnedUnitIds.Contains(unitData.UnitId))
-            {
-                SpawnDeckUnit(unitData);
-            }
-        }
+        TrySpawnWaitingDeckUnits();
     }
     
+    // 소환된 유닛 필드에서 제거
     private void RemoveSpawnedUnit(string unitId)
     {
         if (string.IsNullOrEmpty(unitId)) return;
 
-        // 점유 중이던 타일 해제
         if (spawnedUnitTiles.TryGetValue(unitId, out TileNode occupiedTile))
         {
             if (occupiedTile != null)
@@ -149,7 +143,6 @@ public class DeckUnitReceiver : MonoBehaviour
             spawnedUnitTiles.Remove(unitId);
         }
 
-        // 실제 필드 유닛 제거 및 이벤트 구독 해제
         if (spawnedUnits.TryGetValue(unitId, out UnitRuntimeState unitState))
         {
             if (unitState != null)
@@ -168,7 +161,6 @@ public class DeckUnitReceiver : MonoBehaviour
             spawnedUnits.Remove(unitId);
         }
 
-        // 필드에 존재 중이라는 기록 제거 및 진행 중인 쿨타임 코루틴 정리
         spawnedUnitIds.Remove(unitId);
         if (respawnCoroutines.TryGetValue(unitId, out Coroutine routine) && routine != null)
         {
@@ -177,40 +169,47 @@ public class DeckUnitReceiver : MonoBehaviour
         respawnCoroutines.Remove(unitId);
         coolingDownUnitIds.Remove(unitId);
 
+        PublishFieldUnitCount();
         Debug.Log($"[DeckUnitReceiver] 덱 변경으로 유닛 제거: {unitId}");
     }
 
+    // 덱 유닛 목록 갱신 (중복 유닛 적재 방지)
     private void UpdateDeckUnits(IReadOnlyList<DeckSlotUnitEntry> units)
     {
         deckUnits.Clear();
+        HashSet<string> addedIds = new HashSet<string>();
 
         for (int i = 0; i < units.Count; i++)
         {
             UnitDataSO unitData = units[i].unitData;
 
-            if (unitData == null) continue;
+            if (unitData == null || string.IsNullOrEmpty(unitData.UnitId)) continue;
             
-            deckUnits.Add(unitData);
+            if (addedIds.Add(unitData.UnitId))
+            {
+                deckUnits.Add(unitData);
+            }
         }
     }
 
-    private void SpawnDeckUnit(UnitDataSO unitData)
+    // 단일 유닛 소환 처리
+    private bool SpawnDeckUnit(UnitDataSO unitData)
     {
-        // 1. 유효성 및 맵/프리팹 참조 검증
-        if (unitData == null) return;
-        if (unitData.UnitPrefab == null) return;
-        if (mapGenerator == null) return;
+        if (unitData == null || unitData.UnitPrefab == null || mapGenerator == null || mapGenerator.MapRenderer == null)
+        {
+            return false;
+        }
 
-        Debug.Log(
-            $"[DeckUnitReceiver] 실제 소환: " +
-            $"{unitData.DisplayName} / {unitData.UnitId}"
-        );
-        
-        // 2. 필드 최대 생존 유닛 수(10기) 및 유닛 중복 소환 검사
-        if (spawnedUnitIds.Count >= MaxFieldUnitCount) return;
-        if (spawnedUnitIds.Contains(unitData.UnitId)) return;
+        if (spawnedUnitIds.Count >= MaxFieldUnitCount)
+        {
+            return false;
+        }
 
-        // 3. 유닛 배치 속성(Placement)에 따른 타일 타입 선정
+        if (spawnedUnitIds.Contains(unitData.UnitId))
+        {
+            return false;
+        }
+
         TileType targetTileType;
         switch (unitData.Placement)
         {
@@ -223,38 +222,37 @@ public class DeckUnitReceiver : MonoBehaviour
                 break;
 
             case UnitPlacement.GroundAndHighGround:
-                targetTileType = Random.value > 0.5f
-                    ? TileType.Path
-                    : TileType.HighGround;
+                targetTileType = Random.value > 0.5f ? TileType.Path : TileType.HighGround;
                 break;
 
             default:
-                return;
+                return false;
         }
 
-        // 4. 배치 가능한 빈 타일 검색
         TileNode targetTile = mapGenerator.FindRandomDeployableTile(targetTileType);
-        if (targetTile == null) return;
+        if (targetTile == null && unitData.Placement == UnitPlacement.GroundAndHighGround)
+        {
+            TileType fallbackType = (targetTileType == TileType.Path) ? TileType.HighGround : TileType.Path;
+            targetTile = mapGenerator.FindRandomDeployableTile(fallbackType);
+        }
+
+        if (targetTile == null)
+        {
+            return false;
+        }
         
         if (CurrencyManager.Instance == null)
         {
-            Debug.LogWarning("[DeckUnitReceiver] CurrencyManager.Instance가 없습니다.");
-            return;
+            return false;
         }
 
         int summonCost = unitData.SummonCost;
 
-        // 5. DP 잔여량 사전 검증 (HasDpCost)
         if (!CurrencyManager.Instance.HasDpCost(summonCost))
         {
-            Debug.Log(
-                $"[DeckUnitReceiver] DP 부족 - " +
-                $"{unitData.DisplayName} 필요 DP: {summonCost}"
-            );
-            return;
+            return false;
         }
         
-        // 6. 타일 위치 기반 월드 좌표 산출 및 고지대/지상 높이 오프셋 적용
         Vector3 worldPosition = mapGenerator.MapRenderer.GridToWorld(targetTile.GridPosition);
         if (targetTile.TileType == TileType.HighGround)
         {
@@ -265,7 +263,6 @@ public class DeckUnitReceiver : MonoBehaviour
             worldPosition.y += groundUnitHeight;
         }
 
-        // 7. 유닛 프리팹 인스턴스화
         GameObject instance = Instantiate(
             unitData.UnitPrefab,
             worldPosition,
@@ -274,14 +271,12 @@ public class DeckUnitReceiver : MonoBehaviour
 
         UnitRuntimeState runtimeState = instance.GetComponent<UnitRuntimeState>();
 
-        // 컴포넌트 부재 시 안전하게 인스턴스만 파괴하고 DP 차감 없이 즉시 중단
         if (runtimeState == null)
         {
             Destroy(instance);
-            return;
+            return false;
         }
 
-        // 8. 런타임 상태 및 그리드 좌표 초기화
         runtimeState.InitializeRuntime();
 
         if (runtimeState.GridPosition != null)
@@ -293,21 +288,17 @@ public class DeckUnitReceiver : MonoBehaviour
             );
         }
 
-        // 9. 유닛 소환 및 초기화 완료 후 DP 후차감 (TrySpendDpCost)
         if (!CurrencyManager.Instance.TrySpendDpCost(summonCost))
         {
-            // 만약 그 사이 DP가 차감되어 부족해진 예외 상황 발생 시 롤백 파괴
             Destroy(instance);
-            return;
+            return false;
         }
 
-        // 10. 타일 점유 활성화 및 컬렉션 등록
         targetTile.SetOccupied(true);
         spawnedUnitIds.Add(unitData.UnitId);
         spawnedUnits[unitData.UnitId] = runtimeState;
         spawnedUnitTiles[unitData.UnitId] = targetTile;
 
-        // 11. 사망 이벤트 구독 등록
         if (runtimeState.Health != null)
         {
             healthToUnitId[runtimeState.Health] = unitData.UnitId;
@@ -317,18 +308,18 @@ public class DeckUnitReceiver : MonoBehaviour
             runtimeState.Health.OnDied += HandleUnitDied;
         }
 
-        // 12. 정상 소환 완료 및 소모된 DP 로그 출력
+        PublishFieldUnitCount();
         Debug.Log($"[DeckUnitReceiver] 유닛 소환 완료: {unitData.DisplayName} | 소모 DP: {summonCost} (남은 DP: {CurrencyManager.Instance.DpCost})");
+        return true;
     }
 
-    // 아군 유닛 사망 시 디스폰 및 개별 재소환 쿨타임 시작 처리
+    // 유닛 사망 이벤트 콜백
     private void HandleUnitDied(CombatHealth health)
     {
         if (health == null) return;
 
         health.OnDied -= HandleUnitDied;
 
-        // 1. 점유 타일 해제
         if (healthToTileNode.TryGetValue(health, out TileNode occupiedTile))
         {
             if (occupiedTile != null)
@@ -338,7 +329,6 @@ public class DeckUnitReceiver : MonoBehaviour
             healthToTileNode.Remove(health);
         }
 
-        // 2. 소환 컬렉션 및 매핑 정보 정리
         string deadUnitId = null;
         if (healthToUnitId.TryGetValue(health, out string unitId))
         {
@@ -349,7 +339,6 @@ public class DeckUnitReceiver : MonoBehaviour
             healthToUnitId.Remove(health);
         }
 
-        // 3. 이펙트 회수 및 게임 오브젝트 파괴
         UnitRuntimeState runtimeState = health.GetComponent<UnitRuntimeState>();
         if (runtimeState != null)
         {
@@ -361,7 +350,8 @@ public class DeckUnitReceiver : MonoBehaviour
             Destroy(health.gameObject);
         }
 
-        // 4. 사망 유닛 개별 재소환 쿨타임 타이머 코루틴 가동
+        PublishFieldUnitCount();
+
         if (!string.IsNullOrEmpty(deadUnitId))
         {
             if (respawnCoroutines.TryGetValue(deadUnitId, out Coroutine existingRoutine) && existingRoutine != null)
@@ -381,14 +371,25 @@ public class DeckUnitReceiver : MonoBehaviour
         coolingDownUnitIds.Remove(unitId);
         respawnCoroutines.Remove(unitId);
 
-        // 쿨타임 종료 후 덱 우선순위에 맞게 소환 시도
         TrySpawnWaitingDeckUnits();
     }
 
-    // 필드의 모든 아군 유닛 일괄 정리 및 점유 해제 (패배 또는 맵 초기화용)
+    // 필드 유닛 일괄 정리
     public void ClearAllUnits()
     {
-        // 1. 진행 중인 모든 재소환 쿨타임 코루틴 중단
+        if (initialSpawnRoutine != null)
+        {
+            StopCoroutine(initialSpawnRoutine);
+            initialSpawnRoutine = null;
+        }
+
+        if (spawnSequenceRoutine != null)
+        {
+            StopCoroutine(spawnSequenceRoutine);
+            spawnSequenceRoutine = null;
+        }
+        isSpawningSequence = false;
+
         foreach (var routine in respawnCoroutines.Values)
         {
             if (routine != null)
@@ -399,7 +400,6 @@ public class DeckUnitReceiver : MonoBehaviour
         respawnCoroutines.Clear();
         coolingDownUnitIds.Clear();
 
-        // 2. 생존 유닛 이벤트 해제 및 오브젝트 파괴
         foreach (var pair in spawnedUnits)
         {
             if (pair.Value != null)
@@ -418,7 +418,6 @@ public class DeckUnitReceiver : MonoBehaviour
             }
         }
 
-        // 3. 점유 타일 해제
         foreach (var pair in spawnedUnitTiles)
         {
             if (pair.Value != null)
@@ -427,22 +426,36 @@ public class DeckUnitReceiver : MonoBehaviour
             }
         }
 
-        // 4. 컬렉션 일괄 초기화
         spawnedUnitIds.Clear();
         spawnedUnits.Clear();
         spawnedUnitTiles.Clear();
         healthToUnitId.Clear();
         healthToTileNode.Clear();
+
+        PublishFieldUnitCount();
     }
     
-    // 맵 생성 및 재생성 완료 시 새 맵 타일 구조에 맞추어 아군 유닛 재배치
+    // 맵 생성 완료 이벤트 콜백
     private void HandleMapGenerated()
     {
         ClearAllUnits();
+
+        if (initialSpawnRoutine != null)
+        {
+            StopCoroutine(initialSpawnRoutine);
+        }
+        initialSpawnRoutine = StartCoroutine(DelayedInitialSpawnRoutine());
+    }
+
+    // 맵 생성 후 지연 대기 및 소환 시작 코루틴
+    private IEnumerator DelayedInitialSpawnRoutine()
+    {
+        yield return new WaitForSeconds(initialSpawnDelay);
         SpawnCurrentDeck();
+        initialSpawnRoutine = null;
     }
     
-    //덱 읽고 소환
+    // 현재 덱 유닛 목록 갱신 및 소환 시작
     private void SpawnCurrentDeck()
     {
         if (DeckManager.Instance == null) return;
@@ -450,43 +463,65 @@ public class DeckUnitReceiver : MonoBehaviour
         List<DeckSlotUnitEntry> currentUnits =
             DeckManager.Instance.GetActiveDeckSlotEntries(DeckType.Normal);
 
-        Debug.Log(
-            $"[DeckUnitReceiver] 현재 덱 유닛 수: {currentUnits.Count}"
-        );
-
         UpdateDeckUnits(currentUnits);
-
-        for (int i = 0; i < deckUnits.Count; i++)
-        {
-            SpawnDeckUnit(deckUnits[i]);
-        }
+        TrySpawnWaitingDeckUnits();
     }
     
+    // 대기 유닛 순차 소환 코루틴 가동
     private void TrySpawnWaitingDeckUnits()
     {
-        if (isCheckingWaitingUnits)
-            return;
+        if (isSpawningSequence) return;
 
-        isCheckingWaitingUnits = true;
+        if (spawnSequenceRoutine != null)
+        {
+            StopCoroutine(spawnSequenceRoutine);
+        }
+        spawnSequenceRoutine = StartCoroutine(SpawnSequenceRoutine());
+    }
+
+    // 0.5초 간격 유닛 순차 소환 코루틴
+    private IEnumerator SpawnSequenceRoutine()
+    {
+        isSpawningSequence = true;
 
         for (int i = 0; i < deckUnits.Count; i++)
         {
+            if (spawnedUnitIds.Count >= MaxFieldUnitCount)
+            {
+                break;
+            }
+
             UnitDataSO unitData = deckUnits[i];
 
-            if (unitData == null)
+            if (unitData == null || string.IsNullOrEmpty(unitData.UnitId))
+            {
                 continue;
+            }
 
-            // 이미 필드에 있으면 건너뜀
             if (spawnedUnitIds.Contains(unitData.UnitId))
+            {
                 continue;
+            }
 
-            // 쿨타임 진행 중인 유닛은 대기
             if (coolingDownUnitIds.Contains(unitData.UnitId))
+            {
                 continue;
+            }
 
-            SpawnDeckUnit(unitData);
+            bool spawned = SpawnDeckUnit(unitData);
+            if (spawned)
+            {
+                yield return new WaitForSeconds(spawnInterval);
+            }
         }
 
-        isCheckingWaitingUnits = false;
+        isSpawningSequence = false;
+        spawnSequenceRoutine = null;
+    }
+
+    // 필드 소환 유닛 수 변경 이벤트 발행
+    private void PublishFieldUnitCount()
+    {
+        EventBus.Publish(new FieldUnitCountChangedEvent(spawnedUnitIds.Count, MaxFieldUnitCount));
     }
 }

@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-// 캐릭터 보관함 팝업 UI 및 유닛 컬렉션 조회/일반 덱 장착 해제를 총괄하는 윈도우 컨트롤러
+// 캐릭터 보관함 팝업 UI 및 유닛 컬렉션 조회/장비창 오픈 제어 컴포넌트
 public class UICollectionWindow : MonoBehaviour
 {
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- 헤더 UI 요소 ---")]
     [Tooltip("상단 보유 유닛 카운트/정보 텍스트")]
@@ -44,19 +44,10 @@ public class UICollectionWindow : MonoBehaviour
 
     #region 내부 필드
 
-    // 보관함 전체 유닛 뷰모델 목록
     private List<CollectionItemViewModel> _allViewModels = new List<CollectionItemViewModel>();
-
-    // 현재 선택된 유닛 뷰모델 캐시
     private CollectionItemViewModel _selectedViewModel;
-
-    // 현재 선택된 유닛 식별 키 (페이지 전환 시에도 선택 유지를 위함)
     private string _selectedUnitKey = string.Empty;
-
-    // 페이지네이션 현재 페이지 인덱스 (0-based)
     private int _currentPage = 0;
-
-    // 1페이지당 노출 카드 수량 (5열 단일 행 고정)
     private const int ItemsPerPage = 5;
 
     #endregion
@@ -66,12 +57,10 @@ public class UICollectionWindow : MonoBehaviour
     // UI 버튼 이벤트 바인딩 및 카드 슬롯 초기화
     private void Awake()
     {
-        // 팝업 닫기 및 페이지 이동 버튼 리스너 바인딩
         if (closeButton != null) closeButton.onClick.AddListener(CloseWindow);
         if (prevPageButton != null) prevPageButton.onClick.AddListener(OnPrevPageClicked);
         if (nextPageButton != null) nextPageButton.onClick.AddListener(OnNextPageClicked);
 
-        // 장비 관리 버튼 리스너 등록
         if (equipActionButton != null)
         {
             equipActionButton.onClick.AddListener(OnEquipActionButtonClicked);
@@ -82,7 +71,6 @@ public class UICollectionWindow : MonoBehaviour
             }
         }
 
-        // 5개 카드 슬롯에 클릭 콜백 바인딩
         for (int i = 0; i < cardSlots.Length; i++)
         {
             if (cardSlots[i] != null)
@@ -99,11 +87,10 @@ public class UICollectionWindow : MonoBehaviour
         EventBus.Subscribe<NormalDeckChangedEvent>(OnDeckChanged);
         EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
 
-        // 창이 활성화될 때 최신 유닛 정보 및 덱 편성 상태로 UI를 갱신
         RefreshCollectionUI();
     }
 
-    // 이벤트 구독 해제 연산 (메모리 누수 방지)
+    // 전역 이벤트 구독 해제
     private void OnDisable()
     {
         EventBus.Unsubscribe<GachaDrawCompletedEvent>(OnGachaDrawCompleted);
@@ -111,19 +98,19 @@ public class UICollectionWindow : MonoBehaviour
         EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
     }
 
-    // 가챠 완료 시 UI 갱신
+    // 가챠 완료 이벤트 수신 처리
     private void OnGachaDrawCompleted(GachaDrawCompletedEvent evt)
     {
         RefreshCollectionUI();
     }
 
-    // 일반 덱 변경 시 UI 갱신 (덱 뱃지 및 액션 버튼 상태 동기화)
+    // 일반 덱 변경 이벤트 수신 처리
     private void OnDeckChanged(NormalDeckChangedEvent evt)
     {
         RefreshCollectionUI();
     }
 
-    // 레이드 덱 변경 시 UI 갱신
+    // 레이드 덱 변경 이벤트 수신 처리
     private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
         RefreshCollectionUI();
@@ -133,23 +120,19 @@ public class UICollectionWindow : MonoBehaviour
 
     #region 카드 선택 및 덱 조작 로직
 
-    // 카드 슬롯 클릭 이벤트 수신 핸들러
+    // 카드 슬롯 클릭 이벤트 수신 처리
     private void OnCardSlotClicked(CollectionItemViewModel clickedViewModel)
     {
         if (clickedViewModel == null) return;
 
-        // 선택된 유닛 정보 갱신
         _selectedViewModel = clickedViewModel;
         _selectedUnitKey = clickedViewModel.UnitId;
 
-        // 현재 화면에 노출된 슬롯들의 선택 하이라이트 동기화
         UpdateCardSlotsSelection();
-
-        // 선택된 유닛의 상태에 맞추어 장비 관리 버튼 상태 갱신
         UpdateEquipActionButtonState();
     }
 
-    // 장비 관리 버튼 클릭 시 유효성 검사 및 장비 UI 오픈 처리
+    // 장비 관리 버튼 클릭 처리
     private void OnEquipActionButtonClicked()
     {
         if (_selectedViewModel == null)
@@ -164,18 +147,29 @@ public class UICollectionWindow : MonoBehaviour
             return;
         }
 
-        if (EquipmentManager.Instance != null)
+        if (MainLobbyUI.Instance != null)
         {
-            EquipmentManager.Instance.SetCurrentUnit(_selectedViewModel.UnitId);
+            MainLobbyUI.Instance.OpenEquipmentPopup(_selectedViewModel.UnitId);
         }
-
-        if (equipmentInventoryPanel != null)
+        else if (InventoryUI.Instance != null)
         {
-            equipmentInventoryPanel.SetActive(true);
+            InventoryUI.Instance.OpenEquipment(_selectedViewModel.UnitId);
+        }
+        else
+        {
+            if (EquipmentManager.Instance != null)
+            {
+                EquipmentManager.Instance.SetCurrentUnit(_selectedViewModel.UnitId);
+            }
+
+            if (equipmentInventoryPanel != null)
+            {
+                equipmentInventoryPanel.SetActive(true);
+            }
         }
     }
 
-    // 유닛 선택 상태에 따른 장비 버튼 활성화 및 텍스트 갱신 처리
+    // 유닛 선택 상태에 따른 장비 버튼 상태 갱신
     private void UpdateEquipActionButtonState()
     {
         if (equipActionButton == null) return;
@@ -198,7 +192,7 @@ public class UICollectionWindow : MonoBehaviour
         }
     }
 
-    // 카드 슬롯들의 선택 인디케이터 시각화 갱신
+    // 카드 슬롯 선택 하이라이트 동기화
     private void UpdateCardSlotsSelection()
     {
         for (int i = 0; i < cardSlots.Length; i++)
@@ -206,7 +200,6 @@ public class UICollectionWindow : MonoBehaviour
             UICollectionItemCard slot = cardSlots[i];
             if (slot == null || slot.CurrentViewModel == null) continue;
 
-            // 현재 선택된 유닛 식별자와 일치하는 카드만 하이라이트 활성화
             bool isSelected = !string.IsNullOrEmpty(_selectedUnitKey) && slot.CurrentViewModel.UnitId == _selectedUnitKey;
             slot.SetSelected(isSelected);
         }
@@ -216,12 +209,11 @@ public class UICollectionWindow : MonoBehaviour
 
     #region UI 갱신 연산
 
-    // 보관함 UI 및 슬롯 데이터 갱신
+    // 보관함 UI 및 슬롯 데이터 전체 갱신
     public void RefreshCollectionUI()
     {
         if (CollectionDataProvider.Instance == null) return;
 
-        // 최신 뷰모델 목록 가져오기 (일반 덱 장착 정보 포함)
         _allViewModels = CollectionDataProvider.Instance.GetCollectionViewModels(DeckType.Normal);
 
         int ownedCount = 0;
@@ -230,26 +222,21 @@ public class UICollectionWindow : MonoBehaviour
             if (_allViewModels[i].IsOwned) ownedCount++;
         }
 
-        // 상단 보유 현황 텍스트 갱신
         if (headerInfoText != null)
         {
             headerInfoText.text = $"OWNED OPERATORS {ownedCount} / {_allViewModels.Count}";
         }
 
-        // 이전에 선택된 유닛이 있다면 최신 데이터로 동기화
         if (!string.IsNullOrEmpty(_selectedUnitKey))
         {
             _selectedViewModel = _allViewModels.Find(vm => vm.UnitId == _selectedUnitKey);
         }
 
-        // 현재 페이지 카드 슬롯 렌더링
         RenderCurrentPage();
-
-        // 장비 관리 버튼 상태 동기화
         UpdateEquipActionButtonState();
     }
 
-    // 현재 페이지 슬롯 렌더링
+    // 현재 페이지 카드 슬롯 목록 렌더링
     private void RenderCurrentPage()
     {
         int totalItems = _allViewModels.Count;
@@ -279,7 +266,6 @@ public class UICollectionWindow : MonoBehaviour
                 slot.gameObject.SetActive(true);
                 slot.Bind(vm);
 
-                // 선택 상태 동기화
                 bool isSelected = !string.IsNullOrEmpty(_selectedUnitKey) && vm.UnitId == _selectedUnitKey;
                 slot.SetSelected(isSelected);
             }
@@ -294,7 +280,7 @@ public class UICollectionWindow : MonoBehaviour
 
     #region 페이지 버튼 이벤트
 
-    // 이전 페이지 이동 처리
+    // 이전 페이지 이동 요청 처리
     private void OnPrevPageClicked()
     {
         if (_currentPage > 0)
@@ -304,7 +290,7 @@ public class UICollectionWindow : MonoBehaviour
         }
     }
 
-    // 다음 페이지 이동 처리
+    // 다음 페이지 이동 요청 처리
     private void OnNextPageClicked()
     {
         int maxPages = Mathf.CeilToInt((float)_allViewModels.Count / ItemsPerPage);
@@ -315,7 +301,7 @@ public class UICollectionWindow : MonoBehaviour
         }
     }
 
-    // 창 닫기 연산
+    // 창 닫기 처리
     public void CloseWindow()
     {
         gameObject.SetActive(false);

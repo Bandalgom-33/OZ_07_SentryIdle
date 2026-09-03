@@ -6,24 +6,17 @@ using UnityEngine.UI;
 // 업그레이드 화면 표시, 슬롯별 레벨/비용 갱신 및 강화 요청을 중계하는 UI 컨트롤러
 public class UpgradeUi : MonoBehaviour
 {
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- 상단 UI 요소 ---")]
     [Tooltip("상단 보유 골드 표시 텍스트")]
     [SerializeField] private TMP_Text availableGoldText;
 
+    [Tooltip("상단 보유 다이아 표시 텍스트")]
+    [SerializeField] private TMP_Text availableDiamondText;
+
     [Tooltip("업그레이드 패널 닫기 버튼")]
     [SerializeField] private Button exitButton;
-
-    [Header("--- 치트 및 테스트 UI ---")]
-    [Tooltip("클릭 시 대량의 치트 골드 및 다이아를 즉시 지급받는 버튼")]
-    [SerializeField] private Button cheatGoldButton;
-
-    [Tooltip("치트 골드 1회 지급 수량 (기본 900경)")]
-    [SerializeField] private long cheatGoldAmount = 9_000_000_000_000_000_000L;
-
-    [Tooltip("치트 다이아 1회 지급 수량 (기본 100만)")]
-    [SerializeField] private long cheatDiamondAmount = 1_000_000L;
 
     [Header("--- 업그레이드 슬롯 리스트 ---")]
     [Tooltip("화면에 노출할 업그레이드 슬롯 컴포넌트 배열")]
@@ -47,11 +40,6 @@ public class UpgradeUi : MonoBehaviour
             exitButton.onClick.AddListener(ClosePanel);
         }
 
-        if (cheatGoldButton != null)
-        {
-            cheatGoldButton.onClick.AddListener(OnCheatGoldClicked);
-        }
-
         if (upgradeSlots != null)
         {
             for (int i = 0; i < upgradeSlots.Length; i++)
@@ -64,51 +52,37 @@ public class UpgradeUi : MonoBehaviour
         }
     }
 
-    // 이벤트 액션 구독 및 슬롯 갱신
+    // 전역 이벤트 구독 및 슬롯 UI 전체 갱신
     private void OnEnable()
     {
         CurrencyManager.OnGoldChange += OnGoldAmountChanged;
-        CurrencyManager.OnDiamondChange += OnOtherCurrencyChanged;
+        CurrencyManager.OnDiamondChange += OnDiamondAmountChanged;
         CurrencyManager.OnDpCostChange += OnDpCostAmountChanged;
         UpgradeManager.OnUpgradeCompleted += RefreshAllSlots;
 
         RefreshAllSlots();
     }
 
-    // 이벤트 구독 해제 연산
+    // 전역 이벤트 구독 해제
     private void OnDisable()
     {
         CurrencyManager.OnGoldChange -= OnGoldAmountChanged;
-        CurrencyManager.OnDiamondChange -= OnOtherCurrencyChanged;
+        CurrencyManager.OnDiamondChange -= OnDiamondAmountChanged;
         CurrencyManager.OnDpCostChange -= OnDpCostAmountChanged;
         UpgradeManager.OnUpgradeCompleted -= RefreshAllSlots;
     }
 
-    // 다이아 변경 시 슬롯 UI 갱신
-    private void OnOtherCurrencyChanged(long amount)
+    // 다이아 수량 변경 이벤트 콜백
+    private void OnDiamondAmountChanged(long diamond)
     {
+        UpdateAvailableDiamondText(diamond);
         RefreshAllSlots();
     }
 
-    // DP 코스트 변경 시 슬롯 UI 갱신
+    // DP 코스트 변경 이벤트 콜백
     private void OnDpCostAmountChanged(int amount)
     {
         RefreshAllSlots();
-    }
-
-    #endregion
-
-    #region 치트 골드 지급
-
-    // 치트 골드 및 다이아 즉시 획득 처리
-    public void OnCheatGoldClicked()
-    {
-        if (CurrencyManager.Instance != null)
-        {
-            CurrencyManager.Instance.GetGold(cheatGoldAmount, applyModifiers: false);
-            CurrencyManager.Instance.GetDiamond(cheatDiamondAmount, applyModifiers: false);
-            Debug.Log($"[UpgradeUi] 치트 재화 지급 완료: +{cheatGoldAmount:N0} Gold, +{cheatDiamondAmount:N0} Diamond");
-        }
     }
 
     #endregion
@@ -125,7 +99,7 @@ public class UpgradeUi : MonoBehaviour
 
     #region UI 갱신 로직
 
-    // 골드 잔액 변경 시 UI 갱신
+    // 골드 수량 변경 이벤트 콜백
     private void OnGoldAmountChanged(long gold)
     {
         UpdateAvailableGoldText(gold);
@@ -137,15 +111,27 @@ public class UpgradeUi : MonoBehaviour
     {
         if (availableGoldText != null)
         {
-            availableGoldText.text = $"AVAILABLE GOLD {FormatNumber(gold)}";
+            availableGoldText.text = FormatNumber(gold);
         }
     }
 
-    // 전체 슬롯 UI 갱신 연산
+    // 보유 다이아 텍스트 갱신
+    private void UpdateAvailableDiamondText(long diamond)
+    {
+        if (availableDiamondText != null)
+        {
+            availableDiamondText.text = FormatNumber(diamond);
+        }
+    }
+
+    // 전체 슬롯 UI 및 상단 재화 일괄 동기화
     public void RefreshAllSlots()
     {
         long currentGold = CurrencyManager.Instance != null ? CurrencyManager.Instance.Gold : 0;
+        long currentDiamond = CurrencyManager.Instance != null ? CurrencyManager.Instance.Diamond : 0;
+
         UpdateAvailableGoldText(currentGold);
+        UpdateAvailableDiamondText(currentDiamond);
 
         if (upgradeSlots == null || UpgradeManager.Instance == null) return;
 
@@ -176,12 +162,15 @@ public class UpgradeUi : MonoBehaviour
 
             int typeIndex = slot.UpgradeTypeIndex;
             int currentLevel = UpgradeManager.Instance.GetLevelByType(typeIndex);
-            
+            int maxLevel = UpgradeManager.Instance.GetMaxLevelByType(typeIndex);
+            bool isMaxLevel = maxLevel > 0 && currentLevel >= maxLevel;
+
             long availableCurrency = UpgradeManager.Instance.GetAvailableCurrencyForType(typeIndex);
 
             double costOne = UpgradeManager.Instance.GetUpgradeCost(typeIndex, 1);
             double costTen = UpgradeManager.Instance.GetUpgradeCost(typeIndex, 10);
             int maxCount = UpgradeManager.Instance.GetMaxPurchasableCount(typeIndex, availableCurrency);
+            double costMax = maxCount > 0 ? UpgradeManager.Instance.GetUpgradeCost(typeIndex, maxCount) : 0;
 
             string name = typeIndex < statNames.Length ? statNames[typeIndex] : $"STAT {typeIndex + 1:D2}";
             string currentVal = UpgradeManager.Instance.GetStatValue(typeIndex, currentLevel);
@@ -194,19 +183,21 @@ public class UpgradeUi : MonoBehaviour
                 nextVal,
                 costOne,
                 costTen,
+                costMax,
                 maxCount,
-                availableCurrency
+                availableCurrency,
+                isMaxLevel
             );
         }
     }
 
-    // 패널 닫기 연산
+    // 패널 닫기 처리
     public void ClosePanel()
     {
         gameObject.SetActive(false);
     }
 
-    // 숫자 축약 포맷팅 처리
+    // 대용량 숫자 단위 축약 포맷팅
     private string FormatNumber(double value)
     {
         if (value < 1000) return value.ToString("N0");

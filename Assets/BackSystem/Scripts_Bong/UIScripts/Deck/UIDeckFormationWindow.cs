@@ -4,9 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 덱 편성 창 UI 제어 및 일반/레이드 덱 유닛 등록/해제 관리 컴포넌트
 public class UIDeckFormationWindow : MonoBehaviour
 {
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- 헤더 UI 요소 ---")]
     [Tooltip("창 닫기 버튼 (우측 상단 X 버튼)")]
@@ -145,14 +146,14 @@ public class UIDeckFormationWindow : MonoBehaviour
         }
     }
 
-    // 가챠 완료 시 보유 유닛 목록 갱신
+    // 가챠 완료 시 보유 유닛 목록 갱신 처리
     private void OnGachaDrawCompleted(GachaDrawCompletedEvent evt)
     {
         RefreshUnitScrollList();
         UpdateActionButtonState();
     }
 
-    // 데이터 로드 완료 시 전체 UI 갱신
+    // 데이터 로드 완료 이벤트 수신 처리
     private void OnDataLoaded(DataLoadEvent evt)
     {
         RefreshWindowUI();
@@ -162,7 +163,7 @@ public class UIDeckFormationWindow : MonoBehaviour
 
     #region 덱 종류 전환 제어
 
-    // 이전 덱 전환 처리 (Normal -> Raid2 -> Raid1 -> Normal 순환)
+    // 이전 덱 전환 요청 처리
     private void OnPrevDeckClicked()
     {
         _currentDeckType = _currentDeckType switch
@@ -176,7 +177,7 @@ public class UIDeckFormationWindow : MonoBehaviour
         OnDeckTypeChanged();
     }
 
-    // 다음 덱 전환 처리 (Normal -> Raid1 -> Raid2 -> Normal 순환)
+    // 다음 덱 전환 요청 처리
     private void OnNextDeckClicked()
     {
         _currentDeckType = _currentDeckType switch
@@ -218,13 +219,12 @@ public class UIDeckFormationWindow : MonoBehaviour
 
     #region 상단 덱 슬롯 UI 갱신
 
-    // 상단 덱 슬롯 데이터 동기화
+    // 상단 덱 슬롯 데이터 및 타겟 덱 타입 동기화
     private void RefreshTopDeckSlots()
     {
         if (topDeckUI == null || DeckManager.Instance == null) return;
 
-        int[] currentSlots = DeckManager.Instance.GetDeckSlotsCopy(_currentDeckType);
-        topDeckUI.UpdateDeckUI(currentSlots);
+        topDeckUI.SetTargetDeckType(_currentDeckType);
     }
 
     #endregion
@@ -238,7 +238,6 @@ public class UIDeckFormationWindow : MonoBehaviour
 
         _cachedViewModels = CollectionDataProvider.Instance.GetCollectionViewModels(_currentDeckType);
 
-        // 현재 선택된 유닛 뷰모델 최신 데이터 동기화
         if (!string.IsNullOrEmpty(_selectedUnitKey))
         {
             _selectedViewModel = _cachedViewModels.Find(vm => vm.UnitId == _selectedUnitKey);
@@ -246,7 +245,6 @@ public class UIDeckFormationWindow : MonoBehaviour
 
         int totalCount = _cachedViewModels.Count;
 
-        // 필요한 만큼 프리팹 인스턴스 확장 풀링
         while (_spawnedCardPool.Count < totalCount)
         {
             UICollectionItemCard newCard = Instantiate(unitCardPrefab, unitItemContent);
@@ -254,7 +252,6 @@ public class UIDeckFormationWindow : MonoBehaviour
             _spawnedCardPool.Add(newCard);
         }
 
-        // 전체 풀 순회하며 데이터 바인딩 및 활성화
         for (int i = 0; i < _spawnedCardPool.Count; i++)
         {
             UICollectionItemCard card = _spawnedCardPool[i];
@@ -288,7 +285,7 @@ public class UIDeckFormationWindow : MonoBehaviour
         UpdateActionButtonState();
     }
 
-    // 카드 슬롯들의 선택 하이라이트 시각화 동기화
+    // 카드 슬롯들의 선택 하이라이트 동기화
     private void UpdateCardSelectionVisuals()
     {
         for (int i = 0; i < _spawnedCardPool.Count; i++)
@@ -314,12 +311,10 @@ public class UIDeckFormationWindow : MonoBehaviour
         int unitId = UnitIdHelper.ParseUnitId(_selectedViewModel.UnitId);
         if (unitId <= 0) return;
 
-        // 이미 현재 덱에 편성되어 있는 경우 -> 덱에서 해제
         if (_selectedViewModel.IsInDeck)
         {
             DeckManager.Instance.RemoveUnit(_currentDeckType, unitId);
         }
-        // 미편성 상태인 경우 -> 현재 덱의 빈 슬롯에 자동 추가
         else
         {
             bool added = DeckManager.Instance.TryAddUnitToDeck(_currentDeckType, unitId, out int assignedIndex);
@@ -338,12 +333,11 @@ public class UIDeckFormationWindow : MonoBehaviour
         DeckManager.Instance.ClearDeck(_currentDeckType);
     }
 
-    // 선택 유닛 상태에 따른 액션 버튼 인터랙션 및 텍스트 갱신
+    // 선택 유닛 상태에 따른 액션 버튼 상태 및 라벨 갱신
     private void UpdateActionButtonState()
     {
         if (actionButton == null) return;
 
-        // 선택된 유닛이 없거나 미보유 유닛인 경우 비활성화
         if (_selectedViewModel == null || !_selectedViewModel.IsOwned)
         {
             actionButton.interactable = false;
@@ -354,7 +348,6 @@ public class UIDeckFormationWindow : MonoBehaviour
             return;
         }
 
-        // 보유 유닛이 선택된 경우 활성화
         actionButton.interactable = true;
 
         if (actionButtonText != null)
@@ -376,14 +369,10 @@ public class UIDeckFormationWindow : MonoBehaviour
         UpdateActionButtonState();
     }
 
-    // 덱 편성 창 닫기 및 세이브 데이터 디스크 저장
+    // 덱 편성 창 닫기 및 세이브 데이터 저장 처리
     public void CloseWindow()
     {
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.SaveGameData(force: true);
-        }
-
+        EventBus.Publish(new RequestSaveGameEvent(force: true));
         gameObject.SetActive(false);
     }
 

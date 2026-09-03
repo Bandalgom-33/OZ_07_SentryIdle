@@ -119,6 +119,7 @@ public class InGameUI : MonoBehaviour
         EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Subscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
         EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
+        EventBus.Subscribe<FieldUnitCountChangedEvent>(OnFieldUnitCountChanged);
 
         RefreshAllHUD();
     }
@@ -148,6 +149,8 @@ public class InGameUI : MonoBehaviour
         {
             UpdateStageWaveUI(StageProgressManager.Instance.CurrentStage, StageProgressManager.Instance.CurrentWave, StageProgressManager.Instance.WavesPerStage);
         }
+
+        UpdateFieldUnitsUI(0, 10);
     }
 
     // 이벤트 구독 해제 연산
@@ -162,6 +165,13 @@ public class InGameUI : MonoBehaviour
         EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Unsubscribe<SceneLoadCompletedEvent>(OnSceneLoadCompleted);
         EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
+        EventBus.Unsubscribe<FieldUnitCountChangedEvent>(OnFieldUnitCountChanged);
+    }
+
+    // 필드 소환 유닛 수 변경 이벤트 핸들러
+    private void OnFieldUnitCountChanged(FieldUnitCountChangedEvent evt)
+    {
+        UpdateFieldUnitsUI(evt.currentCount, evt.maxCount);
     }
 
     // 씬 로드 완료 이벤트 핸들러

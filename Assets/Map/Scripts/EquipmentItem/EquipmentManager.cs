@@ -23,6 +23,9 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
     [Tooltip("현재 선택된 캐릭터의 이름 텍스트")]
     [SerializeField] private TMP_Text characterNameText;
 
+    [Tooltip("현재 선택된 캐릭터의 설명 또는 장비 스탯 요약 텍스트")]
+    [SerializeField] private TMP_Text characterDescriptionText;
+
     [Tooltip("유닛 초상화 카탈로그 데이터")]
     [SerializeField] private UnitPortraitCatalogSO portraitCatalog;
 
@@ -86,13 +89,27 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
     
     
     
+    // 특정 아이템을 현재 캐릭터에 장착 처리 (인벤토리 1개 차감 및 교체 시 이전 장비 회수)
     public void EquipItem(ItemDataSO itemData)
     {
         if (itemData == null) return;
         if (string.IsNullOrEmpty(currentUnitId)) return;
-        //현재 캐릭터 데이터 가져오기
         if (!characterEquipments.TryGetValue(currentUnitId, out CharacterEquipmentData characterData)) return;
-        
+
+        // 인벤토리 매니저 확인 및 가방 내 아이템 1개 차감 검증
+        InventoryGridManager gridManager = InventoryGridManager.Instance;
+        if (gridManager != null)
+        {
+            if (gridManager.GetItemCount(itemData) < 1)
+            {
+                Debug.LogWarning($"[EquipmentManager] 인벤토리에 {itemData.ItemName}이(가) 없어 장착할 수 없습니다.");
+                return;
+            }
+
+            // 가방에서 1개 차감
+            gridManager.TrySpendItem(itemData, 1);
+        }
+
         ItemDataSO previousItem = null;
 
         switch (itemData.EquipmentType)
@@ -126,53 +143,71 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
                 break;
         }
 
-        if (previousItem != null)
+        // 기존에 장착 중이던 이전 장비가 있었다면 인벤토리에 1개 회수 반환
+        if (previousItem != null && gridManager != null)
         {
-            Debug.Log(
-                $"{previousItem.ItemName} → {itemData.ItemName} 으로 교체"
-            );
+            gridManager.AddItem(previousItem, 1);
+            Debug.Log($"[EquipmentManager] {previousItem.ItemName} → {itemData.ItemName} 으로 교체 (이전 장비 인벤토리 회수)");
         }
         else
         {
-            Debug.Log($"{itemData.ItemName} 장착");
+            Debug.Log($"[EquipmentManager] {itemData.ItemName} 장착 완료");
         }
+
         RecalculateEquipmentStats();
         SaveManager.Instance?.SaveGameData();
     }
-    
+
+    // 특정 부위의 장비 해제 처리 (해제된 장비 인벤토리 회수 반환)
     public void UnequipItem(EquipmentType equipmentType)
     {
         if (string.IsNullOrEmpty(currentUnitId)) return;
+        if (!characterEquipments.TryGetValue(currentUnitId, out CharacterEquipmentData characterData)) return;
 
-        if (!characterEquipments.TryGetValue( currentUnitId, out CharacterEquipmentData characterData)) return;
-        
+        ItemDataSO unequippedItem = null;
+
         switch (equipmentType)
         {
             case EquipmentType.Head:
+                unequippedItem = equippedHead;
                 equippedHead = null;
                 characterData.Head = null;
                 if (headSlot != null) headSlot.SetItem(null);
                 break;
 
             case EquipmentType.Armor:
+                unequippedItem = equippedArmor;
                 equippedArmor = null;
                 characterData.Armor = null;
                 if (armorSlot != null) armorSlot.SetItem(null);
                 break;
 
             case EquipmentType.Weapon:
+                unequippedItem = equippedWeapon;
                 equippedWeapon = null;
                 characterData.Weapon = null;
                 if (weaponSlot != null) weaponSlot.SetItem(null);
                 break;
 
             case EquipmentType.Accessory:
+                unequippedItem = equippedAccessory;
                 equippedAccessory = null;
                 characterData.Accessory = null;
                 if (accessorySlot != null) accessorySlot.SetItem(null);
                 break;
         }
-        Debug.Log($"{equipmentType} 장비 해제");
+
+        // 해제된 장비를 인벤토리에 1개 회수 반환
+        if (unequippedItem != null && InventoryGridManager.Instance != null)
+        {
+            InventoryGridManager.Instance.AddItem(unequippedItem, 1);
+            Debug.Log($"[EquipmentManager] {equipmentType} 장비 해제 완료 ({unequippedItem.ItemName} 인벤토리 회수)");
+        }
+        else
+        {
+            Debug.Log($"[EquipmentManager] {equipmentType} 장비 해제 완료");
+        }
+
         RecalculateEquipmentStats();
         SaveManager.Instance?.SaveGameData();
     }
@@ -204,6 +239,7 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
         );
 
         OnEquipmentStatsChanged?.Invoke(CurrentBonusStats);
+        UpdateCharacterCardUI();
 
         void AddItemStats(ItemDataSO itemData)
         {
@@ -274,10 +310,12 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
         RecalculateEquipmentStats();
     }
 
-    // 현재 선택된 캐릭터의 카드 이미지 및 이름 텍스트 갱신 처리
+    // 현재 선택된 캐릭터의 카드 이미지, 이름 및 설명/스탯 텍스트 갱신 처리
     private void UpdateCharacterCardUI()
     {
         if (string.IsNullOrEmpty(currentUnitId)) return;
+
+        UnitDataSO unitData = null;
 
         if (portraitCatalog != null)
         {
@@ -289,7 +327,7 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
             }
 
             // 카탈로그에서 유닛 데이터를 조회하여 표시 이름 반영
-            UnitDataSO unitData = portraitCatalog.GetUnitDataByUnitId(currentUnitId);
+            unitData = portraitCatalog.GetUnitDataByUnitId(currentUnitId);
             if (characterNameText != null)
             {
                 characterNameText.text = unitData != null ? unitData.DisplayName : currentUnitId;
@@ -302,6 +340,35 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
                 characterNameText.text = currentUnitId;
             }
         }
+
+        UpdateCharacterDescriptionText(unitData);
+    }
+
+    // 캐릭터 설명 및 장비 보너스 스탯 요약 텍스트 갱신
+    private void UpdateCharacterDescriptionText(UnitDataSO unitData)
+    {
+        if (characterDescriptionText == null) return;
+
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        if (unitData != null && !string.IsNullOrEmpty(unitData.Description))
+        {
+            sb.AppendLine(unitData.Description);
+        }
+
+        if (CurrentBonusStats.HasAnyBonus)
+        {
+            if (sb.Length > 0) sb.AppendLine();
+            sb.AppendLine("[장비 추가 능력치]");
+            if (CurrentBonusStats.PhysicalAttack > 0) sb.AppendLine($"물리 공격력: +{CurrentBonusStats.PhysicalAttack}");
+            if (CurrentBonusStats.MagicAttack > 0) sb.AppendLine($"마법 공격력: +{CurrentBonusStats.MagicAttack}");
+            if (CurrentBonusStats.PhysicalDefense > 0) sb.AppendLine($"물리 방어력: +{CurrentBonusStats.PhysicalDefense}");
+            if (CurrentBonusStats.MagicDefense > 0) sb.AppendLine($"마법 방어력: +{CurrentBonusStats.MagicDefense}");
+            if (CurrentBonusStats.CriticalDamageBonus > 0f) sb.AppendLine($"치명타 피해: +{CurrentBonusStats.CriticalDamageBonus:P0}");
+            if (CurrentBonusStats.Accuracy > 0f) sb.AppendLine($"명중률: +{CurrentBonusStats.Accuracy:P0}");
+        }
+
+        characterDescriptionText.text = sb.ToString();
     }
 
     #region 세이브 / 로드 연동
