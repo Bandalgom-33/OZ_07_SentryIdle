@@ -763,7 +763,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4ee45927732e9403aa47a132769c9924, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1303,8 +1303,6 @@ MonoBehaviour:
   rewardGoldText: {fileID: 8962926881834052771}
   rewardDiamondText: {fileID: 2719670021172656833}
   rewardStoneText: {fileID: 4746075702271822922}
-  unitCatalog: {fileID: 11400000, guid: 8009f11140c0429409c98b0cf3b3b803, type: 2}
-  portraitCatalog: {fileID: 11400000, guid: 3ce930f49e6197348af5f7f795f0401c, type: 2}
 --- !u!1 &6249175464369535005
 GameObject:
   m_ObjectHideFlags: 0

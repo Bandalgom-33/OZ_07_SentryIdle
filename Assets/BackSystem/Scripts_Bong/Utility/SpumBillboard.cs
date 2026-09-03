@@ -31,8 +31,8 @@ public sealed class SpumBillboard : MonoBehaviour
     // 빌보드 연산의 기준이 되는 렌더링 카메라 캐시
     private Camera activeCamera;
 
-    // 전체 프리팹 일괄 좌우 반전을 위해 기본 방향 부호를 -1f로 초기화
-    private float facingSign = -1f;
+    // 기본 방향 부호
+    private float facingSign = 1f;
 
     // OnFacingChanged 이벤트의 중복 등록 방지를 위한 구독 플래그
     private bool subscribed;
@@ -184,47 +184,27 @@ public sealed class SpumBillboard : MonoBehaviour
         }
     }
 
-    // GridFacingDirection을 기준으로 스프라이트 Scale 부호(+1 또는 -1)를 결정합니다.
-    // 전체 프리팹 일괄 반전을 위해 West를 +1f(정방향), East를 -1f(반전)로 매핑합니다.
+    // 스프라이트 방향 부호 계산
     private void ApplyFacingSign(GridFacingDirection facing)
     {
-        // [반전 적용] West일 때 +1f, East일 때 -1f로 변환하여 기본 좌우를 반전
-        float sign = facing == GridFacingDirection.West ? 1f : -1f;
-
-        // 개별 프리팹 오버라이드 플래그(invertFacing)가 꺼진 경우 그대로 사용하고, 켜진 경우 추가 반전
+        float sign = facing == GridFacingDirection.East ? 1f : -1f;
         facingSign = invertFacing ? -sign : sign;
     }
 
-    // VisualRoot를 카메라 방향으로 회전시켜 2D 스프라이트가 항상 화면 정면을 향하도록 만듭니다.
+    // 빌보드 회전 적용
     private void ApplyBillboard()
     {
-        // 캐릭터 위치에서 카메라 위치를 향하는 벡터 계산
-        Vector3 toCamera = activeCamera.transform.position - visualRoot.position;
-
-        Vector3 dir;
-
         if (yAxisOnly)
         {
-            // Y축(수직)만 회전시키기 위해 Y축 오프셋을 0으로 고정 (캐릭터가 위아래로 기울어지는 왜곡 방지)
-            dir = new Vector3(toCamera.x, 0f, toCamera.z);
+            visualRoot.rotation = Quaternion.Euler(0f, activeCamera.transform.eulerAngles.y, 0f);
         }
         else
         {
-            // 3축 전체를 카메라 방향으로 일치
-            dir = toCamera;
+            visualRoot.rotation = activeCamera.transform.rotation;
         }
-
-        // 카메라와 오브젝트 위치가 거의 일치할 경우 0 벡터 정규화 오류(NaN) 방지
-        if (dir.sqrMagnitude < 0.0001f)
-        {
-            return;
-        }
-
-        // LookRotation을 통해 +Z 축이 카메라를 바라보도록 회전 쿼터니언 적용
-        visualRoot.rotation = Quaternion.LookRotation(dir.normalized);
     }
 
-    // 계산된 방향 부호(facingSign)를 대상 Transform의 localScale.x에 곱하여 좌우 반전을 실시간 적용합니다.
+    // 스프라이트 좌우 반전 적용
     private void ApplyFacingFlip()
     {
         if (facingTarget == null)
@@ -235,7 +215,6 @@ public sealed class SpumBillboard : MonoBehaviour
         Vector3 scale = facingTarget.localScale;
         float absX = Mathf.Abs(scale.x);
 
-        // 스케일이 0에 수렴하는 비정상 상태일 경우 불필요한 연산 방지
         if (absX < 0.0001f)
         {
             return;
@@ -243,13 +222,11 @@ public sealed class SpumBillboard : MonoBehaviour
 
         float sign = facingSign;
 
-        // GridPosition이 연결되지 않은 단독 오브젝트일 때도 invertFacing 옵션 반영
         if (gridPosition == null && invertFacing)
         {
-            sign = 1f; // 기본값이 -1f이므로 invertFacing 시 +1f로 반전
+            sign = -1f;
         }
 
-        // 부호가 반영된 X 스케일을 최종 적용
         scale.x = absX * sign;
         facingTarget.localScale = scale;
     }

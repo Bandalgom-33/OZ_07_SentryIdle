@@ -60,44 +60,44 @@ MonoBehaviour:
     portraitIcon: {fileID: 21300000, guid: 437f64100c41718499171b72a1bdca0b, type: 3}
     fullIllustration: {fileID: 21300000, guid: 437f64100c41718499171b72a1bdca0b, type: 3}
   - unitData: {fileID: 11400000, guid: 5480cd5a39d932b4a8a512de36c83a6b, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 11bd3af11e81eb943b4911ee2c38b520, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 11bd3af11e81eb943b4911ee2c38b520, type: 3}
   - unitData: {fileID: 11400000, guid: 9ff374e06041698448941ea54a15ead5, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 5c0e7f621aa16794f8952baea3358e6c, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 5c0e7f621aa16794f8952baea3358e6c, type: 3}
   - unitData: {fileID: 11400000, guid: aa37d3d0d9580ab4498974d6df0fb51e, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: edc84e67b25a4f74bbf53b9c82c2c5e5, type: 3}
+    fullIllustration: {fileID: 21300000, guid: edc84e67b25a4f74bbf53b9c82c2c5e5, type: 3}
   - unitData: {fileID: 11400000, guid: 2440a8ed8fa63e849ab36812a0d3bb40, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 97b5b1c538374ae42954b3c893e1cae0, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 97b5b1c538374ae42954b3c893e1cae0, type: 3}
   - unitData: {fileID: 11400000, guid: 65cfd59e164b05846bb680a555227901, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: bfefca975a5410c45b8830401e499838, type: 3}
+    fullIllustration: {fileID: 21300000, guid: bfefca975a5410c45b8830401e499838, type: 3}
   - unitData: {fileID: 11400000, guid: 3d233e2f59d78cc4e913ca19f3d4218f, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 3d8d4d4556a3b4140b7da26a28ba65d1, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 3d8d4d4556a3b4140b7da26a28ba65d1, type: 3}
   - unitData: {fileID: 11400000, guid: b5c6e875c92186340aa4eb16a33dba77, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 907c99135a861b3428cb5e4b7130c66f, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 907c99135a861b3428cb5e4b7130c66f, type: 3}
   - unitData: {fileID: 11400000, guid: 4374e11ae7640d94eab78cb0a600682a, type: 2}
-    portraitIcon: {fileID: 5223213533427645220, guid: d24756e433435b249be5737019648d69, type: 3}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: ba860ac081bc2cb4dae901a8cb9383cf, type: 3}
+    fullIllustration: {fileID: 21300000, guid: ba860ac081bc2cb4dae901a8cb9383cf, type: 3}
   - unitData: {fileID: 11400000, guid: 128b9faecede01a4bb49365f9583a3db, type: 2}
     portraitIcon: {fileID: 21300000, guid: d8631d724a340db4ca0a1061e04a93ea, type: 3}
     fullIllustration: {fileID: 21300000, guid: d8631d724a340db4ca0a1061e04a93ea, type: 3}
   - unitData: {fileID: 11400000, guid: 9c69a364205c6f7458bbb6970648bba1, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 28ddb8a5a3ad5e146838ea0cabb288d4, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 28ddb8a5a3ad5e146838ea0cabb288d4, type: 3}
   - unitData: {fileID: 11400000, guid: 454dc6b83e6856e4f8bad10c4cce4924, type: 2}
-    portraitIcon: {fileID: 5223213533427645220, guid: 9f6f74f146203417fae095263bf53e7c, type: 3}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 19387b8262fc2664baaef5a83f27eb78, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 19387b8262fc2664baaef5a83f27eb78, type: 3}
   - unitData: {fileID: 11400000, guid: 0ce0ca7c716c15b43b3501302a7c9dcb, type: 2}
-    portraitIcon: {fileID: -2679891834695985245, guid: 9319101edbfea48f58b3eb3a01e16f2a, type: 3}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 78bd1856bb3c1414ab03d611468508ce, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 78bd1856bb3c1414ab03d611468508ce, type: 3}
   - unitData: {fileID: 11400000, guid: 7eeb12de3cbd57744bb5ff7ff79d9121, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 8fcc46f786521d244b92940edf859252, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 8fcc46f786521d244b92940edf859252, type: 3}
   - unitData: {fileID: 11400000, guid: 64de7623cd8e43a488f0da3db06dbc28, type: 2}
-    portraitIcon: {fileID: 0}
-    fullIllustration: {fileID: 0}
+    portraitIcon: {fileID: 21300000, guid: 73076070db6203947823226d24b854c6, type: 3}
+    fullIllustration: {fileID: 21300000, guid: 73076070db6203947823226d24b854c6, type: 3}

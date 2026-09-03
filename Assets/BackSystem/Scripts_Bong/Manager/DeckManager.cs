@@ -367,6 +367,31 @@ public class DeckManager : SingletonBase<DeckManager>
         return (int[])slots.Clone();
     }
 
+    // 특정 덱의 빈 슬롯(-1 또는 0 이하) 개수 계산 및 음수 방어
+    public int GetEmptySlotCount(DeckType deckType)
+    {
+        int[] slots = GetInternalSlots(deckType);
+        int capacity = GetDeckCapacity(deckType);
+        if (slots == null || slots.Length == 0) return capacity;
+
+        int emptyCount = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] <= 0)
+            {
+                emptyCount++;
+            }
+        }
+
+        return Mathf.Clamp(emptyCount, 0, capacity);
+    }
+
+    // 레이드 1팀 및 2팀의 잔여 빈 슬롯 총합 반환
+    public int RaidTotalEmptySlotCount => GetEmptySlotCount(DeckType.Raid1) + GetEmptySlotCount(DeckType.Raid2);
+
+    // 레이드 덱 전체(16명) 완편성 여부 반환
+    public bool IsRaidDeckFullyEquipped => RaidTotalEmptySlotCount == 0;
+
     // 특정 유닛(정수 ID)이 지정 덱에 편성되어 있는지 확인하고 슬롯 인덱스를 반환
     public bool IsUnitInDeck(DeckType deckType, int unitId, out int slotIndex)
     {

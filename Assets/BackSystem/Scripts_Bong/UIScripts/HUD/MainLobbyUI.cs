@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 메인 로비 UI 상태 제어 및 서브 시스템 패널 중계 컴포넌트
 public class MainLobbyUI : MonoBehaviour
 {
     #region 싱글톤 인스턴스
@@ -11,7 +12,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #endregion
 
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- 메인 화면 패널 구성 ---")]
     [Tooltip("게임 최초 실행 시 표시되는 시작/타이틀 패널")]
@@ -50,35 +51,22 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("레이드 씬 전환 버튼")]
     [SerializeField] private Button enterRaidButton;
 
-    [Header("--- 서브 시스템 메인 메뉴 버튼 (3개 그룹 + 던전) ---")]
-    [Tooltip("유닛 보관함 / 덱 편성 선택 패널 오픈 버튼")]
-    [SerializeField] private Button unitDeckMenuButton;
+    [Header("--- 레이드 진입 버튼 상태 및 스프라이트 ---")]
+    [Tooltip("레이드 진입 버튼의 Image 컴포넌트")]
+    [SerializeField] private Image raidButtonImage;
 
-    [Tooltip("가챠 / 업그레이드 선택 패널 오픈 버튼")]
-    [SerializeField] private Button gachaUpgradeMenuButton;
+    [Tooltip("레이드 덱 조건 충족(16명 완편성) 시 활성화 스프라이트")]
+    [SerializeField] private Sprite raidButtonUnlockedSprite;
 
-    [Tooltip("인벤토리 / 공방 선택 패널 오픈 버튼")]
-    [SerializeField] private Button inventoryWorkshopMenuButton;
+    [Tooltip("레이드 덱 조건 미충족(빈 슬롯 존재) 시 잠금 스프라이트")]
+    [SerializeField] private Sprite raidButtonLockedSprite;
 
-    [Tooltip("던전(파견) 패널 오픈 버튼")]
-    [SerializeField] private Button dungeonButton;
-
-    [Header("--- 1. 유닛 & 덱 편성 중간 선택 패널 ---")]
-    [Tooltip("유닛/덱 편성 2선택 중간 패널 오브젝트")]
-    [SerializeField] private GameObject unitDeckSelectPanel;
-
+    [Header("--- 서브 시스템 직접 오픈 버튼 (7종) ---")]
     [Tooltip("유닛 보관함 윈도우 오픈 버튼")]
     [SerializeField] private Button openCollectionButton;
 
     [Tooltip("덱 편성 윈도우 오픈 버튼")]
     [SerializeField] private Button openDeckButton;
-
-    [Tooltip("유닛/덱 편성 선택 패널 닫기 버튼")]
-    [SerializeField] private Button closeUnitDeckSelectButton;
-
-    [Header("--- 2. 가챠 & 업그레이드 중간 선택 패널 ---")]
-    [Tooltip("가챠/업그레이드 2선택 중간 패널 오브젝트")]
-    [SerializeField] private GameObject gachaUpgradeSelectPanel;
 
     [Tooltip("가챠 윈도우 오픈 버튼")]
     [SerializeField] private Button openGachaButton;
@@ -86,21 +74,14 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("업그레이드 윈도우 오픈 버튼")]
     [SerializeField] private Button openUpgradeButton;
 
-    [Tooltip("가챠/업그레이드 선택 패널 닫기 버튼")]
-    [SerializeField] private Button closeGachaUpgradeSelectButton;
-
-    [Header("--- 3. 인벤토리 & 공방 중간 선택 패널 ---")]
-    [Tooltip("인벤토리/공방 2선택 중간 패널 오브젝트")]
-    [SerializeField] private GameObject inventoryWorkshopSelectPanel;
-
     [Tooltip("인벤토리 윈도우 오픈 버튼")]
     [SerializeField] private Button openInventoryButton;
 
     [Tooltip("공방 윈도우 오픈 버튼")]
     [SerializeField] private Button openWorkshopButton;
 
-    [Tooltip("인벤토리/공방 선택 패널 닫기 버튼")]
-    [SerializeField] private Button closeInventoryWorkshopSelectButton;
+    [Tooltip("던전 윈도우 오픈 버튼")]
+    [SerializeField] private Button openDungeonButton;
 
     [Header("--- 최종 서브 시스템 윈도우 패널 오브젝트 ---")]
     [Tooltip("유닛 보관함(컬렉션) 윈도우 패널")]
@@ -128,8 +109,8 @@ public class MainLobbyUI : MonoBehaviour
     [Tooltip("게임 시작/타이틀 화면의 게임 종료 버튼")]
     [SerializeField] private Button titleQuitButton;
 
-    [Tooltip("인게임/옵션 팝업 내의 게임 종료 버튼")]
-    [SerializeField] private Button optionQuitButton;
+    [Tooltip("메인 로비 화면의 게임 종료 버튼")]
+    [SerializeField] private Button lobbyQuitButton;
 
     #endregion
 
@@ -166,11 +147,13 @@ public class MainLobbyUI : MonoBehaviour
         EventBus.Subscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Subscribe<DataLoadEvent>(OnDataLoaded);
         EventBus.Subscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
+        EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
 
         RefreshAllHUD();
+        UpdateRaidButtonState();
     }
 
-    // 이벤트 버스 구독 해제
+    // 전역 이벤트 구독 해제
     private void OnDisable()
     {
         CurrencyManager.OnGoldChange -= UpdateGoldUI;
@@ -178,16 +161,18 @@ public class MainLobbyUI : MonoBehaviour
         EventBus.Unsubscribe<StageWaveChangedEvent>(OnStageWaveChanged);
         EventBus.Unsubscribe<DataLoadEvent>(OnDataLoaded);
         EventBus.Unsubscribe<OfflineRewardReportEvent>(OnOfflineRewardReported);
+        EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
     }
 
-    // 첫 실행 여부에 따른 초기 메인 패널 표시 및 HUD 갱신
+    // 첫 실행 여부에 따른 패널 상태 초기화 및 HUD/레이드 버튼 갱신
     private void Start()
     {
         ApplyInitialPanelState();
         RefreshAllHUD();
+        UpdateRaidButtonState();
     }
 
-    // 인스턴스 파괴 시 싱글톤 참조 해제
+    // 싱글톤 참조 해제
     private void OnDestroy()
     {
         if (Instance == this)
@@ -200,7 +185,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 오프라인 방치 보상 이벤트 핸들러 및 텍스트 빌더
 
-    // 레이드 토벌 성공 보상 안내 텍스트 조립 헬퍼
+    // 레이드 토벌 성공 보상 안내 텍스트 조립
     private string BuildRaidRewardText(long raidStone)
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -215,7 +200,7 @@ public class MainLobbyUI : MonoBehaviour
         return sb.ToString();
     }
 
-    // 오프라인 방치 시간 및 보상 상세 내역을 단일 문자열로 조립하는 헬퍼 메서드
+    // 오프라인 방치 시간 및 보상 내역 문자열 조립
     private string BuildOfflineRewardText(OfflineRewardReportData report)
     {
         if (report == null)
@@ -271,10 +256,9 @@ public class MainLobbyUI : MonoBehaviour
         return sb.ToString();
     }
 
-    // 오프라인 방치 보상 수신 및 텍스트 바인딩 연산 (타이틀 진입 시에만 바인딩, 레이드 보상 대기 중일 때는 무시)
+    // 오프라인 방치 보상 이벤트 수신 처리
     private void OnOfflineRewardReported(OfflineRewardReportEvent evt)
     {
-        // [기술적 근거] 레이드 보상 팝업이 대기 중이거나 이미 타이틀을 지나 로비/인게임 중일 때는 덮어쓰기 차단
         if (CurrencyManager.Instance != null && CurrencyManager.Instance.HasPendingRaidRewardReport)
         {
             return;
@@ -298,7 +282,6 @@ public class MainLobbyUI : MonoBehaviour
     // 첫 진입 여부에 따른 시작 패널 및 메인 로비 패널 상태 적용
     private void ApplyInitialPanelState()
     {
-        CloseAllSelectPanels();
         CloseAllSubPanels();
 
         if (offlineRewardPanel != null)
@@ -316,7 +299,6 @@ public class MainLobbyUI : MonoBehaviour
             if (startPanel != null) startPanel.SetActive(false);
             if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
 
-            // [규칙 2] 레이드 등 전투 씬에서 로비로 복귀했을 때는 오직 레이드 보상만 검사하여 노출
             if (CurrencyManager.Instance != null && CurrencyManager.Instance.HasPendingRaidRewardReport)
             {
                 if (offlineRewardInfoText != null)
@@ -328,7 +310,7 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 시작 패널에서 메인 로비 패널로 전환 (타이틀 시작 시에만 오프라인 보상 팝업 노출)
+    // 게임 시작 버튼 클릭 이벤트 처리
     public void OnStartGameClicked()
     {
         _isFirstLaunch = false;
@@ -336,7 +318,6 @@ public class MainLobbyUI : MonoBehaviour
         if (startPanel != null) startPanel.SetActive(false);
         if (mainLobbyPanel != null) mainLobbyPanel.SetActive(true);
 
-        // [규칙 1] 타이틀에서 게임 시작을 눌렀을 때만 오프라인 방치 보상 팝업 오픈
         bool isExistingUser = SaveManager.Instance != null && SaveManager.Instance.HasExistingSaveFile;
         if (isExistingUser && OfflineRewardManager.Instance != null && OfflineRewardManager.Instance.LastReportData != null)
         {
@@ -352,7 +333,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 오프라인 / 레이드 보상 팝업 제어
 
-    // 보상 팝업 패널 오픈
+    // 보상 팝업 패널 활성화
     public void ShowOfflineRewardPopup()
     {
         SetOfflineRewardPanelActive(true);
@@ -363,7 +344,6 @@ public class MainLobbyUI : MonoBehaviour
     {
         SetOfflineRewardPanelActive(false);
 
-        // 레이드 보상 팝업 대기 상태 초기화
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.ClearPendingRaidRewardReport();
@@ -386,7 +366,6 @@ public class MainLobbyUI : MonoBehaviour
     // 버튼 클릭 리스너 일괄 바인딩
     private void InitializeButtonListeners()
     {
-        // 1. 시작 패널 및 오프라인 보상 버튼
         if (startGameButton != null)
         {
             startGameButton.onClick.AddListener(OnStartGameClicked);
@@ -397,7 +376,6 @@ public class MainLobbyUI : MonoBehaviour
             closeOfflineRewardButton.onClick.AddListener(CloseOfflineRewardPopup);
         }
 
-        // 2. 씬 전환 버튼
         if (enterGamePlayButton != null)
         {
             enterGamePlayButton.onClick.AddListener(OnEnterGamePlayClicked);
@@ -408,28 +386,6 @@ public class MainLobbyUI : MonoBehaviour
             enterRaidButton.onClick.AddListener(OnEnterRaidClicked);
         }
 
-        // 3. 메인 로비 서브 시스템 그룹 버튼
-        if (unitDeckMenuButton != null)
-        {
-            unitDeckMenuButton.onClick.AddListener(() => ToggleSelectPanel(unitDeckSelectPanel));
-        }
-
-        if (gachaUpgradeMenuButton != null)
-        {
-            gachaUpgradeMenuButton.onClick.AddListener(() => ToggleSelectPanel(gachaUpgradeSelectPanel));
-        }
-
-        if (inventoryWorkshopMenuButton != null)
-        {
-            inventoryWorkshopMenuButton.onClick.AddListener(() => ToggleSelectPanel(inventoryWorkshopSelectPanel));
-        }
-
-        if (dungeonButton != null)
-        {
-            dungeonButton.onClick.AddListener(() => OpenSubPanel(dungeonWindowPanel));
-        }
-
-        // 4. 중간 선택 패널 내 서브 시스템 진입 버튼
         if (openCollectionButton != null)
         {
             openCollectionButton.onClick.AddListener(() => OpenSubPanel(collectionWindowPanel));
@@ -452,7 +408,7 @@ public class MainLobbyUI : MonoBehaviour
 
         if (openInventoryButton != null)
         {
-            openInventoryButton.onClick.AddListener(() => OpenSubPanel(inventoryWindowPanel));
+            openInventoryButton.onClick.AddListener(OpenInventoryOnly);
         }
 
         if (openWorkshopButton != null)
@@ -460,39 +416,27 @@ public class MainLobbyUI : MonoBehaviour
             openWorkshopButton.onClick.AddListener(() => OpenSubPanel(workshopWindowPanel));
         }
 
-        // 5. 중간 선택 패널 닫기 버튼
-        if (closeUnitDeckSelectButton != null)
+        if (openDungeonButton != null)
         {
-            closeUnitDeckSelectButton.onClick.AddListener(() => CloseSelectPanel(unitDeckSelectPanel));
+            openDungeonButton.onClick.AddListener(() => OpenSubPanel(dungeonWindowPanel));
         }
 
-        if (closeGachaUpgradeSelectButton != null)
-        {
-            closeGachaUpgradeSelectButton.onClick.AddListener(() => CloseSelectPanel(gachaUpgradeSelectPanel));
-        }
-
-        if (closeInventoryWorkshopSelectButton != null)
-        {
-            closeInventoryWorkshopSelectButton.onClick.AddListener(() => CloseSelectPanel(inventoryWorkshopSelectPanel));
-        }
-
-        // 6. 게임 종료 버튼
         if (titleQuitButton != null)
         {
             titleQuitButton.onClick.AddListener(QuitGame);
         }
 
-        if (optionQuitButton != null)
+        if (lobbyQuitButton != null)
         {
-            optionQuitButton.onClick.AddListener(QuitGame);
+            lobbyQuitButton.onClick.AddListener(QuitGame);
         }
     }
 
     #endregion
 
-    #region 씬 전환 이벤트 핸들러
+    #region 씬 전환 및 레이드 잠금 제어
 
-    // 일반 스테이지 게임플레이 씬 전환
+    // 일반 스테이지 게임플레이 씬 전환 요청
     public void OnEnterGamePlayClicked()
     {
         if (SceneLoader.Instance != null)
@@ -505,9 +449,15 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    // 레이드 씬 전환
+    // 레이드 씬 전환 요청 (16명 완편성 검증)
     public void OnEnterRaidClicked()
     {
+        if (DeckManager.Instance != null && !DeckManager.Instance.IsRaidDeckFullyEquipped)
+        {
+            Debug.LogWarning($"[MainLobbyUI] 레이드 덱 미편성 슬롯이 {DeckManager.Instance.RaidTotalEmptySlotCount}개 존재하여 진입할 수 없습니다.");
+            return;
+        }
+
         if (SceneLoader.Instance != null)
         {
             SceneLoader.Instance.LoadScene(SceneType.Raid);
@@ -518,56 +468,77 @@ public class MainLobbyUI : MonoBehaviour
         }
     }
 
-    #endregion
-
-    #region 서브 패널 및 중간 선택 패널 관리
-
-    // 지정 중간 선택 패널 토글
-    public void ToggleSelectPanel(GameObject targetPanel)
+    // 레이드 버튼 활성화 및 잠금 스프라이트 상태 갱신
+    public void UpdateRaidButtonState()
     {
-        if (targetPanel == null) return;
+        bool isRaidReady = DeckManager.Instance != null && DeckManager.Instance.IsRaidDeckFullyEquipped;
 
-        bool isActive = targetPanel.activeSelf;
-        CloseAllSelectPanels();
-        CloseAllSubPanels();
-        targetPanel.SetActive(!isActive);
-    }
-
-    // 지정 중간 선택 패널 오픈
-    public void OpenSelectPanel(GameObject targetPanel)
-    {
-        if (targetPanel == null) return;
-
-        CloseAllSelectPanels();
-        CloseAllSubPanels();
-        targetPanel.SetActive(true);
-    }
-
-    // 지정 중간 선택 패널 닫기
-    public void CloseSelectPanel(GameObject targetPanel)
-    {
-        if (targetPanel != null)
+        if (enterRaidButton != null)
         {
-            targetPanel.SetActive(false);
+            enterRaidButton.interactable = isRaidReady;
+        }
+
+        if (raidButtonImage != null)
+        {
+            if (isRaidReady && raidButtonUnlockedSprite != null)
+            {
+                raidButtonImage.sprite = raidButtonUnlockedSprite;
+            }
+            else if (!isRaidReady && raidButtonLockedSprite != null)
+            {
+                raidButtonImage.sprite = raidButtonLockedSprite;
+            }
         }
     }
 
-    // 모든 중간 선택 패널 일괄 닫기
-    public void CloseAllSelectPanels()
+    // 레이드 덱 변경 이벤트 수신 콜백
+    private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
-        if (unitDeckSelectPanel != null) unitDeckSelectPanel.SetActive(false);
-        if (gachaUpgradeSelectPanel != null) gachaUpgradeSelectPanel.SetActive(false);
-        if (inventoryWorkshopSelectPanel != null) inventoryWorkshopSelectPanel.SetActive(false);
+        UpdateRaidButtonState();
     }
 
-    // 지정 최종 서브 윈도우 패널 단독 오픈
+    #endregion
+
+    #region 서브 패널 관리
+
+    // 지정 최종 서브 윈도우 패널 활성화
     public void OpenSubPanel(GameObject targetPanel)
     {
         if (targetPanel == null) return;
 
-        CloseAllSelectPanels();
         CloseAllSubPanels();
         targetPanel.SetActive(true);
+    }
+
+    // 인벤토리 전용 패널 오픈
+    public void OpenInventoryOnly()
+    {
+        CloseAllSubPanels();
+
+        if (inventoryWindowPanel != null)
+        {
+            inventoryWindowPanel.SetActive(true);
+        }
+
+        if (InventoryUI.Instance != null)
+        {
+            InventoryUI.Instance.OpenBagOnly();
+        }
+    }
+
+    // 장비 관리 팝업 오픈
+    public void OpenEquipmentPopup(string unitId)
+    {
+        if (inventoryWindowPanel != null)
+        {
+            inventoryWindowPanel.SetActive(true);
+            inventoryWindowPanel.transform.SetAsLastSibling();
+        }
+
+        if (InventoryUI.Instance != null)
+        {
+            InventoryUI.Instance.OpenEquipment(unitId);
+        }
     }
 
     // 지정 최종 서브 윈도우 패널 토글
@@ -576,12 +547,11 @@ public class MainLobbyUI : MonoBehaviour
         if (targetPanel == null) return;
 
         bool isActive = targetPanel.activeSelf;
-        CloseAllSelectPanels();
         CloseAllSubPanels();
         targetPanel.SetActive(!isActive);
     }
 
-    // 모든 최종 서브 윈도우 패널 일괄 닫기
+    // 모든 최종 서브 윈도우 패널 일괄 비활성화
     public void CloseAllSubPanels()
     {
         if (collectionWindowPanel != null) collectionWindowPanel.SetActive(false);
@@ -597,7 +567,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 게임 종료
 
-    // 애플리케이션 종료
+    // 애플리케이션 종료 처리
     public void QuitGame()
     {
         Debug.Log("[MainLobbyUI] 게임 종료를 요청합니다.");
@@ -612,7 +582,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region HUD 정보 갱신
 
-    // 전체 HUD 텍스트 정보 일괄 갱신
+    // 전체 HUD 텍스트 정보 및 레이드 버튼 상태 일괄 갱신
     public void RefreshAllHUD()
     {
         if (CurrencyManager.Instance != null)
@@ -625,15 +595,17 @@ public class MainLobbyUI : MonoBehaviour
         {
             UpdateStageInfoUI(StageProgressManager.Instance.CurrentStage, StageProgressManager.Instance.CurrentWave);
         }
+
+        UpdateRaidButtonState();
     }
 
-    // 데이터 로드 완료 이벤트 처리
+    // 데이터 로드 완료 이벤트 수신 처리
     private void OnDataLoaded(DataLoadEvent evt)
     {
         RefreshAllHUD();
     }
 
-    // 스테이지 변경 이벤트 처리
+    // 스테이지 변경 이벤트 수신 처리
     private void OnStageWaveChanged(StageWaveChangedEvent evt)
     {
         UpdateStageInfoUI(evt.stageNumber, evt.waveNumber);
@@ -670,7 +642,7 @@ public class MainLobbyUI : MonoBehaviour
 
     #region 유틸리티
 
-    // 대용량 재화 단위 축약 포맷팅
+    // 대용량 숫자 단위 축약 포맷팅
     private string FormatCurrencyNumber(double value)
     {
         if (value < 1000)

@@ -8,10 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace EndlessGuard.TestBattle
 {
-    /// <summary>
-    /// EnemyCatalog의 몬스터 데이터를 바탕으로 스테이지 및 웨이브별 적을 소환하고,
-    /// EnemyMove 경로 주입, 처치 보상(EventBus) 발행 및 스테이지 진행을 관리하는 웨이브 매니저 클래스
-    /// </summary>
+    // 카탈로그 기반 적 몬스터 스폰, 경로 주입, 처치 보상 발행 및 스테이지 진행 관리 컴포넌트
     public class TestWaveManager : MonoBehaviour
     {
         #region 인스펙터 직렬화 필드
@@ -78,8 +75,6 @@ namespace EndlessGuard.TestBattle
         private int _currentWave = 0;
         private int _aliveEnemyCount = 0;
         private Coroutine _waveSystemCoroutine;
-
-        // 필드에 스폰된 적 런타임 목록
         private readonly List<EnemyRuntimeState> _spawnedEnemies = new List<EnemyRuntimeState>();
 
         public int CurrentStage => currentStage;
@@ -88,13 +83,13 @@ namespace EndlessGuard.TestBattle
         public int AliveEnemyCount => _aliveEnemyCount;
         public bool IsWaveRunning => _waveSystemCoroutine != null;
 
-        // 스테이지 완료 시 발행되는 이벤트 (전투 코디네이터 연동)
         public event Action<int> OnStageCleared;
 
         #endregion
 
         #region 라이프사이클
 
+        // 컴포넌트 캐싱 및 카탈로그 로드
         private void Awake()
         {
             if (mapGenerator == null)
@@ -108,13 +103,14 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 전투 이벤트 리스너 등록
         private void OnEnable()
         {
-            // Unit 전투 엔진 전역 사망 및 골인 이벤트 구독
             CombatEvents.OnEnemyDied += HandleEnemyDied;
             CombatEvents.OnEnemyReachedGoal += HandleEnemyReachedGoal;
         }
 
+        // 전투 이벤트 리스너 해제 및 적 목록 정리
         private void OnDisable()
         {
             CombatEvents.OnEnemyDied -= HandleEnemyDied;
@@ -127,9 +123,7 @@ namespace EndlessGuard.TestBattle
 
         #region 웨이브 시스템 제어
 
-        /// <summary>
-        /// 1웨이브부터 스테이지 웨이브 코루틴을 시작합니다.
-        /// </summary>
+        // 스테이지 웨이브 코루틴 가동
         public void StartStageWaves()
         {
             if (StageProgressManager.Instance != null)
@@ -142,9 +136,7 @@ namespace EndlessGuard.TestBattle
             _waveSystemCoroutine = StartCoroutine(RunStageWaveSystem());
         }
 
-        /// <summary>
-        /// 실행 중인 모든 웨이브 코루틴을 정지합니다.
-        /// </summary>
+        // 실행 중인 웨이브 코루틴 중단
         public void StopWaveSystem()
         {
             if (_waveSystemCoroutine != null)
@@ -154,9 +146,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
-        /// <summary>
-        /// 현재 스테이지의 진행 상태를 초기화하고 1웨이브부터 재시작합니다.
-        /// </summary>
+        // 현재 스테이지 1웨이브부터 재시작
         public void RestartCurrentStage()
         {
             if (StageProgressManager.Instance != null)
@@ -168,7 +158,7 @@ namespace EndlessGuard.TestBattle
             StartStageWaves();
         }
 
-        // 전체 스테이지 웨이브 루프 코루틴
+        // 스테이지 전체 웨이브 진행 메인 코루틴
         private IEnumerator RunStageWaveSystem()
         {
             for (int waveIdx = 0; waveIdx < wavesPerStage; waveIdx++)
@@ -180,14 +170,11 @@ namespace EndlessGuard.TestBattle
                     StageProgressManager.Instance.SetCurrentWave(_currentWave);
                 }
 
-                // 1. EventBus로 스테이지/웨이브 변경 이벤트 발행 -> InGameUI 등에 반영
                 EventBus.Publish(new StageWaveChangedEvent(currentStage, _currentWave));
                 Debug.Log($"[TestWaveManager] >>> Stage {currentStage} - Wave {_currentWave}/{wavesPerStage} 시작 <<<");
 
-                // 웨이브 시작 시점 타임스탬프 기록 (최근 5개 웨이브 평균 클리어 시간 측정용)
                 float waveStartTime = Time.time;
 
-                // 2. 마지막 웨이브는 보스 웨이브, 그 외는 일반 웨이브 실행
                 if (_currentWave == wavesPerStage)
                 {
                     yield return StartCoroutine(RunBossWaveRoutine());
@@ -197,20 +184,17 @@ namespace EndlessGuard.TestBattle
                     yield return StartCoroutine(RunNormalWaveRoutine());
                 }
 
-                // 3. 필드의 모든 적이 전멸할 때까지 대기
                 while (_aliveEnemyCount > 0)
                 {
                     yield return null;
                 }
 
-                // 웨이브 클리어 소요 시간 산출 및 기록
                 float waveDuration = Time.time - waveStartTime;
                 if (StageProgressManager.Instance != null)
                 {
                     StageProgressManager.Instance.RecordWaveClearDuration(waveDuration);
                 }
 
-                // 4. 웨이브 클리어 보상 (웨이브 마석 지급 및 이벤트 발행)
                 if (CurrencyManager.Instance != null && waveClearWaveStone > 0)
                 {
                     CurrencyManager.Instance.AddCurrency(CurrencyType.WaveStone, waveClearWaveStone, applyModifiers: false);
@@ -218,7 +202,6 @@ namespace EndlessGuard.TestBattle
                 EventBus.Publish(new WaveClearedEvent(currentStage, _currentWave, waveClearWaveStone));
                 Debug.Log($"[TestWaveManager] Stage {currentStage} - Wave {_currentWave} 클리어! (보상: 웨이브 마석 +{waveClearWaveStone}, 소요시간: {waveDuration:F1}초)");
 
-                // 5. 다음 웨이브 사이 대기
                 if (waveIdx < wavesPerStage - 1)
                 {
                     yield return new WaitForSeconds(waveInterval);
@@ -229,14 +212,12 @@ namespace EndlessGuard.TestBattle
 
             int clearedStage = currentStage;
 
-            // 스테이지 클리어 보상 (추가 웨이브 마석 지급 및 이벤트 발행)
             if (CurrencyManager.Instance != null && stageClearWaveStone > 0)
             {
                 CurrencyManager.Instance.AddCurrency(CurrencyType.WaveStone, stageClearWaveStone, applyModifiers: false);
             }
             EventBus.Publish(new StageClearedEvent(clearedStage, stageClearWaveStone));
 
-            // StageProgressManager에 다음 스테이지 진입 및 자동 저장 요청
             if (StageProgressManager.Instance != null)
             {
                 StageProgressManager.Instance.AdvanceToNextStage();
@@ -250,12 +231,11 @@ namespace EndlessGuard.TestBattle
             OnStageCleared?.Invoke(clearedStage);
         }
 
-        // 일반 웨이브 스폰 코루틴
+        // 일반 웨이브 몬스터 스폰 코루틴
         private IEnumerator RunNormalWaveRoutine()
         {
             for (int i = 0; i < enemiesPerWave; i++)
             {
-                // 경로 A와 경로 B에 각각 1마리씩 분산 스폰
                 SpawnEnemyOnPath(mapGenerator.PathNodesA);
 
                 if (mapGenerator.PathNodesB != null && mapGenerator.PathNodesB.Length > 0)
@@ -267,12 +247,11 @@ namespace EndlessGuard.TestBattle
             }
         }
 
-        // 보스 웨이브 스폰 코루틴
+        // 보스 웨이브 몬스터 스폰 코루틴
         private IEnumerator RunBossWaveRoutine()
         {
             Debug.Log("[TestWaveManager] [BOSS WAVE] 강력한 보스 몬스터 등장!");
 
-            // 보스 적 스폰 (경로 A)
             SpawnBossEnemyOnPath(mapGenerator.PathNodesA);
 
             yield return null;
@@ -282,7 +261,7 @@ namespace EndlessGuard.TestBattle
 
         #region 적 스폰 및 초기화 로직
 
-        // 경로를 따라 이동하는 일반 적 스폰
+        // 경로 기반 일반 몬스터 스폰
         private void SpawnEnemyOnPath(PathNode[] pathNodes)
         {
             if (pathNodes == null || pathNodes.Length == 0 || enemyCatalog == null || enemyCatalog.Enemies.Count == 0)
@@ -290,7 +269,6 @@ namespace EndlessGuard.TestBattle
                 return;
             }
 
-            // 카탈로그에서 무작위 일반 적 데이터 선택
             EnemyDataSO randomEnemyData = enemyCatalog.Enemies[Random.Range(0, enemyCatalog.Enemies.Count)];
             if (randomEnemyData == null || randomEnemyData.EnemyPrefab == null)
             {
@@ -300,7 +278,7 @@ namespace EndlessGuard.TestBattle
             SpawnEnemyInstance(randomEnemyData, pathNodes);
         }
 
-        // 보스 적 스폰
+        // 경로 기반 보스 몬스터 스폰
         private void SpawnBossEnemyOnPath(PathNode[] pathNodes)
         {
             if (pathNodes == null || pathNodes.Length == 0) return;
@@ -308,7 +286,6 @@ namespace EndlessGuard.TestBattle
             EnemyDataSO targetBossData = bossEnemyData;
             if (targetBossData == null && enemyCatalog != null && enemyCatalog.Enemies.Count > 0)
             {
-                // 보스 데이터 미할당 시 카탈로그의 마지막 유닛을 보스로 활용
                 targetBossData = enemyCatalog.Enemies[enemyCatalog.Enemies.Count - 1];
             }
 
@@ -318,10 +295,9 @@ namespace EndlessGuard.TestBattle
             }
         }
 
-        // 적 프리팹 인스턴스화, DataLink 주입, EnemyRuntimeState 초기화 및 EnemyMove 경로 설정
+        // 적 몬스터 인스턴스화 및 경로/스탯 초기화
         private void SpawnEnemyInstance(EnemyDataSO enemyData, PathNode[] pathNodes)
         {
-            // 1. 공중 몬스터 여부에 따른 경로 분기 및 생성
             PathNode[] targetPath = pathNodes;
             bool isAir = enemyData.MovementType == EnemyMovementType.Air;
 
@@ -336,34 +312,27 @@ namespace EndlessGuard.TestBattle
             Vector3 spawnWorldPos = startNode.Position;
             if (!isAir)
             {
-                spawnWorldPos.y = 1.0f; // 지상 적 기본 높이 설정
+                spawnWorldPos.y = 1.0f;
             }
 
-            // 2. 프리팹 인스턴스화
             GameObject enemyObj = Instantiate(enemyData.EnemyPrefab, spawnWorldPos, Quaternion.identity);
             enemyObj.name = $"Enemy_{enemyData.DisplayName}_{_aliveEnemyCount + 1}";
 
-            // 3. EnemyDataLink 확인
             EnemyDataLink dataLink = enemyObj.GetComponent<EnemyDataLink>();
 
-            // 4. EnemyRuntimeState 초기화
             EnemyRuntimeState runtimeState = enemyObj.GetComponent<EnemyRuntimeState>();
             if (runtimeState != null)
             {
                 runtimeState.InitializeRuntime();
-
-                // 5. 라운드(스테이지/웨이브) 스케일링 능력치 보정 주입
                 ApplyStatScaling(runtimeState, enemyData);
             }
 
-            // 6. EnemyMove 컴포넌트에 PathNode[] 경로 주입
             EnemyMove mover = enemyObj.GetComponent<EnemyMove>();
             if (mover != null)
             {
                 mover.SetPath(targetPath);
             }
 
-            // 7. SpawnedEnemyManager 등록 및 리스트 추적
             if (SpawnedEnemyManager.Instance != null && runtimeState != null)
             {
                 SpawnedEnemyManager.Instance.RegisterEnemy(runtimeState);
@@ -377,7 +346,7 @@ namespace EndlessGuard.TestBattle
             _aliveEnemyCount++;
         }
 
-        // 스테이지 및 웨이브 진행도에 따른 몬스터 체력/공격력/방어력 스케일링 계산 및 주입
+        // 몬스터 체력/공격력/방어력 스케일링 적용
         private void ApplyStatScaling(EnemyRuntimeState runtimeState, EnemyDataSO enemyData)
         {
             if (runtimeState == null || enemyData == null || enemyData.BaseStats == null || runtimeState.Stats == null)
@@ -389,7 +358,6 @@ namespace EndlessGuard.TestBattle
             float atkScale = 1.0f + (currentStage - 1) * stageAttackMultiplier + (_currentWave - 1) * waveAttackMultiplier;
             float defScale = 1.0f + (currentStage - 1) * stageDefenseMultiplier;
 
-            // 1. 최대 체력 스케일링 적용
             float baseMaxHp = enemyData.BaseStats.MaxHp;
             float newMaxHp = Mathf.Max(1f, baseMaxHp * hpScale);
             runtimeState.Stats.SetMaxHp(newMaxHp);
@@ -398,13 +366,11 @@ namespace EndlessGuard.TestBattle
                 runtimeState.Health.SetMaxHp(newMaxHp);
             }
 
-            // 2. 공격력 스케일링 적용
             float basePAtk = enemyData.BaseStats.PhysicalAttack;
             float baseMAtk = enemyData.BaseStats.MagicalAttack;
             runtimeState.Stats.SetPhysicalAttack(basePAtk * atkScale);
             runtimeState.Stats.SetMagicalAttack(baseMAtk * atkScale);
 
-            // 3. 방어력 스케일링 적용
             float basePDef = enemyData.BaseStats.PhysicalDefense;
             float baseMDef = enemyData.BaseStats.MagicalDefense;
             runtimeState.Stats.SetPhysicalDefense(basePDef * defScale);
@@ -415,10 +381,9 @@ namespace EndlessGuard.TestBattle
 
         #region 적 사망 / 도착 이벤트 수신 및 보상 처리
 
-        // 적 사망 이벤트 콜백 (Unit 전투 시스템 CombatEvents 연동)
+        // 적 사망 이벤트 콜백
         private void HandleEnemyDied(EnemyDiedInfo info)
         {
-            // 사망한 적 탐색
             EnemyRuntimeState deadEnemy = null;
             for (int i = 0; i < _spawnedEnemies.Count; i++)
             {
@@ -433,7 +398,6 @@ namespace EndlessGuard.TestBattle
             {
                 _spawnedEnemies.Remove(deadEnemy);
 
-                // 골드 및 경험치 보상 산출 (EnemyDataSO의 RewardGold, RewardExp 추출)
                 int rewardGold = 10;
                 int rewardExp = 5;
                 if (deadEnemy.DataLink != null && deadEnemy.DataLink.HasData && deadEnemy.DataLink.EnemyData != null)
@@ -442,7 +406,6 @@ namespace EndlessGuard.TestBattle
                     rewardExp = Mathf.Max(1, deadEnemy.DataLink.EnemyData.RewardExp);
                 }
 
-                // EventBus로 EnemyDiedEvent 발행 -> CurrencyManager 및 ExperienceManager가 수급
                 EventBus.Publish(new EnemyDiedEvent(
                     deadEnemy.gameObject,
                     deadEnemy.EnemyId,
@@ -451,7 +414,6 @@ namespace EndlessGuard.TestBattle
                     deadEnemy.transform.position
                 ));
 
-                // 매니저 등록 해제 및 파괴
                 if (SpawnedEnemyManager.Instance != null)
                 {
                     SpawnedEnemyManager.Instance.UnregisterEnemy(deadEnemy);
@@ -463,7 +425,7 @@ namespace EndlessGuard.TestBattle
             DecrementAliveEnemyCount();
         }
 
-        // 적이 골 지점에 도달했을 때의 콜백
+        // 적 골 지점 도달 이벤트 콜백
         private void HandleEnemyReachedGoal(EnemyReachedGoalInfo info)
         {
             for (int i = _spawnedEnemies.Count - 1; i >= 0; i--)
@@ -479,6 +441,7 @@ namespace EndlessGuard.TestBattle
             DecrementAliveEnemyCount();
         }
 
+        // 생존 적 카운트 감소
         private void DecrementAliveEnemyCount()
         {
             _aliveEnemyCount = Mathf.Max(0, _aliveEnemyCount - 1);
@@ -488,9 +451,7 @@ namespace EndlessGuard.TestBattle
 
         #region 적 전체 정리
 
-        /// <summary>
-        /// 필드의 모든 적 유닛을 파괴하고 카운트를 초기화합니다.
-        /// </summary>
+        // 필드 상의 모든 적 일괄 제거
         public void ClearAllEnemies()
         {
             for (int i = _spawnedEnemies.Count - 1; i >= 0; i--)

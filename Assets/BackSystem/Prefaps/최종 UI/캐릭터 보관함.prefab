@@ -492,7 +492,7 @@ GameObject:
   - component: {fileID: 4036497367815863707}
   - component: {fileID: 6053038402524551299}
   m_Layer: 5
-  m_Name: Image
+  m_Name: "\uBC30\uACBD \uD14C\uB450\uB9AC"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -515,7 +515,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4036497367815863707
 CanvasRenderer:
@@ -567,7 +567,7 @@ GameObject:
   - component: {fileID: 883788906867746345}
   - component: {fileID: 4878544712143800220}
   m_Layer: 5
-  m_Name: PageTitle
+  m_Name: "\uD398\uC774\uC9C0 \uC774\uB984"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -589,8 +589,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 50, y: -50}
-  m_SizeDelta: {x: -100, y: 72}
+  m_AnchoredPosition: {x: 0, y: -40}
+  m_SizeDelta: {x: -80, y: 100}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &883788906867746345
 CanvasRenderer:
@@ -752,7 +752,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 16
+  m_Spacing: 110
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -787,7 +787,7 @@ GameObject:
   - component: {fileID: 1177112881707390566}
   - component: {fileID: 8571983385487040542}
   m_Layer: 5
-  m_Name: Sample_CharacterPage 1
+  m_Name: "\uCE90\uB9AD\uD130 \uBCF4\uAD00\uD568"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -881,7 +881,7 @@ MonoBehaviour:
   pageText: {fileID: 2869713469923156559}
   equipActionButton: {fileID: 6394818746199387070}
   equipActionButtonText: {fileID: 731109092676263931}
-  inventoryUI: {fileID: 0}
+  equipmentInventoryPanel: {fileID: 0}
 --- !u!1 &9127382709882757861
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +894,7 @@ GameObject:
   - component: {fileID: 1865283607720744413}
   - component: {fileID: 7437858918124538059}
   m_Layer: 5
-  m_Name: CardPages
+  m_Name: "\uCE74\uB4DC\uD398\uC774\uC9C0"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -989,6 +989,14 @@ PrefabInstance:
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_SizeDelta.y
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1114,6 +1122,14 @@ PrefabInstance:
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_SizeDelta.y
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1970,6 +1986,14 @@ PrefabInstance:
       value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -2117,6 +2141,14 @@ PrefabInstance:
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_SizeDelta.y
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2481,6 +2513,14 @@ PrefabInstance:
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_SizeDelta.y
       value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 2311434745552581281, guid: 49415ce7e95624443af1094952083cb5, type: 3}
       propertyPath: m_LocalPosition.x

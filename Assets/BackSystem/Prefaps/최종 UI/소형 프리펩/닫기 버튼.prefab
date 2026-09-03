@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 6546268993226309886}
   - component: {fileID: 8435939109870188143}
   - component: {fileID: 6075194203235510775}
+  - component: {fileID: 8774313778063763587}
   m_Layer: 5
   m_Name: "\uB2EB\uAE30 \uBC84\uD2BC"
   m_TagString: Untagged
@@ -196,3 +197,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8774313778063763587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8753681685062497695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82aab65b10dd87d4c91c24f6786130d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonHoverEffect
+  useScaleEffect: 1
+  hoverScale: {x: 1.05, y: 1.05, z: 1}
+  transitionSpeed: 15
+  highlightEffectObject: {fileID: 0}

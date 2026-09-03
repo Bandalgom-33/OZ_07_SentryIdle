@@ -24,6 +24,7 @@ public sealed class RaidDeckBridge : MonoBehaviour
         DontDestroyOnLoad(host);
     }
 
+    // 이벤트 버스 및 씬 로드 이벤트 구독 등록
     private void OnEnable()
     {
         EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
@@ -31,6 +32,7 @@ public sealed class RaidDeckBridge : MonoBehaviour
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 
+    // 이벤트 버스 및 씬 로드 이벤트 구독 해제
     private void OnDisable()
     {
         EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
@@ -38,30 +40,31 @@ public sealed class RaidDeckBridge : MonoBehaviour
         SceneManager.sceneLoaded -= HandleSceneLoaded;
     }
 
+    // 초기 레이드 로스터 동기화 시작
     private void Start()
     {
         SyncRaidDecksToRoster();
     }
 
-    // 씬 로드 완료 시 레이드 로스터 동기화 처리
+    // 씬 로드 완료 이벤트 콜백
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SyncRaidDecksToRoster();
     }
 
-    // 레이드 덱 변경 이벤트 수신 시 로스터 동기화 처리
+    // 레이드 덱 변경 이벤트 콜백
     private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
         SyncRaidDecksToRoster();
     }
 
-    // 세이브 데이터 로드 완료 이벤트 수신 시 로스터 동기화 처리
+    // 세이브 데이터 로드 이벤트 콜백
     private void OnDataLoaded(DataLoadEvent evt)
     {
         SyncRaidDecksToRoster();
     }
 
-    // 레이드 1팀 및 2팀 덱 데이터를 조합하여 런타임 로스터로 전송 처리
+    // 레이드 덱 데이터를 조합하여 런타임 로스터로 전송
     public static void SyncRaidDecksToRoster()
     {
         DeckManager deckManager = DeckManager.Instance;
@@ -70,12 +73,11 @@ public sealed class RaidDeckBridge : MonoBehaviour
             return;
         }
 
-        const int slotsPerTeam = RaidRosterRuntime.SlotsPerTeam; // 8
-        const int totalSlots = RaidRosterRuntime.TotalSlots;     // 16
+        const int slotsPerTeam = RaidRosterRuntime.SlotsPerTeam;
+        const int totalSlots = RaidRosterRuntime.TotalSlots;
 
         List<RaidRosterSelection> rosterSelections = new List<RaidRosterSelection>(totalSlots);
 
-        // 1팀(Raid1) 8개 슬롯 데이터 수집
         List<DeckSlotUnitEntry> raid1Entries = deckManager.GetAllDeckSlotEntries(DeckType.Raid1);
         for (int i = 0; i < slotsPerTeam; i++)
         {
@@ -83,7 +85,6 @@ public sealed class RaidDeckBridge : MonoBehaviour
             rosterSelections.Add(unitData != null ? new RaidRosterSelection(unitData) : null);
         }
 
-        // 2팀(Raid2) 8개 슬롯 데이터 수집
         List<DeckSlotUnitEntry> raid2Entries = deckManager.GetAllDeckSlotEntries(DeckType.Raid2);
         for (int i = 0; i < slotsPerTeam; i++)
         {
@@ -91,10 +92,8 @@ public sealed class RaidDeckBridge : MonoBehaviour
             rosterSelections.Add(unitData != null ? new RaidRosterSelection(unitData) : null);
         }
 
-        // 1. 레이드 대기 덱 전송 서비스에 등록 시도 (16개 전체가 유효할 경우 성공)
         RaidRosterTransferService.SetPendingRoster(rosterSelections);
 
-        // 2. 현재 활성화된 씬에 RaidRosterRuntime이 있다면 즉시 외부 로스터로 주입
         RaidRosterRuntime[] activeRosters = FindObjectsByType<RaidRosterRuntime>(FindObjectsSortMode.None);
         for (int i = 0; i < activeRosters.Length; i++)
         {

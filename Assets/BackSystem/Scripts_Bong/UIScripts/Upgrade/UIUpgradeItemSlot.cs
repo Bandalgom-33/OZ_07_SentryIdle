@@ -3,9 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// 업그레이드 슬롯 UI 요소 제어 및 강화 요청 중계 컴포넌트
 public class UIUpgradeItemSlot : MonoBehaviour
 {
-    #region 직렬화 변수 (인스펙터 바인딩)
+    #region 직렬화 변수
 
     [Header("--- UI 아이콘 및 텍스트 ---")]
     [Tooltip("업그레이드 스탯 대표 아이콘 이미지")]
@@ -23,7 +24,7 @@ public class UIUpgradeItemSlot : MonoBehaviour
     [Tooltip("다음 레벨 적용 수치 텍스트 (예: NEXT 110)")]
     [SerializeField] private TMP_Text nextValueText;
 
-    [Tooltip("업그레이드 소모 비용 텍스트 (예: COST 500)")]
+    [Tooltip("업그레이드 소모 비용 및 부족액 통합 텍스트")]
     [SerializeField] private TMP_Text costText;
 
     [Header("--- 강화 횟수별 버튼 ---")]
@@ -53,7 +54,7 @@ public class UIUpgradeItemSlot : MonoBehaviour
 
     #region 라이프 사이클 및 초기화
 
-    // 강화 버튼 클릭 이벤트 동적 바인딩
+    // 강화 버튼 클릭 이벤트 리스너 바인딩
     private void Awake()
     {
         if (btnUpgradeOne != null)
@@ -72,7 +73,7 @@ public class UIUpgradeItemSlot : MonoBehaviour
         }
     }
 
-    // 업그레이드 슬롯 식별 타입 설정
+    // 업그레이드 슬롯 타입 인덱스 초기화
     public void Initialize(int typeIndex)
     {
         UpgradeTypeIndex = typeIndex;
@@ -82,7 +83,7 @@ public class UIUpgradeItemSlot : MonoBehaviour
 
     #region 외부 데이터 연동 및 버튼 상태 갱신
 
-    // 슬롯 텍스트 및 버튼 상태 갱신
+    // 슬롯 텍스트 및 버튼 활성화 상태 갱신
     public void UpdateSlotUI(
         string statName,
         int currentLevel,
@@ -90,26 +91,57 @@ public class UIUpgradeItemSlot : MonoBehaviour
         string nextValueStr,
         double costOne,
         double costTen,
+        double costMax,
         int maxPurchasableCount,
-        long currentAvailableCurrency)
+        long currentAvailableCurrency,
+        bool isMaxLevel)
     {
         if (statNameText != null) statNameText.text = statName;
         if (levelText != null) levelText.text = $"LEVEL {currentLevel}";
         if (currentValueText != null) currentValueText.text = $"CURRENT {currentValueStr}";
-        if (nextValueText != null) nextValueText.text = $"NEXT {nextValueStr}";
-        if (costText != null) costText.text = $"COST {FormatNumber(costOne)}";
+        if (nextValueText != null) nextValueText.text = isMaxLevel ? "NEXT MAX" : $"NEXT {nextValueStr}";
 
-        bool canAffordOne = currentAvailableCurrency >= costOne;
+        if (costText != null)
+        {
+            if (isMaxLevel)
+            {
+                costText.text = "<color=#FFD700>MAX LEVEL</color>";
+            }
+            else
+            {
+                string oneCostStr = FormatCostWithDeficit(costOne, currentAvailableCurrency);
+                string tenCostStr = FormatCostWithDeficit(costTen, currentAvailableCurrency);
+                string maxCostStr = maxPurchasableCount > 0
+                    ? $"MAX({maxPurchasableCount}): {FormatNumber(costMax)}"
+                    : $"MAX(0) <color=#FF4444>(-{FormatNumber(costOne - currentAvailableCurrency)})</color>";
+
+                costText.text = $"+1: {oneCostStr} | +10: {tenCostStr} | {maxCostStr}";
+            }
+        }
+
+        bool canAffordOne = !isMaxLevel && currentAvailableCurrency >= costOne;
         UpdateButtonState(btnUpgradeOne, canAffordOne);
 
-        bool canAffordTen = currentAvailableCurrency >= costTen;
+        bool canAffordTen = !isMaxLevel && currentAvailableCurrency >= costTen;
         UpdateButtonState(btnUpgradeTen, canAffordTen);
 
-        bool canAffordMax = maxPurchasableCount > 0;
+        bool canAffordMax = !isMaxLevel && maxPurchasableCount > 0;
         UpdateButtonState(btnUpgradeMax, canAffordMax);
     }
 
-    // 버튼 활성화 여부 및 배경 색상 변경
+    // 단일 비용 및 부족액 포맷팅 문자열 반환
+    private string FormatCostWithDeficit(double cost, long availableCurrency)
+    {
+        if (availableCurrency >= cost)
+        {
+            return FormatNumber(cost);
+        }
+
+        double deficit = cost - availableCurrency;
+        return $"{FormatNumber(cost)} <color=#FF4444>(-{FormatNumber(deficit)})</color>";
+    }
+
+    // 버튼 상호작용 및 배경 색상 갱신
     private void UpdateButtonState(Button targetButton, bool isPurchasable)
     {
         if (targetButton == null) return;
@@ -127,13 +159,13 @@ public class UIUpgradeItemSlot : MonoBehaviour
 
     #region 내부 업그레이드 이벤트 요청
 
-    // 업그레이드 실행 요청 전파
+    // 업그레이드 실행 요청 중계
     private void RequestUpgrade(int count)
     {
         UpgradeUi.TriggerUpgradeRequest(UpgradeTypeIndex, count);
     }
 
-    // 숫자 축약 포맷팅 처리
+    // 대용량 숫자 단위 축약 포맷팅
     private string FormatNumber(double value)
     {
         if (value < 1000) return value.ToString("N0");
