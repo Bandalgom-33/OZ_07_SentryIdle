@@ -8,9 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace EndlessGuard.TestBattle
 {
-    // EnemyCatalog에서 보스를 제외한 일반 몬스터를 무작위로 추출하여 스폰하고,
-    // 맵 생성 후 초기 텀(초기 지연 시간) 적용, 세이브 데이터(StageProgressManager) 연동, 마석(WaveStone) 보상 지급,
-    // 라운드 스펙 스케일링, 공중 몬스터 직통 비행 경로, 덱 변경 시 현재 웨이브 유지 재시작 및 게임오버 복구를 총괄하는 웨이브 매니저
+    // 적 카탈로그 기반 몬스터 스폰, 웨이브 루프 및 능력치 스케일링 제어 컴포넌트
     public class CatalogWaveManager : MonoBehaviour
     {
         #region 인스펙터 직렬화 필드
@@ -78,21 +76,13 @@ namespace EndlessGuard.TestBattle
 
         #region 내부 런타임 데이터
 
-        // 보스를 제외한 일반/엘리트 몬스터 풀
         private readonly List<EnemyDataSO> _normalEnemyPool = new List<EnemyDataSO>();
-
-        // 보스 몬스터 풀
         private readonly List<EnemyDataSO> _bossEnemyPool = new List<EnemyDataSO>();
-
-        // 현재 필드에 스폰되어 생존 중인 적 유닛 목록
         private readonly List<EnemyRuntimeState> _spawnedEnemies = new List<EnemyRuntimeState>();
 
-        // 현재 진행 중인 스테이지 및 웨이브 번호
         private int _currentStage = 1;
         private int _currentWave = 1;
         private int _aliveEnemyCount = 0;
-
-        // 실행 중인 메인 웨이브 코루틴 참조
         private Coroutine _waveSystemRoutine;
 
         #endregion
@@ -109,6 +99,7 @@ namespace EndlessGuard.TestBattle
 
         #region 라이프사이클
 
+        // 참조 캐싱 및 카탈로그 풀 초기화
         private void Awake()
         {
             if (mapGenerator == null) mapGenerator = FindFirstObjectByType<MapGenerator>();
@@ -118,6 +109,7 @@ namespace EndlessGuard.TestBattle
             InitializeEnemyPoolFromCatalog();
         }
 
+        // 전역 이벤트 및 전투 이벤트 리스너 등록
         private void OnEnable()
         {
             EventBus.Subscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
@@ -132,6 +124,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 스테이지 진행도 로드 및 웨이브 시작
         private void Start()
         {
             LoadProgressFromStageProgressManager();
@@ -142,6 +135,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 이벤트 구독 해제 및 잔여 몬스터 정리
         private void OnDisable()
         {
             EventBus.Unsubscribe<NormalDeckChangedEvent>(OnNormalDeckChanged);
@@ -163,6 +157,7 @@ namespace EndlessGuard.TestBattle
 
         #region 세이브 데이터 동기화 및 풀 초기화
 
+        // 스테이지 진행도 데이터 동기화
         private void LoadProgressFromStageProgressManager()
         {
             if (StageProgressManager.Instance != null)
@@ -176,6 +171,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 몬스터 카탈로그 데이터 기반 일반/보스 풀 구성
         private void InitializeEnemyPoolFromCatalog()
         {
             _normalEnemyPool.Clear();
@@ -208,18 +204,21 @@ namespace EndlessGuard.TestBattle
 
         #region 웨이브 진행 제어 로직
 
+        // 맵 재생성 완료 이벤트 콜백
         private void HandleMapRegenerated()
         {
             ClearAllActiveEnemies();
             StartWaveSystem();
         }
 
+        // 웨이브 루프 코루틴 가동
         public void StartWaveSystem()
         {
             StopWaveSystem();
             _waveSystemRoutine = StartCoroutine(RunWaveSystemLoop());
         }
 
+        // 진행 중인 웨이브 코루틴 정지
         public void StopWaveSystem()
         {
             if (_waveSystemRoutine != null)
@@ -229,11 +228,13 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 덱 변경 이벤트 콜백
         private void OnNormalDeckChanged(NormalDeckChangedEvent evt)
         {
             RestartCurrentWave();
         }
 
+        // 현재 웨이브 상태 재시작
         public void RestartCurrentWave()
         {
             StopWaveSystem();
@@ -244,12 +245,11 @@ namespace EndlessGuard.TestBattle
             _waveSystemRoutine = StartCoroutine(RunWaveSystemLoop());
         }
 
-        // 현재 웨이브부터 보스 웨이브까지 순차 실행하는 메인 코루틴
+        // 웨이브 순차 진행 메인 코루틴
         private IEnumerator RunWaveSystemLoop()
         {
             int totalWaves = (stageManager != null) ? stageManager.WavesPerStage : 5;
 
-            // 기술적 근거: 맵 생성 직후 아군 유닛이 배치되고 플레이어가 전황을 파악할 수 있도록 몬스터 스폰 전 초기 텀(대기 시간) 부여
             if (initialSpawnDelay > 0f)
             {
                 Debug.Log($"[CatalogWaveManager] 맵 생성 완료: 첫 웨이브 스폰까지 {initialSpawnDelay}초 대기");
@@ -291,6 +291,7 @@ namespace EndlessGuard.TestBattle
             HandleStageCleared();
         }
 
+        // 일반 웨이브 몬스터 스폰 코루틴
         private IEnumerator RunNormalWave()
         {
             for (int i = 0; i < enemyCountPerWave; i++)
@@ -307,6 +308,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 보스 웨이브 몬스터 스폰 코루틴
         private IEnumerator RunBossWave()
         {
             Debug.Log("[CatalogWaveManager] [BOSS WAVE] 강력한 보스 몬스터 등장!");
@@ -323,6 +325,7 @@ namespace EndlessGuard.TestBattle
 
         #region 마석 보상 및 클리어 처리
 
+        // 단일 웨이브 클리어 처리 및 보상 지급
         private void HandleWaveCleared(float duration)
         {
             if (StageProgressManager.Instance != null)
@@ -339,6 +342,7 @@ namespace EndlessGuard.TestBattle
             Debug.Log($"[CatalogWaveManager] Stage {_currentStage} - Wave {_currentWave} 클리어! (웨이브 마석 +{waveClearWaveStone}, 소요시간: {duration:F1}초)");
         }
 
+        // 스테이지 전체 클리어 처리 및 맵 재생성
         private void HandleStageCleared()
         {
             int clearedStage = _currentStage;
@@ -378,6 +382,7 @@ namespace EndlessGuard.TestBattle
 
         #region 적 몬스터 스폰 및 능력치 스케일링 로직
 
+        // 일반 몬스터 무작위 스폰
         private void SpawnRandomNormalEnemy(IReadOnlyList<Vector2Int> path)
         {
             if (path == null || path.Count == 0 || mapRenderer == null) return;
@@ -393,6 +398,7 @@ namespace EndlessGuard.TestBattle
             SpawnEnemyInstance(selectedData, path);
         }
 
+        // 보스 몬스터 스폰
         private void SpawnBossEnemy(IReadOnlyList<Vector2Int> path)
         {
             if (path == null || path.Count == 0 || mapRenderer == null) return;
@@ -413,6 +419,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 적 몬스터 인스턴스화 및 이동 경로 할당
         private void SpawnEnemyInstance(EnemyDataSO enemyData, IReadOnlyList<Vector2Int> gridPath)
         {
             bool isAir = enemyData.MovementType == EnemyMovementType.Air;
@@ -440,6 +447,7 @@ namespace EndlessGuard.TestBattle
             _aliveEnemyCount++;
         }
 
+        // 폴백 보스 몬스터 인스턴스화
         private void SpawnFallbackBoss(IReadOnlyList<Vector2Int> gridPath)
         {
             PathNode[] pathNodes = BuildPathNodes(gridPath);
@@ -453,6 +461,7 @@ namespace EndlessGuard.TestBattle
             _aliveEnemyCount++;
         }
 
+        // 스테이지/웨이브 진행도에 따른 몬스터 스펙 스케일링 적용
         private void ApplyStatScaling(EnemyRuntimeState runtimeState, EnemyDataSO enemyData)
         {
             if (runtimeState == null || enemyData == null || enemyData.BaseStats == null || runtimeState.Stats == null)
@@ -483,6 +492,7 @@ namespace EndlessGuard.TestBattle
             runtimeState.Stats.SetMagicalDefense(baseMDef * defScale);
         }
 
+        // 지상 몬스터 그리드 경로 기반 PathNode 배열 생성
         private PathNode[] BuildPathNodes(IReadOnlyList<Vector2Int> gridPath)
         {
             if (gridPath == null || gridPath.Count == 0 || mapRenderer == null) return null;
@@ -502,6 +512,7 @@ namespace EndlessGuard.TestBattle
             return pathNodes;
         }
 
+        // 공중 몬스터 직통 비행 PathNode 배열 생성
         private PathNode[] BuildAirPathNodes(IReadOnlyList<Vector2Int> gridPath)
         {
             if (gridPath == null || gridPath.Count < 2 || mapRenderer == null) return null;
@@ -525,6 +536,7 @@ namespace EndlessGuard.TestBattle
             };
         }
 
+        // 연속 경로 좌표 기반 진입 방향 벡터 산출
         private GridFacingDirection ResolveFacingDirection(IReadOnlyList<Vector2Int> path, int index)
         {
             if (path == null || path.Count <= 1) return GridFacingDirection.East;
@@ -536,6 +548,7 @@ namespace EndlessGuard.TestBattle
             return ResolveFacingFromDelta(direction);
         }
 
+        // 델타 벡터 기반 방향 열거형 변환
         private GridFacingDirection ResolveFacingFromDelta(Vector2Int delta)
         {
             if (delta.x > 0) return GridFacingDirection.East;
@@ -550,6 +563,7 @@ namespace EndlessGuard.TestBattle
 
         #region 게임오버(패배) 및 전투 이벤트 수신
 
+        // 게임 상태 변경 이벤트 콜백
         private void OnGameStateChanged(GameStateChangedEvent evt)
         {
             if (evt.newState == GameState.GameOver)
@@ -570,6 +584,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 적 사망 이벤트 콜백
         private void HandleEnemyDied(EnemyDiedInfo info)
         {
             EnemyRuntimeState enemy = FindSpawnedEnemy(info.RuntimeId);
@@ -578,6 +593,7 @@ namespace EndlessGuard.TestBattle
             RemoveEnemyFromWave(enemy);
         }
 
+        // 적 골인 지점 도달 이벤트 콜백
         private void HandleEnemyReachedGoal(EnemyReachedGoalInfo info)
         {
             EnemyRuntimeState enemy = FindSpawnedEnemy(info.RuntimeId);
@@ -587,6 +603,7 @@ namespace EndlessGuard.TestBattle
             Destroy(enemy.gameObject);
         }
 
+        // 런타임 ID 기반 활성 적 탐색
         private EnemyRuntimeState FindSpawnedEnemy(int runtimeId)
         {
             for (int i = 0; i < _spawnedEnemies.Count; i++)
@@ -599,6 +616,7 @@ namespace EndlessGuard.TestBattle
             return null;
         }
 
+        // 웨이브 활성 목록에서 적 제거
         private void RemoveEnemyFromWave(EnemyRuntimeState enemy)
         {
             if (enemy == null) return;
@@ -610,6 +628,7 @@ namespace EndlessGuard.TestBattle
             }
         }
 
+        // 필드 상의 모든 활성 적 일괄 제거
         public void ClearAllActiveEnemies()
         {
             for (int i = _spawnedEnemies.Count - 1; i >= 0; i--)

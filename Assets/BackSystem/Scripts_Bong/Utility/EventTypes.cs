@@ -538,4 +538,22 @@ public readonly struct OfflineRewardReportEvent
     }
 }
 
-#endregion
+#endregion
+
+#region 필드 유닛 소환 현황 이벤트
+
+// 필드 소환 유닛 수 변경 알림 이벤트
+public readonly struct FieldUnitCountChangedEvent
+{
+    public readonly int currentCount;
+    public readonly int maxCount;
+
+    // 필드 유닛 수 변경 이벤트 생성자
+    public FieldUnitCountChangedEvent(int currentCount, int maxCount)
+    {
+        this.currentCount = currentCount;
+        this.maxCount = maxCount;
+    }
+}
+
+#endregion

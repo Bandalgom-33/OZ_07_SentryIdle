@@ -328,6 +328,79 @@ public class InventoryGridManager : SingletonBase<InventoryGridManager>
         return capacity;
     }
 
+    // 인벤토리 아이템 자동 정렬 (스택 병합 및 종류별 우선순위 정렬)
+    public void SortInventory()
+    {
+        // 1. 유효한 아이템과 총 수량 수집 및 중복 병합
+        Dictionary<ItemDataSO, int> itemTotals = new Dictionary<ItemDataSO, int>();
+        for (int i = 0; i < slots.Count; i++)
+        {
+            InventorySlotData slot = slots[i];
+            if (slot != null && slot.itemData != null && slot.quantity > 0)
+            {
+                if (itemTotals.ContainsKey(slot.itemData))
+                {
+                    itemTotals[slot.itemData] += slot.quantity;
+                }
+                else
+                {
+                    itemTotals[slot.itemData] = slot.quantity;
+                }
+            }
+        }
+
+        // 2. 고유 아이템 목록 추출 및 정렬 규칙 적용
+        List<ItemDataSO> sortedItemList = new List<ItemDataSO>(itemTotals.Keys);
+        sortedItemList.Sort((a, b) =>
+        {
+            // 2-1. 카테고리 우선순위: Equipment(0) -> Consumable(1) -> Etc
+            int categoryComparison = ((int)a.ItemCategory).CompareTo((int)b.ItemCategory);
+            if (categoryComparison != 0) return categoryComparison;
+
+            // 2-2. 장비일 경우 부위 타입 순서 (Head -> Armor -> Weapon -> Accessory)
+            if (a.ItemCategory == ItemCategory.Equipment)
+            {
+                int equipComparison = ((int)a.EquipmentType).CompareTo((int)b.EquipmentType);
+                if (equipComparison != 0) return equipComparison;
+            }
+            // 2-3. 소모품일 경우 소모품 타입 순서
+            else if (a.ItemCategory == ItemCategory.Consumable)
+            {
+                int consumableComparison = ((int)a.ConsumableType).CompareTo((int)b.ConsumableType);
+                if (consumableComparison != 0) return consumableComparison;
+            }
+
+            // 2-4. 아이템 ID 문자열 순서
+            int idComparison = string.Compare(a.ItemID, b.ItemID, StringComparison.Ordinal);
+            if (idComparison != 0) return idComparison;
+
+            // 2-5. 아이템 표시 이름 순서
+            return string.Compare(a.ItemName, b.ItemName, StringComparison.Ordinal);
+        });
+
+        // 3. 슬롯 목록 초기화 후 정렬된 아이템을 최대 스택 단위로 순차 배치
+        InitializeSlots();
+
+        int currentSlotIndex = 0;
+        for (int i = 0; i < sortedItemList.Count; i++)
+        {
+            ItemDataSO item = sortedItemList[i];
+            int totalQuantity = itemTotals[item];
+            int maxStack = Mathf.Max(1, item.MaxStack);
+
+            while (totalQuantity > 0 && currentSlotIndex < maxSlotCount)
+            {
+                int stackAmount = Mathf.Min(maxStack, totalQuantity);
+                slots[currentSlotIndex] = new InventorySlotData(item, stackAmount);
+                totalQuantity -= stackAmount;
+                currentSlotIndex++;
+            }
+        }
+
+        OnInventoryChanged?.Invoke();
+        SaveManager.Instance?.SaveGameData();
+    }
+
     #endregion
 
     #region 세이브 / 로드 연동

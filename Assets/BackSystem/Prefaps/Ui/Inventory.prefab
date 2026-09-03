@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6351473451745101618
 RectTransform:
   m_ObjectHideFlags: 0
@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InventoryGridManager
   maxSlotCount: 50
+  predefinedItemDatabase: []
 --- !u!1 &7582454159245496774
 GameObject:
   m_ObjectHideFlags: 0

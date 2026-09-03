@@ -1,3 +1,4 @@
+// 장비 아이템 종합 보너스 스탯 데이터 구조체
 public struct EquipmentBonusStats
 {
     public int PhysicalAttack;
@@ -9,7 +10,11 @@ public struct EquipmentBonusStats
     public float CriticalDamageBonus;
     public float Accuracy;
 
-    //한번에 묶어서 쓰기
+    public bool HasAnyBonus => PhysicalAttack > 0 || MagicAttack > 0 ||
+                               PhysicalDefense > 0 || MagicDefense > 0 ||
+                               CriticalDamageBonus > 0f || Accuracy > 0f;
+
+    // 장비 보너스 스탯 생성자
     public EquipmentBonusStats(
         int physicalAttack,
         int magicAttack,
