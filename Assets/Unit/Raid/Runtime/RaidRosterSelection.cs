@@ -55,6 +55,13 @@ namespace EndlessGuard.Unit.Raid.Runtime
     {
         private static readonly List<RaidRosterSelection> pendingRoster = new List<RaidRosterSelection>(RaidRosterRuntime.TotalSlots);
 
+        // Enter Play Mode Options에서 Domain Reload가 꺼져 있어도 이전 Play의 Unity Object 참조를 남기지 않습니다.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetRuntimeState()
+        {
+            pendingRoster.Clear();
+        }
+
         public static bool HasPendingRoster => pendingRoster.Count == RaidRosterRuntime.TotalSlots;
 
         public static bool SetPendingRoster(IReadOnlyList<RaidRosterSelection> selections)

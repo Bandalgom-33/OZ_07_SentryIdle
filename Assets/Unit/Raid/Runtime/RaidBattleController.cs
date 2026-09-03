@@ -165,6 +165,7 @@ namespace EndlessGuard.Unit.Raid.Runtime
             routeGuide = GetComponent<RaidRouteGuideView>();
             contribution = RaidContributionRuntime.EnsureInstalled(gameObject);
             RaidBossLightningRuntime.EnsureInstalled(gameObject);
+            RaidBossAnimationRuntime.EnsureInstalled(gameObject);
 
             RaidSummonTileProvider.EnsureInstalled(gameObject);
             Camera mainCamera = Camera.main;
