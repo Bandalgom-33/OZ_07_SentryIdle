@@ -17,7 +17,7 @@ MonoBehaviour:
   description: "\uBE44\uAD50\uC801 \uC57D\uD55C \uBAAC\uC2A4\uD130\uB4E4\uC774 \uC810\uAC70\uD55C
     \uAD11\uC0B0\uC73C\uB85C, \uC720\uB2DB\uB4E4\uC744 \uD30C\uACAC\uD558\uC5EC \uC9C0\uC18D\uC801\uC73C\uB85C
     \uACE8\uB4DC\uC640 \uB9C8\uC11D\uC744 \uCC44\uAD74\uD569\uB2C8\uB2E4."
-  dungeonIcon: {fileID: 0}
+  dungeonIcon: {fileID: 474222040, guid: 68f83a3d3b450544ba683cee40c64dd1, type: 3}
   requiredMinCombatPower: 50
   baseCycleSeconds: 30
   baseRewardGold: 5000

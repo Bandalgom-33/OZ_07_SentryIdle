@@ -10,18 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9afdd35810f2594393110050c2441cb, type: 3}
-  m_Name: Accessory_02
+  m_Name: Accessory_03
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
-  itemId: Accessory_02
-  itemName: "\uBA85\uC911\uC758 \uBC18\uC9C0"
-  itemIcon: {fileID: 21300000, guid: 78218201a8c4a4079971ecbe656a82a9, type: 3}
+  itemId: Accessory_03
+  itemName: "\uB9C8\uBC95\uC758 \uBAA9\uAC78\uC774"
+  itemIcon: {fileID: 651435794, guid: 9ca6237b190db3b4b96c554bddc64ad5, type: 3}
   description: 
   itemCategory: 0
   maxStack: 1
   equipmentType: 3
+  consumableType: 0
+  recoveryRatio: 0.25
+  expAmount: 100
   physicalAttack: 0
   magicAttack: 0
   physicalDefense: 0
-  magicDefense: 0
+  magicDefense: 5
   criticalDamageBonus: 0
-  accuracy: 3
+  accuracy: 0

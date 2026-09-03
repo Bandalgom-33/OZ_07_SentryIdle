@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipeSO
   recipeId: RECIPE_EQUIP_HEAD_02
   itemCategory: 0
-  resultItem: {fileID: 11400000, guid: 20d437fe53fbe034a948ac60a5554788, type: 2}
+  resultItem: {fileID: 11400000, guid: 76c3addb768523f46bd843e63fc0b0b9, type: 2}
   baseCraftingTime: 12
   goldCost: 3000
   diamondCost: 0

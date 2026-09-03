@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9afdd35810f2594393110050c2441cb, type: 3}
-  m_Name: Armor_03
+  m_Name: Armor_01
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
-  itemId: Armor_03
-  itemName: "\uB9C8\uB825 \uAC11\uC637"
-  itemIcon: {fileID: 300056712, guid: 9ca6237b190db3b4b96c554bddc64ad5, type: 3}
+  itemId: Armor_01
+  itemName: "\uAC00\uC8FD \uAC11\uC637"
+  itemIcon: {fileID: -527756742, guid: 9ca6237b190db3b4b96c554bddc64ad5, type: 3}
   description: 
   itemCategory: 0
-  maxStack: 999
+  maxStack: 1
   equipmentType: 1
   consumableType: 0
   recoveryRatio: 0.25
   expAmount: 100
   physicalAttack: 0
   magicAttack: 0
-  physicalDefense: 2
-  magicDefense: 10
+  physicalDefense: 3
+  magicDefense: 1
   criticalDamageBonus: 0
   accuracy: 0
