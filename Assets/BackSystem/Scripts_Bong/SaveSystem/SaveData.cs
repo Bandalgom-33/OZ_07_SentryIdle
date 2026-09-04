@@ -34,6 +34,8 @@ public class SaveData
     public EquipmentSaveData equipment = new EquipmentSaveData();
     // 오디오 볼륨 설정 데이터 (BGM 및 SFX)
     public SoundSaveData sound = new SoundSaveData();
+    // 신규 유저 가이드 완료 여부
+    public bool isGuideCompleted = false;
     // 마지막 저장 일시 타임스탬프 (오프라인 보상 계산용)
     public string lastSaveTimestamp = string.Empty;
 
