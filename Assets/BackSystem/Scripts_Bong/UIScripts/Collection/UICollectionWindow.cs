@@ -86,6 +86,7 @@ public class UICollectionWindow : MonoBehaviour
         EventBus.Subscribe<GachaDrawCompletedEvent>(OnGachaDrawCompleted);
         EventBus.Subscribe<NormalDeckChangedEvent>(OnDeckChanged);
         EventBus.Subscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
+        EventBus.Subscribe<UnitExpChangedEvent>(OnUnitExpChanged);
 
         RefreshCollectionUI();
     }
@@ -96,6 +97,7 @@ public class UICollectionWindow : MonoBehaviour
         EventBus.Unsubscribe<GachaDrawCompletedEvent>(OnGachaDrawCompleted);
         EventBus.Unsubscribe<NormalDeckChangedEvent>(OnDeckChanged);
         EventBus.Unsubscribe<RaidDeckChangedEvent>(OnRaidDeckChanged);
+        EventBus.Unsubscribe<UnitExpChangedEvent>(OnUnitExpChanged);
     }
 
     // 가챠 완료 이벤트 수신 처리
@@ -114,6 +116,30 @@ public class UICollectionWindow : MonoBehaviour
     private void OnRaidDeckChanged(RaidDeckChangedEvent evt)
     {
         RefreshCollectionUI();
+    }
+
+    // 유닛 경험치 및 레벨 변경 이벤트 수신 처리
+    private void OnUnitExpChanged(UnitExpChangedEvent evt)
+    {
+        for (int i = 0; i < _allViewModels.Count; i++)
+        {
+            if (_allViewModels[i].UnitId == evt.unitKey)
+            {
+                _allViewModels[i].Level = evt.level;
+                _allViewModels[i].CurrentExp = evt.currentExp;
+                break;
+            }
+        }
+
+        for (int i = 0; i < cardSlots.Length; i++)
+        {
+            UICollectionItemCard slot = cardSlots[i];
+            if (slot != null && slot.gameObject.activeSelf && slot.CurrentViewModel != null && slot.CurrentViewModel.UnitId == evt.unitKey)
+            {
+                slot.UpdateLevel(evt.level);
+                break;
+            }
+        }
     }
 
     #endregion

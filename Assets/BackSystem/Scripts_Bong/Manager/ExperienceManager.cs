@@ -200,6 +200,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
                 {
                     CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, result.CurrentLevel, result.CurrentExp);
                 }
+                EventBus.Publish(new UnitExpChangedEvent(rawId, unitIdStr, result.CurrentLevel, result.CurrentExp));
                 return true;
             }
             return false;
@@ -218,6 +219,7 @@ public class ExperienceManager : SingletonBase<ExperienceManager>
                 {
                     CollectionDataProvider.Instance.UpdateUnitExpAndLevel(rawId, progress.CurrentLevel, progress.CurrentExp);
                 }
+                EventBus.Publish(new UnitExpChangedEvent(rawId, unitIdStr, progress.CurrentLevel, progress.CurrentExp));
                 return true;
             }
         }

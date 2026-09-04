@@ -193,6 +193,24 @@ public readonly struct SceneLoadCompletedEvent
         }
     }
 
+    // 유닛 경험치 및 레벨 갱신 알림 이벤트 (보관함 UI 등 동기화용)
+    public readonly struct UnitExpChangedEvent
+    {
+        public readonly int unitId;
+        public readonly string unitKey;
+        public readonly int level;
+        public readonly long currentExp;
+
+        // 유닛 경험치 변경 이벤트 생성자
+        public UnitExpChangedEvent(int unitId, string unitKey, int level, long currentExp)
+        {
+            this.unitId = unitId;
+            this.unitKey = unitKey ?? string.Empty;
+            this.level = level;
+            this.currentExp = currentExp;
+        }
+    }
+
     public readonly struct EnemyDiedEvent
     {
         public readonly UnityEngine.GameObject enemyGameObject;
