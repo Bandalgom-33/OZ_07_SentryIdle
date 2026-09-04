@@ -114,8 +114,11 @@ public class WaveManager : MonoBehaviour
     //웨이브 시작 메서드
     public void StartWave()
     {
-        if(mapGenerator == null) return;
-        if(stageManager == null) return;
+        if (mapGenerator == null || stageManager == null) return;
+
+        StopAllCoroutines();
+        ClearAllEnemies();
+        currentWave = 0;
 
         StartCoroutine(RunWaveSystem());
     }

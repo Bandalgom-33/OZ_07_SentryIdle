@@ -125,12 +125,12 @@ public class GameManager : SingletonBase<GameManager>
         }
     }
 
-    // 레이드 종료 시 승리 판정 및 로비 복귀 루틴 분기
+    // 레이드 종료 시 승리 또는 패배 판정 및 로비 복귀 루틴 분기
     private void HandleRaidEnded(RaidBattleResult result)
     {
-        if (result == RaidBattleResult.Victory)
+        if (result == RaidBattleResult.Victory || result == RaidBattleResult.Defeat)
         {
-            Debug.Log("[GameManager] 레이드 보스 처치 승리 확인! 2초 후 로비 씬으로 비동기 전환합니다.");
+            Debug.Log($"[GameManager] 레이드 종료 확인 ({result})! 2초 후 로비 씬으로 비동기 전환합니다.");
             ReturnToLobbyAfterDelayAsync().Forget();
         }
     }
@@ -266,19 +266,46 @@ public class GameManager : SingletonBase<GameManager>
         UpdateLifeUI();
     }
 
-    // 게임 오버 처리 (팝업 활성화 또는 2초 대기 후 로비 씬 전환)
+    // 게임 오버 처리 (레이드는 로비 복귀, 일반 스테이지는 맵 재생성 및 유닛 재소환 초기화)
     private void HandleGameOver()
     {
-        SetGameSpeed(0);
+        bool isRaid = (SceneLoader.Instance != null && SceneLoader.Instance.CurrentSceneType == SceneType.Raid)
+                      || FindFirstObjectByType<RaidBattleController>() != null;
 
-        if (gameOverPanel != null)
+        if (isRaid)
         {
-            gameOverPanel.SetActive(true);
+            SetGameSpeed(0);
+
+            if (gameOverPanel != null)
+            {
+                gameOverPanel.SetActive(true);
+            }
+            else
+            {
+                HandleGameOverFallbackAsync().Forget();
+            }
+            return;
         }
-        else
+
+        ResetLife();
+
+        if (CurrencyManager.Instance != null)
         {
-            HandleGameOverFallbackAsync().Forget();
+            CurrencyManager.Instance.ResetDpCostOnRoundStart();
         }
+
+        if (StageProgressManager.Instance != null)
+        {
+            StageProgressManager.Instance.SetCurrentWave(1);
+        }
+
+        MapGenerator mapGenerator = FindFirstObjectByType<MapGenerator>();
+        if (mapGenerator != null)
+        {
+            mapGenerator.RegenerateMap();
+        }
+
+        ChangeState(GameState.InGame);
     }
 
     // 게임 오버 팝업 미할당 시 2초 대기 후 로비 씬 전환 루틴
