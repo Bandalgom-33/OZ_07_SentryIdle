@@ -204,10 +204,10 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         {
             return (UpgradeType)type switch
             {
-                UpgradeType.AttackSpeed => $"+{level * attackSpeedIncrease:F2} (MAX)",
-                UpgradeType.CriticalChance => $"+{level * criticalChanceIncrease:F1}% (MAX)",
-                UpgradeType.CriticalDamage => $"+{level * criticalDamageIncrease:F1}% (MAX)",
-                _ => "MAX"
+                UpgradeType.AttackSpeed => $"+{level * attackSpeedIncrease:F2} (최대)",
+                UpgradeType.CriticalChance => $"+{level * criticalChanceIncrease:F1}% (최대)",
+                UpgradeType.CriticalDamage => $"+{level * criticalDamageIncrease:F1}% (최대)",
+                _ => "최대"
             };
         }
 
@@ -218,11 +218,11 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
             UpgradeType.DiamondBonus => $"+{level * 3}",
             UpgradeType.DiamondMagnification => $"x{1.0f + (level * 0.1f):F1} (+{level * 10}%)",
             UpgradeType.DpCostBonus => $"+{level * 1} DP",
-            UpgradeType.MaxDpCost => $"Max DP {100 + (level * 10)}",
+            UpgradeType.MaxDpCost => $"최대 DP {100 + (level * 10)}",
             UpgradeType.PhysicalAttack => $"+{level * physicalAttackIncrease:N0}",
             UpgradeType.MagicalAttack => $"+{level * magicalAttackIncrease:N0}",
             UpgradeType.MaxHp => $"+{level * maxHpIncrease:N0}",
-            UpgradeType.HpRegen => $"+{level * hpRegenIncrease:F1}/sec",
+            UpgradeType.HpRegen => $"+{level * hpRegenIncrease:F1}/초",
             UpgradeType.PhysicalDefense => $"+{level * physicalDefenseIncrease:N0}",
             UpgradeType.MagicalDefense => $"+{level * magicalDefenseIncrease:N0}",
             UpgradeType.AttackSpeed => $"+{level * attackSpeedIncrease:F2}",

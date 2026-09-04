@@ -136,23 +136,23 @@ public class UpgradeUi : MonoBehaviour
         if (upgradeSlots == null || UpgradeManager.Instance == null) return;
 
         string[] statNames = {
-            "Gold Bonus",
-            "Gold Multiplier",
-            "Diamond Bonus",
-            "Diamond Multiplier",
-            "DP Cost Bonus",
-            "Max DP Limit",
-            "Physical Attack",
-            "Magical Attack",
-            "Max HP",
-            "HP Regen / sec",
-            "Physical Defense",
-            "Magical Defense",
-            "Attack Speed",
-            "Accuracy",
-            "Evasion",
-            "Critical Chance",
-            "Critical Damage"
+            "골드 보너스",
+            "골드 배율",
+            "다이아 보너스",
+            "다이아 배율",
+            "DP 코스트 보너스",
+            "최대 DP 제한",
+            "물리 공격력",
+            "마법 공격력",
+            "최대 체력",
+            "초당 HP 재생",
+            "물리 방어력",
+            "마법 방어력",
+            "공격 속도",
+            "명중률",
+            "회피율",
+            "치명타 확률",
+            "치명타 피해"
         };
 
         for (int i = 0; i < upgradeSlots.Length; i++)
