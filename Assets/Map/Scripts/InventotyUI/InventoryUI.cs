@@ -51,6 +51,12 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    // 패널 활성화 시 인벤토리 뷰 갱신
+    private void OnEnable()
+    {
+        RefreshInventoryView();
+    }
+
     // 인스턴스 파괴 시 싱글톤 참조 해제
     private void OnDestroy()
     {
@@ -71,7 +77,7 @@ public class InventoryUI : MonoBehaviour
         if (equipmentWindow != null) equipmentWindow.SetActive(false);
         if (inventoryWindow != null) inventoryWindow.SetActive(true);
 
-        RefreshInventoryView();
+        SortInventory();
     }
 
     // 캐릭터 선택 기반 장비창 + 가방 통합 모드 오픈 (장비창 노출)
@@ -87,7 +93,7 @@ public class InventoryUI : MonoBehaviour
             em.SetCurrentUnit(unitId);
         }
 
-        RefreshInventoryView();
+        SortInventory();
     }
 
     // 장비창 가시성 토글 설정

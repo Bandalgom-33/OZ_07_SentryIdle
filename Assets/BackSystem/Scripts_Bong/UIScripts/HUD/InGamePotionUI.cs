@@ -63,7 +63,7 @@ public class InGamePotionUI : MonoBehaviour
 
     private void OnEnable()
     {
-        SelectHighestPriorityAvailablePotion();
+        _selectedPotionIndex = 0;
 
         ConsumableItemManager.OnConsumableCountChanged += HandleConsumableCountChanged;
         if (InventoryGridManager.Instance != null)
@@ -88,36 +88,6 @@ public class InGamePotionUI : MonoBehaviour
         UpdateCooldownDisplay();
     }
 
-    // 보유 중인 최우선 순위(하급 > 중급 > 상급) 포션 자동 선택
-    private void SelectHighestPriorityAvailablePotion()
-    {
-        ConsumableItemManager cim = ConsumableItemManager.Instance;
-        if (cim == null) return;
-
-        for (int i = 0; i < _availablePotionTypes.Length; i++)
-        {
-            if (cim.GetItemCount(_availablePotionTypes[i]) > 0)
-            {
-                _selectedPotionIndex = i;
-                return;
-            }
-        }
-
-        _selectedPotionIndex = 0;
-    }
-
-    // 미보유 포션 선택 시 보유 포션으로 자동 인덱스 보정
-    private void AutoSelectAvailablePotion()
-    {
-        ConsumableItemManager cim = ConsumableItemManager.Instance;
-        if (cim == null) return;
-
-        if (cim.GetItemCount(CurrentSelectedPotion) <= 0)
-        {
-            SelectHighestPriorityAvailablePotion();
-        }
-    }
-
     #endregion
 
     #region 포션 UI 갱신 및 쿨타임 처리
@@ -125,8 +95,6 @@ public class InGamePotionUI : MonoBehaviour
     // 현재 선택된 포션 UI 상태 갱신
     public void RefreshCurrentPotionUI()
     {
-        AutoSelectAvailablePotion();
-
         ConsumableType currentType = CurrentSelectedPotion;
 
         ItemDataSO itemData = InventoryGridManager.Instance != null
@@ -216,38 +184,8 @@ public class InGamePotionUI : MonoBehaviour
     // 보유 포션 순환 변경 버튼 클릭 처리
     public void OnClickChangePotion()
     {
-        ConsumableItemManager cim = ConsumableItemManager.Instance;
-        if (cim == null) return;
-
-        int totalTypes = _availablePotionTypes.Length;
-        int nextIndex = -1;
-
-        for (int step = 1; step <= totalTypes; step++)
-        {
-            int candidateIndex = (_selectedPotionIndex + step) % totalTypes;
-            ConsumableType candidateType = _availablePotionTypes[candidateIndex];
-
-            if (cim.GetItemCount(candidateType) > 0)
-            {
-                nextIndex = candidateIndex;
-                break;
-            }
-        }
-
-        if (nextIndex != -1 && nextIndex != _selectedPotionIndex)
-        {
-            _selectedPotionIndex = nextIndex;
-            RefreshCurrentPotionUI();
-            Debug.Log($"[InGamePotionUI] 보유 포션으로 변경 완료 -> {CurrentSelectedPotion} (보유: {cim.GetItemCount(CurrentSelectedPotion)}개)");
-        }
-        else if (nextIndex == _selectedPotionIndex)
-        {
-            Debug.Log($"[InGamePotionUI] 현재 보유 중인 포션은 {CurrentSelectedPotion} 1종류뿐입니다.");
-        }
-        else
-        {
-            Debug.LogWarning("[InGamePotionUI] 현재 인벤토리에 보유 중인 포션이 없습니다.");
-        }
+        _selectedPotionIndex = (_selectedPotionIndex + 1) % _availablePotionTypes.Length;
+        RefreshCurrentPotionUI();
     }
 
     // 포션 사용 버튼 클릭 처리

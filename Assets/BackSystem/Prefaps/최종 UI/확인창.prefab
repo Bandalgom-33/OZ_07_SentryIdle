@@ -359,8 +359,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Are you sure you want to continue?
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c920e8f5168b0a54d908a189b0300f8d, type: 2}
-  m_sharedMaterial: {fileID: 1680737089587400181, guid: c920e8f5168b0a54d908a189b0300f8d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bfd3655ed5dde49408934798a4f7dd21, type: 2}
+  m_sharedMaterial: {fileID: 423271146153936233, guid: bfd3655ed5dde49408934798a4f7dd21, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -390,7 +390,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

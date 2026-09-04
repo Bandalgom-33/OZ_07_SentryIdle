@@ -327,6 +327,11 @@ public class MainLobbyUI : MonoBehaviour
             }
             ShowOfflineRewardPopup();
         }
+
+        if (GuideManager.Instance != null)
+        {
+            GuideManager.Instance.StartGuideIfNeeded();
+        }
     }
 
     #endregion

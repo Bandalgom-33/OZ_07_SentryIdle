@@ -158,11 +158,19 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
         SaveManager.Instance?.SaveGameData();
     }
 
-    // 특정 부위의 장비 해제 처리 (해제된 장비 인벤토리 회수 반환)
-    public void UnequipItem(EquipmentType equipmentType)
+    // 특정 부위 장비 해제 및 인벤토리 회수
+    public bool UnequipItem(EquipmentType equipmentType)
     {
-        if (string.IsNullOrEmpty(currentUnitId)) return;
-        if (!characterEquipments.TryGetValue(currentUnitId, out CharacterEquipmentData characterData)) return;
+        // 대상 유닛 식별자 및 장비 데이터 유효성 검증
+        if (string.IsNullOrEmpty(currentUnitId)) return false;
+        if (!characterEquipments.TryGetValue(currentUnitId, out CharacterEquipmentData characterData)) return false;
+
+        // 인벤토리가 가득 찬 경우 아이템 유실 방지를 위한 해제 차단
+        if (InventoryGridManager.Instance != null && InventoryGridManager.Instance.IsInventoryFull())
+        {
+            Debug.LogWarning("[EquipmentManager] 인벤토리가 가득 차 장비를 해제할 수 없습니다.");
+            return false;
+        }
 
         ItemDataSO unequippedItem = null;
 
@@ -210,6 +218,45 @@ public class EquipmentManager : SingletonBase<EquipmentManager>
 
         RecalculateEquipmentStats();
         SaveManager.Instance?.SaveGameData();
+        return true;
+    }
+
+    // 장착 중인 특정 부위 장비 직접 파괴 및 제거
+    public bool RemoveEquippedItem(EquipmentType equipmentType)
+    {
+        if (string.IsNullOrEmpty(currentUnitId)) return false;
+        if (!characterEquipments.TryGetValue(currentUnitId, out CharacterEquipmentData characterData)) return false;
+
+        switch (equipmentType)
+        {
+            case EquipmentType.Head:
+                equippedHead = null;
+                characterData.Head = null;
+                if (headSlot != null) headSlot.SetItem(null);
+                break;
+
+            case EquipmentType.Armor:
+                equippedArmor = null;
+                characterData.Armor = null;
+                if (armorSlot != null) armorSlot.SetItem(null);
+                break;
+
+            case EquipmentType.Weapon:
+                equippedWeapon = null;
+                characterData.Weapon = null;
+                if (weaponSlot != null) weaponSlot.SetItem(null);
+                break;
+
+            case EquipmentType.Accessory:
+                equippedAccessory = null;
+                characterData.Accessory = null;
+                if (accessorySlot != null) accessorySlot.SetItem(null);
+                break;
+        }
+
+        RecalculateEquipmentStats();
+        SaveManager.Instance?.SaveGameData();
+        return true;
     }
     
     //장비스텟 계산하는 역할

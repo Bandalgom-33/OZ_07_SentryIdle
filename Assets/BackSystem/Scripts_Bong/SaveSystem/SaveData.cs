@@ -32,6 +32,10 @@ public class SaveData
     public InventorySaveData inventory = new InventorySaveData();
     // 캐릭터별 4부위 장착 장비 데이터
     public EquipmentSaveData equipment = new EquipmentSaveData();
+    // 오디오 볼륨 설정 데이터 (BGM 및 SFX)
+    public SoundSaveData sound = new SoundSaveData();
+    // 신규 유저 가이드 완료 여부
+    public bool isGuideCompleted = false;
     // 마지막 저장 일시 타임스탬프 (오프라인 보상 계산용)
     public string lastSaveTimestamp = string.Empty;
 
@@ -46,6 +50,7 @@ public class SaveData
         ValidateCrafting();
         ValidateConsumable();
         ValidateInventory();
+        ValidateSound();
     }
 
     // 보유 재화 데이터 유효 범위 검증
@@ -181,6 +186,15 @@ public class SaveData
                 slot.quantity = 0;
             }
         }
+    }
+
+    // 오디오 볼륨 설정 유효 범위(0.0~1.0) 검증
+    private void ValidateSound()
+    {
+        if (sound == null) { sound = new SoundSaveData(); return; }
+
+        sound.bgmVolume = Mathf.Clamp01(sound.bgmVolume);
+        sound.sfxVolume = Mathf.Clamp01(sound.sfxVolume);
     }
 
     // 정수형(long) 최소값 하한 보정
@@ -482,6 +496,12 @@ public class EquipmentSaveData
     public List<CharacterEquipmentSaveEntry> characterEquipments = new List<CharacterEquipmentSaveEntry>();
 }
 
-
-
-
+// 오디오 볼륨 설정 저장 데이터
+[Serializable]
+public class SoundSaveData
+{
+    // 배경음악 볼륨 (0.0 ~ 1.0)
+    public float bgmVolume = 1.0f;
+    // 효과음 볼륨 (0.0 ~ 1.0)
+    public float sfxVolume = 1.0f;
+}

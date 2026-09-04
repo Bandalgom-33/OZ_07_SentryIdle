@@ -23,8 +23,10 @@ public class InventorySlotUI : MonoBehaviour
 
     private InventorySlotData currentSlotData;
     private Button slotButton;
+    private int slotIndex = -1;
 
     public InventorySlotData CurrentSlotData => currentSlotData;
+    public int SlotIndex => slotIndex;
 
     #endregion
 
@@ -50,9 +52,10 @@ public class InventorySlotUI : MonoBehaviour
     #region 슬롯 데이터 설정 및 클릭 처리
 
     // 슬롯 데이터 바인딩 및 UI 갱신
-    public void SetSlot(InventorySlotData slotData)
+    public void SetSlot(InventorySlotData slotData, int index = -1)
     {
         currentSlotData = slotData;
+        slotIndex = index;
 
         if (slotData == null || slotData.itemData == null)
         {
@@ -89,7 +92,7 @@ public class InventorySlotUI : MonoBehaviour
         ItemDetailUI detailUI = itemDetailUI != null ? itemDetailUI : (ItemDetailUI.Instance != null ? ItemDetailUI.Instance : FindFirstObjectByType<ItemDetailUI>());
         if (detailUI == null) return;
 
-        detailUI.ShowItem(currentSlotData.itemData);
+        detailUI.ShowItem(currentSlotData.itemData, slotIndex);
     }
 
     #endregion

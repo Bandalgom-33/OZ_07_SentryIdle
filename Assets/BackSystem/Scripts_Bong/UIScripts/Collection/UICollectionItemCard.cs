@@ -21,7 +21,7 @@ public class UICollectionItemCard : MonoBehaviour
     [Tooltip("유닛 이름 텍스트 (예: UNIT F 또는 김하진)")]
     [SerializeField] private TMP_Text unitNameText;
 
-    [Tooltip("보유 상태 텍스트 (AVAILABLE / LOCKED)")]
+    [Tooltip("보유 상태 및 레벨 텍스트 (보유 시 Lv.X, 미보유 시 LOCKED)")]
     [SerializeField] private TMP_Text statusText;
 
     [Tooltip("덱 배치 뱃지 텍스트 (예: DECK 1)")]
@@ -41,23 +41,15 @@ public class UICollectionItemCard : MonoBehaviour
 
     #region 내부 필드 및 이벤트
 
-    // 현재 슬롯에 바인딩된 뷰모델 캐시
     private CollectionItemViewModel _cachedViewModel;
-
-    // 상위 UICollectionWindow에서 전달받은 카드 클릭 콜백 델리게이트
     private Action<CollectionItemViewModel> _onClickCallback;
-
-    // 현재 선택 상태 플래그
     private bool _isSelected;
 
     #endregion
 
     #region 프로퍼티
 
-    // 현재 바인딩된 뷰모델 데이터 반환 프로퍼티
     public CollectionItemViewModel CurrentViewModel => _cachedViewModel;
-
-    // 현재 슬롯 선택 여부 프로퍼티
     public bool IsSelected => _isSelected;
 
     #endregion
@@ -67,7 +59,6 @@ public class UICollectionItemCard : MonoBehaviour
     // 버튼 클릭 이벤트 리스너 등록
     private void Awake()
     {
-        // 인스펙터에 명시적으로 연결되지 않은 경우 컴포넌트에서 자동 탐색
         if (cardButton == null)
         {
             cardButton = GetComponent<Button>();
@@ -105,19 +96,16 @@ public class UICollectionItemCard : MonoBehaviour
 
         if (viewModel == null) return;
 
-        // 유닛 이름 표기 갱신
         if (unitNameText != null)
         {
             unitNameText.text = !string.IsNullOrEmpty(viewModel.DisplayName) ? viewModel.DisplayName : viewModel.UnitId;
         }
 
-        // 유닛 성급 표기 갱신
         if (gradeText != null)
         {
             gradeText.text = $"{viewModel.Grade}";
         }
 
-        // 유닛 초상화 및 획득 여부에 따른 명암 렌더링
         if (portraitImage != null)
         {
             if (viewModel.PortraitIcon != null)
@@ -130,18 +118,15 @@ public class UICollectionItemCard : MonoBehaviour
                 portraitImage.enabled = false;
             }
 
-            // 보유 상태에 따라 밝은 색상 또는 어두운 실루엣 색상 적용
             portraitImage.color = viewModel.IsOwned ? ownedColor : lockedColor;
         }
 
-        // 보유/잠금 상태 라벨 텍스트 갱신
         if (statusText != null)
         {
-            statusText.text = viewModel.IsOwned ? "AVAILABLE" : "LOCKED";
+            statusText.text = viewModel.IsOwned ? $"Lv.{viewModel.Level}" : "LOCKED";
             statusText.color = viewModel.IsOwned ? Color.cyan : Color.gray;
         }
 
-        // 일반 덱 편성 상태 뱃지 갱신
         if (deckBadgeText != null)
         {
             deckBadgeText.gameObject.SetActive(viewModel.IsInDeck);
@@ -165,10 +150,22 @@ public class UICollectionItemCard : MonoBehaviour
     {
         _isSelected = isSelected;
 
-        // 선택 인디케이터 오브젝트 활성화/비활성화 처리
         if (selectedIndicator != null)
         {
             selectedIndicator.SetActive(isSelected);
+        }
+    }
+
+    // 유닛 레벨 및 상태 텍스트 단독 갱신
+    public void UpdateLevel(int newLevel)
+    {
+        if (_cachedViewModel != null)
+        {
+            _cachedViewModel.Level = newLevel;
+            if (statusText != null && _cachedViewModel.IsOwned)
+            {
+                statusText.text = $"Lv.{newLevel}";
+            }
         }
     }
 

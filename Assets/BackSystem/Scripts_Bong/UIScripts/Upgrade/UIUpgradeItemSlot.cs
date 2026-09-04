@@ -97,25 +97,25 @@ public class UIUpgradeItemSlot : MonoBehaviour
         bool isMaxLevel)
     {
         if (statNameText != null) statNameText.text = statName;
-        if (levelText != null) levelText.text = $"LEVEL {currentLevel}";
-        if (currentValueText != null) currentValueText.text = $"CURRENT {currentValueStr}";
-        if (nextValueText != null) nextValueText.text = isMaxLevel ? "NEXT MAX" : $"NEXT {nextValueStr}";
+        if (levelText != null) levelText.text = $"Lv.{currentLevel}";
+        if (currentValueText != null) currentValueText.text = $"현재 {currentValueStr}";
+        if (nextValueText != null) nextValueText.text = isMaxLevel ? "최대 레벨" : $"다음 {nextValueStr}";
 
         if (costText != null)
         {
             if (isMaxLevel)
             {
-                costText.text = "<color=#FFD700>MAX LEVEL</color>";
+                costText.text = "<color=#FFD700>최대 레벨 달성</color>";
             }
             else
             {
                 string oneCostStr = FormatCostWithDeficit(costOne, currentAvailableCurrency);
                 string tenCostStr = FormatCostWithDeficit(costTen, currentAvailableCurrency);
                 string maxCostStr = maxPurchasableCount > 0
-                    ? $"MAX({maxPurchasableCount}): {FormatNumber(costMax)}"
-                    : $"MAX(0) <color=#FF4444>(-{FormatNumber(costOne - currentAvailableCurrency)})</color>";
+                    ? $"<color=#FFA500>최대({maxPurchasableCount})</color>: <color=#55FF55>{FormatNumber(costMax)}</color>"
+                    : $"<color=#FFA500>최대(0)</color> <color=#FF4444>(-{FormatNumber(costOne - currentAvailableCurrency)})</color>";
 
-                costText.text = $"+1: {oneCostStr} | +10: {tenCostStr} | {maxCostStr}";
+                costText.text = $"<color=#FFA500>+1</color>: {oneCostStr} | <color=#FFA500>+10</color>: {tenCostStr} | {maxCostStr}";
             }
         }
 
@@ -134,11 +134,11 @@ public class UIUpgradeItemSlot : MonoBehaviour
     {
         if (availableCurrency >= cost)
         {
-            return FormatNumber(cost);
+            return $"<color=#55FF55>{FormatNumber(cost)}</color>";
         }
 
         double deficit = cost - availableCurrency;
-        return $"{FormatNumber(cost)} <color=#FF4444>(-{FormatNumber(deficit)})</color>";
+        return $"<color=#55FF55>{FormatNumber(cost)}</color> <color=#FF4444>(-{FormatNumber(deficit)})</color>";
     }
 
     // 버튼 상호작용 및 배경 색상 갱신
