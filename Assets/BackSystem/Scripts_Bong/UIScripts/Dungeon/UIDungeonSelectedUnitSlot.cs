@@ -38,6 +38,13 @@ public class UIDungeonSelectedUnitSlot : MonoBehaviour
 
     #endregion
 
+    #region 프로퍼티
+
+    public int UnitId => _unitId;
+    public int SlotIndex => _slotIndex;
+
+    #endregion
+
     #region 유니티 생명주기 및 리스너 등록
 
     // 컴포넌트 초기화 및 해제 버튼 리스너 등록
@@ -166,6 +173,20 @@ public class UIDungeonSelectedUnitSlot : MonoBehaviour
         if (characterImageCard != null)
         {
             characterImageCard.SetSelected(isSelected);
+        }
+    }
+
+    // 슬롯 유닛 레벨 및 전투력 텍스트 갱신
+    public void UpdateLevel(int newLevel, int newCombatPower)
+    {
+        if (unitLevelText != null)
+        {
+            unitLevelText.text = $"Lv.{newLevel}";
+        }
+
+        if (combatPowerText != null)
+        {
+            combatPowerText.text = $"전투력 {newCombatPower}";
         }
     }
 

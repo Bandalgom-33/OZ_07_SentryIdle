@@ -81,12 +81,14 @@ public class UIDungeonFormationModal : MonoBehaviour
     private void OnEnable()
     {
         EventBus.Subscribe<DungeonFormationChangedEvent>(OnDungeonFormationChanged);
+        EventBus.Subscribe<UnitExpChangedEvent>(OnUnitExpChanged);
     }
 
     // 던전 편성 변경 이벤트 구독 해제
     private void OnDisable()
     {
         EventBus.Unsubscribe<DungeonFormationChangedEvent>(OnDungeonFormationChanged);
+        EventBus.Unsubscribe<UnitExpChangedEvent>(OnUnitExpChanged);
     }
 
     #endregion
@@ -118,6 +120,25 @@ public class UIDungeonFormationModal : MonoBehaviour
         {
             RefreshUI();
         }
+    }
+
+    // 유닛 경험치 및 레벨 변경 이벤트 수신 시 슬롯 갱신 처리
+    private void OnUnitExpChanged(UnitExpChangedEvent evt)
+    {
+        if (!gameObject.activeSelf) return;
+
+        for (int i = 0; i < selectedUnitSlots.Length; i++)
+        {
+            UIDungeonSelectedUnitSlot slot = selectedUnitSlots[i];
+            if (slot != null && slot.UnitId == evt.unitId)
+            {
+                int power = DungeonManager.Instance != null ? DungeonManager.Instance.GetUnitCombatPower(evt.unitId) : 0;
+                slot.UpdateLevel(evt.level, power);
+                break;
+            }
+        }
+
+        RefreshUI();
     }
 
     // 던전 상세 패널 전체 정보 갱신
@@ -193,8 +214,8 @@ public class UIDungeonFormationModal : MonoBehaviour
                 string uName = unitKey;
                 Sprite icon = (portraitCatalog != null) ? portraitCatalog.GetPortraitByUnitId(unitKey) : null;
 
-                int level = 1;
-                int starGrade = 1;
+                int level = DungeonManager.Instance.GetUnitRuntimeLevel(unitId);
+                int starGrade = DungeonManager.Instance.GetUnitGradeMultiplier(unitId);
 
                 if (unitCatalog != null && unitCatalog.TryGetById(unitKey, out UnitDataSO so) && so != null)
                 {
